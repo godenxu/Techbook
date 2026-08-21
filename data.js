@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   var CATEGORY_COLOR = {"人工智能":"#4f8cff","数据要素":"#10b981","量子科技":"#8b5cf6","安全":"#f43f5e","基础设施":"#06b6d4","合规科技":"#14b8a6","客户体验":"#f59e0b"};
-  var TIER_COLOR = {"布局层":"#fb7185","论证层":"#fbbf24","研究层":"#facc15","观察层":"#34d399"};
+  var TIER_COLOR = {"布局层":"#fb7185","论证层":"#38bdf8","研究层":"#fbbf24","观察层":"#34d399"};
   var CATEGORIES = Object.keys(CATEGORY_COLOR);
   var TIERS = Object.keys(TIER_COLOR);
   var ITEMS = [
@@ -698,7 +698,7 @@
   ];
 
   window.DATA = {
-    book: { title: '银行金融科技前沿技术研究成果', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 科技树', org: '金融科技研究组', date: (new Date()).getFullYear() + '年', version: '金融科技版 v2.0（台账 v1.30）' },
+    book: { title: '银行金融科技前沿技术研究成果', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 科技树', org: '科技规划处', date: '2026年', version: '' },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
     library: { fields: FIELDS, items: ITEMS }, graph: buildGraph(), graphRelations: RELATIONS,

@@ -33,7 +33,13 @@
     return 'var(--bad)';
   }
   function catColor(name) { return DATA.categoryColor[name] || '#8fa3c0'; }
-  function tierColor(name) { return DATA.tierColor[name] || '#8fa3c0'; }
+  function tierColor(name) {
+    if (name === '布局层') return '#fb7185';
+    if (name === '论证层') return '#38bdf8';
+    if (name === '研究层') return '#fbbf24';
+    if (name === '观察层') return '#34d399';
+    return (DATA && DATA.tierColor && DATA.tierColor[name]) || '#8fa3c0';
+  }
   function scorePill(v) {
     var n = Number(v) || 0;
     return '<span class="pill s' + n + '">' + n + '分</span>';
@@ -192,10 +198,7 @@
 
   /* ==================== 书籍页面内容渲染 ==================== */
   function insideCoverHTML() {
-    return '<div class="cover-full">' +
-      '<div style="opacity:.5;letter-spacing:6px;font-size:12px;color:#8fa3c0">INNER COVER</div>' +
-      '<div style="margin-top:14px;font-size:20px;letter-spacing:4px;color:#b9c9e8">' + esc(DATA.book.title) + '</div>' +
-      '</div>';
+    return '';
   }
   function coverHTML() {
     var b = DATA.book;
@@ -209,7 +212,7 @@
       '<div class="cov-title">' + esc(b.title) + '</div>' +
       '<div class="cov-sub">' + esc(b.subtitle) + '</div>' +
       '<div class="cov-rule"></div>' +
-      '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + ' · ' + esc(b.version) + '</div>' +
+      '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + '</div>' +
       '</div>';
   }
   function titlePageHTML() {
@@ -233,11 +236,10 @@
       '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
       '<div class="pg-p dim">顶部可切换「书籍 / 网页 / 科技树」三种阅读方式；「网页」左侧目录可快速定位；「科技树」梳理技术间的前提依赖关系。</div>' +
       '<div class="pg-section" style="margin-top:20px">' +
-      '<div class="pg-h">组织与版本</div>' +
+      '<div class="pg-h">编制说明</div>' +
       '<table class="tbl"><tr><th>编制单位</th><td>' + esc(b.org) + '</td></tr>' +
-      '<tr><th>版本</th><td>' + esc(b.version) + '</td></tr>' +
-      '<tr><th>日期</th><td>' + esc(b.date) + '</td></tr>' +
-      '<tr><th>数据说明</th><td>长名单技术名称与六维评级以《前沿技术储备库分层台账 v1.30》为准，分层按布局6/论证10/研究10/观察10动态滚动维护。</td></tr></table></div>' +
+      '<tr><th>编制时间</th><td>' + esc(b.date) + '</td></tr>' +
+      '<tr><th>研究范围</th><td>前沿技术长名单36项（布局6 / 论证10 / 研究10 / 观察10），覆盖人工智能、数据要素、量子科技等战略方向。</td></tr></table></div>' +
       '</div>';
   }
   function tocHTML() {
@@ -318,7 +320,8 @@
     var tierOrder = { '布局层': 0, '论证层': 1, '研究层': 2, '观察层': 3 };
     var items = DATA.library.items.slice().sort(function (a, b) { return (tierOrder[a.tier] || 9) - (tierOrder[b.tier] || 9); }).slice(0, 8);
     var rows = items.map(function (it) {
-      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td>' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
+      var mainName = it.short || it.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || it.name;
+      return '<tr><td><b>' + esc(mainName) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td>' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
     }).join('');
     return '<div class="page-pad">' +
       '<div class="page-title">前沿技术储备库</div>' +
@@ -468,8 +471,8 @@
       '<tr><td>储备库分层</td><td>布局层/论证层/研究层/观察层四层，对应提前布局、系统论证、深入研究、动态观察。</td></tr>' +
       '<tr><td>科技树</td><td>梳理技术间"前提技术→依赖技术"的层次关系，节点不限于长名单。</td></tr>' +
       '</table></div>' +
-      '<div class="pg-section"><div class="pg-h">数据来源</div><div class="pg-p dim">长名单技术名称与六维评级来源于《前沿技术储备库分层台账 v1.30》；评估内容来源于监管与标准组织、研究机构、金融同业实践、学术文献及开源社区，按六维评级口径客观研判。</div></div>' +
-      '<div class="pg-section"><div class="pg-h">版本说明</div><div class="pg-p dim">' + esc(DATA.book.version) + ' · ' + esc(DATA.book.date) + ' · 本系统为纯静态离线展示，双击 index.html 即可打开。</div></div>' +
+      '<div class="pg-section"><div class="pg-h">数据来源</div><div class="pg-p dim">评估内容来源于监管与标准组织、研究机构、金融同业实践、学术文献及开源社区，按六维评级口径客观研判。</div></div>' +
+      '<div class="pg-section"><div class="pg-h">系统说明</div><div class="pg-p dim">' + esc(DATA.book.org) + ' · ' + esc(DATA.book.date) + ' · 本系统为纯静态离线展示，双击 index.html 即可打开。</div></div>' +
       '</div>';
   }
   function backCoverHTML() {
@@ -477,7 +480,7 @@
       '<div class="cov-kicker">THANK YOU</div>' +
       '<div class="cov-title" style="font-size:24px">金融科技 · 前瞻研判</div>' +
       '<div class="cov-rule"></div>' +
-      '<div class="cov-meta">' + esc(DATA.book.org) + '<br>' + esc(DATA.book.date) + ' · ' + esc(DATA.book.version) + '</div>' +
+      '<div class="cov-meta">' + esc(DATA.book.org) + '<br>' + esc(DATA.book.date) + '</div>' +
       '</div>';
   }
   function closingHTML() {
@@ -493,9 +496,15 @@
   var pages = [];
   var pageLabels = [];
   var pageScroll = {};   // 标记可滚动页（不缩放）
-  function addPage(key, label, html, scroll) { pages.push(html); pageLabels.push(label); if (scroll) pageScroll[pages.length - 1] = true; }
+  var pageKeyMap = {};   // 键名到绝对页码映射表
+  function addPage(key, label, html, scroll) {
+    pages.push(html);
+    pageLabels.push(label);
+    pageKeyMap[key] = pages.length - 1;
+    if (scroll) pageScroll[pages.length - 1] = true;
+  }
 
-  addPage('inside', '内封面', insideCoverHTML());
+  addPage('inside', '', insideCoverHTML());
   addPage('cover', '封面', coverHTML());
   addPage('title', '扉页 · 成果总览', titlePageHTML());
   addPage('toc', '目录', tocHTML(), true);
@@ -509,7 +518,82 @@
   addPage('appendix', '附录', appendixHTML());
   addPage('closing', '结语', closingHTML());
   addPage('back', '封底', backCoverHTML());
+  addPage('blankEnd', '', '');
   var maxSpread = Math.floor((pages.length - 1) / 2);
+
+  /* ==================== 左右双侧技术书签系统 (Dynamic Left/Right Side Tabs) ==================== */
+  function getAllBookmarks() {
+    var bms = [
+      { id: 'cover', no: '封面', short: '成果总览', name: '封面 · 成果总览', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
+      { id: 'toc', no: '目录', short: '本书目录', name: '目录', page: pageKeyMap['toc'] != null ? pageKeyMap['toc'] : 3, color: '#818cf8', tier: '前序' },
+      { id: 'part1', no: '第一篇', short: '成果总览', name: '第一篇 · 整体研究成果', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 4, color: '#6366f1', tier: '第一篇' },
+      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一篇 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 5, color: '#6366f1', tier: '第一篇' },
+      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一篇 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 6, color: '#6366f1', tier: '第一篇' },
+      { id: 'library', no: '1.3', short: '技术储备库', name: '第一篇 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 7, color: '#6366f1', tier: '第一篇' },
+      { id: 'graph', no: '1.4', short: '关系图谱', name: '第一篇 · 各项前沿技术关系图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 8, color: '#6366f1', tier: '第一篇' },
+      { id: 'part2', no: '第二篇', short: '专题研究', name: '第二篇 · 各项前沿技术研究', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 9, color: '#a855f7', tier: '第二篇' }
+    ];
+
+    DATA.technologies.forEach(function (t) {
+      var cleanName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
+      var tColor = tierColor(t.tier) || '#8fa3c0';
+      var pIdx = pageKeyMap['tech-' + t.id];
+      bms.push({
+        id: 'tech-' + t.id,
+        no: t.id,
+        short: cleanName,
+        name: t.id + ' ' + cleanName + (t.nameEn ? ' (' + t.nameEn + ')' : '') + ' · [' + t.tier + ']',
+        page: pIdx,
+        color: tColor,
+        tier: t.tier
+      });
+    });
+
+    bms.push({ id: 'appendix', no: '附录', short: '术语与来源', name: '附录 · 术语 · 数据来源 · 版本', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'closing', no: '结语', short: '研究结语', name: '结语', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
+    return bms;
+  }
+
+  function renderSideBookmarks() {
+    var leftEl = $('bookSideLeft'), rightEl = $('bookSideRight');
+    if (!leftEl || !rightEl) return;
+
+    var curLeftPage = isSingle() ? singleIdx : (spread * 2);
+    var curRightPage = isSingle() ? singleIdx : (spread * 2 + 1);
+
+    var all = getAllBookmarks();
+    var leftList = all.filter(function (b) { return b.page < curLeftPage; });
+    var rightList = all.filter(function (b) { return b.page > curRightPage; });
+
+    function tabHTML(b, isLeft) {
+      var dirArrow = isLeft ? '◂ 回翻至 ' : '▸ 前往 ';
+      return '<div class="edge-tab" data-page="' + b.page + '" style="--tab-color:' + b.color + '">' +
+        '<span class="et-no" style="color:' + b.color + '">' + esc(b.no) + '</span>' +
+        '<span class="et-name" title="' + esc(b.name) + '">' + esc(b.short) + '</span>' +
+        '<div class="edge-tab-tip">' + dirArrow + esc(b.name) + '</div>' +
+      '</div>';
+    }
+
+    leftEl.innerHTML = leftList.map(function (b) { return tabHTML(b, true); }).join('');
+    rightEl.innerHTML = rightList.map(function (b) { return tabHTML(b, false); }).join('');
+
+    leftEl.querySelectorAll('.edge-tab').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var p = parseInt(this.getAttribute('data-page'), 10);
+        jumpToPage(p);
+      });
+    });
+    rightEl.querySelectorAll('.edge-tab').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var p = parseInt(this.getAttribute('data-page'), 10);
+        jumpToPage(p);
+      });
+    });
+  }
 
   /* ==================== 翻书引擎 ==================== */
   var spread = 0;
@@ -517,12 +601,34 @@
   var flipping = false;
   var isSingle = function () { return window.innerWidth < 900; };
 
+  function flashPage(el) {
+    if (!el || !el.parentElement) return;
+    var p = el.parentElement;
+    p.classList.remove('page-flash');
+    void p.offsetWidth;
+    p.classList.add('page-flash');
+    setTimeout(function () { p.classList.remove('page-flash'); }, 1300);
+  }
+
   function updatePageNo() {
     if (isSingle()) {
-      $('pageNo').textContent = pageLabels[singleIdx] + ' · ' + (singleIdx + 1) + ' / ' + pages.length;
+      var label = pageLabels[singleIdx] || '';
+      $('pageNo').textContent = label ? (label + ' · ' + (singleIdx + 1) + ' / ' + pages.length) : '';
     } else {
       var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
-      $('pageNo').textContent = (l ? l : '') + (r ? '　·　' + r : '') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      if (spread === 0) {
+        $('pageNo').textContent = '封面 · 成果总览';
+      } else if (spread === maxSpread) {
+        $('pageNo').textContent = (l || '封底') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      } else if (l && r) {
+        $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      } else if (l) {
+        $('pageNo').textContent = l + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      } else if (r) {
+        $('pageNo').textContent = r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      } else {
+        $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+      }
     }
   }
   function fitPage(el, idx) {
@@ -547,28 +653,43 @@
   }
   function renderSpread() {
     if (isSingle()) {
+      var sHtml = pages[singleIdx] || '';
       $('pageLeftInner').innerHTML = '';
-      $('pageRightInner').innerHTML = pages[singleIdx];
+      $('pageRightInner').innerHTML = sHtml;
+      $('pageLeft').classList.add('page-blank');
+      $('pageRight').classList.toggle('page-blank', !sHtml.trim());
       $('pageRightInner').parentElement.style.width = '100%';
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[singleIdx]);
     } else {
-      $('pageLeftInner').innerHTML = pages[spread * 2];
-      $('pageRightInner').innerHTML = pages[spread * 2 + 1];
+      var leftHtml = pages[spread * 2] || '';
+      var rightHtml = pages[spread * 2 + 1] || '';
+      $('pageLeftInner').innerHTML = leftHtml;
+      $('pageRightInner').innerHTML = rightHtml;
       $('pageRightInner').parentElement.style.width = '';
+
+      // 封面前（左侧空白）和 封底后（右侧空白）不渲染白色底板，直接透出背景，呈现真实闭合封面效果
+      $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
+      $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+
       $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
     }
     updatePageNo();
+    renderSideBookmarks();
     bindPageActions();
     fitSpread();
   }
   function bindPageActions() {
     var tocLis = document.querySelectorAll('#bookView .toc-list li');
     tocLis.forEach(function (li) {
-      li.onclick = function () { jumpToPage(parseInt(li.getAttribute('data-jump'), 10)); };
+      li.onclick = function (e) {
+        if (e) e.stopPropagation();
+        jumpToPage(parseInt(li.getAttribute('data-jump'), 10));
+      };
     });
     document.querySelectorAll('[data-action]').forEach(function (el) {
-      el.onclick = function () {
+      el.onclick = function (e) {
+        if (e) e.stopPropagation();
         var action = el.getAttribute('data-action');
         var id = el.getAttribute('data-id');
         if (action === 'open-library') openLibraryPanel();
@@ -579,8 +700,16 @@
   }
   function jumpToPage(i) {
     i = Math.max(0, Math.min(pages.length - 1, i));
-    if (isSingle()) { singleIdx = i; renderSpread(); }
-    else { spread = Math.max(0, Math.min(maxSpread, Math.floor(i / 2))); renderSpread(); }
+    if (isSingle()) {
+      singleIdx = i;
+      renderSpread();
+      flashPage($('pageRightInner'));
+    } else {
+      spread = Math.max(0, Math.min(maxSpread, Math.floor(i / 2)));
+      renderSpread();
+      var targetInner = (i % 2 === 0) ? $('pageLeftInner') : $('pageRightInner');
+      flashPage(targetInner);
+    }
   }
   function flipForward() {
     if (flipping) return;
@@ -590,12 +719,14 @@
     }
     if (spread >= maxSpread) { toast('已是最后一页'); return; }
     flipping = true;
-    var oldRight = pages[spread * 2 + 1];
-    var newLeft = pages[spread * 2 + 2];
-    var newRight = pages[spread * 2 + 3];
+    var oldRight = pages[spread * 2 + 1] || '';
+    var newLeft = pages[spread * 2 + 2] || '';
+    var newRight = pages[spread * 2 + 3] || '';
     $('pageRightInner').innerHTML = newRight;
     $('turnFrontInner').innerHTML = oldRight;
     $('turnBackInner').innerHTML = newLeft;
+    $('pageRight').classList.toggle('page-blank', !newRight.trim());
+    $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
     var sheet = $('turnSheet');
     sheet.classList.remove('back');
     sheet.style.display = 'block';
@@ -606,13 +737,22 @@
     fitPage($('pageRightInner'), spread * 2 + 3);
     sheet.classList.add('turning');
     setTimeout(function () {
-      $('pageLeftInner').innerHTML = newLeft;
-      fitPage($('pageLeftInner'), spread * 2 + 2);
-      sheet.classList.remove('turning');
-      sheet.style.display = 'none';
       spread++;
+      var leftHtml = pages[spread * 2] || '';
+      var rightHtml = pages[spread * 2 + 1] || '';
+      $('pageLeftInner').innerHTML = leftHtml;
+      $('pageRightInner').innerHTML = rightHtml;
+      $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
+      $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+      $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
+      $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
+      fitSpread();
+      updatePageNo();
+      renderSideBookmarks();
+      bindPageActions();
+      sheet.style.display = 'none';
+      sheet.classList.remove('turning');
       flipping = false;
-      updatePageNo(); bindPageActions();
     }, 860);
   }
   function flipBackward() {
@@ -623,12 +763,13 @@
     }
     if (spread <= 0) { toast('已是第一页'); return; }
     flipping = true;
-    var oldLeft = pages[spread * 2];
-    var newLeft = pages[spread * 2 - 2];
-    var newRight = pages[spread * 2 - 1];
+    var oldLeft = pages[spread * 2] || '';
+    var newLeft = pages[spread * 2 - 2] || '';
+    var newRight = pages[spread * 2 - 1] || '';
     $('pageLeftInner').innerHTML = newLeft;
     $('turnFrontInner').innerHTML = oldLeft;
     $('turnBackInner').innerHTML = newRight;
+    $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
     var sheet = $('turnSheet');
     sheet.classList.add('back');
     sheet.style.display = 'block';
@@ -639,14 +780,23 @@
     fitPage($('pageLeftInner'), spread * 2 - 2);
     sheet.classList.add('turning');
     setTimeout(function () {
-      $('pageRightInner').innerHTML = newRight;
-      fitPage($('pageRightInner'), spread * 2 - 1);
+      spread--;
+      var leftHtml = pages[spread * 2] || '';
+      var rightHtml = pages[spread * 2 + 1] || '';
+      $('pageLeftInner').innerHTML = leftHtml;
+      $('pageRightInner').innerHTML = rightHtml;
+      $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
+      $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+      $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
+      $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
+      fitSpread();
+      updatePageNo();
+      renderSideBookmarks();
+      bindPageActions();
+      sheet.style.display = 'none';
       sheet.classList.remove('turning');
       sheet.classList.remove('back');
-      sheet.style.display = 'none';
-      spread--;
       flipping = false;
-      updatePageNo(); bindPageActions();
     }, 860);
   }
 
@@ -919,27 +1069,36 @@
       '<input id="libSearch" type="text" placeholder="搜索技术名称 / 关键词 / 应用…">' +
       '<select id="libCat">' + catOpts + '</select>' +
       '<select id="libTier">' + tierOpts + '</select>' +
-      '<select id="libMaturity"><option value="">全部成熟度</option><option value="5">5分</option><option value="4">4分</option><option value="3">3分</option><option value="2">2分</option><option value="1">1分</option></select>' +
-      '<button class="btn" id="libReset">重置</button>' +
       '<span class="lib-count" id="libCount"></span></div>' +
       '<div class="lib-table-wrap"><table class="lib-table"><thead><tr>' +
-      '<th data-sort="no">#</th><th data-sort="name">技术名称</th><th data-sort="category">战略方向</th><th data-sort="tier">层级</th>' +
-      '<th data-sort="maturity">六维评分</th><th>处置档位</th><th>关注度</th><th>处置状态</th><th>操作</th>' +
+      '<th data-sort="no">#</th>' +
+      '<th data-sort="name">技术名称</th>' +
+      '<th data-sort="category">战略方向</th>' +
+      '<th data-sort="tier">层级</th>' +
+      '<th data-sort="maturity" class="col-score" title="技术成熟度 (1-5)">成熟度</th>' +
+      '<th data-sort="strategicFit" class="col-score" title="战略匹配度 (1-5)">匹配度</th>' +
+      '<th data-sort="value" class="col-score" title="价值贡献度 (1-5)">贡献度</th>' +
+      '<th data-sort="feasibility" class="col-score" title="引入可行度 (1-5)">可行度</th>' +
+      '<th data-sort="urgency" class="col-score" title="战略紧迫度 (1-5)">紧迫度</th>' +
+      '<th data-sort="openness" class="col-score" title="生态开放度 (1-5)">开放度</th>' +
+      '<th data-sort="disposal">处置档位</th>' +
+      '<th data-sort="attention">关注度</th>' +
+      '<th data-sort="status">处置状态</th>' +
+      '<th>操作</th>' +
       '</tr></thead><tbody id="libTbody"></tbody></table></div>' +
       '<div class="pager"><button id="pgPrev">‹ 上一页</button><span id="pgInfo"></span><button id="pgNext">下一页 ›</button></div>';
   }
-  var libState = { q: '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
+  var libState = { q: '', cat: '', tier: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
   function initLibrary(prefilter) {
-    libState = { q: prefilter || '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
+    libState = { q: prefilter || '', cat: '', tier: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
     if (prefilter) $('libSearch').value = prefilter;
     var tierOrder = { '布局层': 1, '论证层': 2, '研究层': 3, '观察层': 4 };
     function render() {
       var items = DATA.library.items.filter(function (it) {
         if (libState.cat && it.category !== libState.cat) return false;
         if (libState.tier && it.tier !== libState.tier) return false;
-        if (libState.maturity && String(it.maturity) !== libState.maturity) return false;
         if (libState.q) {
-          var hay = (it.name + it.nameEn + it.summary + it.definition + it.bankValue + it.source + it.category + it.tier).toLowerCase();
+          var hay = (it.name + it.nameEn + (it.short || '') + it.summary + it.definition + it.bankValue + it.source + it.category + it.tier).toLowerCase();
           if (hay.indexOf(libState.q.toLowerCase()) < 0) return false;
         }
         return true;
@@ -949,7 +1108,12 @@
         var va, vb;
         if (key === 'no') { va = a.no; vb = b.no; }
         else if (key === 'tier') { va = tierOrder[a.tier] || 9; vb = tierOrder[b.tier] || 9; }
-        else if (key === 'maturity' || key === 'strategicFit' || key === 'value' || key === 'feasibility' || key === 'urgency' || key === 'openness') { va = Number(a[key]) || 0; vb = Number(b[key]) || 0; }
+        else if (key === 'maturity' || key === 'strategicFit' || key === 'value' || key === 'feasibility' || key === 'urgency' || key === 'openness') {
+          va = Number(a[key]) || 0; vb = Number(b[key]) || 0;
+        }
+        else if (key === 'name') {
+          va = a.short || a.name; vb = b.short || b.name;
+        }
         else { va = a[key] || ''; vb = b[key] || ''; }
         if (va < vb) return -1 * dir; if (va > vb) return 1 * dir; return 0;
       });
@@ -962,10 +1126,20 @@
       $('pgPrev').disabled = libState.page === 0;
       $('pgNext').disabled = libState.page >= pages - 1;
       $('libTbody').innerHTML = slice.map(function (it) {
-        return '<tr><td>' + it.no + '</td><td class="tname">' + esc(it.name) + '<div style="font-size:11px;color:var(--faint)">' + esc(it.nameEn) + '</div></td>' +
+        var mainName = it.short || it.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || it.name;
+        return '<tr><td>' + it.no + '</td>' +
+          '<td class="tname">' + esc(mainName) + (it.nameEn ? '<div style="font-size:11px;color:var(--faint);font-weight:400">' + esc(it.nameEn) + '</div>' : '') + '</td>' +
           '<td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td>' +
-          '<td>' + tierPill(it.tier) + '</td><td>' + sixDimHTML(it) + '</td><td>' + esc(it.disposal) + '</td>' +
-          '<td>' + esc(it.attention) + '</td><td>' + esc(it.status) + '</td>' +
+          '<td>' + tierPill(it.tier) + '</td>' +
+          '<td class="col-score">' + scorePill(it.maturity) + '</td>' +
+          '<td class="col-score">' + scorePill(it.strategicFit) + '</td>' +
+          '<td class="col-score">' + scorePill(it.value) + '</td>' +
+          '<td class="col-score">' + scorePill(it.feasibility) + '</td>' +
+          '<td class="col-score">' + scorePill(it.urgency) + '</td>' +
+          '<td class="col-score">' + scorePill(it.openness) + '</td>' +
+          '<td>' + esc(it.disposal || '—') + '</td>' +
+          '<td>' + esc(it.attention || '—') + '</td>' +
+          '<td>' + esc(it.status || '—') + '</td>' +
           '<td><button class="btn" data-row="' + it.id + '">详情</button> <button class="btn active" data-tech="' + it.id + '">专题</button></td></tr>';
       }).join('');
       $('libTbody').querySelectorAll('[data-row]').forEach(function (b) {
@@ -974,12 +1148,24 @@
       $('libTbody').querySelectorAll('[data-tech]').forEach(function (b) {
         b.onclick = function () { openTechPanel(findTech(b.getAttribute('data-tech'))); };
       });
+
+      // 更新表头排序指示箭头
+      document.querySelectorAll('.lib-table th[data-sort]').forEach(function (th) {
+        var k = th.getAttribute('data-sort');
+        var base = th.getAttribute('data-label') || th.textContent.replace(/[ ▲▼]/g, '').trim();
+        th.setAttribute('data-label', base);
+        if (libState.sort === k) {
+          th.classList.add('sorted');
+          th.textContent = base + (libState.dir === 1 ? ' ▲' : ' ▼');
+        } else {
+          th.classList.remove('sorted');
+          th.textContent = base;
+        }
+      });
     }
     $('libSearch').oninput = function () { libState.q = this.value; libState.page = 0; render(); };
     $('libCat').onchange = function () { libState.cat = this.value; libState.page = 0; render(); };
     $('libTier').onchange = function () { libState.tier = this.value; libState.page = 0; render(); };
-    $('libMaturity').onchange = function () { libState.maturity = this.value; libState.page = 0; render(); };
-    $('libReset').onclick = function () { libState = { q: '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 }; $('libSearch').value = ''; $('libCat').value = ''; $('libTier').value = ''; $('libMaturity').value = ''; render(); };
     $('pgPrev').onclick = function () { libState.page--; render(); };
     $('pgNext').onclick = function () { libState.page++; render(); };
     document.querySelectorAll('.lib-table th[data-sort]').forEach(function (th) {
@@ -1354,12 +1540,14 @@
       else if (e.key === 'ArrowLeft') flipBackward();
       else if (e.key === 'Home') jumpToPage(1);
     });
+    if ($('bookSideLeft')) $('bookSideLeft').addEventListener('click', function (e) { e.stopPropagation(); });
+    if ($('bookSideRight')) $('bookSideRight').addEventListener('click', function (e) { e.stopPropagation(); });
     var book = $('book');
     book.addEventListener('click', function (e) {
       if (flipping || isSingle()) return;
+      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn')) return;
       var rect = book.getBoundingClientRect();
       var x = e.clientX - rect.left;
-      if (e.target.closest('button') || e.target.closest('li') || e.target.closest('a') || e.target.closest('iframe')) return;
       if (x < rect.width * 0.18) flipBackward();
       else if (x > rect.width * 0.82) flipForward();
     });
