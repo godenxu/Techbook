@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Microsoft YaHei, Segoe UI, sans-serif">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b1d78"/><stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <rect width="1200" height="104" fill="url(#hdr)"/>
+  <text x="40" y="52" fill="#ffffff" font-size="30" font-weight="700">量子计算 · 一张图概述</text>
+  <text x="40" y="82" fill="#e4d9ff" font-size="15">Quantum Computing — 重点技术专题</text>
+
+  <g>
+    <rect x="30" y="130" width="555" height="180" rx="12" fill="#f7f5ff" stroke="#e4dcff"/>
+    <rect x="30" y="130" width="6" height="180" rx="3" fill="#8b5cf6"/>
+    <text x="56" y="162" font-size="20" font-weight="700" fill="#3b1d78">定义与内涵</text>
+    <text x="56" y="194" font-size="14.5" fill="#334155">利用量子比特的叠加、纠缠等特性进行信息处理，</text>
+    <text x="56" y="218" font-size="14.5" fill="#334155">在特定问题上具备相对经典计算的指数级加速潜力，</text>
+    <text x="56" y="242" font-size="14.5" fill="#334155">被视为下一代计算能力跃升的战略制高点。</text>
+    <text x="56" y="278" font-size="13.5" fill="#64748b">TRL 4 · 优先级 高 · 战略重要度 9.5/10</text>
+  </g>
+
+  <g>
+    <rect x="615" y="130" width="555" height="180" rx="12" fill="#f7f5ff" stroke="#e4dcff"/>
+    <rect x="615" y="130" width="6" height="180" rx="3" fill="#22d3ee"/>
+    <text x="641" y="162" font-size="20" font-weight="700" fill="#3b1d78">关键技术与路线</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="194">• 超导 / 离子阱 / 光量子等多路线并行</text>
+      <text x="641" y="218">• 量子纠错与容错计算</text>
+      <text x="641" y="242">• 量子比特保真度与规模化集成</text>
+      <text x="641" y="266">• 量子-经典混合计算架构</text>
+      <text x="641" y="290">• 抗量子密码（PQC）同步布局</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="30" y="330" width="555" height="180" rx="12" fill="#f6fbf9" stroke="#c8ecd9"/>
+    <rect x="30" y="330" width="6" height="180" rx="3" fill="#10b981"/>
+    <text x="56" y="362" font-size="20" font-weight="700" fill="#065f46">典型应用场景</text>
+    <g font-size="14" fill="#334155">
+      <text x="56" y="394">• 密码破译与信息安全</text>
+      <text x="56" y="418">• 药物分子与新材料模拟</text>
+      <text x="56" y="442">• 金融组合优化与风险建模</text>
+      <text x="56" y="466">• 物流路径优化与气象预报</text>
+      <text x="56" y="490">• 量子精密测量与传感</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="615" y="330" width="555" height="180" rx="12" fill="#fffaf3" stroke="#fde6c8"/>
+    <rect x="615" y="330" width="6" height="180" rx="3" fill="#f59e0b"/>
+    <text x="641" y="362" font-size="20" font-weight="700" fill="#92400e">发展趋势与挑战</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="394">趋势：实用化「量子优越性」向「有用性」演进</text>
+      <text x="641" y="418">挑战：量子纠错开销大、错误率高</text>
+      <text x="641" y="442">挑战：规模化制造与低温环境依赖</text>
+      <text x="641" y="466">风险：「先存储、后破解」的长期安全威胁</text>
+      <text x="641" y="490">研判：前瞻布局、长期投入</text>
+    </g>
+  </g>
+
+  <rect x="30" y="545" width="1140" height="86" rx="12" fill="#0f172a"/>
+  <text x="60" y="578" font-size="16" font-weight="700" fill="#ffffff">研判结论</text>
+  <text x="60" y="608" font-size="14" fill="#cbd5e1">重点突破量子纠错与规模化集成，同步布局抗量子密码，防范长期安全风险。</text>
+  <text x="1170" y="610" text-anchor="end" font-size="13" fill="#64748b">前沿技术研究组 · 样例</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Microsoft YaHei, Segoe UI, sans-serif">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c2d12"/><stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <rect width="1200" height="104" fill="url(#hdr)"/>
+  <text x="40" y="52" fill="#ffffff" font-size="30" font-weight="700">固态电池 · 一张图概述</text>
+  <text x="40" y="82" fill="#ffe4c8" font-size="15">Solid-State Battery — 重点技术专题</text>
+
+  <g>
+    <rect x="30" y="130" width="555" height="180" rx="12" fill="#fff7f0" stroke="#fde2cd"/>
+    <rect x="30" y="130" width="6" height="180" rx="3" fill="#f59e0b"/>
+    <text x="56" y="162" font-size="20" font-weight="700" fill="#7c2d12">定义与内涵</text>
+    <text x="56" y="194" font-size="14.5" fill="#334155">以固态电解质替代传统液态电解质的电池技术，</text>
+    <text x="56" y="218" font-size="14.5" fill="#334155">具备更高能量密度、更长循环寿命与本质安全性，</text>
+    <text x="56" y="242" font-size="14.5" fill="#334155">被视为下一代动力电池与储能的主流技术路线。</text>
+    <text x="56" y="278" font-size="13.5" fill="#64748b">TRL 6 · 优先级 高 · 战略重要度 8.5/10</text>
+  </g>
+
+  <g>
+    <rect x="615" y="130" width="555" height="180" rx="12" fill="#fff7f0" stroke="#fde2cd"/>
+    <rect x="615" y="130" width="6" height="180" rx="3" fill="#22d3ee"/>
+    <text x="641" y="162" font-size="20" font-weight="700" fill="#7c2d12">关键技术与路线</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="194">• 硫化物 / 氧化物 / 聚合物电解质路线</text>
+      <text x="641" y="218">• 固固界面工程与离子电导率提升</text>
+      <text x="641" y="242">• 锂金属负极与高镍正极匹配</text>
+      <text x="641" y="266">• 规模化制备与干法电极工艺</text>
+      <text x="641" y="290">• 成本控制与一致性保障</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="30" y="330" width="555" height="180" rx="12" fill="#f6fbf9" stroke="#c8ecd9"/>
+    <rect x="30" y="330" width="6" height="180" rx="3" fill="#10b981"/>
+    <text x="56" y="362" font-size="20" font-weight="700" fill="#065f46">典型应用场景</text>
+    <g font-size="14" fill="#334155">
+      <text x="56" y="394">• 新能源汽车（长续航 / 快充）</text>
+      <text x="56" y="418">• 电网级储能电站</text>
+      <text x="56" y="442">• 消费电子与可穿戴设备</text>
+      <text x="56" y="466">• 低空经济 / 电动航空</text>
+      <text x="56" y="490">• 特种装备与极端环境电源</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="615" y="330" width="555" height="180" rx="12" fill="#f7fbff" stroke="#d6e6ff"/>
+    <rect x="615" y="330" width="6" height="180" rx="3" fill="#4f8cff"/>
+    <text x="641" y="362" font-size="20" font-weight="700" fill="#1e3a8a">发展趋势与挑战</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="394">趋势：半固态率先量产、全固态加速突破</text>
+      <text x="641" y="418">挑战：界面阻抗与循环稳定性</text>
+      <text x="641" y="442">挑战：规模化良率与制造成本</text>
+      <text x="641" y="466">竞争：中日韩欧美企业布局密集</text>
+      <text x="641" y="490">研判：加速产业化、抢占量产先机</text>
+    </g>
+  </g>
+
+  <rect x="30" y="545" width="1140" height="86" rx="12" fill="#0f172a"/>
+  <text x="60" y="578" font-size="16" font-weight="700" fill="#ffffff">研判结论</text>
+  <text x="60" y="608" font-size="14" fill="#cbd5e1">重点突破固固界面、规模化制备与成本控制，强化产业链上下游协同，抢占量产先机。</text>
+  <text x="1170" y="610" text-anchor="end" font-size="13" fill="#64748b">前沿技术研究组 · 样例</text>
+</svg>

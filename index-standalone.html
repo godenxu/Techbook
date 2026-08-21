@@ -1,0 +1,2848 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>银行金融科技前沿技术研究成果 · 电子研究书</title>
+<style>
+/* ============================ 基础与主题变量 ============================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --radius: 14px;
+  --font: "Segoe UI", "Microsoft YaHei", "PingFang SC", "Source Han Sans SC", system-ui, sans-serif;
+  --mono: "Cascadia Code", "Consolas", "Courier New", monospace;
+  --topbar-h: 58px;
+}
+[data-theme="dark"] {
+  --bg: #0b111e; --bg2: #0e1524;
+  --panel: #141f33; --panel2: #1a2740; --card: #172136;
+  --border: #263651; --border2: #33486b;
+  --text: #dbe6f5; --dim: #8fa3c0; --faint: #64789a;
+  --accent: #4f8cff; --accent2: #22d3ee;
+  --good: #34d399; --warn: #fbbf24; --bad: #fb7185;
+  --paper: #16223a; --paper2: #1b2944;
+  --shadow: 0 20px 60px rgba(0,0,0,.55);
+  --shadow-sm: 0 6px 20px rgba(0,0,0,.35);
+  --glow: 0 0 24px rgba(79,140,255,.25);
+}
+[data-theme="light"] {
+  --bg: #e8edf5; --bg2: #dfe6f0;
+  --panel: #ffffff; --panel2: #f4f7fb; --card: #ffffff;
+  --border: #dbe2ee; --border2: #c2cde0;
+  --text: #1b2537; --dim: #54637f; --faint: #8a99b4;
+  --accent: #2f6bff; --accent2: #0ea5c4;
+  --good: #059669; --warn: #d97706; --bad: #e11d48;
+  --paper: #fdfefe; --paper2: #f4f6fa;
+  --shadow: 0 20px 60px rgba(40,60,100,.28);
+  --shadow-sm: 0 6px 20px rgba(40,60,100,.16);
+  --glow: 0 0 24px rgba(47,107,255,.18);
+}
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: radial-gradient(1200px 600px at 15% -10%, var(--bg2), var(--bg)) fixed;
+  color: var(--text);
+  overflow: hidden;
+  transition: background .4s, color .4s;
+}
+button { font-family: var(--font); cursor: pointer; }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================ 顶栏 ============================ */
+.topbar {
+  height: var(--topbar-h); display: flex; align-items: center; gap: 14px;
+  padding: 0 18px; border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--panel), transparent);
+  backdrop-filter: blur(10px); position: relative; z-index: 50;
+}
+.brand { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.brand-icon {
+  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-weight: 700; font-size: 17px; box-shadow: var(--glow);
+}
+.brand-title { font-weight: 700; font-size: 15px; letter-spacing: .5px; }
+.brand-sub { font-size: 11px; color: var(--dim); }
+.search-wrap { flex: 1; max-width: 460px; position: relative; }
+.search-wrap input {
+  width: 100%; height: 38px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); padding: 0 16px; font-size: 13px; outline: none;
+}
+.search-wrap input:focus { border-color: var(--accent); box-shadow: var(--glow); }
+.search-results {
+  position: absolute; top: 44px; left: 0; right: 0; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-sm);
+  max-height: 340px; overflow: auto; z-index: 100;
+}
+.search-item { padding: 10px 14px; cursor: pointer; display: flex; gap: 10px; align-items: center; }
+.search-item:hover { background: var(--panel2); }
+.search-item .si-name { font-weight: 600; font-size: 13px; }
+.search-item .si-cat { font-size: 11px; color: var(--accent2); }
+.search-item .si-sum { font-size: 12px; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+.btn {
+  height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); font-size: 13px; transition: .2s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: var(--glow); }
+.mode-btn { min-width: 52px; }
+
+/* ============================ 视图容器 ============================ */
+.view { position: absolute; top: var(--topbar-h); left: 0; right: 0; bottom: 0; }
+
+/* ============================ 书 ============================ */
+.book-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.book {
+  position: relative; width: min(1680px, 96vw); height: calc(100vh - var(--topbar-h) - 80px);
+  perspective: 2600px;
+}
+.book-page {
+  position: absolute; top: 0; height: 100%; width: 50%;
+  background: var(--paper); overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+#pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; }
+#pageRight { right: 0; border-radius: 4px 16px 16px 4px; }
+#pageLeft::after, #pageRight::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 46px; pointer-events: none;
+}
+#pageLeft::after  { right: 0;  background: linear-gradient(90deg, transparent, rgba(0,0,0,.16)); }
+#pageRight::after { left: 0;   background: linear-gradient(-90deg, transparent, rgba(0,0,0,.16)); }
+.page-inner {
+  position: absolute; inset: 0; overflow: hidden;
+  font-size: 16px; line-height: 1.7;
+}
+.page-inner.scroll { overflow-y: auto; }
+.page-inner.no-scroll { overflow: hidden; }
+.page-pad { padding: 38px 44px; min-height: 100%; }
+
+/* 翻页片 */
+.book-turn {
+  position: absolute; top: 0; right: 0; width: 50%; height: 100%;
+  transform-origin: left center; transform-style: preserve-3d; z-index: 30;
+  transition: transform .85s cubic-bezier(.25,.7,.3,1); pointer-events: none; display: none;
+}
+.book-turn.turning { transform: rotateY(-180deg); }
+.book-turn.back { left: 0; right: auto; transform-origin: right center; }
+.book-turn.back.turning { transform: rotateY(180deg); }
+.turn-face {
+  position: absolute; inset: 0; background: var(--paper); overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border: 1px solid var(--border);
+}
+.turn-front { border-radius: 4px 16px 16px 4px; }
+.turn-back  { border-radius: 16px 4px 4px 16px; transform: rotateY(180deg); }
+.book-turn.back .turn-front { border-radius: 16px 4px 4px 16px; }
+.book-turn.back .turn-back  { border-radius: 4px 16px 16px 4px; }
+.book-turn::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 60px; z-index: 2;
+  background: linear-gradient(90deg, rgba(0,0,0,.22), transparent); opacity: 0; transition: opacity .5s;
+}
+.book-turn.turning::before { opacity: 1; }
+
+.book-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 40;
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--card); border: 1px solid var(--border); color: var(--text);
+  font-size: 22px; box-shadow: var(--shadow-sm); transition: .2s; opacity: .75;
+}
+.book-nav:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+.book-nav-left  { left: 8px; }
+.book-nav-right { right: 8px; }
+.book-page-no {
+  position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
+  color: var(--faint); font-size: 12px; font-family: var(--mono);
+}
+.book-hint { position: absolute; top: -34px; right: 0; color: var(--faint); font-size: 12px; }
+
+/* ============================ 页面内容排版 ============================ */
+.page-title { font-size: 26px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+.page-subtitle { font-size: 13px; color: var(--dim); margin-bottom: 20px; }
+.h-rule { height: 3px; width: 56px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); margin-bottom: 18px; }
+.pg-section { margin-bottom: 18px; }
+.pg-h { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.pg-h::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--accent2); }
+.pg-p { color: var(--text); margin-bottom: 8px; }
+.pg-p.dim { color: var(--dim); }
+.pg-list { list-style: none; }
+.pg-list li { position: relative; padding-left: 18px; margin-bottom: 7px; color: var(--text); }
+.pg-list li::before { content: "▸"; position: absolute; left: 0; color: var(--accent2); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border2); color: var(--dim); }
+.badge.high { color: var(--bad); border-color: var(--bad); }
+.badge.mid  { color: var(--warn); border-color: var(--warn); }
+.badge.low  { color: var(--good); border-color: var(--good); }
+.badge.acc  { color: var(--accent2); border-color: var(--accent2); }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0; }
+.stat { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+.stat .num { font-size: 26px; font-weight: 800; color: var(--accent2); font-family: var(--mono); }
+.stat .lbl { font-size: 12px; color: var(--dim); margin-top: 4px; }
+
+.timeline { position: relative; padding-left: 22px; }
+.timeline::before { content: ""; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: var(--border2); }
+.tl-item { position: relative; margin-bottom: 16px; }
+.tl-item::before { content: ""; position: absolute; left: -22px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--panel); }
+.tl-time { font-size: 12px; color: var(--accent2); font-family: var(--mono); }
+.tl-title { font-weight: 700; margin: 2px 0 4px; }
+.tl-items { color: var(--dim); font-size: 13px; }
+
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th, .tbl td { padding: 8px 10px; border: 1px solid var(--border); text-align: left; }
+.tbl th { background: var(--panel2); color: var(--dim); font-weight: 600; white-space: nowrap; }
+.tbl td { color: var(--text); }
+.tbl tr:nth-child(even) td { background: var(--panel2); }
+.score-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.card .c-title { font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.card .c-comment { font-size: 12.5px; color: var(--dim); }
+
+.bar { height: 8px; border-radius: 6px; background: var(--border); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+/* ============================ 网页视图（左侧目录 + 右侧内容） ============================ */
+.web-layout { position: absolute; inset: 0; display: flex; }
+.web-toc {
+  width: 300px; flex: none; overflow-y: auto; border-right: 1px solid var(--border);
+  background: var(--panel); padding: 14px 0 30px;
+}
+.web-toc h3 { padding: 6px 20px 12px; font-size: 13px; color: var(--dim); letter-spacing: 1px; }
+.web-toc-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 20px; cursor: pointer;
+  color: var(--text); font-size: 13px; border-left: 3px solid transparent; transition: .15s;
+}
+.web-toc-item:hover { background: var(--panel2); color: var(--accent); }
+.web-toc-item.active { background: var(--panel2); color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+.web-toc-item .wt-no { font-family: var(--mono); color: var(--accent2); font-size: 12px; width: 34px; flex: none; }
+.web-toc-item.part { font-weight: 800; color: var(--accent); margin-top: 8px; font-size: 14px; }
+.web-toc-item.sub { padding-left: 36px; font-size: 12.5px; }
+.web-content { flex: 1; overflow-y: auto; padding: 26px clamp(16px, 4vw, 60px) 60px; }
+
+.sec { max-width: 1080px; margin: 18px auto; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.sec-head { display: flex; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--panel2); }
+.sec-no { font-family: var(--mono); color: var(--accent2); font-weight: 700; }
+.sec-title { font-weight: 700; font-size: 17px; flex: 1; }
+.sec-body { padding: 22px 24px; }
+
+/* ============================ 科技树视图 ============================ */
+#treeView { display: flex; flex-direction: column; }
+.tree-toolbar { flex: none; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--panel); }
+.tree-toolbar .tree-title { font-weight: 700; font-size: 15px; }
+.tree-legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--dim); }
+.tree-legend .lg { display: flex; align-items: center; gap: 5px; }
+.tree-legend .lg .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.tree-legend .lg .line { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
+.tree-stage { flex: 1; position: relative; overflow: hidden; background: var(--bg2); cursor: grab; }
+.tree-stage.dragging { cursor: grabbing; }
+.tree-stage svg { width: 100%; height: 100%; display: block; }
+.tree-tip { color: var(--faint); font-size: 12px; }
+.tree-node { cursor: pointer; }
+.tree-node rect { transition: .15s; }
+.tree-node:hover rect { stroke-width: 2.5; }
+
+/* ============================ 面板 / 覆盖层 ============================ */
+.overlay {
+  position: fixed; inset: 0; z-index: 200; background: rgba(5,10,20,.66);
+  backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 12px;
+}
+.panel {
+  width: 98vw; height: 96vh; max-width: 2000px; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.panel-head { display: flex; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--border); gap: 10px; flex: none; }
+.panel-title { font-weight: 700; font-size: 16px; flex: 1; }
+.panel-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 15px; }
+.panel-close:hover { border-color: var(--bad); color: var(--bad); }
+.panel-body { flex: 1; overflow: auto; padding: 20px; }
+.panel-body.flex { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+
+/* 弹窗 */
+.modal { width: min(960px, 96vw); max-height: 90vh; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
+.modal-head { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.modal-head .panel-title { flex: 1; }
+.modal-body { padding: 20px; overflow: auto; }
+
+/* 灯箱 */
+#lightbox { flex-direction: column; gap: 12px; }
+.lightbox-toolbar { display: flex; align-items: center; gap: 12px; width: min(1200px, 94vw); color: var(--text); }
+.lightbox-toolbar span { flex: 1; font-size: 14px; }
+#lightboxImg { max-width: 94vw; max-height: 84vh; border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
+
+/* ============================ 长名单表格 ============================ */
+.lib-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.lib-toolbar input, .lib-toolbar select {
+  height: 34px; border-radius: 9px; border: 1px solid var(--border); background: var(--card);
+  color: var(--text); padding: 0 12px; font-size: 13px; outline: none;
+}
+.lib-toolbar input { flex: 1; min-width: 200px; }
+.lib-count { color: var(--dim); font-size: 13px; margin-left: auto; }
+.lib-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
+.lib-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px; }
+.lib-table th, .lib-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+.lib-table th { background: var(--panel2); color: var(--dim); position: sticky; top: 0; cursor: pointer; user-select: none; }
+.lib-table th:hover { color: var(--accent); }
+.lib-table tr:hover td { background: var(--panel2); }
+.lib-table td .tname { font-weight: 600; color: var(--text); }
+.tag { display: inline-block; padding: 2px 9px; border-radius: 6px; font-size: 12px; border: 1px solid var(--border2); color: var(--dim); }
+.pill { display: inline-block; min-width: 20px; text-align: center; padding: 1px 8px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.pill.s5 { background: rgba(52,211,153,.18); color: var(--good); }
+.pill.s4 { background: rgba(34,211,238,.18); color: var(--accent2); }
+.pill.s3 { background: rgba(251,191,36,.18); color: var(--warn); }
+.pill.s2 { background: rgba(251,146,60,.18); color: #fb923c; }
+.pill.s1 { background: rgba(251,113,133,.18); color: var(--bad); }
+.sixdim { display: grid; grid-template-columns: repeat(3, auto); gap: 3px 6px; }
+.sixdim .sd { font-size: 10.5px; padding: 1px 5px; border-radius: 4px; white-space: nowrap; font-weight: 600; }
+.sixdim .sd.s5 { background: rgba(52,211,153,.18); color: var(--good); }
+.sixdim .sd.s4 { background: rgba(34,211,238,.18); color: var(--accent2); }
+.sixdim .sd.s3 { background: rgba(251,191,36,.18); color: var(--warn); }
+.sixdim .sd.s2 { background: rgba(251,146,60,.18); color: #fb923c; }
+.sixdim .sd.s1 { background: rgba(251,113,133,.18); color: var(--bad); }
+.pill-tier { border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: center; margin-top: 14px; color: var(--dim); font-size: 13px; }
+.pager button { border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 8px; padding: 5px 12px; }
+.pager button:disabled { opacity: .4; cursor: default; }
+.row-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; }
+.row-detail .rd { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+.row-detail .rd .k { color: var(--dim); font-size: 12px; }
+.row-detail .rd .v { font-size: 14px; margin-top: 2px; }
+.row-detail .rd.full { grid-column: 1 / -1; }
+
+/* ============================ 图谱 ============================ */
+.graph-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--dim); }
+.legend .lg { display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+.legend .lg .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.legend .lg .line { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend .lg.off { opacity: .3; }
+#graphBox { position: relative; width: 100%; height: min(66vh, 640px); border: 1px solid var(--border); border-radius: 12px; background: var(--bg2); overflow: hidden; cursor: grab; }
+#graphBox svg { width: 100%; height: 100%; display: block; }
+#graphBox.dragging { cursor: grabbing; }
+.graph-tip { color: var(--faint); font-size: 12px; }
+
+/* ============================ 图表 ============================ */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.chart-card h4 { font-size: 14px; margin-bottom: 10px; color: var(--dim); }
+.chart-card svg { width: 100%; height: 260px; }
+
+/* ============================ 技术专题详情 ============================ */
+.tech-detail { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.tech-detail-bar { flex: none; padding: 12px 20px 10px; border-bottom: 1px solid var(--border); }
+.tech-detail-bar .tech-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tech-detail-bar .tech-head h2 { font-size: 20px; }
+.tech-detail-actions { display: flex; gap: 8px; align-items: center; }
+.tech-detail-sum {
+  flex: none; margin: 10px 20px; padding: 8px 14px; border-left: 3px solid var(--accent);
+  background: var(--panel2); border-radius: 0 10px 10px 0; color: var(--dim); font-size: 13px; line-height: 1.6;
+}
+.tabs { flex: none; display: flex; gap: 6px; padding: 0 20px; border-bottom: 1px solid var(--border); }
+.tab { padding: 10px 18px; border: none; background: transparent; color: var(--dim); font-size: 14px; border-bottom: 2px solid transparent; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.tech-detail-body { flex: 1; overflow: auto; padding: 16px 20px; min-height: 0; }
+.tabpane { display: none; }
+.tabpane.active { display: block; }
+.tabpane.fill { display: flex; flex-direction: column; height: 100%; }
+.onepage-wrap { text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; }
+.onepage-wrap img { max-width: 100%; max-height: 100%; border: 1px solid var(--border); border-radius: 10px; cursor: zoom-in; background: #fff; }
+.preview-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; flex: none; }
+.preview-toolbar a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent); color: var(--accent); text-decoration: none; font-size: 12.5px; }
+.preview-toolbar a:hover { background: var(--accent); color: #fff; }
+.preview-stage { flex: 1; min-height: 0; border: 1px solid var(--border); border-radius: 10px; background: #fff; position: relative; overflow: hidden; }
+.preview-stage iframe { width: 100%; height: 100%; border: 0; display: block; }
+.preview-stage:fullscreen { background: #fff; }
+.preview-stage:-webkit-full-screen { background: #fff; }
+.preview-empty { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; color: var(--dim); font-size: 13px; text-align: center; padding: 20px; border: 1px dashed var(--border2); border-radius: 10px; }
+.tech-sum { background: var(--panel2); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; margin-bottom: 16px; color: var(--text); }
+
+/* ============================ 书籍模式专享：纵向流式排版 (Vertical Book Layout) ============================ */
+.book-tech-pad {
+  padding: 24px 28px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100%;
+}
+.bk-head {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.bk-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bk-no {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  background: var(--panel2);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.bk-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  flex: 1;
+}
+.bk-btn {
+  margin-left: auto;
+}
+.bk-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bk-section {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 13px;
+}
+.bk-sec-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bk-sec-title .icon { font-size: 13px; }
+.bk-sec-body {
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--text);
+}
+
+.bk-def   { border-left: 3.5px solid var(--accent); background: linear-gradient(90deg, rgba(79,140,255,.08), var(--panel2)); }
+.bk-trend { border-left: 3.5px solid #8b5cf6; }
+.bk-value { border-left: 3.5px solid var(--good); }
+.bk-limit { border-left: 3.5px solid var(--bad); }
+
+.bk-middle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+.bk-radar-col {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bk-radar-col .bk-sec-title {
+  align-self: flex-start;
+  margin-bottom: 2px;
+}
+.bk-radar-box {
+  width: 100%;
+  height: 235px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bk-radar-box svg {
+  width: 100%;
+  height: 100%;
+  max-width: 320px;
+}
+.bk-conclusion-col {
+  background: linear-gradient(180deg, var(--panel2), var(--card));
+  border: 1px solid var(--border);
+  border-left: 3.5px solid var(--accent2);
+  border-radius: 9px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.bk-conclusion-text {
+  font-size: 12px;
+  line-height: 1.62;
+  color: var(--text);
+  text-align: justify;
+}
+.bk-scores-grid {
+  margin-top: 8px;
+}
+.bk-scores-grid .sixdim {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 6px;
+}
+.bk-scores-grid .sixdim .sd {
+  font-size: 10.5px;
+  padding: 2px 5px;
+  text-align: center;
+}
+
+/* ============================ 网页模式专享：横向大屏仪表盘 (Horizontal Web Layout) ============================ */
+.web-tech-container {
+  padding: 4px 0;
+}
+.web-tech-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.web-tech-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+.web-col-dash {
+  display: flex;
+  flex-direction: column;
+}
+.web-col-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.bento-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: border-color .2s;
+}
+.bento-card:hover {
+  border-color: var(--border2);
+}
+.bento-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bento-card-title .icon { font-size: 13px; }
+.bento-card-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  flex: 1;
+}
+
+.radar-card {
+  align-items: center;
+  padding: 10px 12px;
+}
+.radar-card .bento-card-title { align-self: flex-start; }
+.radar-box { width: 100%; display: flex; justify-content: center; align-items: center; }
+.radar-box svg { width: 100%; max-width: 320px; height: 220px; }
+.radar-scores-mini { width: 100%; margin-top: 6px; }
+.radar-scores-mini .sixdim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px 6px; }
+.radar-scores-mini .sixdim .sd { text-align: center; }
+
+.conclusion-card {
+  background: linear-gradient(180deg, var(--panel2), var(--card));
+  border-left: 3px solid var(--accent2);
+}
+.conclusion-card .bento-card-title { color: var(--accent2); }
+.conclusion-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: justify;
+}
+
+.def-card   { border-top: 2px solid var(--accent); }
+.trend-card { border-top: 2px solid #8b5cf6; }
+.value-card { border-top: 2px solid var(--good); }
+.limit-card { border-top: 2px solid var(--bad); }
+
+.pill-disposal { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: rgba(79,140,255,.14); color: var(--accent); border: 1px solid rgba(79,140,255,.35); font-weight: 600; }
+.pill-dim { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: var(--panel2); color: var(--dim); border: 1px solid var(--border); }
+.pill-attr { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: var(--panel2); color: var(--accent2); border: 1px solid var(--border); }
+.btn-sm { height: 28px; padding: 0 10px; font-size: 12px; }
+
+.tech-box-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tech-box-list li {
+  position: relative;
+  padding-left: 13px;
+  margin-bottom: 3px;
+  font-size: 11.5px;
+  line-height: 1.48;
+  color: var(--text);
+}
+.tech-box-list li:last-child { margin-bottom: 0; }
+.tech-box-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 11px;
+}
+.tech-box-list li .hl {
+  color: var(--accent2);
+  font-weight: 700;
+  margin-right: 2px;
+}
+.tech-box-text {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* ============================ 封面 / 篇章页 ============================ */
+.cover-full {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 40px; overflow: hidden;
+  background: radial-gradient(130% 100% at 50% 0%, #1d2d52 0%, #0e172b 52%, #090f1c 100%);
+  color: #eaf1ff;
+}
+.cover-full .cov-kicker { letter-spacing: 7px; color: #4f8cff; font-size: 13px; margin-bottom: 20px; text-transform: uppercase; }
+.cover-full .cov-title { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; letter-spacing: 5px; line-height: 1.35; }
+.cover-full .cov-sub { margin-top: 16px; color: #b9c9e8; font-size: 15px; letter-spacing: 2px; }
+.cover-full .cov-rule { width: 120px; height: 3px; border-radius: 3px; margin: 26px 0; background: linear-gradient(90deg, #4f8cff, #22d3ee); }
+.cover-full .cov-meta { color: #8fa3c0; font-size: 13px; letter-spacing: 1px; line-height: 2.1; }
+.cover-orb { position: absolute; border-radius: 50%; filter: blur(3px); opacity: .45; pointer-events: none; }
+.divider-full {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 40px; overflow: hidden;
+  background: linear-gradient(160deg, var(--paper2), var(--paper));
+}
+.divider-full .dv-part { font-family: var(--mono); color: var(--accent2); letter-spacing: 5px; font-size: 14px; }
+.divider-full .dv-title { font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: 8px; margin: 16px 0; color: var(--text); }
+.divider-full .dv-desc { color: var(--dim); max-width: 440px; line-height: 1.9; font-size: 14px; }
+.divider-full .dv-num { font-family: var(--mono); font-size: 150px; font-weight: 800; opacity: .07; position: absolute; right: 18px; bottom: -14px; line-height: 1; color: var(--text); }
+.toc-list { list-style: none; }
+.toc-list li { display: flex; align-items: baseline; gap: 10px; padding: 7px 4px; border-bottom: 1px dashed var(--border); cursor: pointer; }
+.toc-list li:hover { color: var(--accent); }
+.toc-list .toc-no { font-family: var(--mono); color: var(--accent2); font-size: 13px; width: 40px; flex: none; }
+.toc-list .toc-label { font-weight: 600; font-size: 13.5px; }
+.toc-list .toc-part { font-weight: 800; color: var(--accent); font-size: 15px; }
+.toc-list .toc-indent { padding-left: 18px; }
+
+/* ============================ Toast ============================ */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--border2); color: var(--text); padding: 10px 20px; border-radius: 20px; box-shadow: var(--shadow-sm); z-index: 400; font-size: 13px; }
+
+/* ============================ 响应式 ============================ */
+@media (max-width: 1100px) {
+  .web-tech-layout { grid-template-columns: 1fr; }
+  .web-col-content { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .book { width: 96vw; height: calc(100vh - var(--topbar-h) - 40px); }
+  .book-page { width: 100%; border-radius: 14px; }
+  #pageLeft { display: none; }
+  #pageRight { left: 0; right: 0; }
+  .book-nav-left { left: 4px; }
+  .book-nav-right { right: 4px; }
+  .cards, .charts-grid, .row-detail { grid-template-columns: 1fr; }
+  .brand-sub { display: none; }
+  .search-wrap { max-width: 180px; }
+  .web-toc { width: 220px; }
+  .tech-page-pad { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand" id="brandBtn" title="回到封面">
+    <div class="brand-icon">研</div>
+    <div class="brand-text">
+      <div class="brand-title">银行金融科技前沿技术研究成果</div>
+      <div class="brand-sub">电子研究书 · 书籍 / 网页 / 科技树</div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input id="searchInput" type="text" placeholder="搜索技术名称 / 关键词，回车跳转…" autocomplete="off">
+    <div id="searchResults" class="search-results hidden"></div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn mode-btn active" id="btnBook" title="书籍模式">📖 书籍</button>
+    <button class="btn mode-btn" id="btnWeb" title="网页模式">🌐 网页</button>
+    <button class="btn mode-btn" id="btnTree" title="科技树">🌳 科技树</button>
+    <button class="btn" id="btnTheme" title="切换明暗主题">🌓 主题</button>
+  </div>
+</header>
+
+<main id="bookView" class="view">
+  <div class="book-stage">
+    <div class="book" id="book">
+      <div class="book-page" id="pageLeft"><div class="page-inner" id="pageLeftInner"></div></div>
+      <div class="book-page" id="pageRight"><div class="page-inner" id="pageRightInner"></div></div>
+      <div class="book-turn" id="turnSheet">
+        <div class="turn-face turn-front"><div class="page-inner" id="turnFrontInner"></div></div>
+        <div class="turn-face turn-back"><div class="page-inner" id="turnBackInner"></div></div>
+      </div>
+      <div class="book-nav book-nav-left" id="navPrev">‹</div>
+      <div class="book-nav book-nav-right" id="navNext">›</div>
+      <div class="book-page-no" id="pageNo">封面</div>
+    </div>
+  </div>
+</main>
+
+<main id="webView" class="view hidden">
+  <div class="web-layout">
+    <aside class="web-toc" id="webToc"></aside>
+    <div class="web-content" id="webContent"></div>
+  </div>
+</main>
+
+<main id="treeView" class="view hidden">
+  <div class="tree-toolbar" id="treeToolbar"></div>
+  <div class="tree-stage" id="treeStage"></div>
+</main>
+
+<div class="overlay hidden" id="panel">
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title" id="panelTitle"></div>
+      <button class="panel-close" id="panelClose" title="关闭">✕</button>
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="lightbox">
+  <div class="lightbox-toolbar">
+    <span id="lightboxTitle"></span>
+    <button class="panel-close" id="lightboxClose" title="关闭">✕</button>
+  </div>
+  <img id="lightboxImg" alt="预览图">
+</div>
+
+<div class="overlay hidden" id="modal">
+  <div class="modal">
+    <div class="modal-head"><div class="panel-title" id="modalTitle"></div><button class="panel-close" id="modalClose">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+/* =====================================================================
+ * 银行金融科技前沿技术研究成果 —— 数据文件（金融科技版 v1.30）
+ * 技术名称/分层/六维评级/研判结论等基础信息以《前沿技术储备库分层台账 v1.30》为准
+ * ===================================================================== */
+(function () {
+  'use strict';
+  var CATEGORY_COLOR = {"人工智能":"#4f8cff","数据要素":"#10b981","量子科技":"#8b5cf6","安全":"#f43f5e","基础设施":"#06b6d4","合规科技":"#14b8a6","客户体验":"#f59e0b"};
+  var TIER_COLOR = {"布局层":"#fb7185","论证层":"#fbbf24","研究层":"#facc15","观察层":"#34d399"};
+  var CATEGORIES = Object.keys(CATEGORY_COLOR);
+  var TIERS = Object.keys(TIER_COLOR);
+  var ITEMS = [
+  { id: 'T01', no: 1, name: '自主型AI智能体（Agentic AI）', short: '自主型AI智能体', nameEn: 'Agentic AI',
+    category: '人工智能', categoryKey: '人工智能', archDim: '业务（跨应用）', attr: '新兴（向关键演进）',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 2, strategicFit: 4, value: 5, feasibility: 3, urgency: 5, openness: 4,
+    conclusion: '战略匹配度4分、价值贡献度5分双高，叠加战略紧迫度5分（监管指导意见已出台、同业规模化提速），但技术成熟度仅2分、引入可行度3分（安全与治理短板显著），属"方向确定、价值高但尚未成熟"的提前布局典型，宜资源前置、治理先行。建议：①治理先行（参照OWASP／NIST／人行分级分类，先立权限、审计与熔断）；②窄场景试点（低风险可回滚场景验证，暂缓授信／交易的自主授权）；③能力储备（跟踪多智能体编排、可解释性与护栏，储备人才算力）。',
+    definition: '以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。',
+    trend: '· 从人问AI答的被动问答，到授权AI自主完成任务的主动执行\n· 从单一模型调用，到多智能体协同＋工具编排的复合系统\n· 从辅助人工的副驾，到承担端到端流程的AI数字员工',
+    bankValue: '· 效率：客服、运营、合规、授信、报告撰写等自动化，早期落地降本30%–50%\n· 风控：实时反欺诈、交易监控、合规检查的自动化编排\n· 客户体验：智能客服／理财顾问的多模态、拟人化交互\n· 新业务：跨境金融、投研、财富管理的AI数字员工能力储备',
+    limitation: '· 幻觉／可解释性：输出不确定、决策链难追溯，高风险场景难直接授权\n· 安全与权限：工具调用、越权、记忆投毒、多智能体级联失效等新型攻击面\n· 治理成熟度：多数部署仍限窄场景，全自主尚不适用多数企业级场景\n· 合规：授信评分等属高风险AI用途，监管框架仍在成型',
+    maturityBasis: '处于Gartner Hype Cycle期望膨胀期顶点，17%组织已部署、60%＋计划两年内部署，窄场景可用、全自主尚不成熟。', strategicFitBasis: '命中人工智能战略方向核心旗舰路径，2025年全球50家最大银行已公布160＋用例。', valueBasis: '早期落地降本30%–50%，覆盖效率、风控、客户体验、新业务四类价值，长期或重塑软件形态，具战略性潜力。',
+    feasibilityBasis: '短板为安全与治理：幻觉、越权、级联失效等新型攻击面及授信等高风险用途合规待成型，需专项治理投入，非否决级。', urgencyBasis: '金融监管总局2026年6月已出台安全开发指导意见，Gartner预测2026年底40%企业应用嵌入任务型智能体，延迟布局将拉大与同业差距。', opennessBasis: 'MCP协议已转由Linux基金会开放治理、月下载约9700万次，A2A协议150＋机构生产使用，多模型多厂商可选，非单点依赖。',
+    source: '· Gartner《Hype Cycle for Agentic AI／for AI 2025》及2026 CIO调研（2025.08）\n· OWASP《Top 10 for Agentic Applications 2026》（2025.12）；新加坡IMDA《Agentic AI治理框架》（2026.01）\n· 国内：工行／邮储私有化部署大模型、广西银行桂小AI跨境智能体（2025.09）；人民银行推进大模型金融应用分级分类安全标准\n采集时间：2026-07-06。\n【2026-07增补】深化研究v2.0（04-01_v2.0）29条参考文献：arXiv 2510.25445/2402.02716/2503.16416；Gartner 2026 Hype Cycle；McKinsey银行运营与利润池测算；MIT NANDA《GenAI Divide 2025》；OWASP《Top 10 for Agentic Applications 2026》；IMDA《Model AI Governance Framework for Agentic AI》（2026-01）；央行2026年科技工作会议。勘误：广西案例应为“汇小二”（广西银行业自律机制联建），非“广西银行桂小AI”。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）；Linux基金会MCP项目统计（2026年初）\n·【2026-07-15深化增补】方法论专章依据Gartner《2026 Hype Cycle for Agentic AI》原有引注展开，未新增外部来源。\n·【2026-07-15二次更新增补】Gartner《Hype Cycle for Agentic AI, 2026》官方原文(G00842058)及国家金融监督管理总局《关于银行业保险业人工智能安全开发应用的指导意见》(金发〔2026〕8号)官方原文，均已全文存档于CK001（新增引注[32]，引注[5]补全著录信息）。', attention: '极高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T02', no: 2, name: 'AI原生应用架构（AI-Native）', short: 'AI原生应用架构', nameEn: 'AI-Native',
+    category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '新兴（向关键演进）',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 2, strategicFit: 4, value: 4, feasibility: 3, urgency: 4, openness: 3,
+    conclusion: '战略匹配度4分、价值贡献度4分，叠加战略紧迫度4分（银行侧已从分散试点转向治理化规模投产），但技术成熟度仅2分、范式与工程实践尚未定型，与自主型AI智能体（001）互为表里（前者为架构底座、后者为其上能力），属提前布局典型，宜在新建／重构应用中试点AI内生设计，同步建立模型治理与评估体系，避免在旧架构上无序外挂。',
+    definition: '以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。',
+    trend: '· 从传统应用＋AI插件，到AI内生的应用架构\n· 从确定性流程，到概率式智能编排\n· 从人写全部逻辑，到模型＋提示＋工具的软件新形态',
+    bankValue: '· 智能编排、流程自动化、个性化服务\n· 提升研发效率（2025已有45%工程师获>10%生产力提升）\n· 重塑客服、营销、运营等应用形态',
+    limitation: '· 输出不确定性高、模型治理难\n· 架构范式与工程实践尚在形成\n· 对数据、算力、人才要求高',
+    maturityBasis: 'AI驱动架构演进主线尚处早期成型，范式与工程实践未定型，处Hype Cycle早期阶段。', strategicFitBasis: '命中人工智能战略方向，为承载智能体能力的架构底座，核心路径。', valueBasis: '智能编排、流程自动化与个性化服务价值明确，2025年45%工程师获>10%生产力提升，兼具研发效能与业务重塑价值。',
+    feasibilityBasis: '架构范式未定型、重构成本与人才门槛高，需专项投入治理，风险总体可管理。', urgencyBasis: '银行侧已从分散试点转向治理化、统一编排的规模投产，0—2年内需明确架构路径。', opennessBasis: '模型网格下多模型混用趋势渐显，但底层大模型部分厂商仍偏闭源，标准尚未完全统一。',
+    source: '· Gartner《Hype Cycle for Application Architecture and Integration 2025》\n· Gartner《Maturity Model for AI-Native Software Engineering》\n· Gartner新闻稿：2026年40%企业应用含任务型智能体（2025.08.26）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Datadog《State of AI Engineering》及行业趋势综述（2026）\n·【2026-07-15深化增补】Gartner《Hype Cycle for AI in Software Engineering, 2026》（新增第19条引注）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
+    externalSource: '',
+    summary: '以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T03', no: 3, name: '事件驱动架构（EDA）', short: '事件驱动架构', nameEn: 'EDA',
+    category: '数据要素／技术', categoryKey: '数据要素', archDim: '应用', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 5,
+    conclusion: '技术成熟度4分、战略匹配度4分、价值贡献度4分均衡达标，生态开放度5分（Kafka等开源事实标准、无单点依赖），属技术成熟、需系统验证的典型，宜组织专题论证：围绕实时风控／支付场景，验证事件一致性、容量规划、消息中间件选型与存量系统迁移路径，明确落地边界与SLA。',
+    definition: '以事件的产生、检测、消费为核心的软件架构风格，组件通过异步事件解耦，实现实时响应与松耦合。',
+    trend: '· 从批处理／同步调用，到实时事件流\n· 从紧耦合单体，到松耦合事件驱动\n· 支撑实时风控、实时营销与实时支付',
+    bankValue: '· 实时响应、实时风控与营销\n· 实时支付处理与事件驱动的反欺诈\n· 系统解耦、弹性扩展与合规审计',
+    limitation: '· 事件最终一致性与分布式排障复杂\n· 对幂等、监控、消息中间件要求高\n· 组织与技能门槛',
+    maturityBasis: 'Kafka等核心技术成熟、金融业82%＋已采纳，多个行业已有生产案例，落地关键在工程治理。', strategicFitBasis: '命中数据要素／技术战略方向，与实时风控、实时支付、实时营销强相关，为该方向核心技术路径。', valueBasis: '实时能力直接改善风控时效、客户触达与运营效率，覆盖风控与体验两个以上维度。',
+    feasibilityBasis: '最终一致性与分布式排障复杂，需专项治理投入，技术与实践相对成熟、风险可控。', urgencyBasis: '实时支付预计2028年全球超5750亿笔，同业已规模化采纳，属3—5年关键推进窗口，尚无强制监管时限。', opennessBasis: 'Kafka为事实标准、Apache 2.0开源，Confluent、云厂商等多厂商充分竞争，无单点依赖。',
+    source: '· Confluent《Event-Driven Architecture 完整introduction》\n· Latinia／RTInsights：EDA在银行与金融服务的实时化实践（2025）\n· ACI Worldwide：实时支付2028年全球超5750亿笔预测\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Infosys Finacle《Banking Architecture Trend 2026》（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以事件的产生、检测、消费为核心的软件架构风格，组件通过异步事件解耦，实现实时响应与松耦合。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T04', no: 4, name: 'WebAssembly（WASM／Edge）', short: 'WebAssembly', nameEn: 'WASM／Edge',
+    category: '技术', categoryKey: '基础设施', archDim: '应用', attr: '新兴',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 3, strategicFit: 3, value: 3, feasibility: 3, urgency: 2, openness: 5,
+    conclusion: '技术趋势与潜在价值明确，但战略紧迫度评级偏低、对我行尚无明确外部倒逼信号，按六维复核结果转为动态观察：持续跟踪WASI与组件模型生态成熟度、边缘金融与多租户隔离场景的同业实践，待紧迫度信号增强后再评估转入系统论证。',
+    definition: '一种可移植、高性能的字节码格式与运行时，使代码以接近原生速度在浏览器、服务端、边缘的安全沙箱中运行。',
+    trend: '· 从浏览器内加速，到浏览器外服务端／边缘／嵌入运行时\n· WASI 0.2与组件模型使其2025年跨入生产级\n· 安全沙箱支撑多租户与边缘计算',
+    bankValue: '· 低延迟、低成本、边缘金融（边缘风控、就近计算）\n· 安全沙箱多租户隔离\n· 跨语言复用与快速冷启动',
+    limitation: '· 生态与标准仍在成熟，工具链／调试／库支持不完善\n· 金融级适配与运维经验少\n· 适配与改造成本高',
+    maturityBasis: '2025年为生产级拐点，WASI 0.2组件模型确立、服务端部署占比52%首超浏览器端，属早期采用阶段。', strategicFitBasis: '与边缘金融、低延迟计算潜在相关，非当前核心业务旗舰路径，命中技术方向下的路径之一。', valueBasis: '低延迟、低成本、安全沙箱隔离价值明确，但金融级规模化价值仍待验证。',
+    feasibilityBasis: '生态与工具链尚不完善、金融级适配与运维经验少，需专项投入，风险总体可管理。', urgencyBasis: '2026年2月WASI 0.3发布、67%受访者已生产使用，但对我行尚无明确外部倒逼信号，可按3—5年布局节奏推进。', opennessBasis: 'WASI／组件模型为W3C开放标准，WasmEdge、Fermyon等多厂商开源生态，无单点依赖。',
+    source: '· Platform.uno《The State of WebAssembly 2025/2026》\n· Fermyon／WasmEdge：Wasm边缘与AI推理生产实践（2025）\n· 行业报道：American Express WASM FaaS、Akamai收购Fermyon（2025）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】The New Stack及State of WebAssembly 2026（2026.02–04）', attention: '中', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '一种可移植、高性能的字节码格式与运行时，使代码以接近原生速度在浏览器、服务端、边缘的安全沙箱中运行。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T05', no: 5, name: '数据织网（Data Fabric）', short: '数据织网', nameEn: 'Data Fabric',
+    category: '数据要素', categoryKey: '数据要素', archDim: '数据', attr: '关键',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 3, strategicFit: 5, value: 4, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '战略匹配度5分（数据要素核心战略方向被明确点名的旗舰能力）、价值贡献度4分，技术成熟度3分处早期采用阶段，属方向明确、宜提前布局的典型，建议优先建设主动元数据与统一数据访问层能力，选取高价值域先行，逐步向AI-Ready数据演进；数据网格（006）现处观察层，待其信号增强后再行统筹协同规划。',
+    definition: '以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。',
+    trend: '· 从人工集成／搬运，到元数据驱动的自动化编织\n· 从数据孤岛，到统一数据视图\n· 支撑AI-Ready数据供给',
+    bankValue: '· 统一数据视图、提升数据可用性、支撑AI\n· 降低数据集成成本\n· 强化数据治理与血缘',
+    limitation: '· 主动元数据能力要求高、元数据治理难\n· 价值兑现周期长\n· 平台建设投入大',
+    maturityBasis: 'Gartner数据管理成熟度曲线处泡沫破裂低谷期（走向成熟信号），22%组织已实施，属早期采用阶段。', strategicFitBasis: '命中数据要素核心战略方向，且为该方向被明确点名的支撑AI-Ready数据的旗舰能力。', valueBasis: '统一数据视图、降低集成成本、强化治理与血缘，支撑AI战略，覆盖数据治理与AI赋能两个以上维度。',
+    feasibilityBasis: '主动元数据能力要求高、价值兑现周期长、平台投入大，需专项投入治理。', urgencyBasis: '织网—网格混合架构成为主流（金融业约八成采用混合模式），属3—5年关键窗口，尚无强制监管时限。', opennessBasis: '主流开放标准（如Apache Atlas）与商业方案（Informatica等）并存，存在中等成本的替代路径。',
+    source: '· Gartner《What is Data Fabric》及2024数据管理演进调研\n· Gartner：2028年80%自治数据产品源于fabric＋mesh互补架构\n· Starburst／WhereScape：Gartner关于fabric与mesh的解读\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Alation／Promethium数据架构比较研究（2026）\n·【2026-07-15深化增补】方法论专章依据既有Gartner数据管理成熟度曲线引注（[5][6]）展开，未新增外部来源。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
+    externalSource: '',
+    summary: '以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T06', no: 6, name: '数据网格（Data Mesh）', short: '数据网格', nameEn: 'Data Mesh',
+    category: '数据要素', categoryKey: '数据要素', archDim: '数据', attr: '新兴',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 3, strategicFit: 3, value: 3, feasibility: 2, urgency: 2, openness: 3,
+    conclusion: '理念扩散但组织门槛高、战略紧迫度评级偏低，按六维复核结果转为动态观察：持续跟踪头部机构完整实施案例与联邦治理框架成熟度，并与数据织网（005）协同关注，待紧迫度信号增强或治理路径更清晰后再评估转入系统论证，避免为去中心化而去中心化。',
+    definition: '一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。',
+    trend: '· 从集中式数据团队，到业务域自治的数据产品\n· 从数据即副产品，到数据即产品\n· 架构与组织的双重变革',
+    bankValue: '· 数据所有权下沉、敏捷创新、数据产品化\n· 释放业务域数据价值\n· 与Data Fabric互补支撑数据产品交付',
+    limitation: '· 标准统一难、跨域组织协同难\n· 对数据成熟度与治理要求高\n· 易碎片化',
+    maturityBasis: '理念广泛扩散，完整实施集中于头部机构，属早期采用阶段。', strategicFitBasis: '命中数据要素战略方向下的技术路径之一，非该方向核心旗舰单列。', valueBasis: '数据产品化、敏捷创新价值明确，但兑现高度依赖组织协同，单一维度价值为主。',
+    feasibilityBasis: '跨域组织协同、标准统一难度大，易碎片化，需专项立项治理方可能推进。', urgencyBasis: '理念扩散但尚无明确外部倒逼信号，与数据织网协同的混合模式渐成主流，可按3—5年布局节奏推进。', opennessBasis: '部分工具已开源（如数据目录类组件），但联邦治理框架无统一行业标准，中等成本替代路径存在。',
+    source: '· Gartner《Data Fabric and Data Mesh: same or different》\n· Gartner 2024数据管理演进调研（26%采用data mesh）\n· Alation／Intellias：data mesh与data fabric对比（2025/2026）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Alation／Promethium数据架构比较研究（2026）', attention: '中', status: '在库—已深化研究', updateDate: '2026-07-20',
+    externalSource: '',
+    summary: '一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T07', no: 7, name: '后量子密码学（PQC）/后量子身份验证（PQA）', short: '后量子密码学', nameEn: 'PQA',
+    category: '量子科技／安全', categoryKey: '量子科技', archDim: '安全', attr: '关键',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 3, strategicFit: 5, value: 4, feasibility: 2, urgency: 5, openness: 5,
+    conclusion: '标准已定、监管倒逼窗口明确，但引入可行度触及否决线（改造范围广、成本高、需与国密路线协调、迁移周期约10年），按六维复核短板原则转为动态观察，并优先突破可行度短板：建议同步开展密码资产盘点与迁移成本／工期测算，形成可分阶段实施的路线后再评估转入系统论证；因战略紧迫度评级高，观察频率应高于一般观察层条目，纳入年度密码资产盘点与G7路线图关键节点重点跟踪。',
+    definition: '能抵抗量子计算攻击的密码算法体系，用于替换现有易受量子威胁的RSA／ECC等公钥密码。',
+    trend: '· 从经典公钥密码，到抗量子密码\n· NIST 2024.8发布FIPS 203/204/205标准\n· 先存后解威胁驱动提前迁移与密码敏捷',
+    bankValue: '· 抗量子、保障长期数据安全与合规\n· 应对harvest now, decrypt later威胁\n· 推动密码敏捷性建设',
+    limitation: '· 性能与带宽开销\n· 密码敏捷改造范围广、成本高\n· 与国密路线协调；迁移周期长（约10年）',
+    maturityBasis: 'NIST FIPS 203/204/205已定稿，进入迁移期，标准初定，属早期采用阶段。', strategicFitBasis: '命中量子科技／安全双战略方向，关系全行密码体系安全合规。', valueBasis: '保障长期数据安全、规避"先存后解"威胁，覆盖安全合规与长周期数据保护两个以上维度。',
+    feasibilityBasis: '改造范围广、成本高，需与国密路线协调、迁移周期长约10年，需专项立项治理，触发引入可行度否决线。', urgencyBasis: 'G7金融业PQC路线图要求2030—2032年迁移、NSA CNSA2.0要求2030年停用RSA/ECDH，英国NCSC要求2028年前完成迁移，延迟将产生显著合规风险。', opennessBasis: 'NIST公开标准算法体系，全球开放、非单一厂商方案。',
+    source: '· NIST：FIPS 203/204/205（2024.08.13）；FIPS 206 与 HQC 草案（2026）；IR 8547 迁移指引；CSWP 39 密码敏捷（2025.12.19）\n· G7 网络专家组《金融业 PQC 路线图》（2026-01-13）；美国 PQC 迁移行政令（2026-06-22）\n· NSA CNSA 2.0 迁移时间表（2030/2033）；FIPS 140-2 认证2026-09-21转历史状态\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】美国白宫M-26-15备忘录（2026.06）；英国NCSC迁移时间表更新（2026.02）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '能抵抗量子计算攻击的密码算法体系，用于替换现有易受量子威胁的RSA／ECC等公钥密码。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T08', no: 8, name: '零信任架构（Zero Trust）', short: '零信任架构', nameEn: 'Zero Trust',
+    category: '安全', categoryKey: '安全', archDim: '安全', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '技术成熟度4分（NIST SP 800-207成熟框架）、战略匹配度4分、价值贡献度4分均衡达标，宜组织系统论证分阶段落地：先夯实身份基础设施，选取高价值保护面试点微隔离与持续验证，制定遗留系统适配与体验平衡方案。',
+    definition: '从不信任、持续验证的安全架构范式，以身份为中心、最小权限、动态访问控制取代边界信任（NIST SP 800-207）。',
+    trend: '· 从边界防御，到持续验证\n· 从网络位置信任，到身份与上下文信任\n· 微隔离与最小权限',
+    bankValue: '· 最小权限、持续验证、安全访问\n· 降低横向移动与内部威胁风险\n· 支撑远程办公与多云安全访问',
+    limitation: '· 体验下降、老旧单体系统适配难（微隔离难）\n· 改造范围广\n· 需成熟的身份基础设施',
+    maturityBasis: 'NIST SP 800-207为成熟框架，SP 1800-35已发布最终版，金融业普遍推进，多个机构已有生产案例。', strategicFitBasis: '命中安全战略方向核心旗舰路径，契合远程办公与多云安全访问需求。', valueBasis: '显著降低横向移动与内部威胁风险，覆盖安全与合规两个以上维度。',
+    feasibilityBasis: '遗留单体系统微隔离难、改造范围广、需成熟身份基础设施，需专项投入治理。', urgencyBasis: '零信任边界正扩展至AI智能体访问治理，82%机构已有共识但落地仅17%，属3—5年关键窗口。', opennessBasis: 'NIST公开标准，多厂商方案（含开源与商业）可选，具备国产化替代路径。',
+    source: '· NIST SP 800-207《Zero Trust Architecture》\n· NIST NCCoE《Implementing a Zero Trust Architecture》\n· 研究文献：零信任在现代银行平台的落地与遗留系统挑战（2025）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】ISACA《Preparing Zero Trust for AI Disruption》（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '从不信任、持续验证的安全架构范式，以身份为中心、最小权限、动态访问控制取代边界信任（NIST SP 800-207）。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T09', no: 9, name: '量子计算（Quantum）', short: '量子计算', nameEn: 'Quantum',
+    category: '量子科技', categoryKey: '量子科技', archDim: '技术', attr: '未来',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 2, strategicFit: 3, value: 2, feasibility: 2, urgency: 1, openness: 3,
+    conclusion: '技术成熟度2分、价值贡献度2分（87%机构视为机遇但73%未找到实用场景），战略紧迫度仅1分（容错系统预计2029年后落地，5年以上长期赛道），属动态观察典型，宜持续跟踪硬件与纠错进展及金融用例，保持小规模学习与生态接触；同时与后量子密码学（007）安全线联动——量子威胁的防御侧应先于计算侧推进。',
+    definition: '利用量子叠加与纠缠进行计算的新范式，在特定问题（优化、模拟、因数分解）上具指数级潜力。',
+    trend: '· 从含噪中等规模（NISQ），到容错量子计算\n· 2025纠错突破（Google Willow指数级降错；IBM Starling 2029路线）\n· 从科研到商业拐点临近',
+    bankValue: '· 复杂优化、风险建模、蒙特卡洛加速\n· 组合优化与投资组合\n· 远期的加速计算能力',
+    limitation: '· 硬件不成熟、商业化有限\n· 容错量子仍需数年\n· 金融量子优势用例尚未确认（约73%机构未找到实用场景）',
+    maturityBasis: 'Google Willow纠错阈值验证等实验性突破渐增，但容错量子系统尚需数年，处技术触发期爬升阶段。', strategicFitBasis: '命中量子科技战略方向下的技术路径之一，非当前核心业务旗舰应用。', valueBasis: '风险建模、组合优化为潜在场景，但87%机构视为机遇、73%未找到实用场景，价值难以量化。',
+    feasibilityBasis: '硬件不成熟、商业化有限、投入大、用例不确定，需专项立项治理方可能推进。', urgencyBasis: '容错系统预计2029年后落地，属5年以上长期赛道，早晚推进对近期结果影响很小。', opennessBasis: 'IBM、Google、Quantinuum等多厂商技术路线并行竞争，但接口与标准互不统一，中等成本替代路径。',
+    source: '· McKinsey《Quantum Technology Monitor 2026》\n· Google Willow纠错突破（2024.12）；IBM Starling容错路线（2029）\n· 金融业调研：87%视为机遇但73%未找到商用场景\n采集时间：2026-07-06。\n·【2026-07-14复核增补】IBM量子路线图（2026）；行业年度盘点（2026.06）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '利用量子叠加与纠缠进行计算的新范式，在特定问题（优化、模拟、因数分解）上具指数级潜力。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T10', no: 10, name: '算力网络（Compute Network）', short: '算力网络', nameEn: 'Compute Network',
+    category: '技术／算力', categoryKey: '基础设施', archDim: '技术', attr: '关键',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 3, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '政策与产业趋势进一步明确、战略匹配度与价值贡献度评级高，按六维复核结果转为提前布局：结合建设银行贵安、农业银行内蒙古等同业自建数据中心实践，加快推进我行AI算力自建／入网组合策略、弹性调度与成本模型的落地准备，同步跟踪跨域任务级调度标准演进与数据合规方案，为规模化算力布局提前占位。',
+    definition: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
+    trend: '· 从孤立数据中心，到东数西算广域算力协同\n· 从静态部署，到弹性调度、算力普惠\n· 算网一体化',
+    bankValue: '· 弹性调度、降本增效、算力普惠\n· 支撑AI大模型训练／推理的算力供给\n· 优化算力成本结构',
+    limitation: '· 跨域调度复杂、网络时延与带宽瓶颈\n· 算网协同标准与运营模式仍在建\n· 跨域数据合规与安全',
+    maturityBasis: '东数西算基础设施快速落地（八枢纽215.5 EFLOPS），企业级弹性调度与运营模式仍在完善，属早期采用阶段。', strategicFitBasis: '命中技术／算力战略方向，国家"东数西算""算电协同"政策级推进，为该方向核心路径。', valueBasis: '弹性调度、降本增效、支撑AI算力供给，覆盖成本优化与AI能力两个以上维度。',
+    feasibilityBasis: '跨域调度复杂、算网协同标准与运营模式仍在建、数据合规待明确，需专项投入治理。', urgencyBasis: '"算电协同"已写入2026年《政府工作报告》，同业已自建数据中心布局，属3—5年关键窗口，尚无强制个体时限。', opennessBasis: '国家枢纽与多云厂商并存，同业以自建为主，算网协同标准仍在建，中等成本替代路径。',
+    source: '· 新华社／央视：东数西算落子成局（2025）\n· 华为与国家信息中心《区域算力网：高速互联篇研究报告》（2025）\n· 工信部数据：八枢纽215.5 EFLOPS、智算占比80.8%（2025 Q1）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】《政府工作报告》算电协同表述及IDC解读（2026.03）\n【2026-08-17深化增补】国家数据局2026年工作部署（2026-01）；"东数西算"四年八大枢纽量化数据（2026-02，215.5EFLOPS/智算占比80.8%/市场规模8351亿元）；工业和信息化部《算力互联互通行动计划》（2025-05印发，2026/2028两阶段目标）；国家发展改革委算力调度问题专家访谈（2026-03）；金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》算力相关条款（2026-06-18）；贵州算力产业发展公开报道（2026-04，Token调用量/成本优势数据）；三大电信运营商2026年算力投资数据（2026-03）；建设银行贵安数据中心、农业银行内蒙古数据中心、交通银行贵安数据中心公开建设信息（2023-2025年）。采集时间：2026-08-17。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
+    reportDocx: 'assets/docs/ZT010/ZT010_专题研究_算力网络_ComputeNetwork_v4.0.docx', reportPdf: 'assets/preview/ZT010/report.pdf',
+    slidesPptx: 'assets/docs/ZT010/slides.pptx', slidesPdf: 'assets/preview/ZT010/slides.pdf', image: 'assets/images/onepage-computing-network.svg',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
+    category: '技术', categoryKey: '基础设施', archDim: '技术', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '技术成熟度4分（Gartner预测2026年80%大型组织设平台团队）、战略匹配度4分、价值贡献度4分均衡达标，宜结合我行研发体系系统论证：明确IDP建设范围、黄金路径与平台团队组建，评估投入产出与现有DevOps工具链的整合，避免重复造轮。',
+    definition: '以内部开发者平台（IDP）为载体，将基础设施、流水线、环境等自助化封装为黄金路径，提升研发效能。',
+    trend: '· 从DevOps人力协作，到平台化自助\n· 从零散工具，到统一IDP与黄金路径\n· 平台即产品',
+    bankValue: '· 提升交付效率、标准化平台、改善开发者体验\n· 支撑AI工程化落地\n· 降低认知负荷与重复劳动',
+    limitation: '· 初期投入大、平台团队能力要求高\n· 需组织与文化配合\n· 避免沦为又一层工具',
+    maturityBasis: 'Gartner预测2026年80%大型软件组织将设平台团队，DORA实证部署频率提升3.5倍，多个行业已有生产案例。', strategicFitBasis: '命中技术战略方向，为AI工程化落地与研发效能提升的平台底座核心路径。', valueBasis: '标准化、自助化显著提升交付效率与开发者体验，覆盖效能与AI工程化两个以上维度。',
+    feasibilityBasis: '初期投入大、平台团队能力要求高、需组织文化配合，需专项投入治理。', urgencyBasis: '2026年73%平台团队已内置AI辅助能力，同业先行信号明确，属3—5年关键窗口。', opennessBasis: 'Backstage等CNCF开源IDP工具生态成熟，多厂商可选，具备自建路径。',
+    source: '· Gartner：2026年80%软件组织设平台团队\n· Gartner《2025 Market Guide for Internal Developer Portals》\n· 行业报告：2025年55%组织采纳平台工程、86%高管视为AI落地关键\n采集时间：2026-07-06。\n·【2026-07-14复核增补】LeanOps／platformengineering.org年度趋势（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以内部开发者平台（IDP）为载体，将基础设施、流水线、环境等自助化封装为黄金路径，提升研发效能。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T12', no: 12, name: '可观测性标准化（OpenTelemetry）', short: '可观测性标准化', nameEn: 'OpenTelemetry',
+    category: '技术', categoryKey: '基础设施', archDim: '技术', attr: '关键',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 5, strategicFit: 3, value: 3, feasibility: 3, urgency: 3, openness: 5,
+    conclusion: '技术成熟度5分（2026年5月CNCF毕业、事实标准）、生态开放度5分，但战略匹配度、价值贡献度均为3分（运维支撑路径而非核心业务旗舰），属深入研究典型，宜研究统一遥测标准在我行监控体系的落地路径与成本优化（采样、存储分层），先在关键链路试点，为后续系统论证／落地铺路。',
+    definition: '一套开源、厂商中立的可观测性数据（指标／日志／链路）采集标准与工具集，统一遥测数据规范。',
+    trend: '· 从厂商锁定的分散监控，到统一、中立的可观测性标准\n· 2026.5晋级CNCF毕业项目，成事实标准\n· 向Profiling、eBPF扩展',
+    bankValue: '· 全链路可观测、快速定位、智能运维\n· 避免厂商锁定\n· 支撑SRE与AIOps',
+    limitation: '· 遥测数据量大、存储与分析成本高\n· 采集规范落地与埋点改造工作量大\n· 分析能力要求高',
+    maturityBasis: '2026年5月CNCF毕业（最高成熟度）、12000＋贡献者，事实标准，技术已就绪，主流成熟。', strategicFitBasis: '命中技术战略方向下运维支撑路径之一，非核心业务旗舰单列。', valueBasis: '统一遥测、快速定位、支撑AIOps，运维价值明确但非核心业务变量，单一维度价值为主。',
+    feasibilityBasis: '遥测数据量大、存储分析成本高、埋点改造工作量大，需专项投入治理。', urgencyBasis: '事实标准地位持续巩固并向AI／大模型可观测性延伸，属3—5年关键窗口，尚无强制监管时限。', opennessBasis: 'CNCF毕业项目，完全开源（Apache 2.0），厂商中立，无单点依赖。',
+    source: '· CNCF：OpenTelemetry晋级毕业项目（2026.05）\n· InfoQ／DevOps.com：OTel达CNCF最高成熟度\n· OpenTelemetry官方博客：毕业与Profiling／eBPF进展（2026）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】wasmCloud社区进展与LLM可观测性平台综述（2026.02）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '一套开源、厂商中立的可观测性数据（指标／日志／链路）采集标准与工具集，统一遥测数据规范。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:5, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T13', no: 13, name: '隐私增强计算／隐私计算（PETs：联邦学习·MPC·全同态加密FHE）', short: '隐私增强计算', nameEn: 'PETs：联邦学习·MPC·全同态加密FHE',
+    category: '数据要素／安全', categoryKey: '数据要素', archDim: '数据·安全', attr: '关键（新兴向关键演进）',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 5, value: 4, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '战略匹配度5分（"数据要素×"三年行动计划重点支撑技术）、价值贡献度4分、技术成熟度4分（联邦学习/MPC已有金融生产案例），宜系统论证：优选联合风控/供应链金融高价值场景先行验证，与数据织网（005）、合成数据（020）协同规划密态数据流通能力。',
+    definition: '一组"数据可用不可见"技术，含联邦学习、多方安全计算、差分隐私与全同态加密，使多方在不暴露原始数据前提下联合计算与建模。',
+    trend: '· 从数据集中汇聚才能用，到数据不动价值动的联合计算\n· 从事后合规审查，到密态运算内生保护',
+    bankValue: '· 数据要素×金融：跨机构联合风控、联合营销、供应链金融"数据不出域"合规流通\n· 支撑数据资产入表与对外数据合作，降低数据泄露与合规风险',
+    limitation: '· FHE等重加密方案算力开销大、性能仍受限；跨机构标准与互操作性尚不完善；结果可用性与隐私强度需权衡',
+    maturityBasis: '联邦学习／MPC已有多个金融生产案例，标准逐步统一；FHE仍在工程化爬坡但非决定整体评级的唯一子技术。', strategicFitBasis: '命中数据要素／安全双战略方向，国家"数据要素×"三年行动计划列为重点支撑技术。', valueBasis: '解锁跨机构联合风控、联合营销与数据资产变现，覆盖效率、风控、新业务多个维度。',
+    feasibilityBasis: '算力开销大、跨机构标准与互操作性不完善，需专项投入治理。', urgencyBasis: '"数据要素×"三年行动计划（2024—2026）进入收官之年，属3—5年关键窗口，尚无个体强制时限。', opennessBasis: '联邦学习框架部分已开源（如FATE），但跨机构互操作标准不完善，专有与开放并存。',
+    source: '安全内参《基于隐私计算的商业银行数据要素流通应用场景研究》2024；北京金融科技产业联盟《金融业数据应用发展报告2024—2025》2026-01；国家数据局等《"数据要素×"三年行动计划(2024—2026)》。\n·【2026-07-14复核增补】方达《金融法律监管年度报告（2026）：金融科技篇》（2026）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '一组"数据可用不可见"技术，含联邦学习、多方安全计算、差分隐私与全同态加密，使多方在不暴露原始数据前提下联合计算与建模。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T14', no: 14, name: '机密计算（Confidential Computing／TEE）', short: '机密计算', nameEn: 'Confidential Computing／TEE',
+    category: '数据要素／安全', categoryKey: '数据要素', archDim: '安全·技术', attr: '新兴',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 3, strategicFit: 5, value: 3, feasibility: 3, urgency: 2, openness: 2,
+    conclusion: '市场增长快但银行级应用信号尚不密集、战略紧迫度评级偏低，按六维复核结果转为动态观察：持续跟踪国产TEE与远程证明成熟度，并与隐私增强计算（013）协同关注密态计算路线，待紧迫度信号增强或标准化程度提升后再评估转入系统论证。',
+    definition: '基于硬件可信执行环境（TEE，如Intel TDX/SGX、ARM CCA）在使用中加密数据与代码，构建可远程证明的隔离计算飞地。',
+    trend: '· 从静态/传输中加密，到使用中（in-use）加密的全生命周期保护\n· 从信任云平台，到硬件根信任、去信任化运算',
+    bankValue: '· 敏感工作负载上云、多方数据协作、私有大模型推理的数据主权保护\n· 与隐私计算互补，为密态AI推理提供硬件底座',
+    limitation: '· 依赖芯片厂商与远程证明信任链；性能开销与生态适配；国产化TEE成熟度与供应链约束',
+    maturityBasis: '市场规模2025→2026由约93增至152亿美元快速增长，但企业级金融应用仍少，属早期采用阶段。', strategicFitBasis: '命中数据要素／安全双战略方向，为密态AI推理提供硬件级数据主权保护。', valueBasis: '敏感负载上云与密态AI推理价值明确，但规模化收益尚待验证，单一维度价值为主。',
+    feasibilityBasis: '依赖芯片厂商信任链与远程证明，国产化TEE成熟度与供应链存在约束，需专项投入治理。', urgencyBasis: '市场增长快但银行级应用信号尚不密集，暂无明确外部倒逼时限，可按3—5年布局节奏推进。', opennessBasis: '深度依赖Intel TDX/SGX、ARM CCA等少数芯片厂商方案，标准化程度低、接口相对私有，迁移成本高。',
+    source: 'Cyberus《Confidential Computing in 2026》；Fortune/Mordor机密计算市场报告2025—2026；Red Hat密态AI推理2025-10。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '基于硬件可信执行环境（TEE，如Intel TDX/SGX、ARM CCA）在使用中加密数据与代码，构建可远程证明的隔离计算飞地。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+  },
+  { id: 'T15', no: 15, name: '区块链资产代币化与可编程货币', short: '区块链资产代币化与可编程货币', nameEn: '',
+    category: '数据要素／未来（金融基础设施）', categoryKey: '数据要素', archDim: '业务', attr: '未来',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 2, strategicFit: 4, value: 5, feasibility: 1, urgency: 3, openness: 2,
+    conclusion: '价值贡献度5分（跨境支付、RWA具颠覆性潜力）、战略匹配度4分虽高，但引入可行度仅1分（合规变量大、须与数字人民币及监管协调，触发否决线），按短板原则不宜直接进入论证，宜动态观察：跟踪境内外监管、数字人民币协同与同业代币化试点，保持小规模学习与生态接触，作为重大外部变量储备。',
+    definition: '以分布式账本将存款、债券、基金及现实世界资产（RWA）代币化，并以合规稳定币/代币化存款承载链上支付结算。',
+    trend: '· 从账户记账与T+N清算，到链上原子结算、可编程货币\n· 从封闭金融基础设施，到TradFi与链上金融融合',
+    bankValue: '· 跨境支付、代币化存款、债券/基金代币化与RWA新业务，7×24原子结算、降本提效\n· 前瞻布局数字金融基础设施',
+    limitation: '· 我行语境合规变量大，须与数字人民币/监管协调；技术标准、账本选型与反洗钱、储备与赎回机制未定型；跨境监管分歧',
+    maturityBasis: '美国GENIUS Act确立联邦框架、OCC/FDIC规则进入部署期，标准与账本选型未定，处技术触发期爬升阶段。', strategicFitBasis: '命中数据要素／未来金融基础设施方向，为该方向被点名的前瞻布局技术路径。', valueBasis: '跨境支付、代币化存款与RWA具战略性、颠覆性潜力，7×24原子结算可大幅降本提效。',
+    feasibilityBasis: '合规变量大、须与数字人民币及监管协调，AML与储备赎回机制未定型，触发引入可行度否决线。', urgencyBasis: '稳定币交易量已超越Visa、同业加速布局，境内RWA差异化监管路径初现，属3—5年关键窗口。', opennessBasis: '账本技术标准与厂商选型未定，跨境监管分歧显著，潜在替代路径存在但迁移成本高。',
+    source: '· 美国 GENIUS Act（2025-07-18）；OCC Bulletin 2026-3；FDIC 实施 GENIUS Act 拟议规则（2026-04-07 通过）\n· Brookings《Next steps for GENIUS payment stablecoins》（2026）；Wolters Kluwer《GENIUS Act 2026》\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】八部门《关于进一步防范和处置虚拟货币交易炒作风险的通知》（2026.02.06）；香港金管局首批稳定币发牌（2026.04.10）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '以分布式账本将存款、债券、基金及现实世界资产（RWA）代币化，并以合规稳定币/代币化存款承载链上支付结算。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+  },
+  { id: 'T16', no: 16, name: '向量数据库与检索增强生成（Vector DB·RAG／GraphRAG）', short: '向量数据库与检索增强生成', nameEn: 'Vector DB·RAG／GraphRAG',
+    category: '人工智能／数据要素', categoryKey: '人工智能', archDim: '数据·应用', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 5, value: 4, feasibility: 4, urgency: 4, openness: 4,
+    conclusion: '六维评分全线均衡（成熟度4／战略匹配度5／价值贡献度4／引入可行度4／战略紧迫度4／生态开放度4），为001智能体、002 AI原生落地的必备组件，宜系统论证：围绕客服/合规/投研场景验证混合检索与GraphRAG、建立知识权限与评估体系，与001/002及005数据织网协同。',
+    definition: '以向量数据库存储语义嵌入，结合知识图谱做混合检索，为大模型提供可溯源的外部知识，降低幻觉。',
+    trend: '· 从纯参数记忆的黑箱问答，到检索增强、事实可溯源\n· 从纯向量相似检索，到向量+图谱混合、GraphRAG多跳推理',
+    bankValue: '· 智能客服、合规问答、投研与知识管理的事实底座，显著降幻觉、可引用\n· 001智能体/002 AI原生落地的必备组件',
+    limitation: '· 知识治理与权限隔离、检索质量与更新时效、GraphRAG构建成本；企业级安全访问控制要求高',
+    maturityBasis: '2026年RAG被视为企业AI战略刚需，混合检索成默认范式，多个行业已有生产案例。', strategicFitBasis: '命中人工智能／数据要素双战略方向，为001智能体、002 AI原生落地的必备组件。', valueBasis: '显著降幻觉、可引用溯源，覆盖智能客服、合规问答、投研等效率、体验、合规多个维度。',
+    feasibilityBasis: '知识治理与权限隔离为主要风险，各子要素总体可控，可按常规评审推进。', urgencyBasis: 'Gartner预计2026年七成以上企业生成式AI项目需结构化检索管线以控制幻觉与合规风险，0—2年内需启动。', opennessBasis: 'Milvus、pgvector等多厂商方案多为开源，具备国产化替代路径。',
+    source: 'Techment《RAG in 2026》；Neo4j《What is GraphRAG》；VentureBeat 2026数据预测；Onyx企业RAG平台指南2026。\n·【2026-07-14复核增补】Gartner《Top Trends in D&A 2026：GraphRAG》（2026）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以向量数据库存储语义嵌入，结合知识图谱做混合检索，为大模型提供可溯源的外部知识，降低幻觉。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T17', no: 17, name: 'AI智能体互操作协议（MCP·A2A·ACP）', short: 'AI智能体互操作协议', nameEn: 'MCP·A2A·ACP',
+    category: '人工智能', categoryKey: '人工智能', archDim: '应用·技术', attr: '新兴',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 4, value: 3, feasibility: 3, urgency: 3, openness: 5,
+    conclusion: '技术成熟度3分（标准仍在快速演进收敛）、生态开放度5分（MCP/A2A均已开源治理），与001智能体互补，宜深入研究：跟踪MCP/A2A收敛与安全规范，在智能体试点中评估协议选型与治理接口，条件成熟再随001转论证。',
+    definition: '智能体与工具、智能体与智能体间的标准通信协议：MCP（agent-tool）、A2A（agent-agent）、ACP等，构建可互操作的智能体生态。',
+    trend: '· 从各家私有插件与孤岛集成，到跨厂商标准化互操作\n· 从单体智能体，到多智能体协作编排',
+    bankValue: '· 为001智能体落地提供标准化工具接入与多体协作底座，降低集成与锁定成本\n· 统一行内智能体治理与审计接口',
+    limitation: '· 标准仍在快速演进与收敛（MCP/A2A融合工作进行中）；安全与权限模型、供应链信任待成熟',
+    maturityBasis: 'MCP由Linux基金会Agentic AI Foundation治理、社区服务器超1.8万，标准仍在快速演进收敛，属早期采用阶段。', strategicFitBasis: '命中人工智能战略方向，与001智能体强绑定，为其标准化工具接入与协作底座。', valueBasis: '降低集成与锁定成本、统一治理接口，价值随智能体规模化放大，单一维度价值为主。',
+    feasibilityBasis: '标准未完全定型、安全与供应链信任模型待成熟，需专项投入治理。', urgencyBasis: '2026年超100家企业采用MCP/A2A双协议，属3—5年关键窗口，尚无强制监管时限。', opennessBasis: 'MCP已转入Linux基金会开放治理、A2A同样开源，月下载9700万次，无单点依赖。',
+    source: 'Zylos Research《Agent Interoperability Protocols 2026》；arXiv 2505.02279 协议综述；Turion.ai《AI Agent Protocol Stack 2026》。\n·【2026-07-14复核增补】Linux基金会MCP项目统计与A2A采用情况（2026年初）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '智能体与工具、智能体与智能体间的标准通信协议：MCP（agent-tool）、A2A（agent-agent）、ACP等，构建可互操作的智能体生态。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T18', no: 18, name: '人工智能安全平台（AISP）及AI在网络风险管理中的应用', short: '人工智能安全平台', nameEn: '',
+    category: '人工智能／安全', categoryKey: '人工智能', archDim: '安全', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 5, value: 4, feasibility: 3, urgency: 4, openness: 3,
+    conclusion: '战略匹配度5分（人工智能／安全双战略方向核心刚需）、价值贡献度4分、战略紧迫度4分（金融监管总局指导意见已明确合规要求），治理先行属性强，宜系统论证：参照Gartner/NIST/OWASP与人行监管，建立提示注入防护、输出护栏、模型评估与运行时监控，作为001/002/017的统一护栏先行落地。同业已有可验证路径（新加坡银行公会ABS护栏手册、DBS治理框架量化成效），论证重点为治理层先行的能力缺口评估与内置/采购边界，建议与001智能体治理合并立项，6—9个月完成能力蓝图。',
+    definition: '覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。',
+    trend: '· 从模型能力优先，到治理护栏与安全内生并重\n· 从人工抽检，到运行时持续监控与强制执行',
+    bankValue: '· 001/002/017落地的前置护栏，防提示注入、数据泄露、幻觉与越权\n· 满足监管对AI可解释、可审计、可控的要求',
+    limitation: '· 多智能体与自治场景治理工具尚不成熟；标准与评测基准演进中；内部策略违规为主要风险源',
+    maturityBasis: 'TRiSM框架清晰、护栏工具成形，Gartner已发布市场指南，2024—2025年五起标志性并购显示品类快速走向成熟整合。', strategicFitBasis: '命中人工智能／安全双战略方向，为001/002/017规模化落地的前置刚需。', valueBasis: '影子AI治理价值可量化，DBS案例显示统一护栏可将AI上线周期压缩超80%，覆盖安全与效率多个维度。',
+    feasibilityBasis: '厂商整合期选型需组件化，多智能体治理工具尚不成熟，需专项投入治理。', urgencyBasis: '金融监管总局2026年6月18日已发布AI安全开发应用指导意见，AI安全平台由前瞻布局转为合规刚需，0—2年内需启动。', opennessBasis: '市场处并购整合期、厂商格局未定，主流开放标准与专有方案并存。',
+    source: '· Gartner《Govern AI Using TRiSM》（2026）及 AI 安全平台市场研究；IBM《What Is AI TRiSM》；Arthur《Best AI Governance Platforms 2026》\n· OWASP《Top 10 for Agentic Applications 2026》；NIST AI RMF\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）\n·【2026-08-17深化增补】HiddenLayer/Palo Alto Networks/Cisco/Check Point/F5/SentinelOne官方并购公告；Fortune Business Insights《AI TRiSM Market Size 2026-2034》；Airia《Shadow AI Statistics 2026》；OWASP genai.owasp.org《Top 10 for Agentic Applications 2026》；全国网络安全标准化技术委员会TC260-003《生成式人工智能服务安全基本要求》；新加坡银行公会(ABS)/MAS《Handbook on Generative AI Guardrails in Banking》(2025-05)；DBS Bank《Responsible AI in Banking》；中国银行业大模型应用跟踪报告(2026)。采集时间：2026-08-17。', attention: '高', status: '在库—已深化研究', updateDate: '2026-08-17',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。',
+    reportDocx: 'assets/docs/ZT018/ZT018_专题研究_人工智能安全平台AISP_v2.1(1).docx', reportPdf: 'assets/preview/ZT018/report.pdf',
+    slidesPptx: 'assets/docs/ZT018/slides.pptx', slidesPdf: 'assets/preview/ZT018/slides.pdf', image: 'assets/images/onepage-aisp.svg',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T19', no: 19, name: '小语言模型与端侧AI（SLM·On-device／Edge AI）', short: '小语言模型与端侧AI', nameEn: 'SLM·On-device／Edge AI',
+    category: '人工智能', categoryKey: '人工智能', archDim: '应用·技术', attr: '新兴',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 4, strategicFit: 4, value: 3, feasibility: 4, urgency: 3, openness: 4,
+    conclusion: '技术成熟度4分（2026年出现小模型领域任务超越大模型案例）、战略匹配度4分，价值贡献度3分（单一维度价值为主），与WebAssembly（004）边缘计算联动，宜深入研究：在客服质检/网点/移动端高频窄场景评估SLM微调蒸馏与端侧部署的成本—效果，形成大小模型协同的推理策略。',
+    definition: '参数量较小、面向特定任务、可在端侧/本地部署的语言模型，兼顾成本、时延与数据不出域。',
+    trend: '· 从"越大越好"的通用大模型，到小而专、任务定制\n· 从云端集中推理，到端侧/本地私有推理',
+    bankValue: '· 高频重复任务降本（较大模型省成本数倍至数十倍）、低时延、敏感数据本地处理\n· 与004 WebAssembly边缘计算联动',
+    limitation: '· 通用推理与长上下文能力弱于大模型；需微调与蒸馏工程；端侧算力与模型管理运维',
+    maturityBasis: '端侧模型与量化技术趋于成熟，2026年出现2.6B小模型领域任务超越大模型案例，多个行业已有生产案例。', strategicFitBasis: '命中人工智能战略方向，契合成本与数据不出域诉求，为该方向下重要路径。', valueBasis: '高频重复任务降本（较大模型省成本数倍至数十倍）与隐私价值明确，单一维度价值为主。',
+    feasibilityBasis: '能力边界有限、需微调蒸馏工程投入，但各子要素总体可控，可按常规评审推进。', urgencyBasis: 'Gartner预测2027年任务专用小模型使用量为通用大模型三倍，属3—5年关键窗口。', opennessBasis: 'Llama、Qwen等多款开源小模型可选，具备国产化替代路径。',
+    source: 'Zylos《Small Language Models & Edge AI 2026》；InfoWorld/ Dell Edge AI 2026；Iterathon SLM成本指南2026。\n·【2026-07-14复核增补】Gartner预测与Emerging Tech报告（2025.04／2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '参数量较小、面向特定任务、可在端侧/本地部署的语言模型，兼顾成本、时延与数据不出域。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T20', no: 20, name: '合成数据（Synthetic Data）', short: '合成数据', nameEn: 'Synthetic Data',
+    category: '数据要素／人工智能', categoryKey: '数据要素', archDim: '数据', attr: '新兴',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 5, value: 3, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '战略匹配度5分（数据要素／人工智能双战略方向，缓解数据获取瓶颈），技术成熟度3分处早期采用阶段，与隐私增强计算（013）互补，宜深入研究：在反欺诈样本增强与测试数据场景评估"合成+差分隐私"的质量、隐私与合规边界，与013统筹密态与合成数据能力。',
+    definition: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
+    trend: '· 从依赖真实敏感数据，到合成数据+差分隐私训练\n· 从数据孤岛，到共享"犯罪模式"而非客户明细',
+    bankValue: '· 反欺诈/风控样本增强与类别均衡、隐私安全的测试与共享、缓解数据获取瓶颈\n· 与013隐私计算互补',
+    limitation: '· 合成数据非天然隐私（模型可能记忆泄露）、质量与偏差控制、监管认可度待明确',
+    maturityBasis: 'Gartner估2026年四分之三企业将用生成式AI产合成客户数据，"合成+差分隐私"渐成黄金标准，属早期采用阶段。', strategicFitBasis: '命中数据要素／人工智能双战略方向，缓解数据获取瓶颈与隐私合规诉求。', valueBasis: '反欺诈样本增强、类别均衡与隐私安全测试价值明确，单一维度价值为主。',
+    feasibilityBasis: '合成数据非天然隐私（模型可能记忆泄露）、质量偏差与监管认可度待明确，需专项投入治理。', urgencyBasis: '金融业已用于反欺诈样本与测试，属3—5年关键窗口，尚无强制监管时限。', opennessBasis: 'SDV等合成数据工具多为开源，多厂商可选。',
+    source: 'NayaOne《Synthetic Data\'s Moment》；geekfence 2026合成数据产品；arXiv 2602.09288 金融合成数据隐私风险。\n·【2026-07-14复核增补】2026年中国AI发展趋势前瞻（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T21', no: 21, name: '因果AI（Causal AI）', short: '因果AI', nameEn: 'Causal AI',
+    category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 4, value: 3, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '战略匹配度4分（契合风控可解释性与监管"理由码"诉求），技术成熟度3分、价值贡献度3分兑现依赖工程成熟度，宜深入研究（可自观察层起步）：在信贷风控/反欺诈选点试验因果发现与反事实分析，评估与现有模型融合及监管可解释性收益；与神经符号AI（027）互补跟踪。',
+    definition: '融合因果推断与机器学习，估计变量间因果效应而非仅相关性，提供可解释、稳健的决策依据。',
+    trend: '· 从相关性预测黑箱，到因果机制可解释\n· 从数据驱动关联，到干预与反事实推理',
+    bankValue: '· 信贷风控、反欺诈、定价与营销的可解释建模与稳健决策，满足监管"理由码"要求\n· 缓解模型漂移与偏差',
+    limitation: '· 因果发现工程成熟度偏低、需领域知识与假设、数据质量要求高；工具与人才稀缺',
+    maturityBasis: '因果模型在欺诈检测已被证明优于XGBoost等相关性方法，但工程化与工具生态尚不成熟，属早期采用阶段。', strategicFitBasis: '命中人工智能战略方向，契合风控可解释性与监管"理由码"诉求。', valueBasis: '稳健决策与可解释性价值明确，兑现依赖工程成熟度，单一维度价值为主。',
+    feasibilityBasis: '假设与数据质量要求高、人才稀缺，需专项投入治理。', urgencyBasis: '监管对可解释AI要求持续提升，"治理化规模决策"成为2026年银行运营关键词，属3—5年关键窗口。', opennessBasis: 'DoWhy、EconML等主流因果推断工具多为开源，学术界主导，非单点依赖。',
+    source: 'FIRM e.V.《Causal AI in risk management and finance》；EJBEMA 2025 因果欺诈检测；Springer《financial explainable AI》综述。\n·【2026-07-14复核增补】行业趋势综述与决策智能相关报告（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '融合因果推断与机器学习，估计变量间因果效应而非仅相关性，提供可解释、稳健的决策依据。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T22', no: 22, name: '软件供应链安全（SBOM·供应链治理）', short: '软件供应链安全', nameEn: 'SBOM·供应链治理',
+    category: '安全', categoryKey: '安全', archDim: '安全', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 4, feasibility: 4, urgency: 5, openness: 5,
+    conclusion: '战略紧迫度5分（欧盟CRA已进入实施关键期，9月起须报告漏洞事件）、生态开放度5分（SPDX/CycloneDX开放事实格式），技术成熟度4分、战略匹配度4分、价值贡献度4分均衡达标，宜系统论证：建立SBOM生成与消费、来源证明与SSDF实践，纳入采购与CI/CD，与零信任架构（008）、可观测性标准化（012）统筹，明确落地范围与SLA。',
+    definition: '以软件物料清单（SBOM）、来源证明与安全开发框架管理开源与第三方组件风险，覆盖构建到部署全链路。',
+    trend: '· 从可见性（静态SBOM），到治理化、智能体化的持续管控\n· 从事后漏洞响应，到secure-by-design与来源证明',
+    bankValue: '· 满足DORA等监管对ICT第三方与软件供应链风险管理要求，降低开源组件与投毒风险\n· 与008零信任联动',
+    limitation: '· SBOM覆盖与自动化程度不一、跨供应商协同、工具链整合与运维投入',
+    maturityBasis: 'SBOM流程多数机构已启动，欧盟CRA进入实施关键期，多个行业已有生产案例。', strategicFitBasis: '命中安全战略方向，DORA等监管驱动核心路径，与零信任协同。', valueBasis: '降低开源组件与投毒风险、满足DORA监管要求，覆盖安全与合规两个以上维度。',
+    feasibilityBasis: 'SBOM覆盖与自动化程度不一，需工具链整合投入，但各子要素总体可控，可按常规评审推进。', urgencyBasis: '欧盟CRA要求2026年6月11日合格评定生效、9月11日起须报告漏洞与事件，SBOM成为强制要求，延迟将产生合规风险。', opennessBasis: 'SPDX、CycloneDX为开放事实格式，多厂商开源工具支持，无单点依赖。',
+    source: 'Sonatype《2026 State of the Software Supply Chain》；ReversingLabs 2026指南；Cloudsmith《2026 Guide to Software Supply Chain Security》。\n·【2026-07-14复核增补】欧盟CRA实施指引与SBOM合规要求（2026.06）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以软件物料清单（SBOM）、来源证明与安全开发框架管理开源与第三方组件风险，覆盖构建到部署全链路。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+  },
+  { id: 'T23', no: 23, name: '深度伪造检测与反AI欺诈（Anti-deepfake·合成身份防御）', short: '深度伪造检测与反AI欺诈', nameEn: 'Anti-deepfake·合成身份防御',
+    category: '安全／人工智能', categoryKey: '安全', archDim: '安全·业务', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 5, value: 5, feasibility: 4, urgency: 5, openness: 3,
+    conclusion: '战略匹配度5分、价值贡献度5分（新加坡ABS案例单季度防损5390万新元）、战略紧迫度5分（2025年深伪欺诈同比激增约700%，现在必须启动）三高，宜系统论证（可快速立项）：以红队实测建立拦截率基线，评估多模态活体与深伪检测方案（供应商须单独提交IAD专项测试报告），建立可快速再训练机制，参照新加坡银行业协会案例设计检测-处置闭环，嵌入开户/支付/身份核验链路，与零信任架构（008）、AI安全平台（018）并线推进。',
+    definition: '检测AI生成的人脸/声音/证件与合成身份的技术，强化活体检测、多模态一致性与欺诈研判。',
+    trend: '· 从文档+自拍+活体分步核验，到多模态协同、对抗性检测\n· 从静态规则，到可快速再训练的检测模型',
+    bankValue: '· 保护远程开户、人脸支付、代客交易与KYC，直接对冲深伪与合成身份欺诈激增\n· 与008零信任、018 AI TRiSM并线',
+    limitation: '· 攻防持续升级、检测需高频再训练；跨渠道集成与误拒率平衡；数据与算力投入',
+    maturityBasis: '检测工具已产业化，Gartner连续覆盖身份核验市场，多个行业已有生产案例，但IAD认证仍碎片化。', strategicFitBasis: '命中安全／人工智能双战略方向，直击远程开户、人脸支付、代客交易等核心链路。', valueBasis: '损失曲线陡峭（全球预测2030年583亿美元），新加坡ABS案例单季度防损5390万新元，价值显著且可量化。',
+    feasibilityBasis: '误拒平衡、跨系统集成、IAD认证缺口可通过分级核验与合同条款管控，非架构性障碍，风险总体可控。', urgencyBasis: '2025年深伪欺诈同比激增约700%、合成身份欺诈涨超300%，仅约7%机构达标中等以上防御力，现在必须启动。', opennessBasis: '检测厂商（Sumsub、GetReal、Innovatrics等）以专有方案为主，部分认证标准（如iBeta PAD）尚不统一，专有与开放并存。',
+    source: 'deepidv《Deepfake Detection for KYC 2026》；Sumsub《AI Fake ID Challenge for KYC》；GetReal《2026 Deepfake Summit》。\n·【2026-07-14复核增补】Sumsub《Fraud Trends 2026》；Forbes技术委员会（2026.04）\n·【2026-08-18深化增补】Innovatrics/ID Tech Wire（Air Bank案例）；Mobile ID World（新加坡ABS案例）；Jumio注入攻击专项披露（2025-08）；Biometric Update账户接管欺诈数据（2026-07）；Gartner《身份核验魔力象限》(2024首发/2026更新)、《数字身份成熟度曲线，2026》(2026-07-06)转引；AFIP/DuckDuckGoose深伪检测技术原理研究；FinCEN深伪欺诈预警(2024-11)细化；欧盟《人工智能法案》第50条透明度义务(2026-08-02生效)；国内《人工智能生成合成内容标识办法》（国信办通字〔2025〕2号，2025-09-01施行）。', attention: '高', status: '在库—已深化研究', updateDate: '2026-08-18',
+    externalSource: '',
+    summary: '检测AI生成的人脸/声音/证件与合成身份的技术，强化活体检测、多模态一致性与欺诈研判。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T24', no: 24, name: '去中心化身份与可验证凭证（DID·VC·eIDAS 2.0数字钱包）', short: '去中心化身份与可验证凭证', nameEn: 'DID·VC·eIDAS 2.0数字钱包',
+    category: '安全／数据要素', categoryKey: '安全', archDim: '安全·业务', attr: '新兴',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 5, value: 3, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '战略匹配度5分（安全／数据要素双战略方向，契合KYC复用与隐私合规诉求），技术成熟度3分（标准体系仍在成型），宜深入研究：跟踪W3C VC/eIDAS进展与国内数字身份政策，评估KYC凭证复用与选择性披露在开户/授权的适用性，与深度伪造检测（023）、隐私增强计算（013）协同。',
+    definition: '以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。',
+    trend: '· 从中心化账户与集中身份库，到用户自持、最小化披露\n· 从重复KYC，到跨机构可复用可验证凭证',
+    bankValue: '· 简化KYC/复用、增强隐私与合规、跨机构凭证互认，改善开户与授权体验\n· 与023身份防御、013隐私计算协同',
+    limitation: '· 标准与生态（W3C VC、ISO 18013-5、eIDAS ARF）仍在成型；国内落地路径与监管框架待明确；互认与撤销机制',
+    maturityBasis: '标准体系（W3C VC、ISO 18013-5、eIDAS ARF）仍在成型，海外强制落地、国内路径待明确，属早期采用阶段。', strategicFitBasis: '命中安全／数据要素双战略方向，契合KYC复用与隐私合规诉求。', valueBasis: 'KYC凭证复用与选择性披露改善开户体验、降低合规成本，单一维度价值为主。',
+    feasibilityBasis: '标准与监管框架未定、互认撤销机制待建，需专项投入治理。', urgencyBasis: 'eIDAS 2.0要求2027年起欧盟银行须接受，但国内落地路径与监管框架尚未明确，属3—5年关键窗口。', opennessBasis: 'W3C VC为开放标准，去中心化架构本身避免单点依赖，多厂商钱包方案可选。',
+    source: 'Ping Identity《Decentralized Identity in EU Finance》；《Enterprise Playbook 2026》；eIDAS 2.0 EUDI Wallet KYC指南2026。\n·【2026-07-14复核增补】行业综述（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T25', no: 25, name: '量子保密通信／量子密钥分发（QKD·量子保密通信）', short: '量子保密通信', nameEn: 'QKD·量子保密通信',
+    category: '量子科技／安全', categoryKey: '量子科技', archDim: '安全', attr: '未来',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 2, strategicFit: 5, value: 2, feasibility: 2, urgency: 1, openness: 2,
+    conclusion: '战略匹配度5分虽高，但价值贡献度2分（普适性有限、难以规模化量化）、战略紧迫度仅1分（QKD因专用硬件与点对点链路限制难以互联网规模部署，各国监管优先PQC而非QKD），属动态观察典型，宜跟踪QKD+PQC混合组网与金融试点、成本曲线，与后量子密码学（007）安全线联动（防御侧优先），保持生态接触与小规模学习。',
+    definition: '基于量子物理原理分发密钥（QKD），提供对窃听敏感、理论上信息论安全的通信保护。',
+    trend: '· 从计算复杂度安全，到物理原理保障的密钥分发\n· 从纯QKD，到QKD与后量子加密（PQC）混合组网',
+    bankValue: '· 关键链路（数据备份、同城/异地灾备、行际通信）的长周期抗窃听保护\n· 与007 PQC、009量子计算防御线联动',
+    limitation: '· 成本高、需专用光纤/中继、距离与组网受限；标准与可运营性不足；性价比与场景待验证',
+    maturityBasis: '中国已建16城约1.2万公里骨干量子网并试点QKD+PQC混合，属技术触发期爬升阶段。', strategicFitBasis: '命中量子科技／安全双战略方向。', valueBasis: '关键链路（备份、灾备、行际通信）抗窃听价值明确，但普适性有限，难以规模化量化。',
+    feasibilityBasis: '成本高、需专用光纤中继、组网受限，需专项立项治理方可能推进。', urgencyBasis: 'QKD因专用硬件与点对点链路限制难以互联网规模部署，各国监管优先方向为PQC而非QKD，属5年以上长期赛道。', opennessBasis: '专用硬件与骨干网建设以国内为主导，国际标准与互操作性有限，潜在替代路径迁移成本极高。',
+    source: 'The Quantum Insider 2026量子密码公司盘点；Mordor QKD市场报告；Yale JIA《China\'s Quantum Ambitions》。\n·【2026-07-14复核增补】NIST后量子迁移FAQ及行业分析（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '基于量子物理原理分发密钥（QKD），提供对窃听敏感、理论上信息论安全的通信保护。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+  },
+  { id: 'T26', no: 26, name: '神经形态与光子计算（Neuromorphic·Photonic Computing）', short: '神经形态与光子计算', nameEn: 'Neuromorphic·Photonic Computing',
+    category: '未来计算（算力）', categoryKey: '基础设施', archDim: '技术', attr: '未来',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 2, strategicFit: 3, value: 1, feasibility: 1, urgency: 1, openness: 2,
+    conclusion: '价值贡献度、引入可行度、战略紧迫度均为1分（仍处实验室／早期样机阶段，距银行可用尚远，5年以上长期赛道），属动态观察典型，宜跟踪光子/类脑加速器的能效突破与产业化信号，保持情报留痕，出现拐点再升层。',
+    definition: '类脑脉冲神经与硅光/光电器件的新型计算范式，追求超低功耗、超低时延的AI加速。',
+    trend: '· 从冯·诺依曼架构与电子算力，到类脑存算一体与光计算\n· 从瓦级功耗，到微瓦级、亚纳秒时延推理',
+    bankValue: '· 远期为边缘风控、实时推理提供超低功耗算力选项，缓解AI能耗与散热压力\n· 前瞻算力技术储备',
+    limitation: '· 仍处实验室/早期样机、编程模型与工具链不成熟、生态缺失；距银行可用尚远',
+    maturityBasis: '光子加速器与类脑处理器已有Nature级突破与产业样机（如Xanadu 2026年3月合并上市），但通用可用性远未成熟，属技术触发期爬升阶段。', strategicFitBasis: '命中未来计算（算力）方向下的技术路径之一，非当前核心旗舰应用。', valueBasis: '远期能效／时延潜力高，但近期不可兑现，无法识别明确可量化价值点。',
+    feasibilityBasis: '仍处实验室／早期样机阶段，编程模型与工具链、生态缺失，人才与供应链极度稀缺。', urgencyBasis: '距银行可用尚远，属5年以上长期赛道，早晚推进对结果影响很小。', opennessBasis: '仅Xanadu、PsiQuantum等少数厂商布局，标准与互操作性极早期，潜在替代路径迁移成本极高。',
+    source: 'PatSnap《Photonic/Neuromorphic Computing Landscape 2026》；Nature《integrated photonic accelerator》2025；Wiley《Integrated Neuromorphic Photonic Computing》2026。\n·【2026-07-14复核增补】Xanadu上市公告与PsiQuantum进展（2026.03）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '类脑脉冲神经与硅光/光电器件的新型计算范式，追求超低功耗、超低时延的AI加速。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:1, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+  },
+  { id: 'T27', no: 27, name: '神经符号AI／可推理AI（Neuro-symbolic AI）', short: '神经符号AI', nameEn: 'Neuro-symbolic AI',
+    category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 4, value: 3, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '战略匹配度4分（契合可解释与合规审计诉求），技术成熟度3分、价值贡献度3分兑现依赖工程成熟度，宜深入研究：跟踪神经符号与本体约束推理进展，在合规/授信可解释场景做概念验证，与因果AI（021）、AI安全平台（018）统筹可解释AI路线。',
+    definition: '融合神经网络与符号逻辑推理，兼顾模式识别与可解释、可审计的结构化推理。',
+    trend: '· 从纯神经黑箱，到神经+符号可解释推理\n· 从概率生成，到带前/后置条件、可审计的确定性执行',
+    bankValue: '· 高合规、可审计场景（授信、合规、风控）的可解释推理与规则约束\n· 与021因果AI、018 TRiSM互补',
+    limitation: '· 工程与工具尚不成熟、知识/本体构建成本高、规模化落地案例少',
+    maturityBasis: '2026年被业界称为神经符号AI转折点，随EU AI Act可解释性要求提升而升温，属早期采用阶段。', strategicFitBasis: '命中人工智能战略方向，契合可解释与合规审计诉求。', valueBasis: '高合规可审计场景的可解释推理与规则约束价值明确，兑现依赖工程成熟度，单一维度价值为主。',
+    feasibilityBasis: '知识／本体构建成本高、规模化落地案例少，需专项投入治理。', urgencyBasis: '监管对可追溯、可解释性要求持续提升，属3—5年关键窗口，尚未见银行级成熟案例拐点。', opennessBasis: '学术界主导、部分推理框架已开源，但行业标准尚未统一，专有与开放并存。',
+    source: 'Cogent《The Year of Neuro-Symbolic AI 2026》；Stanford Tech Review 2026；arXiv 2604.00555 企业智能体神经符号架构。\n·【2026-07-14复核增补】Gartner领域专用模型趋势（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '融合神经网络与符号逻辑推理，兼顾模式识别与可解释、可审计的结构化推理。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T28', no: 28, name: '数字人与空间计算（Digital Human·Spatial Computing）', short: '数字人与空间计算', nameEn: 'Digital Human·Spatial Computing',
+    category: '客户体验／人工智能', categoryKey: '客户体验', archDim: '业务·应用', attr: '新兴',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 4, value: 3, feasibility: 3, urgency: 4, openness: 3,
+    conclusion: '战略紧迫度4分（《金融产品网络营销管理办法》2026年9月30日施行在即，合规边界收紧）、战略匹配度4分，技术成熟度3分、价值贡献度3分兑现依赖ROI验证，宜深入研究：在客服/财富顾问/网点场景做以行内知识为锚的数字人试点，评估体验、ROI与合规（话术留痕、适老），与向量数据库与RAG（016）、自主型AI智能体（001）协同。',
+    definition: '由生成式AI驱动、具多模态与持续记忆的数字人，结合空间计算/实时渲染提供拟人交互。',
+    trend: '· 从文本聊天机器人，到多模态、有记忆的拟人交互\n· 从屏幕交互，到网点/可穿戴/空间计算沉浸体验',
+    bankValue: '· 智能客服、财富顾问、网点与远程服务的体验升级与人力替代\n· 以行内知识为锚提供可溯源应答',
+    limitation: '· ROI与合规（话术、录制、适老）待验证；拟人化风险与信任；渲染与算力成本',
+    maturityBasis: 'AI数字人市场2025→2026约98增至129亿美元CAGR约31%，金融业已有数字人顾问部署，属早期采用阶段。', strategicFitBasis: '命中人工智能战略方向，契合客户体验升级诉求。', valueBasis: '智能客服、财富顾问、网点服务体验升级价值明确，普适性中等，单一维度价值为主。',
+    feasibilityBasis: 'ROI与合规（话术、录制、适老）待验证，拟人化风险与信任，需专项投入治理。', urgencyBasis: '《金融产品网络营销管理办法》2026年9月30日施行在即，数字人营销合规边界收紧，0—2年内需启动合规适配。', opennessBasis: '数字人厂商较多但技术方案以专有为主，标准化程度中等。',
+    source: 'Forbes/Dell《Digital Humans in Financial Services》2026；Precedence《AI Avatar Market》；Nasdaq《AI Digital Human Advisors》。\n·【2026-07-14复核增补】《金融产品网络营销管理办法》（施行日2026.09.30）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '由生成式AI驱动、具多模态与持续记忆的数字人，结合空间计算/实时渲染提供拟人交互。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T29', no: 29, name: '绿色与可持续IT／液冷数据中心', short: '绿色与可持续IT', nameEn: '',
+    category: '信息基础设施（绿色算力）', categoryKey: '基础设施', archDim: '技术', attr: '关键',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 4, strategicFit: 3, value: 3, feasibility: 4, urgency: 4, openness: 3,
+    conclusion: '技术成熟度4分（液冷从可选变必选）、战略紧迫度4分（新建数据中心PUE与液冷渗透率监管强制指标已明确），工程较成熟，宜深入研究：结合我行/入网数据中心评估液冷改造与PUE优化、余热回收与双碳收益，与算力网络（010）统筹算力与能效规划。',
+    definition: '以直冷/浸没式液冷、余热回收、零水冷等提升数据中心能效（PUE）与可持续性，支撑高密度AI算力。',
+    trend: '· 从风冷与高PUE，到液冷、余热回收、近零水耗\n· 从算力扩张，到能效与双碳约束下的绿色算力',
+    bankValue: '· 支撑高功率AI机柜散热、降低能耗与运营成本、满足双碳与ESG\n· 与010算力网络协同规划算力布局',
+    limitation: '· 液冷改造与运维、机房与供应链适配、既有机房迁移成本；标准与选型',
+    maturityBasis: '液冷从可选变必选，2025年国内液冷数据中心投资规模约765.5亿元，多个行业已有生产案例。', strategicFitBasis: '命中信息基础设施（绿色算力）方向下的技术路径之一，与010算力网络协同规划。', valueBasis: '降低能耗与运营成本、满足双碳与ESG要求，属基础设施类单一维度价值。',
+    feasibilityBasis: '液冷改造与运维、机房供应链适配存在成本，但各子要素总体可控，可按常规评审推进。', urgencyBasis: '新建大型数据中心PUE强制不高于1.15、液冷渗透率不低于60%，监管明确时限，0—2年内需启动。', opennessBasis: '液冷厂商方案多样，但浸没式／直冷等技术路线尚未统一标准，中等成本替代路径。',
+    source: 'CoreSite《Data Center Outlook 2026》；Data Center Knowledge液冷趋势2026；MIT News核启发冷却2026-06。\n·【2026-07-14复核增补】工信部数据中心新规与行业研究（2026.01–03）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以直冷/浸没式液冷、余热回收、零水冷等提升数据中心能效（PUE）与可持续性，支撑高密度AI算力。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T30', no: 30, name: '监管科技与合规科技（RegTech·SupTech·AI-native合规）', short: '监管科技与合规科技', nameEn: 'RegTech·SupTech·AI-native合规',
+    category: '合规科技（RegTech）', categoryKey: '合规科技', archDim: '应用·业务', attr: '关键',
+    tier: '研究层', disposal: '深入研究',
+    maturity: 3, strategicFit: 4, value: 3, feasibility: 4, urgency: 3, openness: 3,
+    conclusion: '战略匹配度4分（直击AML、交易监控与报送刚需核心路径），引入可行度4分（各子要素总体可控），技术成熟度3分处早期采用阶段，宜深入研究：在AML/交易监控/监管报送场景评估AI-native RegTech与可解释性、监管认可与数据标准，与AI安全平台（018）、向量数据库与RAG（016）协同。',
+    definition: '以AI/NLP/知识图谱自动化合规：监管报送、交易监控、反洗钱、客户尽调与法规解析。',
+    trend: '· 从人工合规与事后核查，到AI-native持续、自适应合规\n· 从孤立工具，到可互操作数据标准+AI工具链',
+    bankValue: '· 降低合规成本、提升AML/交易监控与报送效率与准确性、适应跨境复杂规则\n· 与018 TRiSM、016 RAG协同',
+    limitation: '· 监管数据标准与互操作、模型可解释与监管认可、法规更新时效；与既有合规体系整合',
+    maturityBasis: '工具与案例渐成形，监管认可与体系整合仍待深化，属早期采用阶段。', strategicFitBasis: '命中合规科技（RegTech）战略方向，直击AML、交易监控与报送刚需核心路径。', valueBasis: '降低合规成本、提升AML与报送效率与准确性，单一维度价值为主。',
+    feasibilityBasis: '监管数据标准与既有合规体系整合存在工作量，但各子要素总体可控，可按常规评审推进。', urgencyBasis: '央行2026年3月工作会议与金融监管总局系列文件持续推进监管数字化转型，属3—5年关键窗口。', opennessBasis: 'RegTech厂商方案以专有为主，标准化程度中等。',
+    source: 'Central Banking《RegTech & SupTech in central banks 2026》；MDPI《Digital Regulatory Governance》2025；TechMagic《RegTech 2026》。\n·【2026-07-14复核增补】央行科技工作会议（2026.03）；金融监管总局实施方案（2025.12）与指导意见（2026.06.18）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: '',
+    summary: '以AI/NLP/知识图谱自动化合规：监管报送、交易监控、反洗钱、客户尽调与法规解析。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T31', no: 31, name: '业务编排与自动化技术（Business Orchestration and Automation Technologies，BOAT）', short: '业务编排与自动化技术', nameEn: 'Business Orchestration and Automation Technologies，BOAT',
+    category: '数据要素／未来（企业级流程自动化）', categoryKey: '数据要素', archDim: '业务（跨应用）', attr: '新兴（向关键演进）',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 3, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '市场类别已由Gartner正式确立、战略匹配度与价值贡献度评级高，按六维复核结果转为提前布局：梳理我行现有自动化与集成资产地图，提前明确BOAT平台整合路径与选型标准，并与智能体自动化（001／034）的分工提前规划，为后续规模化收敛占位。',
+    definition: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
+    trend: '· 从 RPA／BPM／iPaaS 各自为战的单点自动化，到统一平台端到端编排业务成果\n· 从固定规则脚本，到 AI／智能体驱动的自主流程编排与实时事件响应\n· 从 IT 集中开发，到低代码／无代码的业务与 IT 融合交付',
+    bankValue: '· 整合我行分散的 RPA／BPM／低代码／集成资产，降低集成与运维开销\n· 以统一编排支撑授信审批、账户运营、合规报送等端到端流程自动化\n· 为智能体自动化（001／034）提供业务流程编排底座，加速数字员工落地',
+    limitation: '· 平台整合涉及存量 RPA／BPM／iPaaS 迁移，改造范围与切换成本大\n· 供应商锁定与选型风险，市场刚形成、格局未定\n· 与既有自动化平台并存期的治理、权限与审计复杂',
+    maturityBasis: 'Gartner首版BOAT魔力象限于2025年10月发布、市场类别正式确立，平台整合与厂商格局仍在演进，属早期采用阶段。', strategicFitBasis: '命中数据要素／未来（企业级流程自动化）方向，为存量RPA/BPM/低代码资产整合的核心路径。', valueBasis: '端到端流程编排降本提效，并为智能体自动化（001/034）提供业务编排底座，覆盖效率与AI赋能多个维度。',
+    feasibilityBasis: '涉及存量RPA/BPM/iPaaS迁移，供应商锁定与选型风险，需专项投入治理。', urgencyBasis: 'Gartner预计BOAT软件支出2029年将超210亿美元（CAGR33.9%），属3—5年关键窗口，尚无强制监管时限。', opennessBasis: '领导者厂商（Appian、Pega、ServiceNow）以专有商业方案为主，也有Camunda等开源选项，专有与开放并存。',
+    source: '· Gartner《Magic Quadrant for Business Orchestration and Automation Technologies》（Saikat Ray等6位分析师合著，2025年10月15日，文档编号G00828060，首版；全文存档于本行内部知识库）\n· Gartner Peer Insights BOAT 市场（2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增，已联网核实）\n·【2026-07-14复核增补】Infosys Finacle《Banking Architecture Trend 2026》（2026）\n·【2026-07-15深化增补】厂商官方发布信息（Pega、Camunda、Appian、Workato、Twoday）及技术解读资料（Camunda、Trisotech），已全文存档\n【2026-08-17深化增补】Camunda官方案例研究(Barclays/Jyske Bank)、ServiceNow官方客户案例(Standard Chartered Bank)、Appian官方新闻稿(Pepper Money)，均已核实并存档；Forrester《The Total Economic Impact of Camunda for Enterprises》(2024)、IDC/Appian《The Business Value of Appian》效益测算参考研究；Gartner《Critical Capabilities for BOAT, Q3 2025》（转引自Pega新闻稿）；《银行保险机构信息科技外包风险监管办法》（银保监办发〔2021〕141号）、《银行保险机构操作风险管理办法》（国家金融监督管理总局令2023年第5号）、《银行保险机构数据安全管理办法》（金规〔2024〕24号）具体条款，均来自政府网官方发布页面，已核实。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
+    reportDocx: 'assets/docs/ZT031/ZT031_专题研究_业务编排与自动化BOAT_v3.0.docx', reportPdf: 'assets/preview/ZT031/report.pdf',
+    slidesPptx: 'assets/docs/ZT031/slides.pptx', slidesPdf: 'assets/preview/ZT031/slides.pdf', image: 'assets/images/onepage-boat.svg',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
+    category: '数据要素（仿真与决策）', categoryKey: '数据要素', archDim: '业务', attr: '未来',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 1, strategicFit: 3, value: 2, feasibility: 2, urgency: 1, openness: 3,
+    conclusion: '技术成熟度1分、战略紧迫度1分（创新萌芽期，市场渗透率仅1%-5%，未检索到银行业生产级案例），引入可行度2分（个人信息保护与算法推荐合规红线密集），维持观察层／动态观察：季度扫描Gartner曲线位移与同业案例披露情况，重点跟踪《金融产品网络营销管理办法》执行细则，可在严格合规限定下探索客户流失预测、经营仿真等非个性化营销场景的小范围概念验证；原技术编号032所含的组织数字孪生（DTO）概念已移除，如需研究组织/流程仿真类数字孪生，应作为独立技术另行建档评估，不再与客户数字孪生合并研判。',
+    definition: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。Gartner将其列为客户体验与销售转型的战略性新兴技术，2025年多份Hype Cycle报告将其定位于"创新萌芽期／新兴阶段"。',
+    trend: '· 从群体客户画像，到单客户级实时行为孪生与情景推演\n· 从事后归因分析，到"假设-推演"式前瞻模拟\n· 从人工经验驱动的营销决策，到孪生驱动的自动化触达与响应预测',
+    bankValue: '· 支撑精准营销触达、财富顾问服务、客户流失预测与风险预警\n· 与033决策智能平台（决策推荐）、034多智能体系统（任务执行）、028数字人（交互呈现）构成技术链条，为其提供前瞻性预测输入\n· 提升客户旅程模拟与运营仿真能力，辅助产品与渠道策略验证',
+    limitation: '· 技术仍处创新萌芽期／新兴阶段，市场渗透率约1%-5%，可用平台与方法论未定型\n· 客户级行为建模高度依赖个人信息保护、算法推荐与差异化定价合规红线，2026年9月30日起施行的《金融产品网络营销管理办法》进一步收紧适用边界\n· 统一数据基础、聚焦型机器学习模型、实时同步与激活路径四项前提对多数机构均非现成能力，建设与运维投入大\n· 截至本轮复核，未检索到可公开核实的银行业生产级落地案例，行业整体仍以零售、消费品等非金融场景先行',
+    maturityBasis: 'Gartner多期Hype Cycle一致将DToC置于创新萌芽期，市场渗透率仅1%-5%，未检索到银行业生产级案例，处萌芽阶段。', strategicFitBasis: '命中数据要素（仿真与决策）方向下的技术路径之一，非核心旗舰应用。', valueBasis: '精准营销、财富顾问、流失预警存在价值锚点，但金融场景数据基础与合规约束显著高于零售业，价值难以量化。',
+    feasibilityBasis: '《金融产品网络营销管理办法》《个人信息保护法》自动化决策公平性等构成客户级建模的多重合规红线，需专项立项治理。', urgencyBasis: '技术处于创新萌芽期，不宜投入研究资源或开展本行落地探索，属5年以上长期赛道。', opennessBasis: '可用平台与方法论尚未定型，市场早期，专有与潜在开放路径并存。',
+    source: '· Gartner新闻稿《Hype Cycle Reveals How AI and Digital Advancements Are Primed to Aid Sales Transformations》（2025-10-30，DToC置于创新萌芽期）\n· Gartner《Hype Cycle for CRM Technologies, 2025》（G00827302，2025-07-09，DToC列"On the Rise"新兴阶段、效益评级高、渗透率1%-5%，经第三方转引页面部分核实）\n· Gartner供应链洞察《A Digital Twin of the Customer Could Transform Your Supply Chain Digitalization Strategy》（Beth Coppinger，2023-06-16，27%对60%试点/规划数据）\n· 中国人民银行等八部门《金融产品网络营销管理办法》（2026-04-24印发/2026-09-30施行）；国家网信办等四部门《互联网信息服务算法推荐管理规定》（2021-12-31公布/2022-03-01施行）；中国人民银行《金融领域科技伦理指引》（JR/T 0258—2022）\n采集截止日期：2026-08-18。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
+    category: '数据要素（决策智能）', categoryKey: '数据要素', archDim: '数据', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 5, feasibility: 3, urgency: 3, openness: 3,
+    conclusion: '价值贡献度5分（决策自动化与增强直接创造业务价值，多维度显著且可量化）、战略匹配度4分、技术成熟度4分（Gartner已发布魔力象限，市场成熟），宜系统论证：盘点我行授信/风控/营销决策资产，评估DIP与现有决策引擎的整合路径，结合因果AI（021）强化可解释与反事实能力，选取高价值决策场景开展论证与试点。',
+    definition: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
+    trend: '· 从分散的分析报表，到以决策为中心、可建模可复用的决策资产\n· 从人工经验决策，到 AI 增强与自动化决策闭环\n· 从事后归因，到决策全过程留痕与持续优化',
+    bankValue: '· 授信审批、风控反欺诈、催收、营销与定价等核心决策的建模、增强与自动化\n· 决策留痕支撑可解释、可审计与监管合规\n· 与因果AI（021）结合提升决策可解释性与反事实推演',
+    limitation: '· 与现有决策引擎/规则平台整合、口径统一难度大\n· 决策模型的可解释性、偏见与治理要求高\n· 组织需具备决策工程与数据治理能力',
+    maturityBasis: 'Gartner于2026年1月发布决策智能平台魔力象限，FICO/SAS/ACTICO等厂商成熟，多个行业已有生产案例。', strategicFitBasis: '命中数据要素（决策智能）战略方向，授信、风控、反欺诈等银行核心业务本质即决策，契合度极高。', valueBasis: '决策自动化与增强直接创造业务价值，决策留痕支撑可解释与合规，多维度显著价值且可量化。',
+    feasibilityBasis: '需与现有决策引擎、规则平台整合，统一口径难度大，需专项投入治理。', urgencyBasis: 'Gartner预测2026年75%全球500强将应用决策智能实践，"治理化规模决策"成为2026年银行运营关键词，属3—5年关键窗口。', opennessBasis: 'FICO、SAS、Aera等厂商以专有商业方案为主，标准化程度中等。',
+    source: '· Gartner《Magic Quadrant for Decision Intelligence Platforms》（2026.01.26）《Market Guide for DIP》\n· FICO/SAS 决策智能金融应用；FintechNews《Top DIP of 2026》\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与021因果AI关联，以本条目为主、021为补充）\n·【2026-07-14复核增补】银行业AI趋势报告（2026）\n【2026-07-15深化增补】Gartner《Magic Quadrant for Decision Intelligence Platforms》（G00827619，2026-01-26）全文已获授权订阅、存于本行内部知识库，含17家厂商完整评述与原版象限图，已全文存档\n【2026-08-17专题补充】Gartner分析师2026-08-04现场技术交流纪要与配套技术分析报告（行内知识库留存，非公开信源）；自制3层混合决策智能框架示意图（据交流内容整理）；采集/整理日期：2026-08-17\n【2026-08-17修订增补】FICO官方新闻稿《Nationwide Speeds Up Credit Decisioning by 50% with FICO Platform》（2026-03-11，公开可查）；Forrester Consulting对Quantexa委托研究新闻稿（2024-02-08，公开可查）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
+    reportDocx: 'assets/docs/ZT033/ZT033_专题研究_决策智能平台DIP_v3.1.docx', reportPdf: 'assets/preview/ZT033/report.pdf',
+    slidesPptx: 'assets/docs/ZT033/slides.pptx', slidesPdf: 'assets/preview/ZT033/slides.pdf', image: 'assets/images/onepage-dip.svg',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T34', no: 34, name: '多智能体系统（Multi-Agent Systems，MAS）', short: '多智能体系统', nameEn: 'Multi-Agent Systems，MAS',
+    category: '人工智能（智能体协同）', categoryKey: '人工智能', archDim: '应用（跨业务）', attr: '新兴（向关键演进）',
+    tier: '布局层', disposal: '提前布局',
+    maturity: 2, strategicFit: 4, value: 4, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '战略价值高、与自主型AI智能体（001）、AI智能体互操作协议（017）协同紧密，按六维复核结果转为提前布局：以AI安全平台（018）为统一护栏前置，提前建立单体与多智能体的分工与编排标准储备，选取反欺诈／投研等高价值场景做前瞻性技术与人才准备，严控安全与成本，避免盲目规模化。',
+    definition: '由多个任务专精的 AI 智能体分工协作、相互通信与协调以完成复杂任务的系统；在单体自主智能体（001）之上引入编排、角色分工与协作机制，提升可扩展性与专业度。',
+    trend: '· 从单一智能体，到多个专精智能体分工协作的复合系统\n· 从人工编排流程，到智能体间自主协商、任务分解与协同执行\n· 从窄场景自动化，到端到端跨流程的 AI 数字团队',
+    bankValue: '· 反欺诈、投研、跨境金融、运营与合规等复杂流程的多智能体协同自动化\n· 与001自主智能体、017互操作协议（MCP/A2A）协同，构建 AI 数字员工团队\n· 提升复杂任务的专业度、并行度与可扩展性',
+    limitation: '· 安全攻击面随智能体数量扩大，编排与监控复杂度高\n· 复合误差累积导致可靠性下降，治理与可观测工具不成熟\n· Gartner 预警到2027年超40%智能体AI项目将被取消，成本与ROI不确定',
+    maturityBasis: 'Gartner列为2026年顶级战略技术趋势，2026Q1约80%新交付应用嵌入AI智能体，但预测2027年超40%智能体AI项目将被取消，处技术触发期爬升阶段。', strategicFitBasis: '命中人工智能战略方向，银行保险业智能体采纳领先（约47%），与001/017直接协同。', valueBasis: '复杂流程多智能体协同自动化潜力大，为AI数字团队核心能力，覆盖效率与专业度多个维度。',
+    feasibilityBasis: '安全攻击面随智能体数量扩大、复合误差累积可靠性下降，以018 AISP为统一护栏前置管控后风险总体可管理，需专项投入治理。', urgencyBasis: '57%银行高管预期三年内智能体进入风险、合规、审计与反欺诈流程，属3—5年关键窗口。', opennessBasis: '与017互操作协议共享MCP/A2A开放生态，多厂商可选。',
+    source: '· Gartner《Top Strategic Technology Trends 2026: Multiagent Systems》《Multiagent Systems in Enterprise AI》\n· S&P Global/McKinsey 智能体生产部署统计（2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与001/017关联，以本条目为主、001/017为补充；护栏依赖018 AISP）\n·【2026-07-14复核增补】Accenture银行业展望2026；多智能体系统行业白皮书（2026）', attention: '极高', status: '在库—已深化研究', updateDate: '2026-07-14',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '由多个任务专精的 AI 智能体分工协作、相互通信与协调以完成复杂任务的系统；在单体自主智能体（001）之上引入编排、角色分工与协作机制，提升可扩展性与专业度。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  },
+  { id: 'T35', no: 35, name: '可组合核心银行系统（Composable Core Banking System）', short: '可组合核心银行系统', nameEn: 'Composable Core Banking System',
+    category: '数据要素／未来（核心系统现代化）', categoryKey: '数据要素', archDim: '应用', attr: '关键',
+    tier: '观察层', disposal: '动态观察',
+    maturity: 3, strategicFit: 4, value: 4, feasibility: 2, urgency: 3, openness: 3,
+    conclusion: '核心系统现代化方向明确、价值贡献度评级高，但引入可行度触及否决线（改造投入巨大、迁移周期长、业务连续性风险高），按六维复核短板原则转为动态观察，并优先评估可行度短板：跟踪同业规模化落地案例与PBC增量替换路径的风险管控经验，形成可分阶段、低风险的迁移方案后再评估转入系统论证。',
+    definition: '以 API 化模块与打包业务能力（Packaged Business Capabilities，PBC）搭建的核心银行系统，允许银行按需组合、快速配置产品与旅程，强调可组合性、云原生与业务功能广度，替代单体式核心。',
+    trend: '· 从单体式紧耦合核心，到 API 化、模块化 PBC 可组合核心\n· 从长周期瀑布式改造，到按能力增量替换与快速产品迭代\n· 从本地部署，到云原生、弹性伸缩的核心架构',
+    bankValue: '· 支撑我行核心系统现代化，缩短产品上线周期、提升敏捷性\n· 以 PBC 增量替换降低单体核心改造的整体风险\n· 云原生与模块化降低长期维护成本与运营波动',
+    limitation: '· 核心改造投入巨大、迁移周期长，业务连续性风险高\n· PBC 拆分与数据一致性、分布式事务治理复杂\n· 组织能力、供应商生态与既有资产协调难度大',
+    maturityBasis: 'Gartor魔力象限已发布，可组合银行原则清晰，但可组合核心的规模化落地仍在推进，属早期采用阶段。', strategicFitBasis: '命中数据要素／未来（核心系统现代化）方向，为核心系统现代化的核心路径，库中原为空白补位价值大。', valueBasis: '缩短产品上线周期、以PBC增量降险、云原生降本，长期业务价值高，覆盖效率与成本多个维度。',
+    feasibilityBasis: '核心改造投入巨大、迁移周期长、业务连续性风险高，需专项立项治理方可能推进，触发引入可行度否决线。', urgencyBasis: '2026年银行CIO将核心现代化列为优先事项，属3—5年关键窗口，尚无强制个体时限。', opennessBasis: 'Gartner魔力象限多厂商但商业方案为主，PBC模块化理念开放、具体实现仍偏专有，中等成本替代路径。',
+    source: '· Gartner《Magic Quadrant/Critical Capabilities for Retail Core Banking Systems》（2026）《Composable Technology: A Top Banking Trend》\n· Gartner 4项可组合银行原则；ebankIT/DBP 洞察\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增，已联网核实）\n·【2026-07-14复核增补】Forbes／Visa可组合核心现代化专文（2026.06.24）；香港金管局（2026.04）\n·【2026-07-15深化增补】方法论专章依据既有Retail Core Banking Systems/Banking Payment Hub Platforms魔力象限引注（[1][2][3][4][5][8]）展开，未新增外部来源。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-20',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '以 API 化模块与打包业务能力（Packaged Business Capabilities，PBC）搭建的核心银行系统，允许银行按需组合、快速配置产品与旅程，强调可组合性、云原生与业务功能广度，替代单体式核心。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+  },
+  { id: 'T36', no: 36, name: '人工智能应用开发平台与模型运维（AI Application Development Platform & LLMOps）', short: '人工智能应用开发平台与模型运维', nameEn: 'AI Application Development Platform & LLMOps',
+    category: '人工智能（AI工程化）', categoryKey: '人工智能', archDim: '技术', attr: '关键',
+    tier: '论证层', disposal: '系统论证',
+    maturity: 4, strategicFit: 4, value: 4, feasibility: 3, urgency: 4, openness: 4,
+    conclusion: '技术成熟度4分（LLMOps类别已收敛为专用平台集）、战略匹配度4分、价值贡献度4分、战略紧迫度4分（金融监管总局指导意见鼓励建设一站式AI开发平台），是AI规模化生产的必备底座，宜系统论证：结合平台工程/IDP（011）规划AI工程化内部平台，明确评测/可观测/护栏/成本归因的工具收敛策略，与AI安全平台（018）的安全护栏对接，支撑AI应用从试点走向可治理生产。',
+    definition: '面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。',
+    trend: '· 从手工调试提示、脚本部署，到标准化的 AI 应用开发与运维流水线\n· 从模型能力优先，到生产工程、可观测与治理并重\n· 从单点工具，到贯穿评测/追踪/网关/注册的一体化 LLMOps 底座',
+    bankValue: '· 支撑001/002/019等 AI 应用规模化落地，缩短从试点到生产的周期\n· 提供评测、可观测、成本归因与护栏，满足 AI 治理与监管要求\n· 与011平台工程/IDP 协同，形成 AI 工程化内部平台',
+    limitation: '· 工具链碎片化，多数企业需组合3–5个专用工具，缺乏统一企业上下文与治理\n· 生产化仍是主要失败点（Gartner 归因约85%的 AI 模型失败于生产部署环节）\n· 需相应组织能力、评测基准与合规配套',
+    maturityBasis: '2026年LLMOps类别已收敛为专用平台集（MLflow、LangSmith等已多年生产验证），多个行业已有生产案例。', strategicFitBasis: '命中人工智能（AI工程化）战略方向，为001/002/019规模化落地的工程化底座核心路径。', valueBasis: '缩短AI应用从试点到生产的周期，提供评测、可观测、成本归因与护栏，覆盖效率与治理多个维度。',
+    feasibilityBasis: '工具链碎片化、生产化仍是主要失败点（约85%模型失败于生产部署环节），需专项投入治理。', urgencyBasis: '金融监管总局指导意见鼓励建设一站式AI开发平台与AI评测体系，由工程选型上升为监管鼓励方向，0—2年内需启动。', opennessBasis: 'MLflow、Langfuse等主流工具多为开源，多厂商可选，具备国产化替代路径。',
+    source: '· Gartner《Hype Cycle for Platform Engineering 2026》《AI Evaluation and Observability Platforms》Peer Insights\n· 行业 LLMOps 平台评测（Atlan/TrueFoundry 2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与002/011关联，以本条目为主、002/011为补充）\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）\n·【2026-07-15深化增补】方法论专章依据既有TrueFoundry对Gartner平台工程Hype Cycle的解读引注（[7]）展开，未新增外部来源。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
+    externalSource: 'Gartner分析师20260612推荐',
+    summary: '面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。',
+    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+  }
+  ];
+
+  var FIELDS = [
+    { key: 'no', label: '序号', type: 'num' },
+    { key: 'name', label: '技术名称', type: 'text', main: true },
+    { key: 'category', label: '所属战略方向', type: 'enum', main: true },
+    { key: 'archDim', label: '企业级架构维度', type: 'enum', main: true },
+    { key: 'attr', label: '技术属性', type: 'enum', main: true },
+    { key: 'tier', label: '储备库层级', type: 'enum', main: true },
+    { key: 'disposal', label: '处置档位', type: 'enum', main: true },
+    { key: 'maturity', label: '技术成熟度', type: 'num' },
+    { key: 'strategicFit', label: '战略匹配度', type: 'num' },
+    { key: 'value', label: '价值贡献度', type: 'num' },
+    { key: 'feasibility', label: '引入可行度', type: 'num' },
+    { key: 'urgency', label: '战略紧迫度', type: 'num' },
+    { key: 'openness', label: '生态开放度', type: 'num' },
+    { key: 'attention', label: '关注度', type: 'enum' },
+    { key: 'status', label: '处置状态', type: 'enum' },
+    { key: 'owner', label: '责任人', type: 'text' },
+    { key: 'updateDate', label: '最近更新日期', type: 'date' },
+    { key: 'source', label: '主要来源出处', type: 'text' },
+    { key: 'externalSource', label: '外部来源标注', type: 'text' },
+    { key: 'definition', label: '定义', type: 'text' },
+    { key: 'trend', label: '颠覆性趋势', type: 'text' },
+    { key: 'bankValue', label: '对银行的价值', type: 'text' },
+    { key: 'limitation', label: '当前局限性', type: 'text' },
+    { key: 'maturityBasis', label: '技术成熟度·研判依据', type: 'text' },
+    { key: 'strategicFitBasis', label: '战略匹配度·研判依据', type: 'text' },
+    { key: 'valueBasis', label: '价值贡献度·研判依据', type: 'text' },
+    { key: 'feasibilityBasis', label: '引入可行度·研判依据', type: 'text' },
+    { key: 'urgencyBasis', label: '战略紧迫度·研判依据', type: 'text' },
+    { key: 'opennessBasis', label: '生态开放度·研判依据', type: 'text' },
+    { key: 'conclusion', label: '研判结论与处置逻辑', type: 'text' },
+    { key: 'remark', label: '备注', type: 'text' },
+    { key: 'summary', label: '一句话概述', type: 'text' },
+  ];
+
+  var RELATIONS = [
+    { key: 'depend', label: '依赖', color: '#f43f5e' },
+    { key: 'complement', label: '互补', color: '#10b981' },
+    { key: 'compete', label: '竞争', color: '#f59e0b' },
+    { key: 'same', label: '同族', color: '#64748b' }
+  ];
+  var CROSS_EDGES = [["多智能体系统","自主型AI智能体","depend"],["AI智能体互操作协议","自主型AI智能体","depend"],["业务编排与自动化技术","事件驱动架构","depend"],["客户数字孪生","合成数据","depend"],["客户数字孪生","数据织网","depend"],["决策智能平台","因果AI","depend"],["AI原生应用架构","向量数据库与检索增强生成","depend"],["人工智能安全平台","零信任架构","depend"],["人工智能应用开发平台与模型运维","AI原生应用架构","depend"],["人工智能安全平台","自主型AI智能体","complement"],["隐私增强计算","机密计算","complement"],["合成数据","隐私增强计算","complement"],["决策智能平台","自主型AI智能体","complement"],["多智能体系统","AI智能体互操作协议","complement"],["客户数字孪生","决策智能平台","complement"],["数据织网","数据网格","compete"],["后量子密码学","量子保密通信","compete"],["小语言模型与端侧AI","自主型AI智能体","compete"]];
+
+  function buildGraph() {
+    var nodes = ITEMS.map(function (it) { return { id: it.id, name: it.short, category: it.categoryKey, trl: it.maturity, tier: it.tier }; });
+    var edges = [];
+    var byCat = {}; nodes.forEach(function (n) { (byCat[n.category] = byCat[n.category] || []).push(n); });
+    Object.keys(byCat).forEach(function (cat) { var arr = byCat[cat]; for (var i = 0; i < arr.length; i++) { if (i + 1 < arr.length) edges.push({ source: arr[i].id, target: arr[i + 1].id, relation: 'same' }); } });
+    CROSS_EDGES.forEach(function (e) {
+      var s, t;
+      ITEMS.forEach(function (it) { if (it.name === e[0]) s = it.id; if (it.name === e[1]) t = it.id; });
+      if (s && t) edges.push({ source: s, target: t, relation: e[2] });
+    });
+    return { nodes: nodes, edges: edges };
+  }
+
+  var TECH_TREE_NODES = [{ id:'f_llm', name:'大语言模型（LLM）', kind:'foundation', desc:'千亿参数级基础模型，是多数 AI 能力的前提底座' },{ id:'f_ml', name:'机器学习与深度学习', kind:'foundation', desc:'统计学习、神经网络与训练范式' },{ id:'f_cloud', name:'云原生与微服务', kind:'foundation', desc:'容器、K8s、服务网格与 DevOps' },{ id:'f_data', name:'大数据与数据治理', kind:'foundation', desc:'数仓、数据湖、元数据与数据质量' },{ id:'f_crypto', name:'密码学与身份安全', kind:'foundation', desc:'加密、签名、PKI 与身份认证' },{ id:'f_chain', name:'区块链与分布式账本', kind:'foundation', desc:'共识机制、智能合约与分布式账本' },{ id:'f_net', name:'网络与算力基础设施', kind:'foundation', desc:'云网、数据中心与算力调度' },{ id:'f_chip', name:'半导体与硬件', kind:'foundation', desc:'芯片、GPU/NPU 与可信硬件' },{ id:'f_quantum', name:'量子科技基础', kind:'foundation', desc:'量子比特、量子信息与量子纠错' },{ id:'f_ops', name:'流程引擎与决策科学', kind:'foundation', desc:'工作流、规则引擎与运筹优化' },{ id:'f_graph', name:'知识图谱与图计算', kind:'foundation', desc:'实体关系建模、图存储与推理' },{ id:'n01', name:'自主型AI智能体', kind:'library', libId:'T01', categoryKey:'人工智能', tier:'布局层', desc:'以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。' },{ id:'n02', name:'AI原生应用架构', kind:'library', libId:'T02', categoryKey:'人工智能', tier:'布局层', desc:'以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。' },{ id:'n03', name:'事件驱动架构', kind:'library', libId:'T03', categoryKey:'数据要素', tier:'论证层', desc:'以事件的产生、检测、消费为核心的软件架构风格，组件通过异步事件解耦，实现实时响应与松耦合。' },{ id:'n04', name:'WebAssembly', kind:'library', libId:'T04', categoryKey:'基础设施', tier:'观察层', desc:'一种可移植、高性能的字节码格式与运行时，使代码以接近原生速度在浏览器、服务端、边缘的安全沙箱中运行。' },{ id:'n05', name:'数据织网', kind:'library', libId:'T05', categoryKey:'数据要素', tier:'布局层', desc:'以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。' },{ id:'n06', name:'数据网格', kind:'library', libId:'T06', categoryKey:'数据要素', tier:'观察层', desc:'一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。' },{ id:'n07', name:'后量子密码学', kind:'library', libId:'T07', categoryKey:'量子科技', tier:'观察层', desc:'能抵抗量子计算攻击的密码算法体系，用于替换现有易受量子威胁的RSA／ECC等公钥密码。' },{ id:'n08', name:'零信任架构', kind:'library', libId:'T08', categoryKey:'安全', tier:'论证层', desc:'从不信任、持续验证的安全架构范式，以身份为中心、最小权限、动态访问控制取代边界信任（NIST SP 800-207）。' },{ id:'n09', name:'量子计算', kind:'library', libId:'T09', categoryKey:'量子科技', tier:'观察层', desc:'利用量子叠加与纠缠进行计算的新范式，在特定问题（优化、模拟、因数分解）上具指数级潜力。' },{ id:'n10', name:'算力网络', kind:'library', libId:'T10', categoryKey:'基础设施', tier:'布局层', desc:'将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。' },{ id:'n11', name:'平台工程', kind:'library', libId:'T11', categoryKey:'基础设施', tier:'论证层', desc:'以内部开发者平台（IDP）为载体，将基础设施、流水线、环境等自助化封装为黄金路径，提升研发效能。' },{ id:'n12', name:'可观测性标准化', kind:'library', libId:'T12', categoryKey:'基础设施', tier:'研究层', desc:'一套开源、厂商中立的可观测性数据（指标／日志／链路）采集标准与工具集，统一遥测数据规范。' },{ id:'n13', name:'隐私增强计算', kind:'library', libId:'T13', categoryKey:'数据要素', tier:'论证层', desc:'一组"数据可用不可见"技术，含联邦学习、多方安全计算、差分隐私与全同态加密，使多方在不暴露原始数据前提下联合计算与建模。' },{ id:'n14', name:'机密计算', kind:'library', libId:'T14', categoryKey:'数据要素', tier:'观察层', desc:'基于硬件可信执行环境（TEE，如Intel TDX/SGX、ARM CCA）在使用中加密数据与代码，构建可远程证明的隔离计算飞地。' },{ id:'n15', name:'区块链资产代币化与可编程货币', kind:'library', libId:'T15', categoryKey:'数据要素', tier:'观察层', desc:'以分布式账本将存款、债券、基金及现实世界资产（RWA）代币化，并以合规稳定币/代币化存款承载链上支付结算。' },{ id:'n16', name:'向量数据库与检索增强生成', kind:'library', libId:'T16', categoryKey:'人工智能', tier:'论证层', desc:'以向量数据库存储语义嵌入，结合知识图谱做混合检索，为大模型提供可溯源的外部知识，降低幻觉。' },{ id:'n17', name:'AI智能体互操作协议', kind:'library', libId:'T17', categoryKey:'人工智能', tier:'研究层', desc:'智能体与工具、智能体与智能体间的标准通信协议：MCP（agent-tool）、A2A（agent-agent）、ACP等，构建可互操作的智能体生态。' },{ id:'n18', name:'人工智能安全平台', kind:'library', libId:'T18', categoryKey:'人工智能', tier:'论证层', desc:'覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。' },{ id:'n19', name:'小语言模型与端侧AI', kind:'library', libId:'T19', categoryKey:'人工智能', tier:'研究层', desc:'参数量较小、面向特定任务、可在端侧/本地部署的语言模型，兼顾成本、时延与数据不出域。' },{ id:'n20', name:'合成数据', kind:'library', libId:'T20', categoryKey:'数据要素', tier:'研究层', desc:'用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。' },{ id:'n21', name:'因果AI', kind:'library', libId:'T21', categoryKey:'人工智能', tier:'研究层', desc:'融合因果推断与机器学习，估计变量间因果效应而非仅相关性，提供可解释、稳健的决策依据。' },{ id:'n22', name:'软件供应链安全', kind:'library', libId:'T22', categoryKey:'安全', tier:'论证层', desc:'以软件物料清单（SBOM）、来源证明与安全开发框架管理开源与第三方组件风险，覆盖构建到部署全链路。' },{ id:'n23', name:'深度伪造检测与反AI欺诈', kind:'library', libId:'T23', categoryKey:'安全', tier:'论证层', desc:'检测AI生成的人脸/声音/证件与合成身份的技术，强化活体检测、多模态一致性与欺诈研判。' },{ id:'n24', name:'去中心化身份与可验证凭证', kind:'library', libId:'T24', categoryKey:'安全', tier:'研究层', desc:'以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。' },{ id:'n25', name:'量子保密通信', kind:'library', libId:'T25', categoryKey:'量子科技', tier:'观察层', desc:'基于量子物理原理分发密钥（QKD），提供对窃听敏感、理论上信息论安全的通信保护。' },{ id:'n26', name:'神经形态与光子计算', kind:'library', libId:'T26', categoryKey:'基础设施', tier:'观察层', desc:'类脑脉冲神经与硅光/光电器件的新型计算范式，追求超低功耗、超低时延的AI加速。' },{ id:'n27', name:'神经符号AI', kind:'library', libId:'T27', categoryKey:'人工智能', tier:'研究层', desc:'融合神经网络与符号逻辑推理，兼顾模式识别与可解释、可审计的结构化推理。' },{ id:'n28', name:'数字人与空间计算', kind:'library', libId:'T28', categoryKey:'客户体验', tier:'研究层', desc:'由生成式AI驱动、具多模态与持续记忆的数字人，结合空间计算/实时渲染提供拟人交互。' },{ id:'n29', name:'绿色与可持续IT', kind:'library', libId:'T29', categoryKey:'基础设施', tier:'研究层', desc:'以直冷/浸没式液冷、余热回收、零水冷等提升数据中心能效（PUE）与可持续性，支撑高密度AI算力。' },{ id:'n30', name:'监管科技与合规科技', kind:'library', libId:'T30', categoryKey:'合规科技', tier:'研究层', desc:'以AI/NLP/知识图谱自动化合规：监管报送、交易监控、反洗钱、客户尽调与法规解析。' },{ id:'n31', name:'业务编排与自动化技术', kind:'library', libId:'T31', categoryKey:'数据要素', tier:'布局层', desc:'由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。' },{ id:'n32', name:'客户数字孪生', kind:'library', libId:'T32', categoryKey:'数据要素', tier:'观察层', desc:'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。' },{ id:'n33', name:'决策智能平台', kind:'library', libId:'T33', categoryKey:'数据要素', tier:'论证层', desc:'融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。' },{ id:'n34', name:'多智能体系统', kind:'library', libId:'T34', categoryKey:'人工智能', tier:'布局层', desc:'由多个任务专精的 AI 智能体分工协作、相互通信与协调以完成复杂任务的系统；在单体自主智能体（001）之上引入编排、角色分工与协作机制，提升可扩展性与专业度。' },{ id:'n35', name:'可组合核心银行系统', kind:'library', libId:'T35', categoryKey:'数据要素', tier:'观察层', desc:'以 API 化模块与打包业务能力（Packaged Business Capabilities，PBC）搭建的核心银行系统，允许银行按需组合、快速配置产品与旅程，强调可组合性、云原生与业务功能广度，替代单体式核心。' },{ id:'n36', name:'人工智能应用开发平台与模型运维', kind:'library', libId:'T36', categoryKey:'人工智能', tier:'论证层', desc:'面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。' }];
+  var TECH_TREE_EDGES = [{from:'f_llm',to:'n01'},{from:'f_llm',to:'n16'},{from:'f_llm',to:'n19'},{from:'f_llm',to:'n28'},{from:'f_llm',to:'n30'},{from:'f_llm',to:'n36'},{from:'f_cloud',to:'n03'},{from:'f_cloud',to:'n04'},{from:'f_cloud',to:'n11'},{from:'f_cloud',to:'n12'},{from:'f_cloud',to:'n35'},{from:'f_data',to:'n05'},{from:'f_data',to:'n06'},{from:'f_crypto',to:'n07'},{from:'f_crypto',to:'n08'},{from:'f_crypto',to:'n13'},{from:'f_crypto',to:'n22'},{from:'f_crypto',to:'n24'},{from:'f_chain',to:'n15'},{from:'f_chip',to:'n14'},{from:'f_chip',to:'n26'},{from:'f_quantum',to:'n09'},{from:'f_quantum',to:'n25'},{from:'f_net',to:'n10'},{from:'f_net',to:'n29'},{from:'f_ml',to:'n20'},{from:'f_ml',to:'n21'},{from:'f_ml',to:'n23'},{from:'f_ml',to:'n27'},{from:'n16',to:'n02'},{from:'n01',to:'n17'},{from:'n08',to:'n18'},{from:'n03',to:'n31'},{from:'n20',to:'n32'},{from:'n21',to:'n33'},{from:'n01',to:'n34'}];
+  var TECH_TREE_CO = [{from:'f_llm',to:'n02'},{from:'f_cloud',to:'n02'},{from:'f_data',to:'n16'},{from:'f_llm',to:'n17'},{from:'n01',to:'n18'},{from:'f_llm',to:'n18'},{from:'f_chip',to:'n19'},{from:'f_data',to:'n20'},{from:'n13',to:'n20'},{from:'f_ops',to:'n21'},{from:'f_llm',to:'n23'},{from:'f_chain',to:'n24'},{from:'f_crypto',to:'n25'},{from:'f_ml',to:'n28'},{from:'f_graph',to:'n30'},{from:'n01',to:'n31'},{from:'f_ops',to:'n31'},{from:'n05',to:'n32'},{from:'f_data',to:'n32'},{from:'n33',to:'n32'},{from:'f_ops',to:'n33'},{from:'f_llm',to:'n33'},{from:'n17',to:'n34'},{from:'n03',to:'n35'},{from:'f_cloud',to:'n36'},{from:'n02',to:'n36'}];
+  var techTree = { nodes: TECH_TREE_NODES, edges: TECH_TREE_EDGES, coEdges: TECH_TREE_CO };
+
+  var WORKPLAN = {
+    goal: '围绕银行金融科技战略需求，构建“情报采集—六维研判—分层定档—专题研究—决策支撑”的前沿技术研究闭环，形成可更新、可检索、可视化的金融科技前沿技术储备库。',
+    principles: [
+      '战略导向：聚焦人工智能、数据要素、量子科技三大战略方向，兼顾安全、金融基础设施等跨域标注。',
+      '金融适配：以“战略匹配度”为核心，突出银行场景价值与监管合规约束。',
+      '情报驱动：多源情报交叉验证，确保研判客观可信、可追溯。',
+      '分层管理：按布局/论证/研究/观察四层动态滚动，引入可行度≤2分单列否决、战略紧迫度≤2分触发观察层。'
+    ],
+    phases: [
+      { phase: '第一阶段', time: '第1-2周',  title: '工作方案制定与情报源评估', items: ['明确金融科技研究方向与范围', '建立情报源清单并评判', '制定六维评级与分层标准'] },
+      { phase: '第二阶段', time: '第3-5周',  title: '长名单遴选与分层研判', items: ['多源扫描形成长名单(36项)', '逐项补齐字段与六维评级', '构建技术关系图谱与科技树'] },
+      { phase: '第三阶段', time: '第6-10周', title: '重点技术专题研究', items: ['对重点技术开展深度专题研究', '形成评估表与专题报告(Word)', '制作专题报告PPT与一张图'] },
+      { phase: '第四阶段', time: '第11-12周',title: '成果集成与滚动更新', items: ['汇总裁剪形成成果包', '开发电子研究书展示平台', '月度采集例会动态调层与留痕'] }
+    ],
+    org: [
+      { role: '项目负责人', duty: '总体统筹、资源协调、成果把关' },
+      { role: '情报组',     duty: '情报采集、情报源评判、长名单维护' },
+      { role: '研判组',     duty: '六维评级、分层定档、图谱与科技树构建' },
+      { role: '专题组',     duty: '重点技术专题研究与成果制作' },
+      { role: '平台组',     duty: '数据规范、展示平台开发与维护' }
+    ]
+  };
+
+  var SOURCE_CRITERIA = [
+    { key: 'authority',   label: '权威性', weight: 25 },
+    { key: 'timeliness',  label: '时效性', weight: 20 },
+    { key: 'credibility', label: '可信度', weight: 30 },
+    { key: 'coverage',    label: '覆盖度', weight: 15 },
+    { key: 'uniqueness',  label: '独特性', weight: 10 }
+  ];
+  var SOURCES = [
+    { name: '监管与标准组织', type: '监管', authority: 9, timeliness: 7, credibility: 9, coverage: 6, uniqueness: 6, comment: '金融监管总局、人民银行、NIST、W3C 等，权威可信，反映合规与标准收敛方向。' },
+    { name: 'Gartner/Forrester 等研究机构', type: '智库', authority: 8, timeliness: 9, credibility: 8, coverage: 9, uniqueness: 7, comment: '技术成熟度曲线与战略趋势的重要来源，适合建立全景。' },
+    { name: '头部厂商发布与财报', type: '产业', authority: 7, timeliness: 9, credibility: 7, coverage: 7, uniqueness: 7, comment: '反映产业化进展与商业化节奏，存在宣传口径偏差。' },
+    { name: '金融同业实践与案例', type: '同业', authority: 8, timeliness: 8, credibility: 8, coverage: 7, uniqueness: 8, comment: '与我行场景最贴近，是落地研判的关键参照。' },
+    { name: '顶级学术期刊与预印本', type: '学术', authority: 8, timeliness: 8, credibility: 8, coverage: 7, uniqueness: 9, comment: '捕捉最前沿机理与原创进展，需甄别未同行评议内容。' },
+    { name: '开源社区与代码仓库', type: '开源', authority: 6, timeliness: 10, credibility: 6, coverage: 7, uniqueness: 9, comment: '真实工程进展第一手来源，需人工甄别质量。' },
+    { name: '专利数据库', type: '专利', authority: 8, timeliness: 8, credibility: 8, coverage: 9, uniqueness: 8, comment: '判断产业布局与竞争态势的核心来源。' },
+    { name: '产业与技术媒体', type: '媒体', authority: 6, timeliness: 10, credibility: 6, coverage: 8, uniqueness: 6, comment: '信息面广、时效高，权威性需交叉验证。' }
+  ];
+
+  window.DATA = {
+    book: { title: '银行金融科技前沿技术研究成果', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 科技树', org: '金融科技研究组', date: (new Date()).getFullYear() + '年', version: '金融科技版 v2.0（台账 v1.30）' },
+    fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
+    workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
+    library: { fields: FIELDS, items: ITEMS }, graph: buildGraph(), graphRelations: RELATIONS,
+    technologies: ITEMS, techTree: techTree
+  };
+})();
+</script>
+<script>
+/* =====================================================================
+ * 银行金融科技前沿技术研究成果 · 电子研究书 —— 应用逻辑
+ * 纯原生 JS，无任何外部依赖；双击 index.html 即可离线运行。
+ * 三视图：书籍 / 网页（目录+滚动内容）/ 科技树
+ * ===================================================================== */
+(function () {
+  'use strict';
+  var DATA = window.DATA;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ==================== 工具函数 ==================== */
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function scoreColor(v) {
+    if (v >= 8) return 'var(--good)';
+    if (v >= 6) return 'var(--accent2)';
+    if (v >= 4) return 'var(--warn)';
+    return 'var(--bad)';
+  }
+  function scoreBar(v, max) {
+    max = max || 10;
+    var pct = Math.round(v / max * 100);
+    var color = pct >= 80 ? 'var(--good)' : (pct >= 60 ? 'var(--accent2)' : (pct >= 40 ? 'var(--warn)' : 'var(--bad)'));
+    return '<div class="bar"><i style="width:' + pct + '%;background:' + color + '"></i></div>';
+  }
+  function scoreColor5(v) {
+    if (v >= 4) return 'var(--good)';
+    if (v >= 3) return 'var(--warn)';
+    if (v >= 2) return 'var(--accent2)';
+    return 'var(--bad)';
+  }
+  function catColor(name) { return DATA.categoryColor[name] || '#8fa3c0'; }
+  function tierColor(name) { return DATA.tierColor[name] || '#8fa3c0'; }
+  function scorePill(v) {
+    var n = Number(v) || 0;
+    return '<span class="pill s' + n + '">' + n + '分</span>';
+  }
+  function sixDimHTML(it) {
+    var dims = [['成熟', it.maturity], ['匹配', it.strategicFit], ['价值', it.value], ['可行', it.feasibility], ['紧迫', it.urgency], ['开放', it.openness]];
+    return '<div class="sixdim">' + dims.map(function (d) {
+      return '<span class="sd s' + d[1] + '" title="' + d[0] + ' ' + d[1] + '/5">' + d[0] + ' ' + d[1] + '</span>';
+    }).join('') + '</div>';
+  }
+  function tierPill(tier) {
+    return '<span class="pill-tier" style="color:' + tierColor(tier) + ';background:' + tierColor(tier) + '1f;border:1px solid ' + tierColor(tier) + '">' + esc(tier) + '</span>';
+  }
+  function dimColor(d) { return scoreColor5(d.score); }
+  function toast(msg) {
+    var t = $('toast'); t.textContent = msg; t.classList.remove('hidden');
+    clearTimeout(t._tm); t._tm = setTimeout(function () { t.classList.add('hidden'); }, 2200);
+  }
+  function relColor(key) {
+    for (var i = 0; i < DATA.graphRelations.length; i++)
+      if (DATA.graphRelations[i].key === key) return DATA.graphRelations[i].color;
+    return '#64748b';
+  }
+  function findTech(id) {
+    for (var i = 0; i < DATA.technologies.length; i++)
+      if (DATA.technologies[i].id === id) return DATA.technologies[i];
+    return null;
+  }
+  function findLib(id) {
+    for (var i = 0; i < DATA.library.items.length; i++)
+      if (DATA.library.items[i].id === id) return DATA.library.items[i];
+    return null;
+  }
+  function formatBullets(text) {
+    if (!text) return '<span style="color:var(--faint)">暂无详细说明</span>';
+    var lines = String(text).split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    if (lines.length === 0) return '<span style="color:var(--faint)">暂无详细说明</span>';
+    var isList = lines.some(function (l) { return /^[·•\-*▸]|\d+\./.test(l); }) || lines.length > 1;
+    if (isList) {
+      return '<ul class="tech-box-list">' + lines.map(function (l) {
+        var clean = l.replace(/^[·•\-*▸]\s*/, '');
+        var m = clean.match(/^([^：:]{2,10}[：:])(.*)$/);
+        if (m) {
+          return '<li><b class="hl">' + esc(m[1]) + '</b>' + esc(m[2]) + '</li>';
+        }
+        return '<li>' + esc(clean) + '</li>';
+      }).join('') + '</ul>';
+    }
+    return '<div class="tech-box-text">' + esc(text) + '</div>';
+  }
+
+  /* ==================== 覆盖层 ==================== */
+  function openPanel(title, html, onMount, flexBody) {
+    $('panelTitle').innerHTML = title;
+    $('panelBody').innerHTML = html;
+    $('panelBody').classList.toggle('flex', !!flexBody);
+    $('panel').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    if (onMount) setTimeout(onMount, 0);
+  }
+  function closePanel() {
+    $('panel').classList.add('hidden');
+    $('panelBody').innerHTML = '';
+    $('panelBody').classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+  function openModal(title, html) {
+    $('modalTitle').innerHTML = title;
+    $('modalBody').innerHTML = html;
+    $('modal').classList.remove('hidden');
+  }
+  function closeModal() { $('modal').classList.add('hidden'); $('modalBody').innerHTML = ''; }
+  function openLightbox(src, title) {
+    $('lightboxImg').src = src; $('lightboxTitle').textContent = title || '';
+    $('lightbox').classList.remove('hidden'); $('lightbox').style.display = 'flex';
+  }
+  function closeLightbox() { $('lightbox').classList.add('hidden'); $('lightbox').style.display = ''; }
+  function bindOverlayClose() {
+    $('panelClose').onclick = closePanel;
+    $('modalClose').onclick = closeModal;
+    $('lightboxClose').onclick = closeLightbox;
+    $('panel').onclick = function (e) { if (e.target === this) closePanel(); };
+    $('modal').onclick = function (e) { if (e.target === this) closeModal(); };
+    $('lightbox').onclick = function (e) { if (e.target === this) closeLightbox(); };
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { closePanel(); closeModal(); closeLightbox(); }
+    });
+  }
+  function toggleFullscreen(el) {
+    if (!el) { toast('无预览内容'); return; }
+    var doc = document;
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else { toast('浏览器不支持全屏'); }
+    } else {
+      if (doc.exitFullscreen) doc.exitFullscreen();
+      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+    }
+  }
+
+  /* ==================== 图表（雷达/柱状） ==================== */
+  function radarSVG(tech, compact) {
+    var dims = tech.assessment.dimensions, n = dims.length;
+    var W = 320, H = compact ? 230 : 250;
+    var cx = W / 2, cy = H / 2, R = compact ? 78 : 86;
+    var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
+    var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
+    var ring, k;
+    for (ring = 1; ring <= 5; ring++) {
+      var rr = R * ring / 5, pts = [];
+      for (k = 0; k < n; k++) { var p = pt(k, rr); pts.push(p[0].toFixed(1) + ',' + p[1].toFixed(1)); }
+      s += '<polygon points="' + pts.join(' ') + '" fill="none" style="stroke:var(--border)" stroke-width="1"' + (ring === 5 ? '' : ' stroke-dasharray="2,2"') + '/>';
+    }
+    for (k = 0; k < n; k++) { var p2 = pt(k, R); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p2[0] + '" y2="' + p2[1] + '" style="stroke:var(--border)" stroke-width="1"/>'; }
+    var rounds = tech.assessment.rounds || [{ name: '本年度', scores: dims.map(function (d) { return d.score; }) }];
+    rounds.forEach(function (rd, ri) {
+      var pts2 = [];
+      for (k = 0; k < n; k++) { var maxv = dims[k].max || 5; var pp = pt(k, rd.scores[k] / maxv * R); pts2.push(pp[0].toFixed(1) + ',' + pp[1].toFixed(1)); }
+      var col = ri === 0 ? '#4f8cff' : '#f59e0b';
+      s += '<polygon points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2"/>';
+      for (k = 0; k < n; k++) {
+        var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
+        s += '<circle cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '3' : '3.5') + '" fill="' + col + '"/>';
+      }
+    });
+    for (k = 0; k < n; k++) {
+      var offset = compact ? 16 : 18;
+      var lp = pt(k, R + offset), a = angle(k);
+      var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
+      var scoreVal = dims[k].score;
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 3.5 : 4)).toFixed(1) + '" font-size="' + (compact ? '10' : '11') + '" text-anchor="' + anchor + '" style="fill:var(--dim)" font-weight="600">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="700">' + scoreVal + '</tspan>') : '') + '</text>';
+    }
+    s += '</svg>';
+    var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:12px;color:var(--dim);margin-top:4px">' +
+      rounds.map(function (rd, ri) {
+        return '<span style="margin:0 8px"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + (ri === 0 ? '#4f8cff' : '#f59e0b') + ';margin-right:4px"></span>' + esc(rd.name) + '</span>';
+      }).join('') + '</div>' : '';
+    return s + legend;
+  }
+  function barSVG(tech) {
+    var dims = tech.assessment.dimensions;
+    var W = 340, rowH = 34, H = rowH * dims.length + 10, maxW = W - 128;
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+    dims.forEach(function (d, i) {
+      var y = i * rowH + 14, bw = Math.round(d.score / (d.max || 5) * maxW);
+      s += '<text x="0" y="' + (y + 5) + '" font-size="11" style="fill:var(--dim)">' + esc(d.label) + '</text>';
+      s += '<rect x="112" y="' + y + '" width="' + maxW + '" height="9" rx="4" style="fill:var(--border)"/>';
+      s += '<rect x="112" y="' + y + '" width="' + bw + '" height="9" rx="4" fill="' + dimColor(d) + '"/>';
+      s += '<text x="' + (W - 4) + '" y="' + (y + 9) + '" font-size="11" text-anchor="end" font-weight="700" style="fill:var(--text)">' + d.score + '/5</text>';
+    });
+    s += '</svg>';
+    return s;
+  }
+
+  /* ==================== 书籍页面内容渲染 ==================== */
+  function insideCoverHTML() {
+    return '<div class="cover-full">' +
+      '<div style="opacity:.5;letter-spacing:6px;font-size:12px;color:#8fa3c0">INNER COVER</div>' +
+      '<div style="margin-top:14px;font-size:20px;letter-spacing:4px;color:#b9c9e8">' + esc(DATA.book.title) + '</div>' +
+      '</div>';
+  }
+  function coverHTML() {
+    var b = DATA.book;
+    var orbs = [
+      '<span class="cover-orb" style="width:220px;height:220px;background:#4f8cff;left:-60px;top:-60px"></span>',
+      '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;right:-40px;bottom:-40px"></span>',
+      '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;right:20%;top:8%"></span>'
+    ].join('');
+    return '<div class="cover-full">' + orbs +
+      '<div class="cov-kicker">BANK FINTECH RESEARCH</div>' +
+      '<div class="cov-title">' + esc(b.title) + '</div>' +
+      '<div class="cov-sub">' + esc(b.subtitle) + '</div>' +
+      '<div class="cov-rule"></div>' +
+      '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + ' · ' + esc(b.version) + '</div>' +
+      '</div>';
+  }
+  function titlePageHTML() {
+    var b = DATA.book;
+    var lib = DATA.library.items.length;
+    var cats = DATA.categories.length;
+    var srcs = DATA.sources.items.length;
+    var techs = DATA.technologies.length;
+    var edges = DATA.graph.edges.length;
+    return '<div class="page-pad">' +
+      '<div class="page-title">' + esc(b.title) + '</div>' +
+      '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-p">本电子研究书系统汇集银行金融科技前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
+      '<div class="stat-grid">' +
+      '<div class="stat"><div class="num">' + lib + '</div><div class="lbl">长名单技术项</div></div>' +
+      '<div class="stat"><div class="num">' + cats + '</div><div class="lbl">战略方向</div></div>' +
+      '<div class="stat"><div class="num">' + srcs + '</div><div class="lbl">情报源</div></div>' +
+      '<div class="stat"><div class="num">' + techs + '</div><div class="lbl">专题研究项</div></div>' +
+      '</div>' +
+      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
+      '<div class="pg-p dim">顶部可切换「书籍 / 网页 / 科技树」三种阅读方式；「网页」左侧目录可快速定位；「科技树」梳理技术间的前提依赖关系。</div>' +
+      '<div class="pg-section" style="margin-top:20px">' +
+      '<div class="pg-h">组织与版本</div>' +
+      '<table class="tbl"><tr><th>编制单位</th><td>' + esc(b.org) + '</td></tr>' +
+      '<tr><th>版本</th><td>' + esc(b.version) + '</td></tr>' +
+      '<tr><th>日期</th><td>' + esc(b.date) + '</td></tr>' +
+      '<tr><th>数据说明</th><td>长名单技术名称与六维评级以《前沿技术储备库分层台账 v1.30》为准，分层按布局6/论证10/研究10/观察10动态滚动维护。</td></tr></table></div>' +
+      '</div>';
+  }
+  function tocHTML() {
+    var items = [];
+    function add(no, label, idx, part) { items.push({ no: no, label: label, idx: idx, part: part }); }
+    add('', '扉页 · 成果总览', 2, false);
+    add('', '目录', 3, false);
+    add('第一篇', '整体研究成果', 4, true);
+    add('1.1', '工作方案', 5, false);
+    add('1.2', '情报源评判报告', 6, false);
+    add('1.3', '前沿技术储备库（长名单）', 7, false);
+    add('1.4', '各项前沿技术关系图谱', 8, false);
+    add('第二篇', '各项前沿技术研究', 9, true);
+    DATA.technologies.forEach(function (t, i) {
+      add('2.' + (i + 1), t.name, 10 + i, false);
+    });
+    add('附录', '术语 · 数据来源 · 版本', 10 + DATA.technologies.length, false);
+    add('', '结语', 11 + DATA.technologies.length, false);
+    var lis = items.map(function (it) {
+      var cls = it.part ? 'toc-part' : (it.idx > 9 ? 'toc-indent' : '');
+      return '<li data-jump="' + it.idx + '" class="' + cls + '"><span class="toc-no">' + esc(it.no) + '</span><span class="toc-label">' + esc(it.label) + '</span></li>';
+    }).join('');
+    return '<div class="page-pad"><div class="page-title">目录</div><div class="h-rule"></div><ul class="toc-list">' + lis + '</ul></div>';
+  }
+  function dividerHTML(part, title, desc, num) {
+    return '<div class="divider-full"><div class="dv-num">' + num + '</div>' +
+      '<div class="dv-part">' + esc(part) + '</div>' +
+      '<div class="dv-title">' + esc(title) + '</div>' +
+      '<div class="dv-desc">' + esc(desc) + '</div></div>';
+  }
+  function workplanHTML() {
+    var wp = DATA.workplan;
+    var phases = wp.phases.map(function (p) {
+      return '<div class="tl-item"><div class="tl-time">' + esc(p.phase) + ' · ' + esc(p.time) + '</div>' +
+        '<div class="tl-title">' + esc(p.title) + '</div>' +
+        '<div class="tl-items">' + p.items.map(esc).join('；') + '</div></div>';
+    }).join('');
+    var orgRows = wp.org.map(function (o) {
+      return '<tr><th>' + esc(o.role) + '</th><td>' + esc(o.duty) + '</td></tr>';
+    }).join('');
+    return '<div class="page-pad">' +
+      '<div class="page-title">工作方案</div><div class="h-rule"></div>' +
+      '<div class="pg-section"><div class="pg-h">研究目标</div><div class="pg-p">' + esc(wp.goal) + '</div></div>' +
+      '<div class="pg-section"><div class="pg-h">基本原则</div><ul class="pg-list">' +
+      wp.principles.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="pg-section"><div class="pg-h">实施阶段</div><div class="timeline">' + phases + '</div></div>' +
+      '<div class="pg-section"><div class="pg-h">组织分工</div><table class="tbl"><tr><th>角色</th><th>职责</th></tr>' + orgRows + '</table></div>' +
+      '</div>';
+  }
+  function sourcesHTML() {
+    var crit = DATA.sources.criteria, items = DATA.sources.items.slice();
+    items.forEach(function (it) {
+      var total = 0;
+      crit.forEach(function (c) { total += it[c.key] * c.weight; });
+      it._total = total / 100;
+    });
+    items.sort(function (a, b) { return b._total - a._total; });
+    var head = '<tr><th>情报源</th><th>类型</th>' + crit.map(function (c) { return '<th>' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint)">(' + c.weight + ')</span></th>'; }).join('') + '<th>加权得分</th></tr>';
+    var rows = items.map(function (it) {
+      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag">' + esc(it.type) + '</span></td>' +
+        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + '"></span>' + it[c.key] + '</td>'; }).join('') +
+        '<td><b style="color:' + scoreColor(it._total) + '">' + it._total.toFixed(1) + '</b></td></tr>';
+    }).join('');
+    var cards = items.map(function (it) {
+      return '<div class="card"><div class="c-title"><span>' + esc(it.name) + '</span><span class="badge acc">' + esc(it.type) + '</span></div>' +
+        '<div class="c-comment">' + esc(it.comment) + '</div>' +
+        '<div style="margin-top:8px">' + scoreBar(it._total) + '</div></div>';
+    }).join('');
+    return '<div class="page-pad">' +
+      '<div class="page-title">情报源评判报告</div>' +
+      '<div class="page-subtitle">共 ' + items.length + ' 类情报源 · 按「权威性 / 时效性 / 可信度 / 覆盖度 / 独特性」五维加权评判</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-section"><div class="pg-h">评判汇总表</div><div style="overflow:auto"><table class="tbl">' + head + rows + '</table></div></div>' +
+      '<div class="pg-section"><div class="pg-h">逐源评判</div><div class="cards">' + cards + '</div></div>' +
+      '</div>';
+  }
+  function libraryPreviewHTML() {
+    var tierOrder = { '布局层': 0, '论证层': 1, '研究层': 2, '观察层': 3 };
+    var items = DATA.library.items.slice().sort(function (a, b) { return (tierOrder[a.tier] || 9) - (tierOrder[b.tier] || 9); }).slice(0, 8);
+    var rows = items.map(function (it) {
+      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td>' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
+    }).join('');
+    return '<div class="page-pad">' +
+      '<div class="page-title">前沿技术储备库</div>' +
+      '<div class="page-subtitle">长名单 · ' + DATA.library.items.length + ' 项 × ' + DATA.library.fields.length + ' 字段</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-p">储备库覆盖 ' + DATA.categories.length + ' 大战略方向，按「布局 / 论证 / 研究 / 观察」四层动态滚动管理，每项技术按完整台账字段维护，支持全文检索、多维筛选与排序。</div>' +
+      '<div class="pg-section"><div class="pg-h">分层预览（节选）</div><table class="tbl"><tr><th>技术名称</th><th>战略方向</th><th>层级</th><th>成熟度</th><th>匹配度</th><th>处置档位</th></tr>' + rows + '</table></div>' +
+      '<div style="text-align:center;margin-top:14px"><button class="btn active" data-action="open-library">打开完整储备库（检索 / 筛选 / 全字段）</button></div>' +
+      '</div>';
+  }
+  function graphPreviewHTML() {
+    var g = DATA.graph;
+    var relLegend = DATA.graphRelations.map(function (r) {
+      return '<span class="lg"><span class="line" style="background:' + r.color + '"></span>' + esc(r.label) + '</span>';
+    }).join('');
+    var catLegend = DATA.categories.map(function (c) {
+      return '<span class="lg"><span class="dot" style="background:' + catColor(c) + '"></span>' + esc(c) + '</span>';
+    }).join('');
+    return '<div class="page-pad">' +
+      '<div class="page-title">各项前沿技术关系图谱</div>' +
+      '<div class="page-subtitle">' + g.nodes.length + ' 个技术节点 · ' + g.edges.length + ' 条关系边</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-p">以力导向图刻画 ' + g.nodes.length + ' 项技术之间的「同族 / 依赖 / 互补 / 竞争」关系，支持拖拽、缩放、按关系筛选，点击节点直达对应技术详情。</div>' +
+      '<div class="pg-section"><div class="pg-h">关系类型</div><div class="legend">' + relLegend + '</div></div>' +
+      '<div class="pg-section"><div class="pg-h">战略方向</div><div class="legend">' + catLegend + '</div></div>' +
+      '<div style="text-align:center;margin-top:14px"><button class="btn active" data-action="open-graph">打开交互式关系图谱</button></div>' +
+      '</div>';
+  }
+  /* ==================== 专享：书籍模式纵向排版 (Vertical Book Page) ==================== */
+  function techBookHTML(tech) {
+    var tags = [
+      '<span class="tag" style="border-color:' + catColor(tech.category) + ';color:' + catColor(tech.category) + '">' + esc(tech.category) + '</span>',
+      tierPill(tech.tier),
+      tech.disposal ? '<span class="pill-disposal">' + esc(tech.disposal) + '</span>' : '',
+      tech.archDim ? '<span class="pill-dim">' + esc(tech.archDim) + '</span>' : ''
+    ].filter(Boolean).join(' ');
+
+    return '<div class="page-pad book-tech-pad">' +
+      '<div class="bk-head">' +
+        '<div class="bk-title-row">' +
+          '<span class="bk-no">' + esc(tech.id) + '</span>' +
+          '<span class="bk-name">' + esc(tech.name) + '</span>' +
+          '<button class="btn btn-sm active bk-btn" data-action="open-tech" data-id="' + tech.id + '">📄 完整专题</button>' +
+        '</div>' +
+        '<div class="bk-tags-row">' + tags + '</div>' +
+      '</div>' +
+      '<div class="h-rule" style="margin:5px 0 7px"></div>' +
+
+      '<div class="bk-middle-row">' +
+        '<div class="bk-radar-col">' +
+          '<div class="bk-sec-title"><span class="icon">🕸️</span> 六维研判蜘蛛图</div>' +
+          '<div class="bk-radar-box">' + radarSVG(tech, true) + '</div>' +
+        '</div>' +
+        '<div class="bk-conclusion-col">' +
+          '<div class="bk-sec-title"><span class="icon">⚖️</span> 研判结论与处置建议</div>' +
+          '<div class="bk-conclusion-text">' + esc(tech.conclusion) + '</div>' +
+          '<div class="bk-scores-grid">' + sixDimHTML(tech) + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="bk-section bk-def">' +
+        '<div class="bk-sec-title"><span class="icon">💡</span> 技术定义与机理</div>' +
+        '<div class="bk-sec-body">' + formatBullets(tech.definition || tech.summary) + '</div>' +
+      '</div>' +
+
+      '<div class="bk-section bk-trend">' +
+        '<div class="bk-sec-title"><span class="icon">🚀</span> 颠覆性趋势演进</div>' +
+        '<div class="bk-sec-body">' + formatBullets(tech.trend) + '</div>' +
+      '</div>' +
+
+      '<div class="bk-section bk-value">' +
+        '<div class="bk-sec-title"><span class="icon">🏦</span> 对银行的价值贡献</div>' +
+        '<div class="bk-sec-body">' + formatBullets(tech.bankValue) + '</div>' +
+      '</div>' +
+
+      '<div class="bk-section bk-limit">' +
+        '<div class="bk-sec-title"><span class="icon">⚠️</span> 当前局限性与合规风险</div>' +
+        '<div class="bk-sec-body">' + formatBullets(tech.limitation) + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ==================== 专享：网页模式横向仪表盘 (Horizontal Web Layout) ==================== */
+  function techWebHTML(tech) {
+    var tags = [
+      '<span class="tag" style="border-color:' + catColor(tech.category) + ';color:' + catColor(tech.category) + '">' + esc(tech.category) + '</span>',
+      tierPill(tech.tier),
+      tech.disposal ? '<span class="pill-disposal">' + esc(tech.disposal) + '</span>' : '',
+      tech.archDim ? '<span class="pill-dim">' + esc(tech.archDim) + '</span>' : '',
+      tech.attr ? '<span class="pill-attr">' + esc(tech.attr) + '</span>' : ''
+    ].filter(Boolean).join(' ');
+
+    return '<div class="web-tech-container">' +
+      '<div class="web-tech-head">' +
+        '<div class="wth-left">' +
+          '<div class="page-title tech-title">' +
+            '<span class="tech-no-badge">' + esc(tech.id) + '</span> ' +
+            '<span>' + esc(tech.name) + '</span>' +
+            '<span style="font-size:13px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(tech.nameEn || '') + '</span>' +
+          '</div>' +
+          '<div class="tech-sub-tags">' + tags + '</div>' +
+        '</div>' +
+        '<div class="wth-right">' +
+          '<button class="btn active" data-action="open-tech" data-id="' + tech.id + '">📄 查看完整专题（报告 / PPT / 一张图）</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="h-rule" style="margin:10px 0 16px"></div>' +
+      '<div class="web-tech-layout">' +
+        '<div class="web-col-dash">' +
+          '<div class="bento-card radar-card">' +
+            '<div class="bento-card-title"><span class="icon">🕸️</span> 六维研判蜘蛛图</div>' +
+            '<div class="radar-box">' + radarSVG(tech, false) + '</div>' +
+            '<div class="radar-scores-mini">' + sixDimHTML(tech) + '</div>' +
+          '</div>' +
+          '<div class="bento-card conclusion-card" style="margin-top:12px">' +
+            '<div class="bento-card-title"><span class="icon">⚖️</span> 研判结论与处置建议</div>' +
+            '<div class="conclusion-text">' + esc(tech.conclusion) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="web-col-content">' +
+          '<div class="bento-card def-card">' +
+            '<div class="bento-card-title"><span class="icon">💡</span> 技术定义与机理</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.definition || tech.summary) + '</div>' +
+          '</div>' +
+          '<div class="bento-card trend-card">' +
+            '<div class="bento-card-title"><span class="icon">🚀</span> 颠覆性趋势演进</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.trend) + '</div>' +
+          '</div>' +
+          '<div class="bento-card value-card">' +
+            '<div class="bento-card-title"><span class="icon">🏦</span> 对银行业务与架构的价值</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.bankValue) + '</div>' +
+          '</div>' +
+          '<div class="bento-card limit-card">' +
+            '<div class="bento-card-title"><span class="icon">⚠️</span> 当前局限性与合规风险</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.limitation) + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function appendixHTML() {
+    return '<div class="page-pad">' +
+      '<div class="page-title">附录</div><div class="h-rule"></div>' +
+      '<div class="pg-section"><div class="pg-h">术语表</div><table class="tbl">' +
+      '<tr><th>术语</th><th>含义</th></tr>' +
+      '<tr><td>六维评级</td><td>技术成熟度、战略匹配度、价值贡献度、引入可行度、战略紧迫度、生态开放度（1–5 分制，越高越有利）。</td></tr>' +
+      '<tr><td>储备库分层</td><td>布局层/论证层/研究层/观察层四层，对应提前布局、系统论证、深入研究、动态观察。</td></tr>' +
+      '<tr><td>科技树</td><td>梳理技术间"前提技术→依赖技术"的层次关系，节点不限于长名单。</td></tr>' +
+      '</table></div>' +
+      '<div class="pg-section"><div class="pg-h">数据来源</div><div class="pg-p dim">长名单技术名称与六维评级来源于《前沿技术储备库分层台账 v1.30》；评估内容来源于监管与标准组织、研究机构、金融同业实践、学术文献及开源社区，按六维评级口径客观研判。</div></div>' +
+      '<div class="pg-section"><div class="pg-h">版本说明</div><div class="pg-p dim">' + esc(DATA.book.version) + ' · ' + esc(DATA.book.date) + ' · 本系统为纯静态离线展示，双击 index.html 即可打开。</div></div>' +
+      '</div>';
+  }
+  function backCoverHTML() {
+    return '<div class="cover-full">' +
+      '<div class="cov-kicker">THANK YOU</div>' +
+      '<div class="cov-title" style="font-size:24px">金融科技 · 前瞻研判</div>' +
+      '<div class="cov-rule"></div>' +
+      '<div class="cov-meta">' + esc(DATA.book.org) + '<br>' + esc(DATA.book.date) + ' · ' + esc(DATA.book.version) + '</div>' +
+      '</div>';
+  }
+  function closingHTML() {
+    return '<div class="page-pad">' +
+      '<div class="page-title">结语</div><div class="h-rule"></div>' +
+      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集银行金融科技前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，科技树梳理技术间的前提依赖层次，专题报告与评估表支撑逐项研判。</div>' +
+      '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
+      '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
+      '</div>';
+  }
+
+  /* ==================== 书籍页面序列 ==================== */
+  var pages = [];
+  var pageLabels = [];
+  var pageScroll = {};   // 标记可滚动页（不缩放）
+  function addPage(key, label, html, scroll) { pages.push(html); pageLabels.push(label); if (scroll) pageScroll[pages.length - 1] = true; }
+
+  addPage('inside', '内封面', insideCoverHTML());
+  addPage('cover', '封面', coverHTML());
+  addPage('title', '扉页 · 成果总览', titlePageHTML());
+  addPage('toc', '目录', tocHTML(), true);
+  addPage('part1', '第一篇', dividerHTML('第一篇', '整体研究成果', '工作方案 · 情报源评判 · 前沿技术储备库 · 技术关系图谱', '01'));
+  addPage('workplan', '第一篇 · 工作方案', workplanHTML());
+  addPage('sources', '第一篇 · 情报源评判报告', sourcesHTML());
+  addPage('library', '第一篇 · 前沿技术储备库', libraryPreviewHTML());
+  addPage('graph', '第一篇 · 关系图谱', graphPreviewHTML());
+  addPage('part2', '第二篇', dividerHTML('第二篇', '各项前沿技术研究', '评估表 · 专题研究报告（Word / PPT）· 一张图概述', '02'));
+  DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第二篇 · ' + t.name, techBookHTML(t)); });
+  addPage('appendix', '附录', appendixHTML());
+  addPage('closing', '结语', closingHTML());
+  addPage('back', '封底', backCoverHTML());
+  var maxSpread = Math.floor((pages.length - 1) / 2);
+
+  /* ==================== 翻书引擎 ==================== */
+  var spread = 0;
+  var singleIdx = 1;
+  var flipping = false;
+  var isSingle = function () { return window.innerWidth < 900; };
+
+  function updatePageNo() {
+    if (isSingle()) {
+      $('pageNo').textContent = pageLabels[singleIdx] + ' · ' + (singleIdx + 1) + ' / ' + pages.length;
+    } else {
+      var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
+      $('pageNo').textContent = (l ? l : '') + (r ? '　·　' + r : '') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+    }
+  }
+  function fitPage(el, idx) {
+    if (!el) return;
+    if (pageScroll[idx]) { el.classList.add('scroll'); return; }
+    el.classList.remove('scroll');
+    var pad = el.querySelector('.page-pad');
+    if (!pad) return;
+    pad.style.transform = '';
+    var aw = el.clientWidth, ah = el.clientHeight;
+    var nw = pad.scrollWidth, nh = pad.scrollHeight;
+    if (nw <= aw + 1 && nh <= ah + 1) return;
+    var s = Math.min(aw / nw, ah / nh);
+    if (s >= 1) return;
+    pad.style.transformOrigin = 'top left';
+    pad.style.transform = 'scale(' + s + ')';
+  }
+  function fitSpread() {
+    if (isSingle()) { fitPage($('pageRightInner'), singleIdx); return; }
+    fitPage($('pageLeftInner'), spread * 2);
+    fitPage($('pageRightInner'), spread * 2 + 1);
+  }
+  function renderSpread() {
+    if (isSingle()) {
+      $('pageLeftInner').innerHTML = '';
+      $('pageRightInner').innerHTML = pages[singleIdx];
+      $('pageRightInner').parentElement.style.width = '100%';
+      $('pageRightInner').classList.toggle('scroll', !!pageScroll[singleIdx]);
+    } else {
+      $('pageLeftInner').innerHTML = pages[spread * 2];
+      $('pageRightInner').innerHTML = pages[spread * 2 + 1];
+      $('pageRightInner').parentElement.style.width = '';
+      $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
+      $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
+    }
+    updatePageNo();
+    bindPageActions();
+    fitSpread();
+  }
+  function bindPageActions() {
+    var tocLis = document.querySelectorAll('#bookView .toc-list li');
+    tocLis.forEach(function (li) {
+      li.onclick = function () { jumpToPage(parseInt(li.getAttribute('data-jump'), 10)); };
+    });
+    document.querySelectorAll('[data-action]').forEach(function (el) {
+      el.onclick = function () {
+        var action = el.getAttribute('data-action');
+        var id = el.getAttribute('data-id');
+        if (action === 'open-library') openLibraryPanel();
+        else if (action === 'open-graph') openGraphPanel();
+        else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
+      };
+    });
+  }
+  function jumpToPage(i) {
+    i = Math.max(0, Math.min(pages.length - 1, i));
+    if (isSingle()) { singleIdx = i; renderSpread(); }
+    else { spread = Math.max(0, Math.min(maxSpread, Math.floor(i / 2))); renderSpread(); }
+  }
+  function flipForward() {
+    if (flipping) return;
+    if (isSingle()) {
+      if (singleIdx >= pages.length - 1) { toast('已是最后一页'); return; }
+      singleIdx++; renderSpread(); return;
+    }
+    if (spread >= maxSpread) { toast('已是最后一页'); return; }
+    flipping = true;
+    var oldRight = pages[spread * 2 + 1];
+    var newLeft = pages[spread * 2 + 2];
+    var newRight = pages[spread * 2 + 3];
+    $('pageRightInner').innerHTML = newRight;
+    $('turnFrontInner').innerHTML = oldRight;
+    $('turnBackInner').innerHTML = newLeft;
+    var sheet = $('turnSheet');
+    sheet.classList.remove('back');
+    sheet.style.display = 'block';
+    sheet.classList.remove('turning');
+    void sheet.offsetWidth;
+    fitPage($('turnFrontInner'), spread * 2 + 1);
+    fitPage($('turnBackInner'), spread * 2 + 2);
+    fitPage($('pageRightInner'), spread * 2 + 3);
+    sheet.classList.add('turning');
+    setTimeout(function () {
+      $('pageLeftInner').innerHTML = newLeft;
+      fitPage($('pageLeftInner'), spread * 2 + 2);
+      sheet.classList.remove('turning');
+      sheet.style.display = 'none';
+      spread++;
+      flipping = false;
+      updatePageNo(); bindPageActions();
+    }, 860);
+  }
+  function flipBackward() {
+    if (flipping) return;
+    if (isSingle()) {
+      if (singleIdx <= 0) { toast('已是第一页'); return; }
+      singleIdx--; renderSpread(); return;
+    }
+    if (spread <= 0) { toast('已是第一页'); return; }
+    flipping = true;
+    var oldLeft = pages[spread * 2];
+    var newLeft = pages[spread * 2 - 2];
+    var newRight = pages[spread * 2 - 1];
+    $('pageLeftInner').innerHTML = newLeft;
+    $('turnFrontInner').innerHTML = oldLeft;
+    $('turnBackInner').innerHTML = newRight;
+    var sheet = $('turnSheet');
+    sheet.classList.add('back');
+    sheet.style.display = 'block';
+    sheet.classList.remove('turning');
+    void sheet.offsetWidth;
+    fitPage($('turnFrontInner'), spread * 2);
+    fitPage($('turnBackInner'), spread * 2 - 1);
+    fitPage($('pageLeftInner'), spread * 2 - 2);
+    sheet.classList.add('turning');
+    setTimeout(function () {
+      $('pageRightInner').innerHTML = newRight;
+      fitPage($('pageRightInner'), spread * 2 - 1);
+      sheet.classList.remove('turning');
+      sheet.classList.remove('back');
+      sheet.style.display = 'none';
+      spread--;
+      flipping = false;
+      updatePageNo(); bindPageActions();
+    }, 860);
+  }
+
+  /* ==================== 网页视图（目录 + 滚动内容） ==================== */
+  function webSection(id, no, title, bodyHtml) {
+    return '<div class="sec" id="' + id + '"><div class="sec-head"><span class="sec-no">' + esc(no) + '</span><span class="sec-title">' + esc(title) + '</span></div><div class="sec-body">' + bodyHtml + '</div></div>';
+  }
+  function renderWeb() {
+    var b = DATA.book;
+    var sections = [];
+    sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">' + esc(b.title) + '</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
+    sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
+    sections.push(webSection('s-sources', '1.2', '情报源评判报告', sourcesHTML()));
+    sections.push(webSection('s-library', '1.3', '前沿技术储备库（长名单）', libraryPreviewHTML()));
+    sections.push(webSection('s-graph', '1.4', '各项前沿技术关系图谱', graphPreviewHTML()));
+    DATA.technologies.forEach(function (t, i) {
+      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), t.name + ' 专题研究', techWebHTML(t)));
+    });
+    sections.push(webSection('s-appendix', '附录', '术语 · 数据来源 · 版本', appendixHTML()));
+    sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
+    $('webContent').innerHTML = sections.join('');
+
+    // 目录
+    var toc = ['<h3>目录</h3>'];
+    toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>扉页 · 成果总览</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-workplan">第一篇 · 整体研究成果</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>情报源评判报告</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">1.3</span>前沿技术储备库</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">1.4</span>技术关系图谱</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第二篇 · 各项前沿技术研究</div>');
+    DATA.technologies.forEach(function (t, i) {
+      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(t.name) + '</div>');
+    });
+    toc.push('<div class="web-toc-item part" data-target="s-appendix">附录</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no"></span>术语 · 数据来源 · 版本</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-closing"><span class="wt-no"></span>结语</div>');
+    $('webToc').innerHTML = toc.join('');
+
+    // 目录点击定位
+    var tocItems = $('webToc').querySelectorAll('.web-toc-item');
+    tocItems.forEach(function (it) {
+      it.onclick = function () {
+        var el = $(it.getAttribute('data-target'));
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+    });
+
+    // 滚动高亮
+    if (window._webObserver) window._webObserver.disconnect();
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          var id = en.target.id;
+          tocItems.forEach(function (it) { it.classList.toggle('active', it.getAttribute('data-target') === id); });
+        }
+      });
+    }, { root: $('webContent'), rootMargin: '0px 0px -70% 0px', threshold: 0 });
+    $('webContent').querySelectorAll('.sec').forEach(function (s) { observer.observe(s); });
+    window._webObserver = observer;
+    bindPageActions();
+  }
+
+  /* ==================== 科技树（文明式分层） ==================== */
+  function renderTree() {
+    var legend = '<div class="tree-title">科技树 · 技术前提依赖（分层时代）</div>' +
+      '<div class="tree-legend">' +
+      '<span class="lg"><span class="line" style="background:#64748b"></span>前提依赖（主）</span>' +
+      '<span class="lg"><span class="line" style="background:#94a3b8;opacity:.5;border-top:2px dashed #94a3b8"></span>前提依赖（次）</span>' +
+      '<span class="lg"><span class="dot" style="background:#1e293b;border:1px dashed #64748b"></span>基础底座（长名单外）</span>' +
+      DATA.categories.map(function (c) { return '<span class="lg"><span class="dot" style="background:' + catColor(c) + '"></span>' + esc(c) + '</span>'; }).join('') +
+      '</div>' +
+      '<button class="btn" id="treeReset" style="margin-left:auto">重置视图</button>';
+    $('treeToolbar').innerHTML = legend;
+    initTechTree();
+  }
+
+  function initTechTree() {
+    var stage = $('treeStage');
+    if (!stage) return;
+    var tt = DATA.techTree;
+    var nodeIdx = {};
+    tt.nodes.forEach(function (n) { nodeIdx[n.id] = n; });
+    var children = {}, parent = {};
+    tt.edges.forEach(function (e) { (children[e.from] = children[e.from] || []).push(e.to); parent[e.to] = e.from; });
+    var roots = tt.nodes.filter(function (n) { return !parent[n.id]; });
+
+    // 深度（时代层）
+    var depth = {}, maxDepth = 0;
+    var queue = roots.map(function (r) { return r.id; });
+    queue.forEach(function (id) { depth[id] = 0; });
+    var qi = 0;
+    while (qi < queue.length) {
+      var qid = queue[qi++];
+      (children[qid] || []).forEach(function (c) { depth[c] = depth[qid] + 1; maxDepth = Math.max(maxDepth, depth[c]); queue.push(c); });
+    }
+
+    // 逐层排序：BFS 传播，子节点紧随父节点，减少连线交叉
+    var order = [], seen = {};
+    order[0] = roots.map(function (r) { seen[r.id] = true; return r.id; });
+    var lv = 0;
+    while (order[lv] && order[lv].length) {
+      order[lv].forEach(function (id) {
+        (children[id] || []).forEach(function (c) {
+          if (seen[c]) return; seen[c] = true;
+          order[lv + 1] = order[lv + 1] || [];
+          order[lv + 1].push(c);
+        });
+      });
+      lv++;
+    }
+
+    // 布局参数
+    var nodeW = 172, nodeH = 46, colW = 244, rowStep = 58, padX = 28, headH = 46, padTop = 18;
+    var pos = {}, maxRows = 0;
+    for (var l = 0; l <= maxDepth; l++) {
+      var arr = order[l] || [];
+      maxRows = Math.max(maxRows, arr.length);
+      arr.forEach(function (id, r) { pos[id] = { x: padX + l * colW, y: padTop + headH + r * rowStep }; });
+    }
+    var totalW = padX + (maxDepth + 1) * colW + 40;
+    var totalH = padTop + headH + maxRows * rowStep + 40;
+    var levelLabels = { 0: '第 0 层 · 基础底座', 1: '第 1 层 · 使能技术', 2: '第 2 层 · 系统与应用' };
+
+    var svgNS = 'http://www.w3.org/2000/svg';
+    stage.innerHTML = '';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + totalW + ' ' + totalH);
+    svg.style.width = '100%'; svg.style.height = '100%';
+    var viewport = document.createElementNS(svgNS, 'g');
+    svg.appendChild(viewport); stage.appendChild(svg);
+
+    var defs = document.createElementNS(svgNS, 'defs');
+    defs.innerHTML = '<marker id="tarrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#64748b" opacity=".65"/></marker>';
+    svg.appendChild(defs);
+
+    // 时代列背景 + 标题
+    for (var l2 = 0; l2 <= maxDepth; l2++) {
+      var bandX = padX + l2 * colW - 12;
+      var bandW = nodeW + 24;
+      var band = document.createElementNS(svgNS, 'rect');
+      band.setAttribute('x', bandX);
+      band.setAttribute('y', padTop - 6);
+      band.setAttribute('width', bandW);
+      band.setAttribute('height', totalH - padTop - 14);
+      band.setAttribute('rx', 14);
+      band.setAttribute('fill', l2 % 2 ? 'rgba(148,163,184,.05)' : 'rgba(148,163,184,.10)');
+      band.style.pointerEvents = 'none';
+      viewport.appendChild(band);
+      var ht = document.createElementNS(svgNS, 'text');
+      ht.setAttribute('x', bandX + bandW / 2);
+      ht.setAttribute('y', padTop + 8);
+      ht.setAttribute('text-anchor', 'middle');
+      ht.setAttribute('font-size', '13');
+      ht.setAttribute('font-weight', '700');
+      ht.setAttribute('fill', 'var(--accent)');
+      ht.style.pointerEvents = 'none';
+      ht.textContent = levelLabels[l2] || ('第 ' + l2 + ' 层');
+      viewport.appendChild(ht);
+    }
+
+    function drawEdge(from, to, co) {
+      var a = pos[from], b = pos[to];
+      if (!a || !b) return;
+      var x1 = a.x + nodeW, y1 = a.y + nodeH / 2;
+      var x2 = b.x, y2 = b.y + nodeH / 2;
+      var mx = (x1 + x2) / 2;
+      var line = document.createElementNS(svgNS, 'path');
+      var d = 'M' + x1 + ' ' + y1 + ' C ' + mx + ' ' + y1 + ', ' + mx + ' ' + y2 + ', ' + x2 + ' ' + y2;
+      line.setAttribute('d', d);
+      line.setAttribute('fill', 'none');
+      line.setAttribute('stroke', co ? '#94a3b8' : '#64748b');
+      line.setAttribute('stroke-width', co ? 1.1 : 1.6);
+      line.setAttribute('opacity', co ? 0.35 : 0.55);
+      if (co) line.setAttribute('stroke-dasharray', '5 5');
+      if (!co) line.setAttribute('marker-end', 'url(#tarrow)');
+      viewport.appendChild(line);
+    }
+
+    tt.edges.forEach(function (e) { drawEdge(e.from, e.to, false); });
+    tt.coEdges.forEach(function (e) { drawEdge(e.from, e.to, true); });
+
+    tt.nodes.forEach(function (n) {
+      var g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('class', 'tree-node');
+      g.setAttribute('transform', 'translate(' + pos[n.id].x + ',' + pos[n.id].y + ')');
+      var isLib = n.kind === 'library';
+      var fill = isLib ? catColor(n.categoryKey) : '#1e293b';
+      var label = n.name.length > 12 ? n.name.slice(0, 12) + '…' : n.name;
+      var sub = isLib ? (n.tier || '') : '基础底座';
+      var rect = document.createElementNS(svgNS, 'rect');
+      rect.setAttribute('x', 0); rect.setAttribute('y', 0);
+      rect.setAttribute('width', nodeW); rect.setAttribute('height', nodeH);
+      rect.setAttribute('rx', 10);
+      rect.setAttribute('fill', isLib ? fill : '#1e293b');
+      rect.setAttribute('stroke', isLib ? fill : '#64748b');
+      rect.setAttribute('stroke-width', 1.4);
+      rect.setAttribute('opacity', isLib ? 0.88 : 1);
+      if (!isLib) rect.setAttribute('stroke-dasharray', '6 4');
+      g.appendChild(rect);
+      if (isLib) {
+        var bar = document.createElementNS(svgNS, 'rect');
+        bar.setAttribute('x', 3); bar.setAttribute('y', 9);
+        bar.setAttribute('width', 4); bar.setAttribute('height', nodeH - 18);
+        bar.setAttribute('rx', 2);
+        bar.setAttribute('fill', '#ffffff');
+        bar.setAttribute('opacity', '0.55');
+        g.appendChild(bar);
+      }
+      var txt = document.createElementNS(svgNS, 'text');
+      txt.setAttribute('x', 14); txt.setAttribute('y', nodeH / 2 + 1);
+      txt.setAttribute('font-size', '12.5');
+      txt.setAttribute('font-weight', '600');
+      txt.setAttribute('fill', isLib ? '#fff' : 'var(--dim)');
+      txt.style.pointerEvents = 'none';
+      txt.textContent = label;
+      g.appendChild(txt);
+      var subTxt = document.createElementNS(svgNS, 'text');
+      subTxt.setAttribute('x', 14); subTxt.setAttribute('y', nodeH - 10);
+      subTxt.setAttribute('font-size', '9.5');
+      subTxt.setAttribute('fill', 'var(--faint)');
+      subTxt.style.pointerEvents = 'none';
+      subTxt.textContent = sub;
+      g.appendChild(subTxt);
+      g.addEventListener('click', function () {
+        if (isLib) { openTechPanel(findTech(n.libId)); }
+        else { openModal(n.name + ' · 基础底座', '<div class="pg-p">' + esc(n.desc || '') + '</div><div class="pg-p dim">此为基础技术底座，不属于 36 项长名单，是上层技术的前提。其上派生的长名单技术：' + (children[n.id] || []).map(function (c) { return esc(nodeIdx[c].name); }).join('、') + '</div>'); }
+      });
+      viewport.appendChild(g);
+    });
+
+    var tx = 0, ty = 0, k = 1;
+    function applyView() { viewport.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + k + ')'); }
+    function fitTree() {
+      var sw = stage.clientWidth, sh = stage.clientHeight;
+      var s = Math.min((sw - 32) / totalW, (sh - 32) / totalH, 1);
+      k = Math.max(0.15, s);
+      tx = (sw - totalW * k) / 2;
+      ty = (sh - totalH * k) / 2;
+      applyView();
+    }
+    fitTree();
+    var panning = false, px = 0, py = 0;
+    svg.addEventListener('mousedown', function (e) {
+      var tag = e.target.tagName;
+      if (tag === 'rect' || tag === 'text') return;
+      panning = true; px = e.clientX; py = e.clientY; stage.classList.add('dragging');
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!panning) return;
+      tx += e.clientX - px; ty += e.clientY - py; px = e.clientX; py = e.clientY; applyView();
+    });
+    window.addEventListener('mouseup', function () { panning = false; stage.classList.remove('dragging'); });
+    svg.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var rect = svg.getBoundingClientRect();
+      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      var nk = k * (e.deltaY > 0 ? 0.9 : 1.1);
+      nk = Math.max(0.12, Math.min(3, nk));
+      tx = mx - (mx - tx) * (nk / k); ty = my - (my - ty) * (nk / k);
+      k = nk; applyView();
+    }, { passive: false });
+    $('treeReset').onclick = fitTree;
+  }
+  /* ==================== 长名单面板 ==================== */
+  function libraryHTML() {
+    var catOpts = '<option value="">全部战略方向</option>' + DATA.categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+    var tierOpts = '<option value="">全部层级</option>' + DATA.tiers.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+    return '<div class="lib-toolbar">' +
+      '<input id="libSearch" type="text" placeholder="搜索技术名称 / 关键词 / 应用…">' +
+      '<select id="libCat">' + catOpts + '</select>' +
+      '<select id="libTier">' + tierOpts + '</select>' +
+      '<select id="libMaturity"><option value="">全部成熟度</option><option value="5">5分</option><option value="4">4分</option><option value="3">3分</option><option value="2">2分</option><option value="1">1分</option></select>' +
+      '<button class="btn" id="libReset">重置</button>' +
+      '<span class="lib-count" id="libCount"></span></div>' +
+      '<div class="lib-table-wrap"><table class="lib-table"><thead><tr>' +
+      '<th data-sort="no">#</th><th data-sort="name">技术名称</th><th data-sort="category">战略方向</th><th data-sort="tier">层级</th>' +
+      '<th data-sort="maturity">六维评分</th><th>处置档位</th><th>关注度</th><th>处置状态</th><th>操作</th>' +
+      '</tr></thead><tbody id="libTbody"></tbody></table></div>' +
+      '<div class="pager"><button id="pgPrev">‹ 上一页</button><span id="pgInfo"></span><button id="pgNext">下一页 ›</button></div>';
+  }
+  var libState = { q: '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
+  function initLibrary(prefilter) {
+    libState = { q: prefilter || '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 };
+    if (prefilter) $('libSearch').value = prefilter;
+    var tierOrder = { '布局层': 1, '论证层': 2, '研究层': 3, '观察层': 4 };
+    function render() {
+      var items = DATA.library.items.filter(function (it) {
+        if (libState.cat && it.category !== libState.cat) return false;
+        if (libState.tier && it.tier !== libState.tier) return false;
+        if (libState.maturity && String(it.maturity) !== libState.maturity) return false;
+        if (libState.q) {
+          var hay = (it.name + it.nameEn + it.summary + it.definition + it.bankValue + it.source + it.category + it.tier).toLowerCase();
+          if (hay.indexOf(libState.q.toLowerCase()) < 0) return false;
+        }
+        return true;
+      });
+      var dir = libState.dir, key = libState.sort;
+      items.sort(function (a, b) {
+        var va, vb;
+        if (key === 'no') { va = a.no; vb = b.no; }
+        else if (key === 'tier') { va = tierOrder[a.tier] || 9; vb = tierOrder[b.tier] || 9; }
+        else if (key === 'maturity' || key === 'strategicFit' || key === 'value' || key === 'feasibility' || key === 'urgency' || key === 'openness') { va = Number(a[key]) || 0; vb = Number(b[key]) || 0; }
+        else { va = a[key] || ''; vb = b[key] || ''; }
+        if (va < vb) return -1 * dir; if (va > vb) return 1 * dir; return 0;
+      });
+      var total = items.length, pages = Math.max(1, Math.ceil(total / libState.pageSize));
+      libState.page = Math.min(libState.page, pages - 1);
+      var start = libState.page * libState.pageSize;
+      var slice = items.slice(start, start + libState.pageSize);
+      $('libCount').textContent = '共 ' + total + ' 项';
+      $('pgInfo').textContent = (total ? (start + 1) : 0) + '–' + Math.min(start + libState.pageSize, total) + ' / ' + total + ' 项';
+      $('pgPrev').disabled = libState.page === 0;
+      $('pgNext').disabled = libState.page >= pages - 1;
+      $('libTbody').innerHTML = slice.map(function (it) {
+        return '<tr><td>' + it.no + '</td><td class="tname">' + esc(it.name) + '<div style="font-size:11px;color:var(--faint)">' + esc(it.nameEn) + '</div></td>' +
+          '<td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td>' +
+          '<td>' + tierPill(it.tier) + '</td><td>' + sixDimHTML(it) + '</td><td>' + esc(it.disposal) + '</td>' +
+          '<td>' + esc(it.attention) + '</td><td>' + esc(it.status) + '</td>' +
+          '<td><button class="btn" data-row="' + it.id + '">详情</button> <button class="btn active" data-tech="' + it.id + '">专题</button></td></tr>';
+      }).join('');
+      $('libTbody').querySelectorAll('[data-row]').forEach(function (b) {
+        b.onclick = function () { openLibraryItemModal(b.getAttribute('data-row')); };
+      });
+      $('libTbody').querySelectorAll('[data-tech]').forEach(function (b) {
+        b.onclick = function () { openTechPanel(findTech(b.getAttribute('data-tech'))); };
+      });
+    }
+    $('libSearch').oninput = function () { libState.q = this.value; libState.page = 0; render(); };
+    $('libCat').onchange = function () { libState.cat = this.value; libState.page = 0; render(); };
+    $('libTier').onchange = function () { libState.tier = this.value; libState.page = 0; render(); };
+    $('libMaturity').onchange = function () { libState.maturity = this.value; libState.page = 0; render(); };
+    $('libReset').onclick = function () { libState = { q: '', cat: '', tier: '', maturity: '', sort: 'no', dir: 1, page: 0, pageSize: 15 }; $('libSearch').value = ''; $('libCat').value = ''; $('libTier').value = ''; $('libMaturity').value = ''; render(); };
+    $('pgPrev').onclick = function () { libState.page--; render(); };
+    $('pgNext').onclick = function () { libState.page++; render(); };
+    document.querySelectorAll('.lib-table th[data-sort]').forEach(function (th) {
+      th.onclick = function () {
+        var k = th.getAttribute('data-sort');
+        if (libState.sort === k) libState.dir *= -1; else { libState.sort = k; libState.dir = 1; }
+        render();
+      };
+    });
+    render();
+  }
+  function openLibraryPanel(prefilter) { openPanel('前沿技术储备库（长名单 · 36 项）', libraryHTML(), function () { initLibrary(prefilter); }); }
+
+  var LONG_FIELDS = ['source', 'externalSource', 'definition', 'trend', 'bankValue', 'limitation', 'maturityBasis', 'strategicFitBasis', 'valueBasis', 'feasibilityBasis', 'urgencyBasis', 'opennessBasis', 'conclusion', 'remark', 'summary'];
+  function openLibraryItemModal(id) {
+    var it = findLib(id); if (!it) return;
+    var rows = DATA.library.fields.map(function (f) {
+      var v = it[f.key];
+      var html = v == null || v === '' ? '—' : v;
+      if (f.key === 'tier') html = tierPill(v);
+      else if (f.key === 'maturity' || f.key === 'strategicFit' || f.key === 'value' || f.key === 'feasibility' || f.key === 'urgency' || f.key === 'openness') html = scorePill(v);
+      else if (f.key === 'category') html = '<span class="tag" style="border-color:' + catColor(v) + ';color:' + catColor(v) + '">' + esc(v) + '</span>';
+      else html = esc(v);
+      var full = LONG_FIELDS.indexOf(f.key) >= 0 ? ' full' : '';
+      return '<div class="rd' + full + '"><div class="k">' + esc(f.label) + '</div><div class="v">' + html + '</div></div>';
+    }).join('');
+    openModal(it.name + ' · ' + it.id + '（全字段详情）', '<div class="row-detail">' + rows + '<div class="rd full" style="border:0;margin-top:6px"><button class="btn active" id="mdOpenTech" data-id="' + id + '">打开专题研究 →</button></div></div>');
+    $('mdOpenTech').onclick = function () { closeModal(); openTechPanel(findTech(id)); };
+  }
+
+  /* ==================== 关系图谱面板（力导向） ==================== */
+  function graphToolbarHTML() {
+    var rels = DATA.graphRelations.map(function (r) {
+      return '<span class="lg" data-rel="' + r.key + '"><span class="line" style="background:' + r.color + '"></span>' + esc(r.label) + '</span>';
+    }).join('');
+    return '<div class="graph-toolbar"><div class="legend">' + rels + '</div>' +
+      '<button class="btn" id="graphReset" style="margin-left:auto">重置布局</button></div>';
+  }
+  function openGraphPanel() { openPanel('各项前沿技术关系图谱', graphToolbarHTML() + '<div id="graphBox"></div><div class="graph-tip" style="margin-top:8px">滚轮缩放 · 拖拽空白平移 · 拖拽节点调整 · 点击节点查看详情</div>', function () { initForceGraph(); }); }
+
+  function initForceGraph() {
+    var box = $('graphBox');
+    if (!box) return;
+    var W = box.clientWidth || 900, H = box.clientHeight || 560;
+    var g = DATA.graph;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var nodes = g.nodes.map(function (n, i) {
+      var ci = DATA.categories.indexOf(n.category);
+      var ang = (ci / DATA.categories.length) * Math.PI * 2 + i * 0.5;
+      return { id: n.id, name: n.name, cat: n.category, trl: n.trl, tier: n.tier,
+        x: W / 2 + Math.cos(ang) * W * 0.32, y: H / 2 + Math.sin(ang) * H * 0.32, vx: 0, vy: 0 };
+    });
+    var edges = g.edges.map(function (e) { return { s: e.source, t: e.target, rel: e.relation }; });
+    var activeRel = {}; DATA.graphRelations.forEach(function (r) { activeRel[r.key] = true; });
+    var idx = {}; nodes.forEach(function (n) { idx[n.id] = n; });
+
+    box.innerHTML = '';
+    var svg = document.createElementNS(svgNS, 'svg');
+    var viewport = document.createElementNS(svgNS, 'g');
+    svg.appendChild(viewport); box.appendChild(svg);
+    var edgeLayer = document.createElementNS(svgNS, 'g');
+    var nodeLayer = document.createElementNS(svgNS, 'g');
+    viewport.appendChild(edgeLayer); viewport.appendChild(nodeLayer);
+    var dimColor = getComputedStyle(document.documentElement).getPropertyValue('--dim').trim() || '#8fa3c0';
+
+    nodes.forEach(function (n) {
+      var c = document.createElementNS(svgNS, 'circle');
+      c.setAttribute('r', 10); c.setAttribute('fill', catColor(n.cat));
+      c.setAttribute('stroke', 'rgba(255,255,255,.55)'); c.setAttribute('stroke-width', 1.5);
+      c.style.cursor = 'pointer';
+      var t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('font-size', '10.5'); t.setAttribute('text-anchor', 'middle');
+      t.style.fill = dimColor; t.style.pointerEvents = 'none';
+      t.textContent = n.name.length > 9 ? n.name.slice(0, 9) + '…' : n.name;
+      n.el = c; n.label = t;
+      nodeLayer.appendChild(c); nodeLayer.appendChild(t);
+    });
+    edges.forEach(function (e) {
+      var l = document.createElementNS(svgNS, 'line');
+      l.setAttribute('stroke', relColor(e.rel)); l.setAttribute('stroke-width', 1.4); l.setAttribute('opacity', .55);
+      e.el = l; edgeLayer.appendChild(l);
+    });
+
+    function draw() {
+      edges.forEach(function (e) {
+        var s = idx[e.s], t = idx[e.t];
+        if (!s || !t) return;
+        var visible = activeRel[e.rel] !== false;
+        e.el.setAttribute('x1', s.x); e.el.setAttribute('y1', s.y);
+        e.el.setAttribute('x2', t.x); e.el.setAttribute('y2', t.y);
+        e.el.style.display = visible ? '' : 'none';
+      });
+      nodes.forEach(function (n) {
+        n.el.setAttribute('cx', n.x); n.el.setAttribute('cy', n.y);
+        n.label.setAttribute('x', n.x); n.label.setAttribute('y', n.y + 22);
+      });
+    }
+
+    function tick(alpha) {
+      var i, j, a, b;
+      for (i = 0; i < nodes.length; i++) {
+        a = nodes[i];
+        for (j = i + 1; j < nodes.length; j++) {
+          b = nodes[j];
+          var dx = b.x - a.x, dy = b.y - a.y;
+          var d2 = dx * dx + dy * dy; if (d2 < 1) d2 = 1;
+          var f = 2600 * alpha / d2;
+          var d = Math.sqrt(d2);
+          var fx = dx / d * f, fy = dy / d * f;
+          a.vx -= fx; a.vy -= fy; b.vx += fx; b.vy += fy;
+        }
+      }
+      edges.forEach(function (e) {
+        var s = idx[e.s], t = idx[e.t]; if (!s || !t) return;
+        var dx = t.x - s.x, dy = t.y - s.y;
+        var d = Math.sqrt(dx * dx + dy * dy) || 1;
+        var f = (d - 90) * 0.02 * alpha;
+        var fx = dx / d * f, fy = dy / d * f;
+        s.vx += fx; s.vy += fy; t.vx -= fx; t.vy -= fy;
+      });
+      nodes.forEach(function (n) {
+        n.vx += (W / 2 - n.x) * 0.0012 * alpha;
+        n.vy += (H / 2 - n.y) * 0.0012 * alpha;
+        n.x += n.vx; n.y += n.vy;
+        n.vx *= 0.82; n.vy *= 0.82;
+        n.x = Math.max(18, Math.min(W - 18, n.x));
+        n.y = Math.max(18, Math.min(H - 18, n.y));
+      });
+    }
+    var alpha = 1, running = true;
+    function step() {
+      if (!running) return;
+      tick(alpha); draw();
+      alpha *= 0.975;
+      if (alpha > 0.015) requestAnimationFrame(step); else { running = false; }
+    }
+    draw(); requestAnimationFrame(step);
+
+    document.querySelectorAll('.legend [data-rel]').forEach(function (lg) {
+      lg.onclick = function () {
+        var r = lg.getAttribute('data-rel');
+        activeRel[r] = activeRel[r] === false ? true : false;
+        lg.classList.toggle('off', activeRel[r] === false);
+        draw();
+      };
+    });
+    $('graphReset').onclick = function () { initForceGraph(); };
+
+    var tx = 0, ty = 0, k = 1;
+    function applyView() { viewport.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + k + ')'); }
+    applyView();
+    var dragNode = null, panning = false, px = 0, py = 0;
+    svg.addEventListener('mousedown', function (e) {
+      var t = e.target;
+      if (t.tagName === 'circle') {
+        nodes.forEach(function (n) { if (n.el === t) dragNode = n; });
+        if (dragNode) { running = false; return; }
+      }
+      panning = true; px = e.clientX; py = e.clientY; box.classList.add('dragging');
+    });
+    nodes.forEach(function (n) {
+      n.el.addEventListener('click', function () { openTechPanel(findTech(n.id)); });
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (dragNode) {
+        var rect = svg.getBoundingClientRect();
+        dragNode.x = (e.clientX - rect.left - tx) / k;
+        dragNode.y = (e.clientY - rect.top - ty) / k;
+        draw();
+      } else if (panning) {
+        tx += e.clientX - px; ty += e.clientY - py; px = e.clientX; py = e.clientY; applyView();
+      }
+    });
+    window.addEventListener('mouseup', function () { dragNode = null; panning = false; box.classList.remove('dragging'); });
+    svg.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var rect = svg.getBoundingClientRect();
+      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      var nk = k * (e.deltaY > 0 ? 0.9 : 1.1);
+      nk = Math.max(0.4, Math.min(4, nk));
+      tx = mx - (mx - tx) * (nk / k); ty = my - (my - ty) * (nk / k);
+      k = nk; applyView();
+    }, { passive: false });
+  }
+
+  /* ==================== 技术专题详情面板 ==================== */
+  function techTabs(tech) {
+    var tabs = [];
+    if (tech.image) tabs.push({ key: 'image', name: '一张图概述', html: onePageHTML(tech), fill: true });
+    tabs.push({ key: 'assess', name: '评估表', html: assessHTML(tech), fill: false });
+    if (tech.reportPdf || tech.reportDocx) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
+    if (tech.slidesPdf || tech.slidesPptx) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
+    return tabs;
+  }
+  function onePageHTML(tech) {
+    return '<div class="onepage-wrap"><img id="onepageImg" src="' + esc(tech.image) + '" alt="' + esc(tech.name) + ' 一张图概述"></div>';
+  }
+  function assessHTML(tech) {
+    var dims = tech.assessment.dimensions;
+    var rows = dims.map(function (d) {
+      return '<tr><th>' + esc(d.label) + '</th><td style="width:180px">' + scoreBar(d.score, d.max || 5) + '</td><td><b style="color:' + dimColor(d) + '">' + d.score + '/5</b></td></tr>';
+    }).join('');
+    var info = '';
+    if (tech.definition) info += '<div class="pg-section"><div class="pg-h">定义</div><div class="pg-p">' + esc(tech.definition) + '</div></div>';
+    if (tech.trend) info += '<div class="pg-section"><div class="pg-h">颠覆性趋势</div><div class="pg-p">' + esc(tech.trend) + '</div></div>';
+    if (tech.bankValue) info += '<div class="pg-section"><div class="pg-h">对银行的价值</div><div class="pg-p">' + esc(tech.bankValue) + '</div></div>';
+    if (tech.limitation) info += '<div class="pg-section"><div class="pg-h">当前局限性</div><div class="pg-p">' + esc(tech.limitation) + '</div></div>';
+    var basis = '';
+    var basisFields = [['maturityBasis', '技术成熟度'], ['strategicFitBasis', '战略匹配度'], ['valueBasis', '价值贡献度'], ['feasibilityBasis', '引入可行度'], ['urgencyBasis', '战略紧迫度'], ['opennessBasis', '生态开放度']];
+    var basisRows = basisFields.map(function (bf) {
+      if (!tech[bf[0]]) return '';
+      return '<div class="pg-section"><div class="pg-h">' + bf[1] + ' · 研判依据</div><div class="pg-p dim">' + esc(tech[bf[0]]) + '</div></div>';
+    }).join('');
+    if (basisRows) basis = '<div class="chart-card" style="margin-top:14px"><h4>六维研判依据</h4>' + basisRows + '</div>';
+    return '<div class="chart-card" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">' +
+      '<div style="flex:1.2;min-width:320px"><h4>多轮评估雷达对比</h4>' + radarSVG(tech) + '</div>' +
+      '<div style="flex:1;min-width:260px"><h4>评估表（六维）</h4><table class="tbl"><tr><th>评估维度</th><th>评分</th><th>得分</th></tr>' + rows + '</table></div>' +
+      '</div>' +
+      '<div class="chart-card" style="margin-top:14px"><h4>研判结论与处置逻辑</h4><div class="pg-p">' + esc(tech.conclusion) + '</div></div>' +
+      basis + info;
+  }
+  function wordHTML(tech) {
+    return previewHTML(tech, tech.reportDocx, tech.reportPdf, 'Word 报告');
+  }
+  function pptHTML(tech) {
+    return previewHTML(tech, tech.slidesPptx, tech.slidesPdf, 'PPT 报告');
+  }
+  function previewHTML(tech, docx, pdf, label) {
+    var dl = '<div class="preview-toolbar">';
+    if (docx) dl += '<a href="' + esc(docx) + '" download>⬇ 下载 ' + esc(label) + '</a>';
+    if (pdf) dl += '<a href="' + esc(pdf) + '" download>⬇ 下载 PDF</a><a href="' + esc(pdf) + '" target="_blank">↗ 新窗口打开</a>';
+    dl += '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button></div>';
+    if (!pdf) return dl + '<div class="preview-empty">暂无在线预览，请下载后查看。</div>';
+    return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览"></iframe></div>';
+  }
+  function techDetailHTML(tech) {
+    var tabs = techTabs(tech);
+    var head = '<div class="tech-head"><h2>' + esc(tech.name) + '</h2><span class="tag" style="border-color:' + catColor(tech.category) + ';color:' + catColor(tech.category) + '">' + esc(tech.category) + '</span>' +
+      tierPill(tech.tier) + '<span class="badge acc">成熟度 ' + tech.maturity + '/5</span>' +
+      '<span style="font-size:12px;color:var(--dim)">' + esc(tech.nameEn || '') + '</span></div>';
+    var sum = '<div class="tech-detail-sum">' + esc(tech.summary) + '</div>';
+    var tabBtns = tabs.map(function (t, i) { return '<button class="tab' + (i === 0 ? ' active' : '') + '" data-name="' + t.key + '">' + esc(t.name) + '</button>'; }).join('');
+    var panes = tabs.map(function (t, i) {
+      var cls = 'tabpane' + (i === 0 ? ' active' : '') + (t.fill ? ' fill' : '');
+      return '<div class="' + cls + '" data-name="' + t.key + '">' + t.html + '</div>';
+    }).join('');
+    return '<div class="tech-detail"><div class="tech-detail-bar">' + head + '</div>' + sum + '<div class="tabs">' + tabBtns + '</div><div class="tech-detail-body">' + panes + '</div></div>';
+  }
+  function openTechPanel(tech, tab) {
+    if (!tech) return;
+    openPanel(tech.name + ' · 专题研究', techDetailHTML(tech), function () {
+      var tabs = document.querySelectorAll('#panelBody .tab');
+      var panes = document.querySelectorAll('#panelBody .tabpane');
+      var body = document.querySelector('#panelBody .tech-detail-body');
+      var panelBody = $('panelBody');
+      // 切换标签后，把内容区直接定位到该内容顶部（多重保险，避免停留在上一内容的滚动深处）
+      function scrollContentTop() {
+        if (panelBody) panelBody.scrollTop = 0;
+        if (body) body.scrollTop = 0;
+        var ap = document.querySelector('#panelBody .tabpane.active');
+        if (ap && ap.scrollIntoView) { try { ap.scrollIntoView(true); } catch (e) { ap.scrollIntoView(); } }
+      }
+      function loadPane(p) {
+        p.querySelectorAll('iframe[data-src]').forEach(function (f) {
+          if (!f.getAttribute('src')) {
+            f.setAttribute('src', f.getAttribute('data-src'));
+            // PDF 加载完成后内容高度变化，再滚一次确保停在顶部
+            f.onload = function () { scrollContentTop(); };
+          }
+        });
+      }
+      function activateByName(name) {
+        tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-name') === name); });
+        panes.forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-name') === name); });
+        panes.forEach(function (p) { if (p.classList.contains('active')) loadPane(p); });
+        scrollContentTop();
+        // 布局稳定后再滚一次（iframe/图片加载会改变内容高度）
+        requestAnimationFrame(scrollContentTop);
+      }
+      tabs.forEach(function (t) {
+        t.onclick = function () { activateByName(t.getAttribute('data-name')); };
+      });
+      if (tab != null) activateByName(String(tab));
+      panes.forEach(function (p) { if (p.classList.contains('active')) loadPane(p); });
+      scrollContentTop();
+      requestAnimationFrame(scrollContentTop);
+      var img = $('onepageImg');
+      if (img) img.onclick = function () { openLightbox(img.src, tech.name + ' · 一张图概述'); };
+      document.querySelectorAll('#panelBody [data-fs]').forEach(function (b) {
+        b.onclick = function () {
+          var pane = b.closest('.tabpane');
+          toggleFullscreen(pane ? pane.querySelector('.preview-stage') : null);
+        };
+      });
+    }, true);
+  }
+
+  /* ==================== 全局搜索 ==================== */
+  function initSearch() {
+    var input = $('searchInput'), box = $('searchResults');
+    var lib = DATA.library.items;
+    function hide() { box.classList.add('hidden'); box.innerHTML = ''; }
+    function doSearch(q) {
+      q = (q || '').trim();
+      if (!q) { hide(); return; }
+      var ql = q.toLowerCase();
+      var hits = [];
+      lib.forEach(function (it) {
+        var hay = (it.name + ' ' + it.nameEn + ' ' + it.summary + ' ' + it.definition + ' ' + it.bankValue + ' ' + it.category + ' ' + it.tier).toLowerCase();
+        if (hay.indexOf(ql) >= 0) hits.push({ id: it.id, name: it.name, cat: it.category, tier: it.tier, sum: it.summary });
+      });
+      hits = hits.slice(0, 8);
+      if (!hits.length) { box.innerHTML = '<div class="search-item"><span class="si-sum">未找到匹配结果</span></div>'; box.classList.remove('hidden'); return; }
+      box.innerHTML = hits.map(function (h, i) {
+        return '<div class="search-item" data-i="' + i + '"><div style="flex:1"><div class="si-name">' + esc(h.name) + ' <span class="si-cat">' + esc(h.cat) + ' · ' + esc(h.tier) + '</span></div><div class="si-sum">' + esc(h.sum) + '</div></div></div>';
+      }).join('');
+      box.classList.remove('hidden');
+      box.querySelectorAll('.search-item').forEach(function (el) {
+        el.onclick = function () {
+          var h = hits[parseInt(el.getAttribute('data-i'), 10)];
+          hide(); input.value = '';
+          openTechPanel(findTech(h.id));
+        };
+      });
+    }
+    input.addEventListener('input', function () { doSearch(this.value); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { var first = box.querySelector('.search-item'); if (first) first.click(); }
+      if (e.key === 'Escape') { hide(); input.value = ''; }
+    });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.search-wrap')) hide(); });
+  }
+
+  /* ==================== 主题 / 模式切换 ==================== */
+  var mode = 'book';
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('dsh-theme', theme); } catch (e) {}
+  }
+  function toggleTheme() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    setTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  function setMode(m) {
+    mode = m;
+    $('bookView').classList.toggle('hidden', m !== 'book');
+    $('webView').classList.toggle('hidden', m !== 'web');
+    $('treeView').classList.toggle('hidden', m !== 'tree');
+    $('btnBook').classList.toggle('active', m === 'book');
+    $('btnWeb').classList.toggle('active', m === 'web');
+    $('btnTree').classList.toggle('active', m === 'tree');
+    if (m === 'book') renderSpread();
+    else if (m === 'web') renderWeb();
+    else if (m === 'tree') renderTree();
+  }
+
+  /* ==================== 初始化 ==================== */
+  function init() {
+    try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+    bindOverlayClose();
+    initSearch();
+    $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
+    $('btnBook').onclick = function () { setMode('book'); };
+    $('btnWeb').onclick = function () { setMode('web'); };
+    $('btnTree').onclick = function () { setMode('tree'); };
+    $('btnTheme').onclick = toggleTheme;
+    $('navNext').onclick = flipForward;
+    $('navPrev').onclick = flipBackward;
+    document.addEventListener('keydown', function (e) {
+      if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+      if (e.key === 'ArrowRight') flipForward();
+      else if (e.key === 'ArrowLeft') flipBackward();
+      else if (e.key === 'Home') jumpToPage(1);
+    });
+    var book = $('book');
+    book.addEventListener('click', function (e) {
+      if (flipping || isSingle()) return;
+      var rect = book.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      if (e.target.closest('button') || e.target.closest('li') || e.target.closest('a') || e.target.closest('iframe')) return;
+      if (x < rect.width * 0.18) flipBackward();
+      else if (x > rect.width * 0.82) flipForward();
+    });
+    window.addEventListener('resize', function () { if (mode === 'book') renderSpread(); });
+    renderSpread();
+
+    // URL 深链
+    if (location.hash) {
+      var h = location.hash.substring(1);
+      setTimeout(function () {
+        if (h === 'library') openLibraryPanel();
+        else if (h === 'graph') openGraphPanel();
+        else if (h === 'web') setMode('web');
+        else if (h === 'tree') setMode('tree');
+        else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));
+      }, 0);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+</script>
+</body>
+</html>
