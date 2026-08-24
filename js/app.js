@@ -1,7 +1,7 @@
 /* =====================================================================
  * 银行金融科技前沿技术研究成果 · 电子研究书 —— 应用逻辑
  * 纯原生 JS，无任何外部依赖；双击 index.html 即可离线运行。
- * 三视图：书籍 / 网页（目录+滚动内容）/ 科技树
+ * 双视图：书籍 / 网页（目录+滚动内容）
  * ===================================================================== */
 (function () {
   'use strict';
@@ -234,7 +234,7 @@
       '<div class="stat"><div class="num">' + techs + '</div><div class="lbl">专题研究项</div></div>' +
       '</div>' +
       '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
-      '<div class="pg-p dim">顶部可切换「书籍 / 网页 / 科技树」三种阅读方式；「网页」左侧目录可快速定位；「科技树」梳理技术间的前提依赖关系。</div>' +
+      '<div class="pg-p dim">顶部可切换「书籍 / 网页」两种阅读方式；「网页」左侧目录可快速定位。</div>' +
       '<div class="pg-section" style="margin-top:20px">' +
       '<div class="pg-h">编制说明</div>' +
       '<table class="tbl"><tr><th>编制单位</th><td>' + esc(b.org) + '</td></tr>' +
@@ -469,7 +469,6 @@
       '<tr><th>术语</th><th>含义</th></tr>' +
       '<tr><td>六维评级</td><td>技术成熟度、战略匹配度、价值贡献度、引入可行度、战略紧迫度、生态开放度（1–5 分制，越高越有利）。</td></tr>' +
       '<tr><td>储备库分层</td><td>布局层/论证层/研究层/观察层四层，对应提前布局、系统论证、深入研究、动态观察。</td></tr>' +
-      '<tr><td>科技树</td><td>梳理技术间"前提技术→依赖技术"的层次关系，节点不限于长名单。</td></tr>' +
       '</table></div>' +
       '<div class="pg-section"><div class="pg-h">数据来源</div><div class="pg-p dim">评估内容来源于监管与标准组织、研究机构、金融同业实践、学术文献及开源社区，按六维评级口径客观研判。</div></div>' +
       '<div class="pg-section"><div class="pg-h">系统说明</div><div class="pg-p dim">' + esc(DATA.book.org) + ' · ' + esc(DATA.book.date) + ' · 本系统为纯静态离线展示，双击 index.html 即可打开。</div></div>' +
@@ -486,7 +485,7 @@
   function closingHTML() {
     return '<div class="page-pad">' +
       '<div class="page-title">结语</div><div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集银行金融科技前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，科技树梳理技术间的前提依赖层次，专题报告与评估表支撑逐项研判。</div>' +
+      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集银行金融科技前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
       '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
       '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
       '</div>';
@@ -860,207 +859,6 @@
     bindPageActions();
   }
 
-  /* ==================== 科技树（文明式分层） ==================== */
-  function renderTree() {
-    var legend = '<div class="tree-title">科技树 · 技术前提依赖（分层时代）</div>' +
-      '<div class="tree-legend">' +
-      '<span class="lg"><span class="line" style="background:#64748b"></span>前提依赖（主）</span>' +
-      '<span class="lg"><span class="line" style="background:#94a3b8;opacity:.5;border-top:2px dashed #94a3b8"></span>前提依赖（次）</span>' +
-      '<span class="lg"><span class="dot" style="background:#1e293b;border:1px dashed #64748b"></span>基础底座（长名单外）</span>' +
-      DATA.categories.map(function (c) { return '<span class="lg"><span class="dot" style="background:' + catColor(c) + '"></span>' + esc(c) + '</span>'; }).join('') +
-      '</div>' +
-      '<button class="btn" id="treeReset" style="margin-left:auto">重置视图</button>';
-    $('treeToolbar').innerHTML = legend;
-    initTechTree();
-  }
-
-  function initTechTree() {
-    var stage = $('treeStage');
-    if (!stage) return;
-    var tt = DATA.techTree;
-    var nodeIdx = {};
-    tt.nodes.forEach(function (n) { nodeIdx[n.id] = n; });
-    var children = {}, parent = {};
-    tt.edges.forEach(function (e) { (children[e.from] = children[e.from] || []).push(e.to); parent[e.to] = e.from; });
-    var roots = tt.nodes.filter(function (n) { return !parent[n.id]; });
-
-    // 深度（时代层）
-    var depth = {}, maxDepth = 0;
-    var queue = roots.map(function (r) { return r.id; });
-    queue.forEach(function (id) { depth[id] = 0; });
-    var qi = 0;
-    while (qi < queue.length) {
-      var qid = queue[qi++];
-      (children[qid] || []).forEach(function (c) { depth[c] = depth[qid] + 1; maxDepth = Math.max(maxDepth, depth[c]); queue.push(c); });
-    }
-
-    // 逐层排序：BFS 传播，子节点紧随父节点，减少连线交叉
-    var order = [], seen = {};
-    order[0] = roots.map(function (r) { seen[r.id] = true; return r.id; });
-    var lv = 0;
-    while (order[lv] && order[lv].length) {
-      order[lv].forEach(function (id) {
-        (children[id] || []).forEach(function (c) {
-          if (seen[c]) return; seen[c] = true;
-          order[lv + 1] = order[lv + 1] || [];
-          order[lv + 1].push(c);
-        });
-      });
-      lv++;
-    }
-
-    // 布局参数
-    var nodeW = 172, nodeH = 46, colW = 244, rowStep = 58, padX = 28, headH = 46, padTop = 18;
-    var pos = {}, maxRows = 0;
-    for (var l = 0; l <= maxDepth; l++) {
-      var arr = order[l] || [];
-      maxRows = Math.max(maxRows, arr.length);
-      arr.forEach(function (id, r) { pos[id] = { x: padX + l * colW, y: padTop + headH + r * rowStep }; });
-    }
-    var totalW = padX + (maxDepth + 1) * colW + 40;
-    var totalH = padTop + headH + maxRows * rowStep + 40;
-    var levelLabels = { 0: '第 0 层 · 基础底座', 1: '第 1 层 · 使能技术', 2: '第 2 层 · 系统与应用' };
-
-    var svgNS = 'http://www.w3.org/2000/svg';
-    stage.innerHTML = '';
-    var svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', '0 0 ' + totalW + ' ' + totalH);
-    svg.style.width = '100%'; svg.style.height = '100%';
-    var viewport = document.createElementNS(svgNS, 'g');
-    svg.appendChild(viewport); stage.appendChild(svg);
-
-    var defs = document.createElementNS(svgNS, 'defs');
-    defs.innerHTML = '<marker id="tarrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#64748b" opacity=".65"/></marker>';
-    svg.appendChild(defs);
-
-    // 时代列背景 + 标题
-    for (var l2 = 0; l2 <= maxDepth; l2++) {
-      var bandX = padX + l2 * colW - 12;
-      var bandW = nodeW + 24;
-      var band = document.createElementNS(svgNS, 'rect');
-      band.setAttribute('x', bandX);
-      band.setAttribute('y', padTop - 6);
-      band.setAttribute('width', bandW);
-      band.setAttribute('height', totalH - padTop - 14);
-      band.setAttribute('rx', 14);
-      band.setAttribute('fill', l2 % 2 ? 'rgba(148,163,184,.05)' : 'rgba(148,163,184,.10)');
-      band.style.pointerEvents = 'none';
-      viewport.appendChild(band);
-      var ht = document.createElementNS(svgNS, 'text');
-      ht.setAttribute('x', bandX + bandW / 2);
-      ht.setAttribute('y', padTop + 8);
-      ht.setAttribute('text-anchor', 'middle');
-      ht.setAttribute('font-size', '13');
-      ht.setAttribute('font-weight', '700');
-      ht.setAttribute('fill', 'var(--accent)');
-      ht.style.pointerEvents = 'none';
-      ht.textContent = levelLabels[l2] || ('第 ' + l2 + ' 层');
-      viewport.appendChild(ht);
-    }
-
-    function drawEdge(from, to, co) {
-      var a = pos[from], b = pos[to];
-      if (!a || !b) return;
-      var x1 = a.x + nodeW, y1 = a.y + nodeH / 2;
-      var x2 = b.x, y2 = b.y + nodeH / 2;
-      var mx = (x1 + x2) / 2;
-      var line = document.createElementNS(svgNS, 'path');
-      var d = 'M' + x1 + ' ' + y1 + ' C ' + mx + ' ' + y1 + ', ' + mx + ' ' + y2 + ', ' + x2 + ' ' + y2;
-      line.setAttribute('d', d);
-      line.setAttribute('fill', 'none');
-      line.setAttribute('stroke', co ? '#94a3b8' : '#64748b');
-      line.setAttribute('stroke-width', co ? 1.1 : 1.6);
-      line.setAttribute('opacity', co ? 0.35 : 0.55);
-      if (co) line.setAttribute('stroke-dasharray', '5 5');
-      if (!co) line.setAttribute('marker-end', 'url(#tarrow)');
-      viewport.appendChild(line);
-    }
-
-    tt.edges.forEach(function (e) { drawEdge(e.from, e.to, false); });
-    tt.coEdges.forEach(function (e) { drawEdge(e.from, e.to, true); });
-
-    tt.nodes.forEach(function (n) {
-      var g = document.createElementNS(svgNS, 'g');
-      g.setAttribute('class', 'tree-node');
-      g.setAttribute('transform', 'translate(' + pos[n.id].x + ',' + pos[n.id].y + ')');
-      var isLib = n.kind === 'library';
-      var fill = isLib ? catColor(n.categoryKey) : '#1e293b';
-      var label = n.name.length > 12 ? n.name.slice(0, 12) + '…' : n.name;
-      var sub = isLib ? (n.tier || '') : '基础底座';
-      var rect = document.createElementNS(svgNS, 'rect');
-      rect.setAttribute('x', 0); rect.setAttribute('y', 0);
-      rect.setAttribute('width', nodeW); rect.setAttribute('height', nodeH);
-      rect.setAttribute('rx', 10);
-      rect.setAttribute('fill', isLib ? fill : '#1e293b');
-      rect.setAttribute('stroke', isLib ? fill : '#64748b');
-      rect.setAttribute('stroke-width', 1.4);
-      rect.setAttribute('opacity', isLib ? 0.88 : 1);
-      if (!isLib) rect.setAttribute('stroke-dasharray', '6 4');
-      g.appendChild(rect);
-      if (isLib) {
-        var bar = document.createElementNS(svgNS, 'rect');
-        bar.setAttribute('x', 3); bar.setAttribute('y', 9);
-        bar.setAttribute('width', 4); bar.setAttribute('height', nodeH - 18);
-        bar.setAttribute('rx', 2);
-        bar.setAttribute('fill', '#ffffff');
-        bar.setAttribute('opacity', '0.55');
-        g.appendChild(bar);
-      }
-      var txt = document.createElementNS(svgNS, 'text');
-      txt.setAttribute('x', 14); txt.setAttribute('y', nodeH / 2 + 1);
-      txt.setAttribute('font-size', '12.5');
-      txt.setAttribute('font-weight', '600');
-      txt.setAttribute('fill', isLib ? '#fff' : 'var(--dim)');
-      txt.style.pointerEvents = 'none';
-      txt.textContent = label;
-      g.appendChild(txt);
-      var subTxt = document.createElementNS(svgNS, 'text');
-      subTxt.setAttribute('x', 14); subTxt.setAttribute('y', nodeH - 10);
-      subTxt.setAttribute('font-size', '9.5');
-      subTxt.setAttribute('fill', 'var(--faint)');
-      subTxt.style.pointerEvents = 'none';
-      subTxt.textContent = sub;
-      g.appendChild(subTxt);
-      g.addEventListener('click', function () {
-        if (isLib) { openTechPanel(findTech(n.libId)); }
-        else { openModal(n.name + ' · 基础底座', '<div class="pg-p">' + esc(n.desc || '') + '</div><div class="pg-p dim">此为基础技术底座，不属于 36 项长名单，是上层技术的前提。其上派生的长名单技术：' + (children[n.id] || []).map(function (c) { return esc(nodeIdx[c].name); }).join('、') + '</div>'); }
-      });
-      viewport.appendChild(g);
-    });
-
-    var tx = 0, ty = 0, k = 1;
-    function applyView() { viewport.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + k + ')'); }
-    function fitTree() {
-      var sw = stage.clientWidth, sh = stage.clientHeight;
-      var s = Math.min((sw - 32) / totalW, (sh - 32) / totalH, 1);
-      k = Math.max(0.15, s);
-      tx = (sw - totalW * k) / 2;
-      ty = (sh - totalH * k) / 2;
-      applyView();
-    }
-    fitTree();
-    var panning = false, px = 0, py = 0;
-    svg.addEventListener('mousedown', function (e) {
-      var tag = e.target.tagName;
-      if (tag === 'rect' || tag === 'text') return;
-      panning = true; px = e.clientX; py = e.clientY; stage.classList.add('dragging');
-    });
-    window.addEventListener('mousemove', function (e) {
-      if (!panning) return;
-      tx += e.clientX - px; ty += e.clientY - py; px = e.clientX; py = e.clientY; applyView();
-    });
-    window.addEventListener('mouseup', function () { panning = false; stage.classList.remove('dragging'); });
-    svg.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      var rect = svg.getBoundingClientRect();
-      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      var nk = k * (e.deltaY > 0 ? 0.9 : 1.1);
-      nk = Math.max(0.12, Math.min(3, nk));
-      tx = mx - (mx - tx) * (nk / k); ty = my - (my - ty) * (nk / k);
-      k = nk; applyView();
-    }, { passive: false });
-    $('treeReset').onclick = fitTree;
-  }
   /* ==================== 长名单面板 ==================== */
   function libraryHTML() {
     var catOpts = '<option value="">全部战略方向</option>' + DATA.categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
@@ -1513,13 +1311,10 @@
     mode = m;
     $('bookView').classList.toggle('hidden', m !== 'book');
     $('webView').classList.toggle('hidden', m !== 'web');
-    $('treeView').classList.toggle('hidden', m !== 'tree');
     $('btnBook').classList.toggle('active', m === 'book');
     $('btnWeb').classList.toggle('active', m === 'web');
-    $('btnTree').classList.toggle('active', m === 'tree');
     if (m === 'book') renderSpread();
     else if (m === 'web') renderWeb();
-    else if (m === 'tree') renderTree();
   }
 
   /* ==================== 初始化 ==================== */
@@ -1530,7 +1325,6 @@
     $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
-    $('btnTree').onclick = function () { setMode('tree'); };
     $('btnTheme').onclick = toggleTheme;
     $('navNext').onclick = flipForward;
     $('navPrev').onclick = flipBackward;
@@ -1561,7 +1355,6 @@
         if (h === 'library') openLibraryPanel();
         else if (h === 'graph') openGraphPanel();
         else if (h === 'web') setMode('web');
-        else if (h === 'tree') setMode('tree');
         else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));
       }, 0);
     }

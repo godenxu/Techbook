@@ -379,22 +379,6 @@ button { font-family: var(--font); cursor: pointer; }
 .sec-title { font-weight: 700; font-size: 17px; flex: 1; }
 .sec-body { padding: 22px 24px; }
 
-/* ============================ 科技树视图 ============================ */
-#treeView { display: flex; flex-direction: column; }
-.tree-toolbar { flex: none; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--panel); }
-.tree-toolbar .tree-title { font-weight: 700; font-size: 15px; }
-.tree-legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--dim); }
-.tree-legend .lg { display: flex; align-items: center; gap: 5px; }
-.tree-legend .lg .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
-.tree-legend .lg .line { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
-.tree-stage { flex: 1; position: relative; overflow: hidden; background: var(--bg2); cursor: grab; }
-.tree-stage.dragging { cursor: grabbing; }
-.tree-stage svg { width: 100%; height: 100%; display: block; }
-.tree-tip { color: var(--faint); font-size: 12px; }
-.tree-node { cursor: pointer; }
-.tree-node rect { transition: .15s; }
-.tree-node:hover rect { stroke-width: 2.5; }
-
 /* ============================ 面板 / 覆盖层 ============================ */
 .overlay {
   position: fixed; inset: 0; z-index: 200; background: rgba(5,10,20,.66);
@@ -830,7 +814,7 @@ button { font-family: var(--font); cursor: pointer; }
     <div class="brand-icon">研</div>
     <div class="brand-text">
       <div class="brand-title">银行金融科技前沿技术研究成果</div>
-      <div class="brand-sub">电子研究书 · 书籍 / 网页 / 科技树</div>
+      <div class="brand-sub">电子研究书 · 书籍 / 网页</div>
     </div>
   </div>
   <div class="search-wrap">
@@ -840,7 +824,6 @@ button { font-family: var(--font); cursor: pointer; }
   <div class="topbar-actions">
     <button class="btn mode-btn active" id="btnBook" title="书籍模式">📖 书籍</button>
     <button class="btn mode-btn" id="btnWeb" title="网页模式">🌐 网页</button>
-    <button class="btn mode-btn" id="btnTree" title="科技树">🌳 科技树</button>
     <button class="btn" id="btnTheme" title="切换明暗主题">🌓 主题</button>
   </div>
 </header>
@@ -870,11 +853,6 @@ button { font-family: var(--font); cursor: pointer; }
     <aside class="web-toc" id="webToc"></aside>
     <div class="web-content" id="webContent"></div>
   </div>
-</main>
-
-<main id="treeView" class="view hidden">
-  <div class="tree-toolbar" id="treeToolbar"></div>
-  <div class="tree-stage" id="treeStage"></div>
 </main>
 
 <div class="overlay hidden" id="panel">
