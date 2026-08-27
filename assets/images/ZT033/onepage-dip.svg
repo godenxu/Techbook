@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Microsoft YaHei, Segoe UI, sans-serif">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b45309"/><stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <rect width="1200" height="104" fill="url(#hdr)"/>
+  <text x="40" y="52" fill="#ffffff" font-size="30" font-weight="700">决策智能平台（DIP）· 一张图概述</text>
+  <text x="40" y="82" fill="#ffe9c4" font-size="15">Decision Intelligence Platform — 重点技术专题（ZT033 · v3.1）</text>
+
+  <!-- 定义 -->
+  <g>
+    <rect x="30" y="130" width="555" height="180" rx="12" fill="#fffaf2" stroke="#fde8c8"/>
+    <rect x="30" y="130" width="6" height="180" rx="3" fill="#f59e0b"/>
+    <text x="56" y="162" font-size="20" font-weight="700" fill="#92400e">定义与内涵</text>
+    <text x="56" y="194" font-size="14" fill="#334155">融合显式决策建模、AI 增强与分析能力，以支持、增强或自动化</text>
+    <text x="56" y="218" font-size="14" fill="#334155">决策的平台类别：把"决策"作为可设计、可复用、可追溯、可优化</text>
+    <text x="56" y="242" font-size="14" fill="#334155">的一等对象管理，并以全过程留痕支撑复盘与合规。</text>
+    <text x="56" y="278" font-size="13.5" fill="#64748b">TRL 5 · 优先级 中 · 战略重要度 8.0/10 · 论证层/系统论证</text>
+  </g>
+
+  <!-- 关键技术 -->
+  <g>
+    <rect x="615" y="130" width="555" height="180" rx="12" fill="#fffaf2" stroke="#fde8c8"/>
+    <rect x="615" y="130" width="6" height="180" rx="3" fill="#fbbf24"/>
+    <text x="641" y="162" font-size="20" font-weight="700" fill="#92400e">关键技术能力</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="194">• 显式决策建模（决策建模语言）</text>
+      <text x="641" y="218">• 决策仿真与上线前反事实推演</text>
+      <text x="641" y="242">• 决策监控与效果追踪</text>
+      <text x="641" y="266">• 混合架构：大模型前端＋规则/运筹求解器＋熔断兜底</text>
+      <text x="641" y="290">• 决策全生命周期治理（版本/审批/偏见检测）</text>
+    </g>
+  </g>
+
+  <!-- 应用 -->
+  <g>
+    <rect x="30" y="330" width="555" height="180" rx="12" fill="#f6fbf9" stroke="#c8ecd9"/>
+    <rect x="30" y="330" width="6" height="180" rx="3" fill="#10b981"/>
+    <text x="56" y="362" font-size="20" font-weight="700" fill="#065f46">典型应用场景</text>
+    <g font-size="14" fill="#334155">
+      <text x="56" y="394">• 授信审批、风控反欺诈</text>
+      <text x="56" y="418">• 催收策略与营销定价</text>
+      <text x="56" y="442">• 产品动态定价、额度配置</text>
+      <text x="56" y="466">• 决策资产化与全过程留痕</text>
+      <text x="56" y="490">• 合规复盘与策略审计</text>
+    </g>
+  </g>
+
+  <!-- 趋势挑战 -->
+  <g>
+    <rect x="615" y="330" width="555" height="180" rx="12" fill="#f4f8ff" stroke="#dbe7ff"/>
+    <rect x="615" y="330" width="6" height="180" rx="3" fill="#4f8cff"/>
+    <text x="641" y="362" font-size="20" font-weight="700" fill="#1e3a8a">发展趋势与挑战</text>
+    <g font-size="14" fill="#334155">
+      <text x="641" y="394">趋势：Gartner 2026 年发布首版《决策智能平台魔力象限》</text>
+      <text x="641" y="418">趋势：2030 年决策可信度提升 5 倍、速度提升 80%</text>
+      <text x="641" y="442">挑战：大模型幻觉与黑盒风险</text>
+      <text x="641" y="466">挑战：分析—决策—行动断层的打通</text>
+      <text x="641" y="490">研判：维持"论证层"定档，双场景 POC</text>
+    </g>
+  </g>
+
+  <rect x="30" y="545" width="1140" height="86" rx="12" fill="#0f172a"/>
+  <text x="60" y="578" font-size="16" font-weight="700" fill="#ffffff">研判结论</text>
+  <text x="60" y="608" font-size="14" fill="#cbd5e1">银行核心业务本质即决策，DIP 与业务契合度高；建议以 9 个月为期启动决策资产盘点与双场景 POC。</text>
+  <text x="1170" y="610" text-anchor="end" font-size="13" fill="#64748b">前沿技术研究组 · 专题报告 ZT033</text>
+</svg>

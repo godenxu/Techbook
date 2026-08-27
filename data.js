@@ -168,7 +168,7 @@
     externalSource: '',
     summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
     reportDocx: 'assets/docs/ZT010/ZT010_专题研究_算力网络_ComputeNetwork_v4.0.docx', reportPdf: 'assets/preview/ZT010/report.pdf',
-    slidesPptx: 'assets/docs/ZT010/slides.pptx', slidesPdf: 'assets/preview/ZT010/slides.pdf', image: 'assets/images/onepage-computing-network.svg',
+    slidesPptx: 'assets/docs/ZT010/ZT010_专题研究_算力网络_ComputeNetwork.pptx', slidesPdf: 'assets/preview/ZT010/slides.pdf', image: 'assets/images/ZT010/onepage-computing-network.svg',
     assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
@@ -298,7 +298,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。',
     reportDocx: 'assets/docs/ZT018/ZT018_专题研究_人工智能安全平台AISP_v2.1(1).docx', reportPdf: 'assets/preview/ZT018/report.pdf',
-    slidesPptx: 'assets/docs/ZT018/slides.pptx', slidesPdf: 'assets/preview/ZT018/slides.pdf', image: 'assets/images/onepage-aisp.svg',
+    slidesPptx: 'assets/docs/ZT018/ZT018_专题研究_人工智能安全平台AISP.pptx', slidesPdf: 'assets/preview/ZT018/slides.pdf', image: 'assets/images/ZT018/onepage-aisp.svg',
     assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T19', no: 19, name: '小语言模型与端侧AI（SLM·On-device／Edge AI）', short: '小语言模型与端侧AI', nameEn: 'SLM·On-device／Edge AI',
@@ -508,7 +508,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
     reportDocx: 'assets/docs/ZT031/ZT031_专题研究_业务编排与自动化BOAT_v3.0.docx', reportPdf: 'assets/preview/ZT031/report.pdf',
-    slidesPptx: 'assets/docs/ZT031/slides.pptx', slidesPdf: 'assets/preview/ZT031/slides.pdf', image: 'assets/images/onepage-boat.svg',
+    slidesPptx: 'assets/docs/ZT031/ZT031_专题研究_业务编排与自动化BOAT.pptx', slidesPdf: 'assets/preview/ZT031/slides.pdf', image: 'assets/images/ZT031/onepage-boat.svg',
     assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
@@ -525,6 +525,9 @@
     source: '· Gartner新闻稿《Hype Cycle Reveals How AI and Digital Advancements Are Primed to Aid Sales Transformations》（2025-10-30，DToC置于创新萌芽期）\n· Gartner《Hype Cycle for CRM Technologies, 2025》（G00827302，2025-07-09，DToC列"On the Rise"新兴阶段、效益评级高、渗透率1%-5%，经第三方转引页面部分核实）\n· Gartner供应链洞察《A Digital Twin of the Customer Could Transform Your Supply Chain Digitalization Strategy》（Beth Coppinger，2023-06-16，27%对60%试点/规划数据）\n· 中国人民银行等八部门《金融产品网络营销管理办法》（2026-04-24印发/2026-09-30施行）；国家网信办等四部门《互联网信息服务算法推荐管理规定》（2021-12-31公布/2022-03-01施行）；中国人民银行《金融领域科技伦理指引》（JR/T 0258—2022）\n采集截止日期：2026-08-18。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。',
+    reportDocx: 'assets/docs/ZT032/ZT032_专题研究_客户数字孪生DToC_v3.0.docx', reportPdf: 'assets/preview/ZT032/report.pdf',
+    slidesPptx: 'assets/docs/ZT032/ZT032_专题研究_客户数字孪生DToC.pptx', slidesPdf: 'assets/preview/ZT032/slides.pdf',
+    image: 'assets/images/ZT032/OP032_一页图_客户数字孪生DToC_v1.0.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
@@ -542,7 +545,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     reportDocx: 'assets/docs/ZT033/ZT033_专题研究_决策智能平台DIP_v3.1.docx', reportPdf: 'assets/preview/ZT033/report.pdf',
-    slidesPptx: 'assets/docs/ZT033/slides.pptx', slidesPdf: 'assets/preview/ZT033/slides.pdf', image: 'assets/images/onepage-dip.svg',
+    slidesPptx: 'assets/docs/ZT033/ZT033_专题研究_决策智能平台DIP.pptx', slidesPdf: 'assets/preview/ZT033/slides.pdf', image: 'assets/images/ZT033/onepage-dip.svg',
     assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T34', no: 34, name: '多智能体系统（Multi-Agent Systems，MAS）', short: '多智能体系统', nameEn: 'Multi-Agent Systems，MAS',

@@ -20,11 +20,12 @@
     if (v >= 4) return 'var(--warn)';
     return 'var(--bad)';
   }
-  function scoreBar(v, max) {
+  function scoreBar(v, max, delayIdx) {
     max = max || 10;
     var pct = Math.round(v / max * 100);
     var color = pct >= 80 ? 'var(--good)' : (pct >= 60 ? 'var(--accent2)' : (pct >= 40 ? 'var(--warn)' : 'var(--bad)'));
-    return '<div class="bar"><i style="width:' + pct + '%;background:' + color + '"></i></div>';
+    var delay = delayIdx != null ? ('animation-delay:' + (0.3 + delayIdx * 0.18).toFixed(2) + 's;') : '';
+    return '<div class="bar"><i style="--bar-w:' + pct + '%;' + delay + 'width:' + pct + '%;background:' + color + '"></i></div>';
   }
   function scoreColor5(v) {
     if (v >= 4) return 'var(--good)';
@@ -93,30 +94,60 @@
 
   /* ==================== 覆盖层 ==================== */
   function openPanel(title, html, onMount, flexBody) {
+    var el = $('panel');
+    el.classList.remove('is-closing');
     $('panelTitle').innerHTML = title;
     $('panelBody').innerHTML = html;
     $('panelBody').classList.toggle('flex', !!flexBody);
-    $('panel').classList.remove('hidden');
+    el.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     if (onMount) setTimeout(onMount, 0);
   }
   function closePanel() {
-    $('panel').classList.add('hidden');
-    $('panelBody').innerHTML = '';
-    $('panelBody').classList.remove('flex');
-    document.body.style.overflow = '';
+    var el = $('panel');
+    if (!el || el.classList.contains('hidden')) return;
+    el.classList.add('is-closing');
+    setTimeout(function () {
+      el.classList.add('hidden');
+      el.classList.remove('is-closing');
+      $('panelBody').innerHTML = '';
+      $('panelBody').classList.remove('flex');
+      document.body.style.overflow = '';
+    }, 220);
   }
   function openModal(title, html) {
+    var el = $('modal');
+    el.classList.remove('is-closing');
     $('modalTitle').innerHTML = title;
     $('modalBody').innerHTML = html;
-    $('modal').classList.remove('hidden');
+    el.classList.remove('hidden');
   }
-  function closeModal() { $('modal').classList.add('hidden'); $('modalBody').innerHTML = ''; }
+  function closeModal() {
+    var el = $('modal');
+    if (!el || el.classList.contains('hidden')) return;
+    el.classList.add('is-closing');
+    setTimeout(function () {
+      el.classList.add('hidden');
+      el.classList.remove('is-closing');
+      $('modalBody').innerHTML = '';
+    }, 220);
+  }
   function openLightbox(src, title) {
+    var el = $('lightbox');
+    el.classList.remove('is-closing');
     $('lightboxImg').src = src; $('lightboxTitle').textContent = title || '';
-    $('lightbox').classList.remove('hidden'); $('lightbox').style.display = 'flex';
+    el.classList.remove('hidden'); el.style.display = 'flex';
   }
-  function closeLightbox() { $('lightbox').classList.add('hidden'); $('lightbox').style.display = ''; }
+  function closeLightbox() {
+    var el = $('lightbox');
+    if (!el || el.classList.contains('hidden')) return;
+    el.classList.add('is-closing');
+    setTimeout(function () {
+      el.classList.add('hidden');
+      el.classList.remove('is-closing');
+      el.style.display = '';
+    }, 220);
+  }
   function bindOverlayClose() {
     $('panelClose').onclick = closePanel;
     $('modalClose').onclick = closeModal;
@@ -144,8 +175,8 @@
   /* ==================== 图表（雷达/柱状） ==================== */
   function radarSVG(tech, compact) {
     var dims = tech.assessment.dimensions, n = dims.length;
-    var W = 320, H = compact ? 230 : 250;
-    var cx = W / 2, cy = H / 2, R = compact ? 78 : 86;
+    var W = compact ? 320 : 380, H = compact ? 230 : 280;
+    var cx = W / 2, cy = H / 2, R = compact ? 78 : 100;
     var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
     var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
@@ -161,35 +192,35 @@
       var pts2 = [];
       for (k = 0; k < n; k++) { var maxv = dims[k].max || 5; var pp = pt(k, rd.scores[k] / maxv * R); pts2.push(pp[0].toFixed(1) + ',' + pp[1].toFixed(1)); }
       var col = ri === 0 ? '#4f8cff' : '#f59e0b';
-      s += '<polygon points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2"/>';
+      s += '<polygon class="radar-poly" points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2.5"/>';
       for (k = 0; k < n; k++) {
         var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
-        s += '<circle cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '3' : '3.5') + '" fill="' + col + '"/>';
+        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '3.5' : '4.5') + '" fill="' + col + '"/>';
       }
     });
     for (k = 0; k < n; k++) {
-      var offset = compact ? 16 : 18;
+      var offset = compact ? 16 : 22;
       var lp = pt(k, R + offset), a = angle(k);
       var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
       var scoreVal = dims[k].score;
-      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 3.5 : 4)).toFixed(1) + '" font-size="' + (compact ? '10' : '11') + '" text-anchor="' + anchor + '" style="fill:var(--dim)" font-weight="600">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="700">' + scoreVal + '</tspan>') : '') + '</text>';
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 3.5 : 5)).toFixed(1) + '" font-size="' + (compact ? '11' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="800">' + scoreVal + '</tspan>') : '') + '</text>';
     }
     s += '</svg>';
-    var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:12px;color:var(--dim);margin-top:4px">' +
+    var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
       rounds.map(function (rd, ri) {
-        return '<span style="margin:0 8px"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + (ri === 0 ? '#4f8cff' : '#f59e0b') + ';margin-right:4px"></span>' + esc(rd.name) + '</span>';
+        return '<span style="margin:0 10px"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + (ri === 0 ? '#4f8cff' : '#f59e0b') + ';margin-right:5px"></span>' + esc(rd.name) + '</span>';
       }).join('') + '</div>' : '';
     return s + legend;
   }
   function barSVG(tech) {
     var dims = tech.assessment.dimensions;
     var W = 340, rowH = 34, H = rowH * dims.length + 10, maxW = W - 128;
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="bar-svg-chart">';
     dims.forEach(function (d, i) {
       var y = i * rowH + 14, bw = Math.round(d.score / (d.max || 5) * maxW);
       s += '<text x="0" y="' + (y + 5) + '" font-size="11" style="fill:var(--dim)">' + esc(d.label) + '</text>';
       s += '<rect x="112" y="' + y + '" width="' + maxW + '" height="9" rx="4" style="fill:var(--border)"/>';
-      s += '<rect x="112" y="' + y + '" width="' + bw + '" height="9" rx="4" fill="' + dimColor(d) + '"/>';
+      s += '<rect class="bar-fill-rect" style="animation-delay:' + (0.12 + i * 0.08) + 's" x="112" y="' + y + '" width="' + bw + '" height="9" rx="4" fill="' + dimColor(d) + '"/>';
       s += '<text x="' + (W - 4) + '" y="' + (y + 9) + '" font-size="11" text-anchor="end" font-weight="700" style="fill:var(--text)">' + d.score + '/5</text>';
     });
     s += '</svg>';
@@ -221,7 +252,6 @@
     var cats = DATA.categories.length;
     var srcs = DATA.sources.items.length;
     var techs = DATA.technologies.length;
-    var edges = DATA.graph.edges.length;
     return '<div class="page-pad">' +
       '<div class="page-title">' + esc(b.title) + '</div>' +
       '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
@@ -233,36 +263,90 @@
       '<div class="stat"><div class="num">' + srcs + '</div><div class="lbl">情报源</div></div>' +
       '<div class="stat"><div class="num">' + techs + '</div><div class="lbl">专题研究项</div></div>' +
       '</div>' +
-      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
-      '<div class="pg-p dim">顶部可切换「书籍 / 网页」两种阅读方式；「网页」左侧目录可快速定位。</div>' +
-      '<div class="pg-section" style="margin-top:20px">' +
-      '<div class="pg-h">编制说明</div>' +
-      '<table class="tbl"><tr><th>编制单位</th><td>' + esc(b.org) + '</td></tr>' +
-      '<tr><th>编制时间</th><td>' + esc(b.date) + '</td></tr>' +
-      '<tr><th>研究范围</th><td>前沿技术长名单36项（布局6 / 论证10 / 研究10 / 观察10），覆盖人工智能、数据要素、量子科技等战略方向。</td></tr></table></div>' +
+      '<div class="pg-section">' +
+      '<div class="pg-h">成果体系架构</div>' +
+      '<div class="cards" style="grid-template-columns:1fr 1fr;gap:10px">' +
+      '<div class="card"><div class="c-title" style="color:var(--accent)">第一篇 · 整体研究成果</div><div class="c-comment">包含技术储备库（36项）、情报源评判报告、关系图谱及敏捷工作方案，支撑全行宏观研判与战略技术选型。</div></div>' +
+      '<div class="card"><div class="c-title" style="color:var(--accent2)">第二篇 · 各项前沿技术研究</div><div class="c-comment">针对重点前沿技术输出六维研判评估表、万字专题报告（Word/PPT）及一张图，深度赋能业务与架构落地。</div></div>' +
+      '</div></div>' +
       '</div>';
   }
-  function tocHTML() {
+
+  function overviewPageHTML() {
+    var b = DATA.book;
+    var edges = DATA.graph.edges.length;
+    return '<div class="page-pad">' +
+      '<div class="page-title">成果全景与说明</div>' +
+      '<div class="page-subtitle">编制说明 · 管理机制 · 研判标准</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-section">' +
+      '<div class="pg-h">前沿技术储备库动态分层管理机制</div>' +
+      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
+      '<div class="pg-p dim">系统支持「书籍模式」沉浸式翻阅与「网页模式」大屏仪表盘，支持明暗主题自适应与实时检索。</div>' +
+      '</div>' +
+      '<div class="pg-section" style="margin-top:16px">' +
+      '<div class="pg-h">编制与发布信息</div>' +
+      '<table class="tbl">' +
+      '<tr><th style="width:90px">编制单位</th><td>' + esc(b.org) + '</td></tr>' +
+      '<tr><th>发布时间</th><td>' + esc(b.date) + '</td></tr>' +
+      '<tr><th>研究范围</th><td>前沿技术长名单36项（布局6 / 论证10 / 研究10 / 观察10），覆盖人工智能、数据要素、算力网络等战略方向。</td></tr>' +
+      '<tr><th>更新机制</th><td>月度滚动研判跟踪，关键技术动态升级，确保研究成果与前沿趋势深度同频。</td></tr>' +
+      '</table>' +
+      '</div>' +
+      '</div>';
+  }
+
+  function getTocItems() {
     var items = [];
-    function add(no, label, idx, part) { items.push({ no: no, label: label, idx: idx, part: part }); }
-    add('', '扉页 · 成果总览', 2, false);
-    add('', '目录', 3, false);
-    add('第一篇', '整体研究成果', 4, true);
-    add('1.1', '工作方案', 5, false);
-    add('1.2', '情报源评判报告', 6, false);
-    add('1.3', '前沿技术储备库（长名单）', 7, false);
-    add('1.4', '各项前沿技术关系图谱', 8, false);
-    add('第二篇', '各项前沿技术研究', 9, true);
+    function add(no, label, key, part) { items.push({ no: no, label: label, key: key, part: part }); }
+    add('', '扉页 · 成果总览', 'title', false);
+    add('', '成果全景与说明', 'overview', false);
+    add('', '目录 · 双页对开', 'toc1', false);
+    add('第一篇', '整体研究成果', 'part1', true);
+    add('1.1', '工作方案', 'workplan', false);
+    add('1.2', '情报源评判报告', 'sources', false);
+    add('1.3', '前沿技术储备库（长名单）', 'library', false);
+    add('1.4', '各项前沿技术关系图谱', 'graph', false);
+    add('第二篇', '各项前沿技术研究', 'part2', true);
     DATA.technologies.forEach(function (t, i) {
-      add('2.' + (i + 1), t.name, 10 + i, false);
+      add('2.' + (i + 1), t.name, 'tech-' + t.id, false);
     });
-    add('附录', '术语 · 数据来源 · 版本', 10 + DATA.technologies.length, false);
-    add('', '结语', 11 + DATA.technologies.length, false);
+    add('附录', '术语 · 数据来源 · 版本', 'appendix', false);
+    add('', '结语', 'closing', false);
+    return items;
+  }
+
+  function renderTocPage(title, items) {
     var lis = items.map(function (it) {
-      var cls = it.part ? 'toc-part' : (it.idx > 9 ? 'toc-indent' : '');
-      return '<li data-jump="' + it.idx + '" class="' + cls + '"><span class="toc-no">' + esc(it.no) + '</span><span class="toc-label">' + esc(it.label) + '</span></li>';
+      var pIdx = pageKeyMap[it.key];
+      if (pIdx == null) pIdx = 1;
+      var cls = it.part ? 'toc-part' : (it.key.indexOf('tech-') === 0 ? 'toc-indent' : '');
+      return '<li data-jump="' + pIdx + '" class="' + cls + '">' +
+        '<span class="toc-no">' + esc(it.no) + '</span>' +
+        '<span class="toc-label">' + esc(it.label) + '</span>' +
+        '<span class="toc-dots"></span>' +
+        '<span class="toc-page-num">P.' + (pIdx + 1) + '</span>' +
+      '</li>';
     }).join('');
-    return '<div class="page-pad"><div class="page-title">目录</div><div class="h-rule"></div><ul class="toc-list">' + lis + '</ul></div>';
+    return '<div class="page-pad">' +
+      '<div class="page-title">' + title + '</div>' +
+      '<div class="h-rule"></div>' +
+      '<ul class="toc-list">' + lis + '</ul>' +
+    '</div>';
+  }
+
+  function toc1HTML() {
+    var all = getTocItems();
+    var mid = Math.ceil(all.length / 2);
+    var items = all.slice(0, mid);
+    return renderTocPage('目 录（上）', items);
+  }
+
+  function toc2HTML() {
+    var all = getTocItems();
+    var mid = Math.ceil(all.length / 2);
+    var items = all.slice(mid);
+    return renderTocPage('目 录（下）', items);
   }
   function dividerHTML(part, title, desc, num) {
     return '<div class="divider-full"><div class="dv-num">' + num + '</div>' +
@@ -503,10 +587,19 @@
     if (scroll) pageScroll[pages.length - 1] = true;
   }
 
+  function getPageHTML(idx) {
+    if (idx < 0 || idx >= pages.length) return '';
+    var p = pages[idx];
+    if (typeof p === 'function') return p();
+    return p || '';
+  }
+
   addPage('inside', '', insideCoverHTML());
   addPage('cover', '封面', coverHTML());
   addPage('title', '扉页 · 成果总览', titlePageHTML());
-  addPage('toc', '目录', tocHTML(), true);
+  addPage('overview', '成果全景与说明', overviewPageHTML());
+  addPage('toc1', '目录（上）', toc1HTML);
+  addPage('toc2', '目录（下）', toc2HTML);
   addPage('part1', '第一篇', dividerHTML('第一篇', '整体研究成果', '工作方案 · 情报源评判 · 前沿技术储备库 · 技术关系图谱', '01'));
   addPage('workplan', '第一篇 · 工作方案', workplanHTML());
   addPage('sources', '第一篇 · 情报源评判报告', sourcesHTML());
@@ -524,13 +617,14 @@
   function getAllBookmarks() {
     var bms = [
       { id: 'cover', no: '封面', short: '成果总览', name: '封面 · 成果总览', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
-      { id: 'toc', no: '目录', short: '本书目录', name: '目录', page: pageKeyMap['toc'] != null ? pageKeyMap['toc'] : 3, color: '#818cf8', tier: '前序' },
-      { id: 'part1', no: '第一篇', short: '成果总览', name: '第一篇 · 整体研究成果', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 4, color: '#6366f1', tier: '第一篇' },
-      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一篇 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 5, color: '#6366f1', tier: '第一篇' },
-      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一篇 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 6, color: '#6366f1', tier: '第一篇' },
-      { id: 'library', no: '1.3', short: '技术储备库', name: '第一篇 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 7, color: '#6366f1', tier: '第一篇' },
-      { id: 'graph', no: '1.4', short: '关系图谱', name: '第一篇 · 各项前沿技术关系图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 8, color: '#6366f1', tier: '第一篇' },
-      { id: 'part2', no: '第二篇', short: '专题研究', name: '第二篇 · 各项前沿技术研究', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 9, color: '#a855f7', tier: '第二篇' }
+      { id: 'title', no: '扉页', short: '成果总览', name: '扉页 · 成果总览', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 2, color: '#818cf8', tier: '前序' },
+      { id: 'toc1', no: '目录', short: '本书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
+      { id: 'part1', no: '第一篇', short: '整体成果', name: '第一篇 · 整体研究成果', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一篇' },
+      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一篇 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一篇' },
+      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一篇 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一篇' },
+      { id: 'library', no: '1.3', short: '技术储备库', name: '第一篇 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 9, color: '#6366f1', tier: '第一篇' },
+      { id: 'graph', no: '1.4', short: '关系图谱', name: '第一篇 · 各项前沿技术关系图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 10, color: '#6366f1', tier: '第一篇' },
+      { id: 'part2', no: '第二篇', short: '专题研究', name: '第二篇 · 各项前沿技术研究', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 11, color: '#a855f7', tier: '第二篇' }
     ];
 
     DATA.technologies.forEach(function (t) {
@@ -565,11 +659,9 @@
     var rightList = all.filter(function (b) { return b.page > curRightPage; });
 
     function tabHTML(b, isLeft) {
-      var dirArrow = isLeft ? '◂ 回翻至 ' : '▸ 前往 ';
-      return '<div class="edge-tab" data-page="' + b.page + '" style="--tab-color:' + b.color + '">' +
+      return '<div class="edge-tab" data-page="' + b.page + '" style="--tab-color:' + b.color + '" title="' + esc(b.name) + '">' +
         '<span class="et-no" style="color:' + b.color + '">' + esc(b.no) + '</span>' +
-        '<span class="et-name" title="' + esc(b.name) + '">' + esc(b.short) + '</span>' +
-        '<div class="edge-tab-tip">' + dirArrow + esc(b.name) + '</div>' +
+        '<span class="et-name">' + esc(b.short) + '</span>' +
       '</div>';
     }
 
@@ -616,7 +708,11 @@
     } else {
       var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
       if (spread === 0) {
-        $('pageNo').textContent = '封面 · 成果总览';
+        $('pageNo').textContent = '封面 · 银行金融科技前沿技术研究成果';
+      } else if (spread === 1) {
+        $('pageNo').textContent = '扉页 · 成果总览与编制说明 · 跨页 2 / ' + (maxSpread + 1);
+      } else if (spread === 2) {
+        $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
       } else if (spread === maxSpread) {
         $('pageNo').textContent = (l || '封底') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
       } else if (l && r) {
@@ -652,7 +748,7 @@
   }
   function renderSpread() {
     if (isSingle()) {
-      var sHtml = pages[singleIdx] || '';
+      var sHtml = getPageHTML(singleIdx);
       $('pageLeftInner').innerHTML = '';
       $('pageRightInner').innerHTML = sHtml;
       $('pageLeft').classList.add('page-blank');
@@ -660,23 +756,87 @@
       $('pageRightInner').parentElement.style.width = '100%';
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[singleIdx]);
     } else {
-      var leftHtml = pages[spread * 2] || '';
-      var rightHtml = pages[spread * 2 + 1] || '';
+      var leftHtml = getPageHTML(spread * 2);
+      var rightHtml = getPageHTML(spread * 2 + 1);
       $('pageLeftInner').innerHTML = leftHtml;
       $('pageRightInner').innerHTML = rightHtml;
       $('pageRightInner').parentElement.style.width = '';
 
-      // 封面前（左侧空白）和 封底后（右侧空白）不渲染白色底板，直接透出背景，呈现真实闭合封面效果
+      // 封面前（左侧空白）和 封底后（右侧空白）不渲染底板，直接透出背景，呈现真实闭合封面效果
       $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
       $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+
+      var bookEl = $('book');
+      if (bookEl) {
+        bookEl.classList.toggle('is-cover', spread === 0);
+        bookEl.classList.toggle('is-back-cover', spread === maxSpread);
+      }
 
       $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
     }
     updatePageNo();
     renderSideBookmarks();
+    updateSpreadEdgesAndPeeks();
     bindPageActions();
     fitSpread();
+  }
+  function updateSpreadEdgesAndPeeks() {
+    var isSingleMode = isSingle();
+    var leftHtml = isSingleMode ? '' : getPageHTML(spread * 2);
+    var rightHtml = isSingleMode ? getPageHTML(singleIdx) : getPageHTML(spread * 2 + 1);
+    var leftBlank = isSingleMode ? (singleIdx <= 0) : (!leftHtml.trim() || $('pageLeft').classList.contains('page-blank') || spread <= 0);
+    var rightBlank = isSingleMode ? (singleIdx >= pages.length - 1) : (!rightHtml.trim() || $('pageRight').classList.contains('page-blank') || spread >= maxSpread);
+
+    var peekL = $('cornerPeekL'), peekR = $('cornerPeekR');
+    if (peekL) peekL.style.display = leftBlank ? 'none' : '';
+    if (peekR) peekR.style.display = rightBlank ? 'none' : '';
+
+    var edgeL = $('bookEdgeLeft'), edgeR = $('bookEdgeRight');
+    if (edgeL && edgeR) {
+      var isCoverSpread = (spread <= 0 && !isSingleMode);
+      var isBackSpread = (spread >= maxSpread && !isSingleMode);
+
+      if (isCoverSpread || isBackSpread) {
+        renderEdgeLayers(edgeL, 0, true);
+        renderEdgeLayers(edgeR, 0, false);
+      } else {
+        var ratio = maxSpread > 0 ? (spread / maxSpread) : 0;
+        if (isSingleMode) ratio = pages.length > 1 ? (singleIdx / (pages.length - 1)) : 0;
+        var leftThick = Math.round(ratio * 26);
+        var rightThick = Math.round((1 - ratio) * 26);
+        if (spread <= 0 || (isSingleMode && singleIdx <= 0) || leftBlank) leftThick = 0;
+        if (spread >= maxSpread || (isSingleMode && singleIdx >= pages.length - 1) || rightBlank) rightThick = 0;
+
+        renderEdgeLayers(edgeL, leftThick, true);
+        renderEdgeLayers(edgeR, rightThick, false);
+      }
+    }
+  }
+  function renderEdgeLayers(el, thick, isLeft) {
+    if (!el) return;
+    if (thick <= 0) {
+      el.style.display = 'none';
+      el.style.width = '0px';
+      el.innerHTML = '';
+      return;
+    }
+    el.style.display = 'block';
+    el.style.width = thick + 'px';
+
+    // 随着书本变厚动态呈现 1 ~ 3 层阶梯纸页边缘（最多3层，质感精简清晰）
+    var layerCount = 1;
+    if (thick > 14) layerCount = 3;
+    else if (thick > 6) layerCount = 2;
+
+    var html = '';
+    for (var i = 0; i < layerCount; i++) {
+      var stepInset = i * 3.5; // 每层上下阶梯缩进 0px, 3.5px, 7px
+      var layerWidth = Math.max(3, Math.round((thick / layerCount) * (layerCount - i)));
+      var sideProp = isLeft ? ('right:0;width:' + layerWidth + 'px;') : ('left:0;width:' + layerWidth + 'px;');
+      html += '<div class="book-edge-layer edge-tier-' + (i + 1) + '" style="position:absolute;top:' + stepInset + 'px;bottom:' + stepInset + 'px;' + sideProp + '"></div>';
+    }
+    el.innerHTML = html;
   }
   function bindPageActions() {
     var tocLis = document.querySelectorAll('#bookView .toc-list li');
@@ -718,14 +878,38 @@
     }
     if (spread >= maxSpread) { toast('已是最后一页'); return; }
     flipping = true;
-    var oldRight = pages[spread * 2 + 1] || '';
-    var newLeft = pages[spread * 2 + 2] || '';
-    var newRight = pages[spread * 2 + 3] || '';
+
+    var targetSpread = spread + 1;
+    var isGoingToBackCover = (targetSpread >= maxSpread);
+    var isLeavingCover = (spread === 0);
+
+    // 1. 【动效顺序前置】：在翻页开始的第一时间切换封面/封底状态并消除空白底框
+    var bookEl = $('book');
+    if (bookEl) {
+      if (isGoingToBackCover) bookEl.classList.add('is-back-cover');
+      if (isLeavingCover) bookEl.classList.remove('is-cover');
+    }
+
+    var oldRight = getPageHTML(spread * 2 + 1);
+    var newLeft = getPageHTML(spread * 2 + 2);
+    var newRight = getPageHTML(spread * 2 + 3);
+
     $('pageRightInner').innerHTML = newRight;
     $('turnFrontInner').innerHTML = oldRight;
     $('turnBackInner').innerHTML = newLeft;
+
+    // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageRight').classList.toggle('page-blank', !newRight.trim());
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
+    $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldRight.trim());
+    $('turnBackInner').parentElement.classList.toggle('page-blank', !newLeft.trim());
+
+    if (isGoingToBackCover) {
+      renderEdgeLayers($('bookEdgeLeft'), 0, true);
+      renderEdgeLayers($('bookEdgeRight'), 0, false);
+      if ($('cornerPeekR')) $('cornerPeekR').style.display = 'none';
+    }
+
     var sheet = $('turnSheet');
     sheet.classList.remove('back');
     sheet.style.display = 'block';
@@ -735,19 +919,25 @@
     fitPage($('turnBackInner'), spread * 2 + 2);
     fitPage($('pageRightInner'), spread * 2 + 3);
     sheet.classList.add('turning');
+
     setTimeout(function () {
       spread++;
-      var leftHtml = pages[spread * 2] || '';
-      var rightHtml = pages[spread * 2 + 1] || '';
+      var leftHtml = getPageHTML(spread * 2);
+      var rightHtml = getPageHTML(spread * 2 + 1);
       $('pageLeftInner').innerHTML = leftHtml;
       $('pageRightInner').innerHTML = rightHtml;
       $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
       $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+      if (bookEl) {
+        bookEl.classList.toggle('is-cover', spread === 0);
+        bookEl.classList.toggle('is-back-cover', spread === maxSpread);
+      }
       $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
       fitSpread();
       updatePageNo();
       renderSideBookmarks();
+      updateSpreadEdgesAndPeeks();
       bindPageActions();
       sheet.style.display = 'none';
       sheet.classList.remove('turning');
@@ -762,13 +952,38 @@
     }
     if (spread <= 0) { toast('已是第一页'); return; }
     flipping = true;
-    var oldLeft = pages[spread * 2] || '';
-    var newLeft = pages[spread * 2 - 2] || '';
-    var newRight = pages[spread * 2 - 1] || '';
+
+    var targetSpread = spread - 1;
+    var isGoingToCover = (targetSpread <= 0);
+    var isLeavingBackCover = (spread >= maxSpread);
+
+    // 1. 【动效顺序前置】：在翻页开始的第一时间切换封面/封底状态并消除空白底框
+    var bookEl = $('book');
+    if (bookEl) {
+      if (isGoingToCover) bookEl.classList.add('is-cover');
+      if (isLeavingBackCover) bookEl.classList.remove('is-back-cover');
+    }
+
+    var oldLeft = getPageHTML(spread * 2);
+    var newLeft = getPageHTML(spread * 2 - 2);
+    var newRight = getPageHTML(spread * 2 - 1);
+
     $('pageLeftInner').innerHTML = newLeft;
     $('turnFrontInner').innerHTML = oldLeft;
     $('turnBackInner').innerHTML = newRight;
+
+    // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
+    $('pageRight').classList.toggle('page-blank', !newRight.trim());
+    $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldLeft.trim());
+    $('turnBackInner').parentElement.classList.toggle('page-blank', !newRight.trim());
+
+    if (isGoingToCover) {
+      renderEdgeLayers($('bookEdgeLeft'), 0, true);
+      renderEdgeLayers($('bookEdgeRight'), 0, false);
+      if ($('cornerPeekL')) $('cornerPeekL').style.display = 'none';
+    }
+
     var sheet = $('turnSheet');
     sheet.classList.add('back');
     sheet.style.display = 'block';
@@ -778,19 +993,25 @@
     fitPage($('turnBackInner'), spread * 2 - 1);
     fitPage($('pageLeftInner'), spread * 2 - 2);
     sheet.classList.add('turning');
+
     setTimeout(function () {
       spread--;
-      var leftHtml = pages[spread * 2] || '';
-      var rightHtml = pages[spread * 2 + 1] || '';
+      var leftHtml = getPageHTML(spread * 2);
+      var rightHtml = getPageHTML(spread * 2 + 1);
       $('pageLeftInner').innerHTML = leftHtml;
       $('pageRightInner').innerHTML = rightHtml;
       $('pageLeft').classList.toggle('page-blank', !leftHtml.trim());
       $('pageRight').classList.toggle('page-blank', !rightHtml.trim());
+      if (bookEl) {
+        bookEl.classList.toggle('is-cover', spread === 0);
+        bookEl.classList.toggle('is-back-cover', spread === maxSpread);
+      }
       $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
       $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
       fitSpread();
       updatePageNo();
       renderSideBookmarks();
+      updateSpreadEdgesAndPeeks();
       bindPageActions();
       sheet.style.display = 'none';
       sheet.classList.remove('turning');
@@ -807,6 +1028,7 @@
     var b = DATA.book;
     var sections = [];
     sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">' + esc(b.title) + '</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
+    sections.push(webSection('s-overview', '序', '成果全景与说明', overviewPageHTML()));
     sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
     sections.push(webSection('s-sources', '1.2', '情报源评判报告', sourcesHTML()));
     sections.push(webSection('s-library', '1.3', '前沿技术储备库（长名单）', libraryPreviewHTML()));
@@ -821,6 +1043,7 @@
     // 目录
     var toc = ['<h3>目录</h3>'];
     toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>扉页 · 成果总览</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>成果全景与说明</div>');
     toc.push('<div class="web-toc-item part" data-target="s-workplan">第一篇 · 整体研究成果</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>情报源评判报告</div>');
@@ -1152,38 +1375,76 @@
   /* ==================== 技术专题详情面板 ==================== */
   function techTabs(tech) {
     var tabs = [];
-    if (tech.image) tabs.push({ key: 'image', name: '一张图概述', html: onePageHTML(tech), fill: true });
     tabs.push({ key: 'assess', name: '评估表', html: assessHTML(tech), fill: false });
+    if (tech.image) tabs.push({ key: 'image', name: '一张图概述', html: onePageHTML(tech), fill: true });
     if (tech.reportPdf || tech.reportDocx) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
     if (tech.slidesPdf || tech.slidesPptx) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
     return tabs;
   }
   function onePageHTML(tech) {
-    return '<div class="onepage-wrap"><img id="onepageImg" src="' + esc(tech.image) + '" alt="' + esc(tech.name) + ' 一张图概述"></div>';
+    var dl = '<div class="preview-toolbar">' +
+      '<a href="' + esc(tech.image) + '" download>⬇ 下载一张图</a>' +
+      '<a href="' + esc(tech.image) + '" target="_blank">↗ 新窗口打开</a>' +
+      '<button class="btn" data-fs="1" title="全屏查看">⛶ 全屏</button>' +
+      '</div>';
+    return dl + '<div class="preview-stage onepage-stage" data-stage="1"><div class="onepage-wrap"><img id="onepageImg" src="' + esc(tech.image) + '" alt="' + esc(tech.name) + ' 一张图概述" title="点击放大查看"></div></div>';
   }
   function assessHTML(tech) {
     var dims = tech.assessment.dimensions;
-    var rows = dims.map(function (d) {
-      return '<tr><th>' + esc(d.label) + '</th><td style="width:180px">' + scoreBar(d.score, d.max || 5) + '</td><td><b style="color:' + dimColor(d) + '">' + d.score + '/5</b></td></tr>';
+    var basisMap = {
+      '技术成熟度': tech.maturityBasis || '',
+      '战略匹配度': tech.strategicFitBasis || '',
+      '价值贡献度': tech.valueBasis || '',
+      '引入可行度': tech.feasibilityBasis || '',
+      '战略紧迫度': tech.urgencyBasis || '',
+      '生态开放度': tech.opennessBasis || ''
+    };
+    var rows = dims.map(function (d, idx) {
+      var basis = basisMap[d.label] || '';
+      return '<tr>' +
+        '<td class="td-dim"><b>' + esc(d.label) + '</b><span class="dim-w">权重 ' + (d.weight || 0) + '%</span></td>' +
+        '<td class="td-score"><div class="score-cell"><span class="score-num" style="color:' + dimColor(d) + '">' + d.score + '/5</span>' + scoreBar(d.score, d.max || 5, idx) + '</div></td>' +
+        '<td class="td-basis">' + (basis ? esc(basis) : '<span style="color:var(--faint)">暂无详细研判依据</span>') + '</td>' +
+        '</tr>';
     }).join('');
-    var info = '';
-    if (tech.definition) info += '<div class="pg-section"><div class="pg-h">定义</div><div class="pg-p">' + esc(tech.definition) + '</div></div>';
-    if (tech.trend) info += '<div class="pg-section"><div class="pg-h">颠覆性趋势</div><div class="pg-p">' + esc(tech.trend) + '</div></div>';
-    if (tech.bankValue) info += '<div class="pg-section"><div class="pg-h">对银行的价值</div><div class="pg-p">' + esc(tech.bankValue) + '</div></div>';
-    if (tech.limitation) info += '<div class="pg-section"><div class="pg-h">当前局限性</div><div class="pg-p">' + esc(tech.limitation) + '</div></div>';
-    var basis = '';
-    var basisFields = [['maturityBasis', '技术成熟度'], ['strategicFitBasis', '战略匹配度'], ['valueBasis', '价值贡献度'], ['feasibilityBasis', '引入可行度'], ['urgencyBasis', '战略紧迫度'], ['opennessBasis', '生态开放度']];
-    var basisRows = basisFields.map(function (bf) {
-      if (!tech[bf[0]]) return '';
-      return '<div class="pg-section"><div class="pg-h">' + bf[1] + ' · 研判依据</div><div class="pg-p dim">' + esc(tech[bf[0]]) + '</div></div>';
-    }).join('');
-    if (basisRows) basis = '<div class="chart-card" style="margin-top:14px"><h4>六维研判依据</h4>' + basisRows + '</div>';
-    return '<div class="chart-card" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">' +
-      '<div style="flex:1.2;min-width:320px"><h4>多轮评估雷达对比</h4>' + radarSVG(tech) + '</div>' +
-      '<div style="flex:1;min-width:260px"><h4>评估表（六维）</h4><table class="tbl"><tr><th>评估维度</th><th>评分</th><th>得分</th></tr>' + rows + '</table></div>' +
+
+    var infoCards = [];
+    if (tech.definition) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">📌</span>技术定义</div><div class="aic-p">' + esc(tech.definition) + '</div></div>');
+    }
+    if (tech.trend) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🚀</span>颠覆性趋势</div><div class="aic-p">' + formatBullets(tech.trend) + '</div></div>');
+    }
+    if (tech.bankValue) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🏦</span>对银行的价值</div><div class="aic-p">' + formatBullets(tech.bankValue) + '</div></div>');
+    }
+    if (tech.limitation) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">⚠️</span>当前局限与合规风险</div><div class="aic-p">' + formatBullets(tech.limitation) + '</div></div>');
+    }
+
+    var infoGrid = infoCards.length ? '<div class="assess-info-grid">' + infoCards.join('') + '</div>' : '';
+
+    return '<div class="assess-dashboard">' +
+      '<div class="assess-side">' +
+        '<div class="chart-card assess-radar-card"><h4>多轮评估雷达</h4>' + radarSVG(tech, false) + '</div>' +
+        '<div class="chart-card assess-conclusion-card">' +
+          '<div class="acc-head"><h4>研判结论与处置建议</h4><div class="acc-tags">' + tierPill(tech.tier) + '<span class="badge acc">' + esc(tech.disposal || '') + '</span></div></div>' +
+          '<div class="acc-body">' + esc(tech.conclusion) + '</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="chart-card" style="margin-top:14px"><h4>研判结论与处置逻辑</h4><div class="pg-p">' + esc(tech.conclusion) + '</div></div>' +
-      basis + info;
+      '<div class="assess-main">' +
+        '<div class="chart-card assess-table-card">' +
+          '<h4>六维研判评分与依据对照表</h4>' +
+          '<div class="assess-tbl-wrap">' +
+            '<table class="assess-tbl">' +
+              '<thead><tr><th style="width:125px">评估维度</th><th style="width:145px">评分 (满分5分)</th><th>研判依据与推演考量</th></tr></thead>' +
+              '<tbody>' + rows + '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+        infoGrid +
+      '</div>' +
+    '</div>';
   }
   function wordHTML(tech) {
     return previewHTML(tech, tech.reportDocx, tech.reportPdf, 'Word 报告');
@@ -1199,22 +1460,27 @@
     if (!pdf) return dl + '<div class="preview-empty">暂无在线预览，请下载后查看。</div>';
     return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览"></iframe></div>';
   }
+  function techHeadHTML(tech) {
+    return '<div class="panel-tech-head">' +
+      '<span class="pth-id">' + esc(tech.id) + '</span>' +
+      '<span class="pth-title">' + esc(tech.name) + '</span>' +
+      '<span class="tag" style="border-color:' + catColor(tech.category) + ';color:' + catColor(tech.category) + '">' + esc(tech.category) + '</span>' +
+      tierPill(tech.tier) +
+      '<span class="badge acc">成熟度 ' + tech.maturity + '/5</span>' +
+    '</div>';
+  }
   function techDetailHTML(tech) {
     var tabs = techTabs(tech);
-    var head = '<div class="tech-head"><h2>' + esc(tech.name) + '</h2><span class="tag" style="border-color:' + catColor(tech.category) + ';color:' + catColor(tech.category) + '">' + esc(tech.category) + '</span>' +
-      tierPill(tech.tier) + '<span class="badge acc">成熟度 ' + tech.maturity + '/5</span>' +
-      '<span style="font-size:12px;color:var(--dim)">' + esc(tech.nameEn || '') + '</span></div>';
-    var sum = '<div class="tech-detail-sum">' + esc(tech.summary) + '</div>';
     var tabBtns = tabs.map(function (t, i) { return '<button class="tab' + (i === 0 ? ' active' : '') + '" data-name="' + t.key + '">' + esc(t.name) + '</button>'; }).join('');
     var panes = tabs.map(function (t, i) {
       var cls = 'tabpane' + (i === 0 ? ' active' : '') + (t.fill ? ' fill' : '');
       return '<div class="' + cls + '" data-name="' + t.key + '">' + t.html + '</div>';
     }).join('');
-    return '<div class="tech-detail"><div class="tech-detail-bar">' + head + '</div>' + sum + '<div class="tabs">' + tabBtns + '</div><div class="tech-detail-body">' + panes + '</div></div>';
+    return '<div class="tech-detail"><div class="tabs">' + tabBtns + '</div><div class="tech-detail-body">' + panes + '</div></div>';
   }
   function openTechPanel(tech, tab) {
     if (!tech) return;
-    openPanel(tech.name + ' · 专题研究', techDetailHTML(tech), function () {
+    openPanel(techHeadHTML(tech), techDetailHTML(tech), function () {
       var tabs = document.querySelectorAll('#panelBody .tab');
       var panes = document.querySelectorAll('#panelBody .tabpane');
       var body = document.querySelector('#panelBody .tech-detail-body');
@@ -1297,7 +1563,7 @@
     document.addEventListener('click', function (e) { if (!e.target.closest('.search-wrap')) hide(); });
   }
 
-  /* ==================== 主题 / 模式切换 ==================== */
+  /* ==================== 主题 / 模式 / 特效切换 ==================== */
   var mode = 'book';
   function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
@@ -1317,35 +1583,283 @@
     else if (m === 'web') renderWeb();
   }
 
+  /* ==================== ✨ 动效增强系统 (Particle / Physics / Micro-FX) ==================== */
+  var fxEnabled = true;
+  try { fxEnabled = localStorage.getItem('techbook_fx') !== '0'; } catch (e) {}
+
+  var fxCanvas = null, fxCtx = null, fxAnimId = null, fxParticles = [];
+  var fxMouse = { x: -1000, y: -1000 };
+
+  function setFxMode(enabled, quiet) {
+    fxEnabled = !!enabled;
+    try { localStorage.setItem('techbook_fx', fxEnabled ? '1' : '0'); } catch (e) {}
+    document.body.classList.toggle('fx-enabled', fxEnabled);
+    var btn = $('btnFxToggle');
+    if (btn) {
+      btn.innerHTML = fxEnabled ? '✨ 动效: 开' : '✨ 动效: 关';
+      btn.classList.toggle('active', fxEnabled);
+    }
+    if (fxEnabled) {
+      startFxLoop();
+      if (!quiet) toast('已开启【动效增强】模式 (粒子星空/铜版纸流光/悬停掀角/雷达脉冲)');
+    } else {
+      stopFxLoop();
+      if (!quiet) toast('已切换为【经典标准】模式');
+    }
+  }
+
+  function initFxCanvas() {
+    fxCanvas = $('fxCanvas');
+    if (!fxCanvas) return;
+    fxCtx = fxCanvas.getContext('2d');
+    function resize() {
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    window.addEventListener('mousemove', function (e) {
+      fxMouse.x = e.clientX;
+      fxMouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', function () {
+      fxMouse.x = -1000;
+      fxMouse.y = -1000;
+    });
+
+    var count = Math.min(95, Math.floor(window.innerWidth * window.innerHeight / 15000));
+    var colors = ['#38bdf8', '#60a5fa', '#a855f7', '#22d3ee', '#818cf8'];
+    fxParticles = [];
+    for (var i = 0; i < count; i++) {
+      fxParticles.push({
+        x: Math.random() * fxCanvas.width,
+        y: Math.random() * fxCanvas.height,
+        vx: (Math.random() - 0.5) * 0.65,
+        vy: (Math.random() - 0.5) * 0.65,
+        r: Math.random() * 2.2 + 1.6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        baseAlpha: Math.random() * 0.45 + 0.45
+      });
+    }
+    if (fxEnabled) startFxLoop();
+  }
+
+  function startFxLoop() {
+    if (fxAnimId) return;
+    function loop() {
+      if (!fxEnabled || document.hidden) { fxAnimId = null; return; }
+      drawParticles();
+      fxAnimId = requestAnimationFrame(loop);
+    }
+    fxAnimId = requestAnimationFrame(loop);
+  }
+
+  function stopFxLoop() {
+    if (fxAnimId) { cancelAnimationFrame(fxAnimId); fxAnimId = null; }
+    if (fxCtx && fxCanvas) fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+  }
+
+  function drawParticles() {
+    if (!fxCtx || !fxCanvas) return;
+    var W = fxCanvas.width, H = fxCanvas.height;
+    fxCtx.clearRect(0, 0, W, H);
+    var now = Date.now();
+
+    // 1. 绘制背景双极光呼吸流光 (Ambient Aurora Glow - 右侧更强更集中)
+    var a1x = W * 0.25 + Math.cos(now * 0.0005) * 90;
+    var a1y = H * 0.38 + Math.sin(now * 0.0006) * 60;
+    var g1 = fxCtx.createRadialGradient(a1x, a1y, 10, a1x, a1y, W * 0.38);
+    g1.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
+    g1.addColorStop(0.5, 'rgba(6, 182, 212, 0.08)');
+    g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    fxCtx.fillStyle = g1;
+    fxCtx.fillRect(0, 0, W, H);
+
+    var a2x = W * 0.75 + Math.sin(now * 0.0006) * 100;
+    var a2y = H * 0.62 + Math.cos(now * 0.0005) * 70;
+    var g2 = fxCtx.createRadialGradient(a2x, a2y, 10, a2x, a2y, W * 0.45);
+    g2.addColorStop(0, 'rgba(56, 189, 248, 0.36)');
+    g2.addColorStop(0.35, 'rgba(37, 99, 235, 0.24)');
+    g2.addColorStop(0.7, 'rgba(124, 58, 237, 0.10)');
+    g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    fxCtx.fillStyle = g2;
+    fxCtx.fillRect(0, 0, W, H);
+
+    var pCount = fxParticles.length;
+
+    // 2. 绘制星空连线
+    for (var i = 0; i < pCount; i++) {
+      var p1 = fxParticles[i];
+      for (var j = i + 1; j < pCount; j++) {
+        var p2 = fxParticles[j];
+        var dx = p1.x - p2.x, dy = p1.y - p2.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          var alpha = (1 - dist / 130) * 0.35;
+          fxCtx.strokeStyle = 'rgba(96, 165, 250, ' + alpha + ')';
+          fxCtx.lineWidth = 1.1;
+          fxCtx.beginPath();
+          fxCtx.moveTo(p1.x, p1.y);
+          fxCtx.lineTo(p2.x, p2.y);
+          fxCtx.stroke();
+        }
+      }
+    }
+
+    // 3. 鼠标交互光网
+    if (fxMouse.x > 0 && fxMouse.y > 0) {
+      for (var m = 0; m < pCount; m++) {
+        var pm = fxParticles[m];
+        var mdx2 = fxMouse.x - pm.x, mdy2 = fxMouse.y - pm.y;
+        var mDist2 = Math.sqrt(mdx2 * mdx2 + mdy2 * mdy2);
+        if (mDist2 < 170) {
+          var mAlpha = (1 - mDist2 / 170) * 0.5;
+          fxCtx.strokeStyle = 'rgba(34, 211, 238, ' + mAlpha + ')';
+          fxCtx.lineWidth = 1.3;
+          fxCtx.beginPath();
+          fxCtx.moveTo(pm.x, pm.y);
+          fxCtx.lineTo(fxMouse.x, fxMouse.y);
+          fxCtx.stroke();
+        }
+      }
+    }
+
+    // 4. 更新与绘制发光粒子
+    for (var k = 0; k < pCount; k++) {
+      var p = fxParticles[k];
+      var mdx = fxMouse.x - p.x, mdy = fxMouse.y - p.y;
+      var mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mDist < 160 && mDist > 1) {
+        var force = (160 - mDist) / 160 * 0.45;
+        p.x -= (mdx / mDist) * force;
+        p.y -= (mdy / mDist) * force;
+      }
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -15) p.x = W + 15; else if (p.x > W + 15) p.x = -15;
+      if (p.y < -15) p.y = H + 15; else if (p.y > H + 15) p.y = -15;
+
+      fxCtx.shadowBlur = 10;
+      fxCtx.shadowColor = p.color;
+      fxCtx.fillStyle = p.color;
+      fxCtx.globalAlpha = p.baseAlpha;
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      fxCtx.fill();
+    }
+    fxCtx.shadowBlur = 0;
+    fxCtx.globalAlpha = 1;
+  }
+
+  /* ==================== 大屏自动巡航放映模式 ==================== */
+  var autoPlaying = false, autoPlayTimer = null, autoProgressTimer = null, autoInterval = 6000;
+  function startAutoPlay() {
+    autoPlaying = true;
+    if (mode !== 'book') setMode('book');
+    $('btnAutoPlay').textContent = '⏹ 停止放映';
+    $('btnAutoPlay').classList.add('active');
+    $('presenterBar').classList.remove('hidden');
+    runPresenterTick();
+  }
+  function stopAutoPlay() {
+    autoPlaying = false;
+    if (autoPlayTimer) clearTimeout(autoPlayTimer);
+    if (autoProgressTimer) clearInterval(autoProgressTimer);
+    $('btnAutoPlay').textContent = '▶ 自动放映';
+    $('btnAutoPlay').classList.remove('active');
+    $('presenterBar').classList.add('hidden');
+    $('pbFill').style.width = '0%';
+  }
+  function toggleAutoPlay() {
+    if (autoPlaying) stopAutoPlay(); else startAutoPlay();
+  }
+  function runPresenterTick() {
+    if (!autoPlaying) return;
+    var infoText = isSingle() ? ((singleIdx + 1) + ' / ' + pages.length + ' 页') : ((spread + 1) + ' / ' + (maxSpread + 1) + ' 跨页');
+    $('pbInfo').textContent = infoText;
+    var startTime = Date.now();
+    $('pbFill').style.width = '0%';
+    if (autoProgressTimer) clearInterval(autoProgressTimer);
+    autoProgressTimer = setInterval(function () {
+      if (!autoPlaying) { clearInterval(autoProgressTimer); return; }
+      var elapsed = Date.now() - startTime;
+      var p = Math.min(100, (elapsed / autoInterval) * 100);
+      $('pbFill').style.width = p + '%';
+      if (elapsed >= autoInterval) clearInterval(autoProgressTimer);
+    }, 80);
+
+    if (autoPlayTimer) clearTimeout(autoPlayTimer);
+    autoPlayTimer = setTimeout(function () {
+      if (!autoPlaying) return;
+      if (isSingle()) {
+        if (singleIdx >= pages.length - 1) jumpToPage(0); else flipForward();
+      } else {
+        if (spread >= maxSpread) jumpToPage(0); else flipForward();
+      }
+      runPresenterTick();
+    }, autoInterval);
+  }
+
   /* ==================== 初始化 ==================== */
   function init() {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     bindOverlayClose();
     initSearch();
+    initFxCanvas();
     $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
     $('btnTheme').onclick = toggleTheme;
-    $('navNext').onclick = flipForward;
-    $('navPrev').onclick = flipBackward;
+    $('btnFxToggle').onclick = function () { setFxMode(!fxEnabled); };
+    $('btnAutoPlay').onclick = toggleAutoPlay;
+    $('pbExit').onclick = stopAutoPlay;
+    var nNext = $('navNext'), nPrev = $('navPrev');
+    if (nNext) nNext.onclick = flipForward;
+    if (nPrev) nPrev.onclick = flipBackward;
+    var peekR = $('cornerPeekR'), peekL = $('cornerPeekL');
+    if (peekR) peekR.onclick = function (e) { e.stopPropagation(); flipForward(); };
+    if (peekL) peekL.onclick = function (e) { e.stopPropagation(); flipBackward(); };
+
     document.addEventListener('keydown', function (e) {
       if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
       if (e.key === 'ArrowRight') flipForward();
       else if (e.key === 'ArrowLeft') flipBackward();
       else if (e.key === 'Home') jumpToPage(1);
+      else if (e.key === 'Escape') {
+        if (autoPlaying) stopAutoPlay();
+      }
     });
-    if ($('bookSideLeft')) $('bookSideLeft').addEventListener('click', function (e) { e.stopPropagation(); });
-    if ($('bookSideRight')) $('bookSideRight').addEventListener('click', function (e) { e.stopPropagation(); });
+    var sideLeft = $('bookSideLeft'), sideRight = $('bookSideRight');
+    if (sideLeft) sideLeft.addEventListener('click', function (e) { e.stopPropagation(); });
+    if (sideRight) sideRight.addEventListener('click', function (e) { e.stopPropagation(); });
+
+    // 鼠标靠近书本外侧或移出书页时瞬发秒弹书签 (零延迟极速响应)
+    window.addEventListener('mousemove', function (e) {
+      if (mode !== 'book' || !sideLeft || !sideRight) return;
+      var bookEl = $('book');
+      if (!bookEl) return;
+      var rect = bookEl.getBoundingClientRect();
+      var x = e.clientX, y = e.clientY;
+      var inVertical = (y >= rect.top - 50 && y <= rect.bottom + 50);
+      var isOutsideLeft = inVertical && (x < rect.left + 50 && x > rect.left - 300);
+      var isOutsideRight = inVertical && (x > rect.right - 50 && x < rect.right + 300);
+
+      sideLeft.classList.toggle('is-revealed', isOutsideLeft);
+      sideRight.classList.toggle('is-revealed', isOutsideRight);
+    }, { passive: true });
+
     var book = $('book');
     book.addEventListener('click', function (e) {
       if (flipping || isSingle()) return;
-      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn')) return;
+      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack')) return;
       var rect = book.getBoundingClientRect();
       var x = e.clientX - rect.left;
       if (x < rect.width * 0.18) flipBackward();
       else if (x > rect.width * 0.82) flipForward();
     });
     window.addEventListener('resize', function () { if (mode === 'book') renderSpread(); });
+    setFxMode(fxEnabled, true);
     renderSpread();
 
     // URL 深链
