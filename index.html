@@ -57,6 +57,8 @@ button { font-family: var(--font); cursor: pointer; }
   padding: 0 18px; border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, var(--panel), transparent);
   backdrop-filter: blur(10px); position: relative; z-index: 50;
+  transform: translateZ(0);
+  will-change: transform;
 }
 .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
 .brand-icon {
@@ -108,6 +110,8 @@ button { font-family: var(--font); cursor: pointer; }
     radial-gradient(ellipse 55% 85% at 100% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.45) 40%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
     radial-gradient(ellipse 45% 75% at 0% 60%, rgba(56, 189, 248, 0.45) 0%, rgba(79, 140, 255, 0.22) 50%, transparent 85%);
   filter: blur(32px);
+  transform: translateZ(0);
+  will-change: opacity, transform;
   pointer-events: none;
   z-index: 0;
   border-radius: 30px;
@@ -467,14 +471,12 @@ body.fx-enabled .radar-svg .radar-node {
 /* ============================ 书籍呼吸动态发光阴影 (Breathing Shadow & Glow) ============================ */
 @keyframes fxDarkAuraPulse {
   0%, 100% {
-    opacity: 0.22;
-    transform: scale(0.97);
-    filter: blur(20px);
+    opacity: 0.38;
+    transform: scale(0.98) translateZ(0);
   }
   50% {
-    opacity: 0.65;
-    transform: scale(1.03);
-    filter: blur(34px);
+    opacity: 0.95;
+    transform: scale(1.02) translateZ(0);
   }
 }
 
@@ -582,6 +584,28 @@ html[data-theme="light"] body.fx-enabled #pageLeft:not(.page-blank),
 html[data-theme="light"] body.fx-enabled #pageRight:not(.page-blank),
 [data-theme="light"] #pageRight:not(.page-blank) {
   animation: fxLightPageRightGlow 4.2s ease-in-out infinite !important;
+}
+
+/* ⚡ 极速静默模式（当用户点击顶栏关闭动效时，全面降级为 0 开销静态光影） */
+body.fx-disabled .book::before {
+  display: none !important;
+}
+body.fx-disabled #pageLeft,
+body.fx-disabled #pageRight,
+body.fx-disabled .book-edge-left,
+body.fx-disabled .book-edge-right,
+body.fx-disabled .corner-peek,
+body.fx-disabled .radar-svg .radar-poly,
+body.fx-disabled .radar-svg .radar-node,
+body.fx-disabled .bar-fill-rect {
+  animation: none !important;
+  transition: none !important;
+}
+body.fx-disabled #pageLeft {
+  box-shadow: -10px 14px 30px rgba(0,0,0,0.4) !important;
+}
+body.fx-disabled #pageRight {
+  box-shadow: 10px 14px 30px rgba(0,0,0,0.4) !important;
 }
 
 /* 5. 能量评分条平滑充能自左向右实体增长 (Smooth Left-to-Right Energy Growth) */
@@ -1623,6 +1647,22 @@ body.fx-enabled .overlay:not(.hidden):not(.is-closing) .modal {
 body.fx-enabled .overlay.is-closing .panel,
 body.fx-enabled .overlay.is-closing .modal {
   animation: fxModalFold 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+/* ⚡ 弹出专题/弹窗时：彻底关停并隐藏所有背景与书籍耗电耗能动效，硬件资源 100% 专供专题视窗 */
+body.has-overlay-open #fxCanvas {
+  display: none !important;
+}
+body.has-overlay-open .book::before,
+body.has-overlay-open #pageLeft,
+body.has-overlay-open #pageRight,
+body.has-overlay-open .book-edge-left,
+body.has-overlay-open .book-edge-right,
+body.has-overlay-open .corner-peek,
+body.has-overlay-open .book-side-col,
+body.has-overlay-open .book-side-tab {
+  animation: none !important;
+  transition: none !important;
 }
 
 /* ============================ Toast ============================ */

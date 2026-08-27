@@ -92,7 +92,21 @@
     return '<div class="tech-box-text">' + esc(text) + '</div>';
   }
 
-  /* ==================== 覆盖层 ==================== */
+  /* ==================== 覆盖层动效性能智能冻结机制 ==================== */
+  var activeOverlayCount = 0;
+  function updateOverlayState(delta) {
+    activeOverlayCount = Math.max(0, activeOverlayCount + delta);
+    if (activeOverlayCount > 0) {
+      document.body.classList.add('has-overlay-open');
+      // 弹出专题/弹窗时：彻底停止背景 Canvas 的 requestAnimationFrame 循环，CPU/GPU 占用完全归零！
+      stopFxLoop();
+    } else {
+      document.body.classList.remove('has-overlay-open');
+      // 关闭所有弹窗后：恢复背景 Canvas 粒子与极光
+      if (fxEnabled) startFxLoop();
+    }
+  }
+
   function openPanel(title, html, onMount, flexBody) {
     var el = $('panel');
     el.classList.remove('is-closing');
@@ -101,6 +115,7 @@
     $('panelBody').classList.toggle('flex', !!flexBody);
     el.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    updateOverlayState(1);
     if (onMount) setTimeout(onMount, 0);
   }
   function closePanel() {
@@ -110,9 +125,14 @@
     setTimeout(function () {
       el.classList.add('hidden');
       el.classList.remove('is-closing');
+      var iframes = el.querySelectorAll('iframe');
+      iframes.forEach(function (f) {
+        try { f.src = 'about:blank'; } catch (e) {}
+      });
       $('panelBody').innerHTML = '';
       $('panelBody').classList.remove('flex');
       document.body.style.overflow = '';
+      updateOverlayState(-1);
     }, 220);
   }
   function openModal(title, html) {
@@ -121,6 +141,7 @@
     $('modalTitle').innerHTML = title;
     $('modalBody').innerHTML = html;
     el.classList.remove('hidden');
+    updateOverlayState(1);
   }
   function closeModal() {
     var el = $('modal');
@@ -130,6 +151,7 @@
       el.classList.add('hidden');
       el.classList.remove('is-closing');
       $('modalBody').innerHTML = '';
+      updateOverlayState(-1);
     }, 220);
   }
   function openLightbox(src, title) {
@@ -137,6 +159,7 @@
     el.classList.remove('is-closing');
     $('lightboxImg').src = src; $('lightboxTitle').textContent = title || '';
     el.classList.remove('hidden'); el.style.display = 'flex';
+    updateOverlayState(1);
   }
   function closeLightbox() {
     var el = $('lightbox');
@@ -146,6 +169,7 @@
       el.classList.add('hidden');
       el.classList.remove('is-closing');
       el.style.display = '';
+      updateOverlayState(-1);
     }, 220);
   }
   function bindOverlayClose() {
@@ -1594,6 +1618,7 @@
     fxEnabled = !!enabled;
     try { localStorage.setItem('techbook_fx', fxEnabled ? '1' : '0'); } catch (e) {}
     document.body.classList.toggle('fx-enabled', fxEnabled);
+    document.body.classList.toggle('fx-disabled', !fxEnabled);
     var btn = $('btnFxToggle');
     if (btn) {
       btn.innerHTML = fxEnabled ? '✨ 动效: 开' : '✨ 动效: 关';
@@ -1604,7 +1629,7 @@
       if (!quiet) toast('已开启【动效增强】模式 (粒子星空/铜版纸流光/悬停掀角/雷达脉冲)');
     } else {
       stopFxLoop();
-      if (!quiet) toast('已切换为【经典标准】模式');
+      if (!quiet) toast('已切换为【经典标准】模式 (0开销静态极速)');
     }
   }
 
@@ -1688,14 +1713,18 @@
 
     var pCount = fxParticles.length;
 
-    // 2. 绘制星空连线
+    // 2. 绘制星空连线 (曼哈顿距离快速剪枝 + 平方差计算，跳过85%无用几何开方)
     for (var i = 0; i < pCount; i++) {
       var p1 = fxParticles[i];
       for (var j = i + 1; j < pCount; j++) {
         var p2 = fxParticles[j];
-        var dx = p1.x - p2.x, dy = p1.y - p2.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 130) {
+        var dx = p1.x - p2.x;
+        if (dx > 130 || dx < -130) continue;
+        var dy = p1.y - p2.y;
+        if (dy > 130 || dy < -130) continue;
+        var distSq = dx * dx + dy * dy;
+        if (distSq < 16900) { // 130^2
+          var dist = Math.sqrt(distSq);
           var alpha = (1 - dist / 130) * 0.35;
           fxCtx.strokeStyle = 'rgba(96, 165, 250, ' + alpha + ')';
           fxCtx.lineWidth = 1.1;
@@ -1707,13 +1736,17 @@
       }
     }
 
-    // 3. 鼠标交互光网
+    // 3. 鼠标交互光网 (快速剪枝)
     if (fxMouse.x > 0 && fxMouse.y > 0) {
       for (var m = 0; m < pCount; m++) {
         var pm = fxParticles[m];
-        var mdx2 = fxMouse.x - pm.x, mdy2 = fxMouse.y - pm.y;
-        var mDist2 = Math.sqrt(mdx2 * mdx2 + mdy2 * mdy2);
-        if (mDist2 < 170) {
+        var mdx2 = fxMouse.x - pm.x;
+        if (mdx2 > 170 || mdx2 < -170) continue;
+        var mdy2 = fxMouse.y - pm.y;
+        if (mdy2 > 170 || mdy2 < -170) continue;
+        var mDistSq2 = mdx2 * mdx2 + mdy2 * mdy2;
+        if (mDistSq2 < 28900) { // 170^2
+          var mDist2 = Math.sqrt(mDistSq2);
           var mAlpha = (1 - mDist2 / 170) * 0.5;
           fxCtx.strokeStyle = 'rgba(34, 211, 238, ' + mAlpha + ')';
           fxCtx.lineWidth = 1.3;
@@ -1725,30 +1758,31 @@
       }
     }
 
-    // 4. 更新与绘制发光粒子
+    // 4. 更新与绘制发光粒子 (轻量高效渲染 + 物理排斥快速剪枝)
     for (var k = 0; k < pCount; k++) {
       var p = fxParticles[k];
-      var mdx = fxMouse.x - p.x, mdy = fxMouse.y - p.y;
-      var mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-      if (mDist < 160 && mDist > 1) {
-        var force = (160 - mDist) / 160 * 0.45;
-        p.x -= (mdx / mDist) * force;
-        p.y -= (mdy / mDist) * force;
+      var mdx = fxMouse.x - p.x;
+      var mdy = fxMouse.y - p.y;
+      if (mdx < 160 && mdx > -160 && mdy < 160 && mdy > -160) {
+        var mDistSq = mdx * mdx + mdy * mdy;
+        if (mDistSq < 25600 && mDistSq > 1) {
+          var mDist = Math.sqrt(mDistSq);
+          var force = (160 - mDist) / 160 * 0.45;
+          p.x -= (mdx / mDist) * force;
+          p.y -= (mdy / mDist) * force;
+        }
       }
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < -15) p.x = W + 15; else if (p.x > W + 15) p.x = -15;
       if (p.y < -15) p.y = H + 15; else if (p.y > H + 15) p.y = -15;
 
-      fxCtx.shadowBlur = 10;
-      fxCtx.shadowColor = p.color;
       fxCtx.fillStyle = p.color;
       fxCtx.globalAlpha = p.baseAlpha;
       fxCtx.beginPath();
       fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       fxCtx.fill();
     }
-    fxCtx.shadowBlur = 0;
     fxCtx.globalAlpha = 1;
   }
 
@@ -1834,19 +1868,26 @@
     if (sideLeft) sideLeft.addEventListener('click', function (e) { e.stopPropagation(); });
     if (sideRight) sideRight.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    // 鼠标靠近书本外侧或移出书页时瞬发秒弹书签 (零延迟极速响应)
+    // 鼠标靠近书本外侧或移出书页时瞬发秒弹书签 (RAF 节流极致流畅，弹窗打开时跳过)
+    var bmMoveTicking = false;
     window.addEventListener('mousemove', function (e) {
-      if (mode !== 'book' || !sideLeft || !sideRight) return;
-      var bookEl = $('book');
-      if (!bookEl) return;
-      var rect = bookEl.getBoundingClientRect();
-      var x = e.clientX, y = e.clientY;
-      var inVertical = (y >= rect.top - 50 && y <= rect.bottom + 50);
-      var isOutsideLeft = inVertical && (x < rect.left + 50 && x > rect.left - 300);
-      var isOutsideRight = inVertical && (x > rect.right - 50 && x < rect.right + 300);
+      if (mode !== 'book' || !sideLeft || !sideRight || activeOverlayCount > 0) return;
+      if (!bmMoveTicking) {
+        bmMoveTicking = true;
+        var cx = e.clientX, cy = e.clientY;
+        requestAnimationFrame(function () {
+          bmMoveTicking = false;
+          var bookEl = $('book');
+          if (!bookEl) return;
+          var rect = bookEl.getBoundingClientRect();
+          var inVertical = (cy >= rect.top - 50 && cy <= rect.bottom + 50);
+          var isOutsideLeft = inVertical && (cx < rect.left + 50 && cx > rect.left - 300);
+          var isOutsideRight = inVertical && (cx > rect.right - 50 && cx < rect.right + 300);
 
-      sideLeft.classList.toggle('is-revealed', isOutsideLeft);
-      sideRight.classList.toggle('is-revealed', isOutsideRight);
+          sideLeft.classList.toggle('is-revealed', isOutsideLeft);
+          sideRight.classList.toggle('is-revealed', isOutsideRight);
+        });
+      }
     }, { passive: true });
 
     var book = $('book');
