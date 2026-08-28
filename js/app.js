@@ -1653,16 +1653,16 @@
       fxMouse.y = -1000;
     });
 
-    var count = Math.min(95, Math.floor(window.innerWidth * window.innerHeight / 15000));
+    var count = Math.min(38, Math.floor(window.innerWidth * window.innerHeight / 32000));
     var colors = ['#38bdf8', '#60a5fa', '#a855f7', '#22d3ee', '#818cf8'];
     fxParticles = [];
     for (var i = 0; i < count; i++) {
       fxParticles.push({
         x: Math.random() * fxCanvas.width,
         y: Math.random() * fxCanvas.height,
-        vx: (Math.random() - 0.5) * 0.65,
-        vy: (Math.random() - 0.5) * 0.65,
-        r: Math.random() * 2.2 + 1.6,
+        vx: (Math.random() - 0.5) * 0.55,
+        vy: (Math.random() - 0.5) * 0.55,
+        r: Math.random() * 2.0 + 1.5,
         color: colors[Math.floor(Math.random() * colors.length)],
         baseAlpha: Math.random() * 0.45 + 0.45
       });
@@ -1689,27 +1689,6 @@
     if (!fxCtx || !fxCanvas) return;
     var W = fxCanvas.width, H = fxCanvas.height;
     fxCtx.clearRect(0, 0, W, H);
-    var now = Date.now();
-
-    // 1. 绘制背景双极光呼吸流光 (Ambient Aurora Glow - 右侧更强更集中)
-    var a1x = W * 0.25 + Math.cos(now * 0.0005) * 90;
-    var a1y = H * 0.38 + Math.sin(now * 0.0006) * 60;
-    var g1 = fxCtx.createRadialGradient(a1x, a1y, 10, a1x, a1y, W * 0.38);
-    g1.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
-    g1.addColorStop(0.5, 'rgba(6, 182, 212, 0.08)');
-    g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    fxCtx.fillStyle = g1;
-    fxCtx.fillRect(0, 0, W, H);
-
-    var a2x = W * 0.75 + Math.sin(now * 0.0006) * 100;
-    var a2y = H * 0.62 + Math.cos(now * 0.0005) * 70;
-    var g2 = fxCtx.createRadialGradient(a2x, a2y, 10, a2x, a2y, W * 0.45);
-    g2.addColorStop(0, 'rgba(56, 189, 248, 0.36)');
-    g2.addColorStop(0.35, 'rgba(37, 99, 235, 0.24)');
-    g2.addColorStop(0.7, 'rgba(124, 58, 237, 0.10)');
-    g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    fxCtx.fillStyle = g2;
-    fxCtx.fillRect(0, 0, W, H);
 
     var pCount = fxParticles.length;
 

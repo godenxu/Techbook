@@ -560,30 +560,11 @@ html[data-theme="dark"] body.fx-enabled .book::before,
 [data-theme="dark"] .book::before {
   animation: fxDarkAuraPulse 3.8s ease-in-out infinite !important;
 }
-html[data-theme="dark"] body.fx-enabled #pageLeft:not(.page-blank),
-[data-theme="dark"] #pageLeft:not(.page-blank) {
-  animation: fxDarkPageLeftGlow 3.8s ease-in-out infinite !important;
-}
-html[data-theme="dark"] body.fx-enabled #pageRight:not(.page-blank),
-[data-theme="dark"] #pageRight:not(.page-blank) {
-  animation: fxDarkPageRightGlow 3.8s ease-in-out infinite !important;
-}
-html[data-theme="dark"] body.fx-enabled .book-edge-left,
-[data-theme="dark"] .book-edge-left {
-  animation: fxDarkEdgeLeftGlow 3.8s ease-in-out infinite !important;
-}
-html[data-theme="dark"] body.fx-enabled .book-edge-right,
-[data-theme="dark"] .book-edge-right {
-  animation: fxDarkEdgeRightGlow 3.8s ease-in-out infinite !important;
-}
 
-html[data-theme="light"] body.fx-enabled #pageLeft:not(.page-blank),
-[data-theme="light"] #pageLeft:not(.page-blank) {
-  animation: fxLightPageLeftGlow 4.2s ease-in-out infinite !important;
-}
-html[data-theme="light"] body.fx-enabled #pageRight:not(.page-blank),
-[data-theme="light"] #pageRight:not(.page-blank) {
-  animation: fxLightPageRightGlow 4.2s ease-in-out infinite !important;
+/* ⚡ 左右书页和书厚采用 GPU 静态位图缓存（0 重绘、0 逐帧高斯模糊，彻底告别卡顿发热） */
+#pageLeft, #pageRight, .book-edge-left, .book-edge-right {
+  animation: none !important;
+  transform: translateZ(0);
 }
 
 /* ⚡ 极速静默模式（当用户点击顶栏关闭动效时，全面降级为 0 开销静态光影） */
