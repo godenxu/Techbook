@@ -98,12 +98,8 @@
     activeOverlayCount = Math.max(0, activeOverlayCount + delta);
     if (activeOverlayCount > 0) {
       document.body.classList.add('has-overlay-open');
-      // 弹出专题/弹窗时：彻底停止背景 Canvas 的 requestAnimationFrame 循环，CPU/GPU 占用完全归零！
-      stopFxLoop();
     } else {
       document.body.classList.remove('has-overlay-open');
-      // 关闭所有弹窗后：恢复背景 Canvas 粒子与极光
-      if (fxEnabled) startFxLoop();
     }
   }
 
@@ -262,9 +258,10 @@
       '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;right:-40px;bottom:-40px"></span>',
       '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;right:20%;top:8%"></span>'
     ].join('');
+    var coverTitle = esc(b.title).replace('科技发展部', '科技发展部<br>');
     return '<div class="cover-full">' + orbs +
       '<div class="cov-kicker">BANK FINTECH RESEARCH</div>' +
-      '<div class="cov-title">' + esc(b.title) + '</div>' +
+      '<div class="cov-title">' + coverTitle + '</div>' +
       '<div class="cov-sub">' + esc(b.subtitle) + '</div>' +
       '<div class="cov-rule"></div>' +
       '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + '</div>' +
@@ -280,7 +277,7 @@
       '<div class="page-title">' + esc(b.title) + '</div>' +
       '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书系统汇集银行金融科技前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
+      '<div class="pg-p">本电子研究书系统汇集科技发展部前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
       '<div class="stat-grid">' +
       '<div class="stat"><div class="num">' + lib + '</div><div class="lbl">长名单技术项</div></div>' +
       '<div class="stat"><div class="num">' + cats + '</div><div class="lbl">战略方向</div></div>' +
@@ -405,10 +402,10 @@
       it._total = total / 100;
     });
     items.sort(function (a, b) { return b._total - a._total; });
-    var head = '<tr><th>情报源</th><th>类型</th>' + crit.map(function (c) { return '<th>' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint)">(' + c.weight + ')</span></th>'; }).join('') + '<th>加权得分</th></tr>';
+    var head = '<tr><th style="width:23%">情报源</th><th style="width:11%">类型</th>' + crit.map(function (c) { return '<th style="width:11%">' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint);font-size:10px">(' + c.weight + ')</span></th>'; }).join('') + '<th style="width:12%">加权得分</th></tr>';
     var rows = items.map(function (it) {
-      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag">' + esc(it.type) + '</span></td>' +
-        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + '"></span>' + it[c.key] + '</td>'; }).join('') +
+      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag" style="padding:2px 4px;font-size:11px">' + esc(it.type) + '</span></td>' +
+        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + ';margin-right:2px;width:7px;height:7px"></span>' + it[c.key] + '</td>'; }).join('') +
         '<td><b style="color:' + scoreColor(it._total) + '">' + it._total.toFixed(1) + '</b></td></tr>';
     }).join('');
     var cards = items.map(function (it) {
@@ -420,7 +417,7 @@
       '<div class="page-title">情报源评判报告</div>' +
       '<div class="page-subtitle">共 ' + items.length + ' 类情报源 · 按「权威性 / 时效性 / 可信度 / 覆盖度 / 独特性」五维加权评判</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-section"><div class="pg-h">评判汇总表</div><div style="overflow:auto"><table class="tbl">' + head + rows + '</table></div></div>' +
+      '<div class="pg-section"><div class="pg-h">评判汇总表</div><table class="tbl tbl-sources">' + head + rows + '</table></div>' +
       '<div class="pg-section"><div class="pg-h">逐源评判</div><div class="cards">' + cards + '</div></div>' +
       '</div>';
   }
@@ -429,14 +426,14 @@
     var items = DATA.library.items.slice().sort(function (a, b) { return (tierOrder[a.tier] || 9) - (tierOrder[b.tier] || 9); }).slice(0, 8);
     var rows = items.map(function (it) {
       var mainName = it.short || it.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || it.name;
-      return '<tr><td><b>' + esc(mainName) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td>' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
+      return '<tr><td><b>' + esc(mainName) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td style="white-space:nowrap">' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
     }).join('');
     return '<div class="page-pad">' +
       '<div class="page-title">前沿技术储备库</div>' +
       '<div class="page-subtitle">长名单 · ' + DATA.library.items.length + ' 项 × ' + DATA.library.fields.length + ' 字段</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-p">储备库覆盖 ' + DATA.categories.length + ' 大战略方向，按「布局 / 论证 / 研究 / 观察」四层动态滚动管理，每项技术按完整台账字段维护，支持全文检索、多维筛选与排序。</div>' +
-      '<div class="pg-section"><div class="pg-h">分层预览（节选）</div><table class="tbl"><tr><th>技术名称</th><th>战略方向</th><th>层级</th><th>成熟度</th><th>匹配度</th><th>处置档位</th></tr>' + rows + '</table></div>' +
+      '<div class="pg-section"><div class="pg-h">分层预览（节选）</div><table class="tbl tbl-library-preview"><tr><th>技术名称</th><th>战略方向</th><th style="white-space:nowrap;min-width:64px">层级</th><th>成熟度</th><th>匹配度</th><th>处置档位</th></tr>' + rows + '</table></div>' +
       '<div style="text-align:center;margin-top:14px"><button class="btn active" data-action="open-library">打开完整储备库（检索 / 筛选 / 全字段）</button></div>' +
       '</div>';
   }
@@ -525,18 +522,13 @@
     return '<div class="web-tech-container">' +
       '<div class="web-tech-head">' +
         '<div class="wth-left">' +
-          '<div class="page-title tech-title">' +
-            '<span class="tech-no-badge">' + esc(tech.id) + '</span> ' +
-            '<span>' + esc(tech.name) + '</span>' +
-            '<span style="font-size:13px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(tech.nameEn || '') + '</span>' +
-          '</div>' +
-          '<div class="tech-sub-tags">' + tags + '</div>' +
+          '<div class="tech-sub-tags"><span class="tech-no-badge">' + esc(tech.id) + '</span> ' + tags + '</div>' +
         '</div>' +
         '<div class="wth-right">' +
           '<button class="btn active" data-action="open-tech" data-id="' + tech.id + '">📄 查看完整专题（报告 / PPT / 一张图）</button>' +
         '</div>' +
       '</div>' +
-      '<div class="h-rule" style="margin:10px 0 16px"></div>' +
+      '<div class="h-rule" style="margin:8px 0 14px"></div>' +
       '<div class="web-tech-layout">' +
         '<div class="web-col-dash">' +
           '<div class="bento-card radar-card">' +
@@ -593,7 +585,7 @@
   function closingHTML() {
     return '<div class="page-pad">' +
       '<div class="page-title">结语</div><div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集银行金融科技前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
+      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集科技发展部前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
       '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
       '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
       '</div>';
@@ -726,49 +718,82 @@
   }
 
   function updatePageNo() {
+    var pnoL = $('cornerPageNoL'), pnoR = $('cornerPageNoR');
     if (isSingle()) {
       var label = pageLabels[singleIdx] || '';
       $('pageNo').textContent = label ? (label + ' · ' + (singleIdx + 1) + ' / ' + pages.length) : '';
+      if (pnoL) pnoL.textContent = '';
+      if (pnoR) pnoR.textContent = (singleIdx > 0 && singleIdx < pages.length - 1) ? (singleIdx + 1) : '';
     } else {
       var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
       if (spread === 0) {
-        $('pageNo').textContent = '封面 · 银行金融科技前沿技术研究成果';
+        $('pageNo').textContent = '封面 · 科技发展部前沿技术研究成果集';
+        if (pnoL) pnoL.textContent = '';
+        if (pnoR) pnoR.textContent = '';
       } else if (spread === 1) {
         $('pageNo').textContent = '扉页 · 成果总览与编制说明 · 跨页 2 / ' + (maxSpread + 1);
-      } else if (spread === 2) {
-        $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
+        if (pnoL) pnoL.textContent = '2';
+        if (pnoR) pnoR.textContent = '3';
       } else if (spread === maxSpread) {
         $('pageNo').textContent = (l || '封底') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (l && r) {
-        $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (l) {
-        $('pageNo').textContent = l + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (r) {
-        $('pageNo').textContent = r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        var leftIdx = spread * 2;
+        if (pnoL) pnoL.textContent = (leftIdx < pages.length - 1) ? (leftIdx + 1) : '';
+        if (pnoR) pnoR.textContent = '';
       } else {
-        $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        if (spread === 2) {
+          $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
+        } else if (l && r) {
+          $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else if (l) {
+          $('pageNo').textContent = l + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else if (r) {
+          $('pageNo').textContent = r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else {
+          $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        }
+        var pLeft = spread * 2 + 1;
+        var pRight = spread * 2 + 2;
+        if (pnoL) pnoL.textContent = (pLeft < pages.length) ? pLeft : '';
+        if (pnoR) pnoR.textContent = (pRight < pages.length) ? pRight : '';
       }
     }
   }
-  function fitPage(el, idx) {
-    if (!el) return;
-    if (pageScroll[idx]) { el.classList.add('scroll'); return; }
+  // 准备阶段：只做重置写入，不读取任何布局属性
+  function prepareFit(el, idx) {
+    if (!el) return null;
+    if (pageScroll[idx]) { el.classList.add('scroll'); return null; }
     el.classList.remove('scroll');
     var pad = el.querySelector('.page-pad');
-    if (!pad) return;
+    if (!pad) return null;
     pad.style.transform = '';
-    var aw = el.clientWidth, ah = el.clientHeight;
-    var nw = pad.scrollWidth, nh = pad.scrollHeight;
-    if (nw <= aw + 1 && nh <= ah + 1) return;
-    var s = Math.min(aw / nw, ah / nh);
-    if (s >= 1) return;
-    pad.style.transformOrigin = 'top left';
-    pad.style.transform = 'scale(' + s + ')';
+    return { el: el, pad: pad };
+  }
+  // 应用阶段：把多个待处理页面的“读尺寸”和“写transform”分别集中批量执行，
+  // 避免逐个元素交替读写触发多次强制同步布局（layout thrashing）
+  function applyFits(items) {
+    items.forEach(function (m) {
+      if (!m) return;
+      m.aw = m.el.clientWidth; m.ah = m.el.clientHeight;
+      m.nw = m.pad.scrollWidth; m.nh = m.pad.scrollHeight;
+    });
+    items.forEach(function (m) {
+      if (!m) return;
+      if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) return;
+      var s = Math.min(m.aw / m.nw, m.ah / m.nh);
+      if (s >= 1) return;
+      m.pad.style.transformOrigin = 'top left';
+      m.pad.style.transform = 'scale(' + s + ')';
+    });
+  }
+  function fitPage(el, idx) {
+    applyFits([prepareFit(el, idx)]);
   }
   function fitSpread() {
     if (isSingle()) { fitPage($('pageRightInner'), singleIdx); return; }
-    fitPage($('pageLeftInner'), spread * 2);
-    fitPage($('pageRightInner'), spread * 2 + 1);
+    applyFits([
+      prepareFit($('pageLeftInner'), spread * 2),
+      prepareFit($('pageRightInner'), spread * 2 + 1)
+    ]);
   }
   function renderSpread() {
     if (isSingle()) {
@@ -862,23 +887,27 @@
     }
     el.innerHTML = html;
   }
-  function bindPageActions() {
-    var tocLis = document.querySelectorAll('#bookView .toc-list li');
-    tocLis.forEach(function (li) {
-      li.onclick = function (e) {
-        if (e) e.stopPropagation();
-        jumpToPage(parseInt(li.getAttribute('data-jump'), 10));
-      };
-    });
-    document.querySelectorAll('[data-action]').forEach(function (el) {
-      el.onclick = function (e) {
-        if (e) e.stopPropagation();
-        var action = el.getAttribute('data-action');
-        var id = el.getAttribute('data-id');
-        if (action === 'open-library') openLibraryPanel();
-        else if (action === 'open-graph') openGraphPanel();
-        else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
-      };
+  function bindPageActions(customRoot) {
+    // 绑定跨页书页及网页模式内容区中的链接与按钮交互
+    var roots = customRoot ? [customRoot] : [$('pageLeftInner'), $('pageRightInner'), $('webContent')];
+    roots.forEach(function (root) {
+      if (!root) return;
+      root.querySelectorAll('.toc-list li').forEach(function (li) {
+        li.onclick = function (e) {
+          if (e) e.stopPropagation();
+          jumpToPage(parseInt(li.getAttribute('data-jump'), 10));
+        };
+      });
+      root.querySelectorAll('[data-action]').forEach(function (el) {
+        el.onclick = function (e) {
+          if (e) e.stopPropagation();
+          var action = el.getAttribute('data-action');
+          var id = el.getAttribute('data-id');
+          if (action === 'open-library') openLibraryPanel();
+          else if (action === 'open-graph') openGraphPanel();
+          else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
+        };
+      });
     });
   }
   function jumpToPage(i) {
@@ -928,20 +957,29 @@
     $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldRight.trim());
     $('turnBackInner').parentElement.classList.toggle('page-blank', !newLeft.trim());
 
-    if (isGoingToBackCover) {
+    // 提前在翻页动画开始之前绘制好目标跨页的书本厚度与边框（绝无翻页后阴影突变）
+    if (targetSpread > 0 && targetSpread < maxSpread) {
+      var ratio = targetSpread / maxSpread;
+      var leftThick = Math.round(ratio * 26);
+      var rightThick = Math.round((1 - ratio) * 26);
+      renderEdgeLayers($('bookEdgeLeft'), leftThick, true);
+      renderEdgeLayers($('bookEdgeRight'), rightThick, false);
+    } else {
       renderEdgeLayers($('bookEdgeLeft'), 0, true);
       renderEdgeLayers($('bookEdgeRight'), 0, false);
-      if ($('cornerPeekR')) $('cornerPeekR').style.display = 'none';
     }
+    if (isGoingToBackCover && $('cornerPeekR')) $('cornerPeekR').style.display = 'none';
 
     var sheet = $('turnSheet');
     sheet.classList.remove('back');
     sheet.style.display = 'block';
     sheet.classList.remove('turning');
     void sheet.offsetWidth;
-    fitPage($('turnFrontInner'), spread * 2 + 1);
-    fitPage($('turnBackInner'), spread * 2 + 2);
-    fitPage($('pageRightInner'), spread * 2 + 3);
+    applyFits([
+      prepareFit($('turnFrontInner'), spread * 2 + 1),
+      prepareFit($('turnBackInner'), spread * 2 + 2),
+      prepareFit($('pageRightInner'), spread * 2 + 3)
+    ]);
     sheet.classList.add('turning');
 
     setTimeout(function () {
@@ -1002,20 +1040,29 @@
     $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldLeft.trim());
     $('turnBackInner').parentElement.classList.toggle('page-blank', !newRight.trim());
 
-    if (isGoingToCover) {
+    // 提前在翻页动画开始之前绘制好目标跨页的书本厚度与边框（绝无翻页后阴影突变）
+    if (targetSpread > 0 && targetSpread < maxSpread) {
+      var ratio = targetSpread / maxSpread;
+      var leftThick = Math.round(ratio * 26);
+      var rightThick = Math.round((1 - ratio) * 26);
+      renderEdgeLayers($('bookEdgeLeft'), leftThick, true);
+      renderEdgeLayers($('bookEdgeRight'), rightThick, false);
+    } else {
       renderEdgeLayers($('bookEdgeLeft'), 0, true);
       renderEdgeLayers($('bookEdgeRight'), 0, false);
-      if ($('cornerPeekL')) $('cornerPeekL').style.display = 'none';
     }
+    if (isGoingToCover && $('cornerPeekL')) $('cornerPeekL').style.display = 'none';
 
     var sheet = $('turnSheet');
     sheet.classList.add('back');
     sheet.style.display = 'block';
     sheet.classList.remove('turning');
     void sheet.offsetWidth;
-    fitPage($('turnFrontInner'), spread * 2);
-    fitPage($('turnBackInner'), spread * 2 - 1);
-    fitPage($('pageLeftInner'), spread * 2 - 2);
+    applyFits([
+      prepareFit($('turnFrontInner'), spread * 2),
+      prepareFit($('turnBackInner'), spread * 2 - 1),
+      prepareFit($('pageLeftInner'), spread * 2 - 2)
+    ]);
     sheet.classList.add('turning');
 
     setTimeout(function () {
@@ -1045,8 +1092,8 @@
   }
 
   /* ==================== 网页视图（目录 + 滚动内容） ==================== */
-  function webSection(id, no, title, bodyHtml) {
-    return '<div class="sec" id="' + id + '"><div class="sec-head"><span class="sec-no">' + esc(no) + '</span><span class="sec-title">' + esc(title) + '</span></div><div class="sec-body">' + bodyHtml + '</div></div>';
+  function webSection(id, no, titleHtml, bodyHtml) {
+    return '<div class="sec" id="' + id + '"><div class="sec-head"><span class="sec-no">' + esc(no) + '</span><span class="sec-title">' + titleHtml + '</span></div><div class="sec-body">' + bodyHtml + '</div></div>';
   }
   function renderWeb() {
     var b = DATA.book;
@@ -1058,7 +1105,10 @@
     sections.push(webSection('s-library', '1.3', '前沿技术储备库（长名单）', libraryPreviewHTML()));
     sections.push(webSection('s-graph', '1.4', '各项前沿技术关系图谱', graphPreviewHTML()));
     DATA.technologies.forEach(function (t, i) {
-      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), t.name + ' 专题研究', techWebHTML(t)));
+      var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
+      var enName = t.nameEn || '';
+      var titleHtml = esc(pureName) + (enName ? (' <span style="font-size:13.5px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(enName) + '</span>') : '');
+      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), titleHtml, techWebHTML(t)));
     });
     sections.push(webSection('s-appendix', '附录', '术语 · 数据来源 · 版本', appendixHTML()));
     sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
@@ -1075,7 +1125,8 @@
     toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">1.4</span>技术关系图谱</div>');
     toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第二篇 · 各项前沿技术研究</div>');
     DATA.technologies.forEach(function (t, i) {
-      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(t.name) + '</div>');
+      var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
+      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(pureName) + '</div>');
     });
     toc.push('<div class="web-toc-item part" data-target="s-appendix">附录</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no"></span>术语 · 数据来源 · 版本</div>');
@@ -1607,12 +1658,9 @@
     else if (m === 'web') renderWeb();
   }
 
-  /* ==================== ✨ 动效增强系统 (Particle / Physics / Micro-FX) ==================== */
+  /* ==================== ✨ 动效增强系统 (UI / Micro-FX) ==================== */
   var fxEnabled = true;
   try { fxEnabled = localStorage.getItem('techbook_fx') !== '0'; } catch (e) {}
-
-  var fxCanvas = null, fxCtx = null, fxAnimId = null, fxParticles = [];
-  var fxMouse = { x: -1000, y: -1000 };
 
   function setFxMode(enabled, quiet) {
     fxEnabled = !!enabled;
@@ -1624,145 +1672,9 @@
       btn.innerHTML = fxEnabled ? '✨ 动效: 开' : '✨ 动效: 关';
       btn.classList.toggle('active', fxEnabled);
     }
-    if (fxEnabled) {
-      startFxLoop();
-      if (!quiet) toast('已开启【动效增强】模式 (粒子星空/铜版纸流光/悬停掀角/雷达脉冲)');
-    } else {
-      stopFxLoop();
-      if (!quiet) toast('已切换为【经典标准】模式 (0开销静态极速)');
+    if (!quiet) {
+      toast(fxEnabled ? '已开启【动效增强】模式 (翻页流光/悬停掀角/图表生长)' : '已切换为【经典极简】模式 (0开销纯净静态)');
     }
-  }
-
-  function initFxCanvas() {
-    fxCanvas = $('fxCanvas');
-    if (!fxCanvas) return;
-    fxCtx = fxCanvas.getContext('2d');
-    function resize() {
-      fxCanvas.width = window.innerWidth;
-      fxCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    window.addEventListener('mousemove', function (e) {
-      fxMouse.x = e.clientX;
-      fxMouse.y = e.clientY;
-    });
-    window.addEventListener('mouseleave', function () {
-      fxMouse.x = -1000;
-      fxMouse.y = -1000;
-    });
-
-    var count = Math.min(38, Math.floor(window.innerWidth * window.innerHeight / 32000));
-    var colors = ['#38bdf8', '#60a5fa', '#a855f7', '#22d3ee', '#818cf8'];
-    fxParticles = [];
-    for (var i = 0; i < count; i++) {
-      fxParticles.push({
-        x: Math.random() * fxCanvas.width,
-        y: Math.random() * fxCanvas.height,
-        vx: (Math.random() - 0.5) * 0.55,
-        vy: (Math.random() - 0.5) * 0.55,
-        r: Math.random() * 2.0 + 1.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        baseAlpha: Math.random() * 0.45 + 0.45
-      });
-    }
-    if (fxEnabled) startFxLoop();
-  }
-
-  function startFxLoop() {
-    if (fxAnimId) return;
-    function loop() {
-      if (!fxEnabled || document.hidden) { fxAnimId = null; return; }
-      drawParticles();
-      fxAnimId = requestAnimationFrame(loop);
-    }
-    fxAnimId = requestAnimationFrame(loop);
-  }
-
-  function stopFxLoop() {
-    if (fxAnimId) { cancelAnimationFrame(fxAnimId); fxAnimId = null; }
-    if (fxCtx && fxCanvas) fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-  }
-
-  function drawParticles() {
-    if (!fxCtx || !fxCanvas) return;
-    var W = fxCanvas.width, H = fxCanvas.height;
-    fxCtx.clearRect(0, 0, W, H);
-
-    var pCount = fxParticles.length;
-
-    // 2. 绘制星空连线 (曼哈顿距离快速剪枝 + 平方差计算，跳过85%无用几何开方)
-    for (var i = 0; i < pCount; i++) {
-      var p1 = fxParticles[i];
-      for (var j = i + 1; j < pCount; j++) {
-        var p2 = fxParticles[j];
-        var dx = p1.x - p2.x;
-        if (dx > 130 || dx < -130) continue;
-        var dy = p1.y - p2.y;
-        if (dy > 130 || dy < -130) continue;
-        var distSq = dx * dx + dy * dy;
-        if (distSq < 16900) { // 130^2
-          var dist = Math.sqrt(distSq);
-          var alpha = (1 - dist / 130) * 0.35;
-          fxCtx.strokeStyle = 'rgba(96, 165, 250, ' + alpha + ')';
-          fxCtx.lineWidth = 1.1;
-          fxCtx.beginPath();
-          fxCtx.moveTo(p1.x, p1.y);
-          fxCtx.lineTo(p2.x, p2.y);
-          fxCtx.stroke();
-        }
-      }
-    }
-
-    // 3. 鼠标交互光网 (快速剪枝)
-    if (fxMouse.x > 0 && fxMouse.y > 0) {
-      for (var m = 0; m < pCount; m++) {
-        var pm = fxParticles[m];
-        var mdx2 = fxMouse.x - pm.x;
-        if (mdx2 > 170 || mdx2 < -170) continue;
-        var mdy2 = fxMouse.y - pm.y;
-        if (mdy2 > 170 || mdy2 < -170) continue;
-        var mDistSq2 = mdx2 * mdx2 + mdy2 * mdy2;
-        if (mDistSq2 < 28900) { // 170^2
-          var mDist2 = Math.sqrt(mDistSq2);
-          var mAlpha = (1 - mDist2 / 170) * 0.5;
-          fxCtx.strokeStyle = 'rgba(34, 211, 238, ' + mAlpha + ')';
-          fxCtx.lineWidth = 1.3;
-          fxCtx.beginPath();
-          fxCtx.moveTo(pm.x, pm.y);
-          fxCtx.lineTo(fxMouse.x, fxMouse.y);
-          fxCtx.stroke();
-        }
-      }
-    }
-
-    // 4. 更新与绘制发光粒子 (轻量高效渲染 + 物理排斥快速剪枝)
-    for (var k = 0; k < pCount; k++) {
-      var p = fxParticles[k];
-      var mdx = fxMouse.x - p.x;
-      var mdy = fxMouse.y - p.y;
-      if (mdx < 160 && mdx > -160 && mdy < 160 && mdy > -160) {
-        var mDistSq = mdx * mdx + mdy * mdy;
-        if (mDistSq < 25600 && mDistSq > 1) {
-          var mDist = Math.sqrt(mDistSq);
-          var force = (160 - mDist) / 160 * 0.45;
-          p.x -= (mdx / mDist) * force;
-          p.y -= (mdy / mDist) * force;
-        }
-      }
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -15) p.x = W + 15; else if (p.x > W + 15) p.x = -15;
-      if (p.y < -15) p.y = H + 15; else if (p.y > H + 15) p.y = -15;
-
-      fxCtx.fillStyle = p.color;
-      fxCtx.globalAlpha = p.baseAlpha;
-      fxCtx.beginPath();
-      fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      fxCtx.fill();
-    }
-    fxCtx.globalAlpha = 1;
   }
 
   /* ==================== 大屏自动巡航放映模式 ==================== */
@@ -1819,7 +1731,6 @@
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     bindOverlayClose();
     initSearch();
-    initFxCanvas();
     $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
@@ -1843,29 +1754,38 @@
         if (autoPlaying) stopAutoPlay();
       }
     });
+
+    // 缓存书本尺寸，避免鼠标滑动时调用 getBoundingClientRect() 触发强制同步重排 (Zero Forced Reflow)
+    var cachedBookRect = null;
+    function updateBookRect() {
+      var bookEl = $('book');
+      if (bookEl) cachedBookRect = bookEl.getBoundingClientRect();
+    }
+    updateBookRect();
+
     var sideLeft = $('bookSideLeft'), sideRight = $('bookSideRight');
     if (sideLeft) sideLeft.addEventListener('click', function (e) { e.stopPropagation(); });
     if (sideRight) sideRight.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    // 鼠标靠近书本外侧或移出书页时瞬发秒弹书签 (RAF 节流极致流畅，弹窗打开时跳过)
-    var bmMoveTicking = false;
+    // 鼠标位于书本外侧感应区时显示书签，在书页内阅读时不显示 (零 CPU 重绘开销，状态防抖)
+    var prevRevealedL = false, prevRevealedR = false;
     window.addEventListener('mousemove', function (e) {
       if (mode !== 'book' || !sideLeft || !sideRight || activeOverlayCount > 0) return;
-      if (!bmMoveTicking) {
-        bmMoveTicking = true;
-        var cx = e.clientX, cy = e.clientY;
-        requestAnimationFrame(function () {
-          bmMoveTicking = false;
-          var bookEl = $('book');
-          if (!bookEl) return;
-          var rect = bookEl.getBoundingClientRect();
-          var inVertical = (cy >= rect.top - 50 && cy <= rect.bottom + 50);
-          var isOutsideLeft = inVertical && (cx < rect.left + 50 && cx > rect.left - 300);
-          var isOutsideRight = inVertical && (cx > rect.right - 50 && cx < rect.right + 300);
+      if (!cachedBookRect) updateBookRect();
+      if (!cachedBookRect) return;
+      var rect = cachedBookRect;
+      var cx = e.clientX, cy = e.clientY;
+      var inVertical = (cy >= rect.top - 50 && cy <= rect.bottom + 50);
+      var isOutsideLeft = inVertical && (cx < rect.left + 25 && cx > rect.left - 300);
+      var isOutsideRight = inVertical && (cx > rect.right - 25 && cx < rect.right + 300);
 
-          sideLeft.classList.toggle('is-revealed', isOutsideLeft);
-          sideRight.classList.toggle('is-revealed', isOutsideRight);
-        });
+      if (prevRevealedL !== isOutsideLeft) {
+        prevRevealedL = isOutsideLeft;
+        sideLeft.classList.toggle('is-revealed', isOutsideLeft);
+      }
+      if (prevRevealedR !== isOutsideRight) {
+        prevRevealedR = isOutsideRight;
+        sideRight.classList.toggle('is-revealed', isOutsideRight);
       }
     }, { passive: true });
 
@@ -1873,12 +1793,16 @@
     book.addEventListener('click', function (e) {
       if (flipping || isSingle()) return;
       if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack')) return;
-      var rect = book.getBoundingClientRect();
+      if (!cachedBookRect) updateBookRect();
+      var rect = cachedBookRect || book.getBoundingClientRect();
       var x = e.clientX - rect.left;
       if (x < rect.width * 0.18) flipBackward();
       else if (x > rect.width * 0.82) flipForward();
     });
-    window.addEventListener('resize', function () { if (mode === 'book') renderSpread(); });
+    window.addEventListener('resize', function () {
+      updateBookRect();
+      if (mode === 'book') renderSpread();
+    });
     setFxMode(fxEnabled, true);
     renderSpread();
 

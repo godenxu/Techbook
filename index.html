@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>银行金融科技前沿技术研究成果 · 电子研究书</title>
+<title>科技发展部前沿技术研究成果集 · 电子研究书</title>
 <style>
 /* ============================ 基础与主题变量 ============================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +40,7 @@
 html, body { height: 100%; }
 body {
   font-family: var(--font);
-  background: radial-gradient(1200px 700px at 50% 10%, var(--bg2), var(--bg)) fixed;
+  background: radial-gradient(1200px 700px at 50% 10%, var(--bg2), var(--bg));
   color: var(--text);
   overflow: hidden;
   transition: background .4s, color .4s;
@@ -55,10 +55,8 @@ button { font-family: var(--font); cursor: pointer; }
 .topbar {
   height: var(--topbar-h); display: flex; align-items: center; gap: 14px;
   padding: 0 18px; border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--panel), transparent);
-  backdrop-filter: blur(10px); position: relative; z-index: 50;
-  transform: translateZ(0);
-  will-change: transform;
+  background: var(--panel);
+  position: relative; z-index: 50;
 }
 .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
 .brand-icon {
@@ -99,92 +97,223 @@ button { font-family: var(--font); cursor: pointer; }
 /* ============================ 书 ============================ */
 .book-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .book {
-  position: relative; width: min(1500px, 80vw); height: calc(100vh - var(--topbar-h) - 60px);
+  position: relative; width: min(1500px, 80vw); height: calc(100vh - var(--topbar-h) - 76px);
 }
 [data-theme="dark"] .book::before {
   content: "";
   position: absolute;
-  inset: -15px -60px -45px -45px;
-  background:
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.55) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 55% 85% at 100% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.45) 40%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 45% 75% at 0% 60%, rgba(56, 189, 248, 0.45) 0%, rgba(79, 140, 255, 0.22) 50%, transparent 85%);
-  filter: blur(32px);
-  transform: translateZ(0);
-  will-change: opacity, transform;
+  inset: 0;
+  border-radius: 16px;
   pointer-events: none;
   z-index: 0;
-  border-radius: 30px;
+  background: transparent;
+  box-shadow:
+    /* 1. 底部地坪主辉光 (多层平滑高斯衰减) */
+    0 16px 28px -4px rgba(56, 189, 248, 0.45),
+    0 32px 55px -8px rgba(56, 189, 248, 0.35),
+    0 55px 90px -14px rgba(79, 140, 255, 0.28),
+    0 80px 135px -20px rgba(56, 189, 248, 0.18),
+    0 110px 180px -28px rgba(79, 140, 255, 0.10),
+    /* 2. 右侧立体轮廓辉光 */
+    24px 10px 42px -6px rgba(56, 189, 248, 0.38),
+    48px 18px 75px -12px rgba(79, 140, 255, 0.24),
+    72px 26px 115px -18px rgba(56, 189, 248, 0.14),
+    /* 3. 左侧自然平衡微光 */
+    -16px 10px 38px -6px rgba(56, 189, 248, 0.22),
+    -32px 18px 65px -12px rgba(79, 140, 255, 0.12);
+  contain: strict;
 }
+
+[data-theme="light"] .book::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent;
+  box-shadow:
+    /* 1. 亮色模式：深邃地坪漫反射阴影 */
+    0 16px 30px -5px rgba(30, 50, 90, 0.28),
+    0 35px 60px -10px rgba(30, 50, 90, 0.22),
+    0 60px 95px -15px rgba(79, 140, 255, 0.16),
+    0 90px 145px -22px rgba(30, 50, 90, 0.12),
+    0 120px 190px -30px rgba(79, 140, 255, 0.07),
+    /* 2. 右侧立体雕塑阴影 */
+    26px 12px 48px -8px rgba(30, 50, 90, 0.24),
+    52px 20px 85px -14px rgba(79, 140, 255, 0.15),
+    78px 28px 125px -20px rgba(30, 50, 90, 0.09),
+    /* 3. 左侧平衡微光 */
+    -18px 12px 42px -8px rgba(30, 50, 90, 0.15),
+    -36px 20px 70px -14px rgba(79, 140, 255, 0.08);
+  contain: strict;
+}
+
 .book-page {
   position: absolute; top: 0; height: 100%; width: 50%;
   background: var(--paper); overflow: hidden;
   border: 1px solid var(--border);
   z-index: 10;
+  contain: content;
+  transform: translateZ(0);
 }
-#pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; box-shadow: -24px 28px 70px rgba(0,0,0,.5); }
-#pageRight { right: 0; border-radius: 4px 16px 16px 4px; box-shadow: 34px 34px 85px rgba(0,0,0,.55); }
-[data-theme="light"] #pageLeft:not(.page-blank)  { box-shadow: -22px 26px 60px rgba(40,60,100,.24); }
-[data-theme="light"] #pageRight:not(.page-blank) { box-shadow: 32px 34px 75px rgba(40,60,100,.35); }
+#pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; box-shadow: -18px 22px 55px rgba(0,0,0,.45); }
+#pageRight { right: 0; border-radius: 4px 16px 16px 4px; box-shadow: 24px 28px 65px rgba(0,0,0,.5); }
+
+/* 亮色主题深邃立体阴影体系 */
+[data-theme="light"] #pageLeft:not(.page-blank) {
+  box-shadow:
+    0 3px 10px rgba(30, 50, 90, 0.14),
+    -14px 18px 42px rgba(30, 50, 90, 0.26),
+    -24px 30px 65px rgba(30, 50, 90, 0.32),
+    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+}
+[data-theme="light"] #pageRight:not(.page-blank) {
+  box-shadow:
+    0 3px 10px rgba(30, 50, 90, 0.14),
+    14px 18px 42px rgba(30, 50, 90, 0.26),
+    24px 30px 65px rgba(30, 50, 90, 0.32),
+    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+}
+
+/* 暗色主题适度优雅光影体系 */
 [data-theme="dark"] #pageLeft:not(.page-blank) {
   box-shadow:
-    -24px 30px 80px rgba(0, 0, 0, 0.95),
-    -14px 18px 50px rgba(56, 189, 248, 0.55),
-    -3px 6px 20px rgba(79, 140, 255, 0.7),
-    0 14px 32px rgba(56, 189, 248, 0.35);
-  border-color: rgba(56, 189, 248, 0.45) !important;
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    -10px 12px 24px rgba(0, 0, 0, 0.4),
+    -12px 14px 32px rgba(56, 189, 248, 0.38),
+    0 18px 45px rgba(79, 140, 255, 0.25),
+    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
 }
 [data-theme="dark"] #pageRight:not(.page-blank) {
   box-shadow:
-    34px 36px 95px rgba(0, 0, 0, 0.98),
-    20px 24px 65px rgba(56, 189, 248, 0.85),
-    6px 10px 30px rgba(79, 140, 255, 0.95),
-    0 18px 45px rgba(56, 189, 248, 0.6);
-  border-color: rgba(56, 189, 248, 0.7) !important;
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    10px 12px 24px rgba(0, 0, 0, 0.4),
+    12px 14px 32px rgba(56, 189, 248, 0.38),
+    0 18px 45px rgba(79, 140, 255, 0.25),
+    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
 }
+
+/* 暗色封面与封底环境光 (全面对齐打开时的复合辉光密度与书边外扩) */
 [data-theme="dark"] .book.is-cover::before {
-  left: 50% !important;
-  right: -70px !important;
-  top: -15px !important;
-  bottom: -55px !important;
-  background:
-    radial-gradient(ellipse 70% 75% at 75% 75%, rgba(56, 189, 248, 0.8) 0%, rgba(79, 140, 255, 0.5) 35%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.6) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 45% 85% at 100% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.4) 45%, transparent 85%) !important;
-  filter: blur(32px) !important;
+  left: calc(50% - 20px) !important;
+  right: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 4px 16px 16px 4px !important;
+  background: transparent !important;
+  box-shadow:
+    /* 核心近场强烈漫反射 (对齐双页叠加亮度) */
+    0 8px 16px rgba(56, 189, 248, 0.85),
+    0 18px 30px rgba(56, 189, 248, 0.72),
+    0 32px 55px rgba(56, 189, 248, 0.60),
+    0 55px 90px rgba(79, 140, 255, 0.50),
+    0 85px 140px rgba(56, 189, 248, 0.35),
+    0 120px 190px rgba(79, 140, 255, 0.22),
+    /* 右侧强烈立体轮廓与书厚辉光 */
+    14px 6px 22px rgba(56, 189, 248, 0.90),
+    28px 12px 42px rgba(56, 189, 248, 0.75),
+    52px 18px 75px rgba(79, 140, 255, 0.55),
+    80px 26px 120px rgba(56, 189, 248, 0.32) !important;
 }
 [data-theme="dark"] .book.is-back-cover::before {
-  right: 50% !important;
-  left: -70px !important;
-  top: -15px !important;
-  bottom: -55px !important;
-  background:
-    radial-gradient(ellipse 70% 75% at 25% 75%, rgba(56, 189, 248, 0.8) 0%, rgba(79, 140, 255, 0.5) 35%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.6) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 45% 85% at 0% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.4) 45%, transparent 85%) !important;
-  filter: blur(32px) !important;
+  right: calc(50% - 20px) !important;
+  left: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 16px 4px 4px 16px !important;
+  background: transparent !important;
+  box-shadow:
+    /* 核心近场强烈漫反射 */
+    0 8px 16px rgba(56, 189, 248, 0.85),
+    0 18px 30px rgba(56, 189, 248, 0.72),
+    0 32px 55px rgba(56, 189, 248, 0.60),
+    0 55px 90px rgba(79, 140, 255, 0.50),
+    0 85px 140px rgba(56, 189, 248, 0.35),
+    0 120px 190px rgba(79, 140, 255, 0.22),
+    /* 左侧强烈立体轮廓与书厚辉光 */
+    -14px 6px 22px rgba(56, 189, 248, 0.90),
+    -28px 12px 42px rgba(56, 189, 248, 0.75),
+    -52px 18px 75px rgba(79, 140, 255, 0.55),
+    -80px 26px 120px rgba(56, 189, 248, 0.32) !important;
 }
+
 [data-theme="dark"] .book.is-cover #pageRight {
   box-shadow:
-    38px 42px 105px rgba(0, 0, 0, 0.98),
-    22px 28px 75px rgba(56, 189, 248, 0.9),
-    8px 14px 35px rgba(79, 140, 255, 1),
-    0 20px 48px rgba(56, 189, 248, 0.65) !important;
-  border-color: rgba(56, 189, 248, 0.8) !important;
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    12px 14px 28px rgba(0, 0, 0, 0.5),
+    16px 18px 38px rgba(56, 189, 248, 0.68),
+    0 20px 48px rgba(79, 140, 255, 0.50),
+    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+  border-color: rgba(56, 189, 248, 0.75) !important;
 }
 [data-theme="dark"] .book.is-back-cover #pageLeft {
   box-shadow:
-    -38px 42px 105px rgba(0, 0, 0, 0.98),
-    -22px 28px 75px rgba(56, 189, 248, 0.9),
-    -8px 14px 35px rgba(79, 140, 255, 1),
-    0 20px 48px rgba(56, 189, 248, 0.65) !important;
-  border-color: rgba(56, 189, 248, 0.8) !important;
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    -12px 14px 28px rgba(0, 0, 0, 0.5),
+    -16px 18px 38px rgba(56, 189, 248, 0.68),
+    0 20px 48px rgba(79, 140, 255, 0.50),
+    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+  border-color: rgba(56, 189, 248, 0.75) !important;
 }
+
+/* 亮色封面与封底环境光 */
+[data-theme="light"] .book.is-cover::before {
+  left: 50% !important;
+  right: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 4px 16px 16px 4px !important;
+  background: transparent !important;
+  box-shadow:
+    0 14px 28px rgba(30, 50, 90, 0.42),
+    0 30px 55px rgba(30, 50, 90, 0.35),
+    0 55px 90px rgba(79, 140, 255, 0.28),
+    0 85px 140px rgba(30, 50, 90, 0.20),
+    0 120px 190px rgba(79, 140, 255, 0.12),
+    14px 8px 24px rgba(30, 50, 90, 0.38),
+    28px 14px 50px rgba(30, 50, 90, 0.32),
+    55px 22px 90px rgba(79, 140, 255, 0.22),
+    82px 30px 130px rgba(30, 50, 90, 0.14) !important;
+}
+[data-theme="light"] .book.is-back-cover::before {
+  right: 50% !important;
+  left: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 16px 4px 4px 16px !important;
+  background: transparent !important;
+  box-shadow:
+    0 14px 28px rgba(30, 50, 90, 0.42),
+    0 30px 55px rgba(30, 50, 90, 0.35),
+    0 55px 90px rgba(79, 140, 255, 0.28),
+    0 85px 140px rgba(30, 50, 90, 0.20),
+    0 120px 190px rgba(79, 140, 255, 0.12),
+    -14px 8px 24px rgba(30, 50, 90, 0.38),
+    -28px 14px 50px rgba(30, 50, 90, 0.32),
+    -55px 22px 90px rgba(79, 140, 255, 0.22),
+    -82px 30px 130px rgba(30, 50, 90, 0.14) !important;
+}
+
 [data-theme="light"] .book.is-cover #pageRight {
-  box-shadow: 36px 40px 90px rgba(40, 60, 100, 0.38) !important;
+  box-shadow:
+    0 4px 12px rgba(30, 50, 90, 0.20),
+    18px 22px 52px rgba(30, 50, 90, 0.38),
+    32px 38px 82px rgba(30, 50, 90, 0.42),
+    0 22px 60px rgba(79, 140, 255, 0.28) !important;
 }
 [data-theme="light"] .book.is-back-cover #pageLeft {
-  box-shadow: -36px 40px 90px rgba(40, 60, 100, 0.38) !important;
+  box-shadow:
+    0 4px 12px rgba(30, 50, 90, 0.20),
+    -18px 22px 52px rgba(30, 50, 90, 0.38),
+    -32px 38px 82px rgba(30, 50, 90, 0.42),
+    0 22px 60px rgba(79, 140, 255, 0.28) !important;
 }
 
 #pageLeft::after, #pageRight::after,
@@ -253,7 +382,8 @@ button { font-family: var(--font); cursor: pointer; }
 /* ============================ ✨ 动效增强系统 (Phase 1 Refined) ============================ */
 #fxCanvas {
   position: fixed;
-  inset: 0;
+  top: var(--topbar-h);
+  left: 0; right: 0; bottom: 0;
   pointer-events: none;
   z-index: 0;
   opacity: 0;
@@ -288,8 +418,8 @@ body.fx-enabled #fxCanvas {
   border-style: solid;
   border-width: 0 0 0 0;
   border-color: transparent transparent var(--panel2) transparent;
-  filter: drop-shadow(-5px -5px 9px rgba(0,0,0,.45));
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  box-shadow: -5px -5px 9px rgba(0,0,0,.45);
+  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
 }
 .corner-peek-r .curl-fold::after {
   content: ""; position: absolute; right: 0; bottom: 0; width: 0; height: 0;
@@ -305,14 +435,14 @@ body.fx-enabled #fxCanvas {
   pointer-events: none;
 }
 
-/* 鼠标悬停时：平滑掀起 3D 折角 */
+/* 鼠标悬停时：平滑掀起 3D 折角（默认常驻原生微交互） */
 .corner-peek-r:hover .curl-shadow {
   width: 78px; height: 78px; opacity: 1;
 }
 .corner-peek-r:hover .curl-fold {
   border-width: 0 0 78px 78px;
   border-color: transparent transparent var(--card) transparent;
-  filter: drop-shadow(-8px -8px 16px rgba(0,0,0,.6));
+  box-shadow: -8px -8px 16px rgba(0,0,0,.6);
 }
 .corner-peek-r:hover .curl-fold::after {
   width: 78px; height: 78px; bottom: -78px;
@@ -334,8 +464,8 @@ body.fx-enabled #fxCanvas {
   border-style: solid;
   border-width: 0 0 0 0;
   border-color: transparent var(--panel2) transparent transparent;
-  filter: drop-shadow(5px -5px 9px rgba(0,0,0,.45));
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  box-shadow: 5px -5px 9px rgba(0,0,0,.45);
+  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
 }
 .corner-peek-l .curl-fold::after {
   content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 0;
@@ -356,7 +486,7 @@ body.fx-enabled #fxCanvas {
 .corner-peek-l:hover .curl-fold {
   border-width: 0 78px 78px 0;
   border-color: transparent var(--card) transparent transparent;
-  filter: drop-shadow(8px -8px 16px rgba(0,0,0,.6));
+  box-shadow: 8px -8px 16px rgba(0,0,0,.6);
 }
 .corner-peek-l:hover .curl-fold::after {
   width: 78px; height: 78px; bottom: -78px;
@@ -373,11 +503,11 @@ body.fx-enabled #fxCanvas {
   pointer-events: none;
   opacity: 0;
   z-index: 100;
-  mix-blend-mode: overlay;
   background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.4) 25%, rgba(255,255,255,0.9) 50%, rgba(0,0,0,0.3) 75%, transparent 100%);
 }
 body.fx-enabled .book-turn.turning .turn-sheen {
   opacity: 1;
+  mix-blend-mode: overlay;
 }
 body.fx-enabled .book-turn:not(.back).turning .turn-front .turn-sheen {
   animation: fxSheenSweep 0.85s cubic-bezier(.25,.7,.3,1) forwards;
@@ -405,25 +535,43 @@ body.fx-enabled .book-turn.back.turning .turn-back .turn-sheen {
   100% { transform: translateX(-100%) skewX(20deg); opacity: 0; }
 }
 
-/* 3. 封面全息与金属烫金流光 */
-body.fx-enabled .cover-full .cov-title {
-  background: linear-gradient(115deg, #eaf1ff 0%, #ffffff 20%, #60a5fa 40%, #22d3ee 55%, #c084fc 70%, #ffffff 85%, #eaf1ff 100%);
-  background-size: 250% auto;
+/* 3. 封面与封底全息金属流光（仅在显示封面或封底时激活，阅读内页时完全关闭 0 消耗） */
+.cover-full .cov-title {
+  background: linear-gradient(115deg, #eaf1ff 0%, #ffffff 30%, #93c5fd 60%, #ffffff 85%, #eaf1ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fxTitleShine 6s linear infinite;
+  filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
+}
+body.fx-enabled .book.is-cover .cover-full .cov-title,
+body.fx-enabled .book.is-back-cover .cover-full .cov-title {
+  background: linear-gradient(
+    115deg,
+    #eaf1ff 0%,
+    #ffffff 8%,
+    #60a5fa 18%,
+    #22d3ee 26%,
+    #c084fc 36%,
+    #ffffff 44%,
+    #eaf1ff 50%,
+    #ffffff 58%,
+    #60a5fa 68%,
+    #22d3ee 76%,
+    #c084fc 86%,
+    #ffffff 94%,
+    #eaf1ff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fxTitleShine 2.8s linear infinite;
   filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
 }
 @keyframes fxTitleShine {
   0% { background-position: 0% center; }
-  100% { background-position: 250% center; }
+  100% { background-position: -200% center; }
 }
 body.fx-enabled .cover-full .cov-rule {
-  animation: fxRuleGlow 3s ease-in-out infinite alternate;
-}
-@keyframes fxRuleGlow {
-  0% { box-shadow: 0 0 6px rgba(79,140,255,.4); }
-  100% { box-shadow: 0 0 20px rgba(34,211,238,.9); }
+  box-shadow: 0 0 12px rgba(34,211,238,.75);
 }
 
 /* 4. 六维雷达多边形轮廓绘制与节点弹簧点亮 (Native SVG Radar Drawing) */
@@ -445,7 +593,6 @@ body.fx-enabled .cover-full .cov-rule {
 }
 body.fx-enabled .radar-svg .radar-poly {
   animation: fxRadarGrow 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
-  filter: drop-shadow(0 0 6px rgba(79,140,255,0.45));
 }
 @keyframes fxNodePop {
   0% {
@@ -465,128 +612,22 @@ body.fx-enabled .radar-svg .radar-node {
   transform-box: fill-box;
   transform-origin: center center;
   animation: fxNodePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  filter: drop-shadow(0 0 4px var(--accent));
 }
 
-/* ============================ 书籍呼吸动态发光阴影 (Breathing Shadow & Glow) ============================ */
-@keyframes fxDarkAuraPulse {
-  0%, 100% {
-    opacity: 0.38;
-    transform: scale(0.98) translateZ(0);
-  }
-  50% {
-    opacity: 0.95;
-    transform: scale(1.02) translateZ(0);
-  }
-}
-
-@keyframes fxDarkPageLeftGlow {
-  0%, 100% {
-    box-shadow:
-      -22px 24px 65px rgba(0, 0, 0, 0.95),
-      -10px 14px 40px rgba(56, 189, 248, 0.4),
-      0 10px 22px rgba(79, 140, 255, 0.4);
-    border-color: rgba(56, 189, 248, 0.35) !important;
-  }
-  50% {
-    box-shadow:
-      -36px 42px 105px rgba(0, 0, 0, 0.98),
-      -22px 26px 70px rgba(56, 189, 248, 0.85),
-      -6px 12px 30px rgba(79, 140, 255, 0.95),
-      0 20px 45px rgba(56, 189, 248, 0.6);
-    border-color: rgba(56, 189, 248, 0.75) !important;
-  }
-}
-
-@keyframes fxDarkPageRightGlow {
-  0%, 100% {
-    box-shadow:
-      22px 24px 65px rgba(0, 0, 0, 0.95),
-      10px 14px 40px rgba(56, 189, 248, 0.45),
-      0 10px 22px rgba(79, 140, 255, 0.45);
-    border-color: rgba(56, 189, 248, 0.4) !important;
-  }
-  50% {
-    box-shadow:
-      36px 42px 105px rgba(0, 0, 0, 0.98),
-      22px 26px 70px rgba(56, 189, 248, 0.9),
-      6px 12px 30px rgba(79, 140, 255, 1),
-      0 20px 45px rgba(56, 189, 248, 0.65);
-    border-color: rgba(56, 189, 248, 0.8) !important;
-  }
-}
-
-@keyframes fxDarkEdgeLeftGlow {
-  0%, 100% {
-    box-shadow: -8px 10px 20px rgba(56, 189, 248, 0.35), -6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-left-color: rgba(56, 189, 248, 0.45);
-  }
-  50% {
-    box-shadow: -16px 20px 38px rgba(56, 189, 248, 0.85), -6px 10px 22px rgba(79, 140, 255, 0.9), -6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-left-color: rgba(56, 189, 248, 0.85);
-  }
-}
-
-@keyframes fxDarkEdgeRightGlow {
-  0%, 100% {
-    box-shadow: 8px 10px 20px rgba(56, 189, 248, 0.4), 6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-right-color: rgba(56, 189, 248, 0.5);
-  }
-  50% {
-    box-shadow: 16px 20px 38px rgba(56, 189, 248, 0.9), 6px 10px 22px rgba(79, 140, 255, 0.95), 6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-right-color: rgba(56, 189, 248, 0.9);
-  }
-}
-
-@keyframes fxLightPageLeftGlow {
-  0%, 100% {
-    box-shadow: -20px 22px 48px rgba(40, 60, 100, 0.2);
-  }
-  50% {
-    box-shadow: -32px 34px 75px rgba(40, 60, 100, 0.35), -4px 6px 20px rgba(79, 140, 255, 0.25);
-  }
-}
-
-@keyframes fxLightPageRightGlow {
-  0%, 100% {
-    box-shadow: 20px 22px 48px rgba(40, 60, 100, 0.2);
-  }
-  50% {
-    box-shadow: 32px 34px 75px rgba(40, 60, 100, 0.35), 4px 6px 20px rgba(79, 140, 255, 0.25);
-  }
-}
-
-html[data-theme="dark"] body.fx-enabled .book::before,
-[data-theme="dark"] .book::before {
-  animation: fxDarkAuraPulse 3.8s ease-in-out infinite !important;
-}
-
-/* ⚡ 左右书页和书厚采用 GPU 静态位图缓存（0 重绘、0 逐帧高斯模糊，彻底告别卡顿发热） */
-#pageLeft, #pageRight, .book-edge-left, .book-edge-right {
+/* ⚡ 全书与光影采用纯静态 GPU 位图缓存（无任何呼吸动效，0 页面重绘，0 开销极度稳定） */
+.book::before, #pageLeft, #pageRight, .book-edge-left, .book-edge-right {
   animation: none !important;
   transform: translateZ(0);
 }
 
-/* ⚡ 极速静默模式（当用户点击顶栏关闭动效时，全面降级为 0 开销静态光影） */
-body.fx-disabled .book::before {
-  display: none !important;
-}
-body.fx-disabled #pageLeft,
-body.fx-disabled #pageRight,
-body.fx-disabled .book-edge-left,
-body.fx-disabled .book-edge-right,
-body.fx-disabled .corner-peek,
+/* ⚡ 动效开与关时，整本书阴影与光晕保持 100% 相同优雅静态（仅关闭图表与流光等微交互动效） */
 body.fx-disabled .radar-svg .radar-poly,
 body.fx-disabled .radar-svg .radar-node,
-body.fx-disabled .bar-fill-rect {
+body.fx-disabled .bar-fill-rect,
+body.fx-disabled .turn-sheen,
+body.fx-disabled .cov-title {
   animation: none !important;
   transition: none !important;
-}
-body.fx-disabled #pageLeft {
-  box-shadow: -10px 14px 30px rgba(0,0,0,0.4) !important;
-}
-body.fx-disabled #pageRight {
-  box-shadow: 10px 14px 30px rgba(0,0,0,0.4) !important;
 }
 
 /* 5. 能量评分条平滑充能自左向右实体增长 (Smooth Left-to-Right Energy Growth) */
@@ -594,20 +635,16 @@ body.fx-disabled #pageRight {
   0% {
     transform: scaleX(0);
     opacity: 0.6;
-    filter: drop-shadow(0 0 0px transparent);
   }
   25% {
     opacity: 1;
-    filter: drop-shadow(0 0 8px var(--accent));
   }
   65% {
     opacity: 1;
-    filter: drop-shadow(0 0 5px var(--accent));
   }
   100% {
     transform: scaleX(1);
     opacity: 1;
-    filter: drop-shadow(0 0 2px rgba(79,140,255,0.45));
   }
 }
 body.fx-enabled .bar > i {
@@ -712,9 +749,9 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 
 /* 次级层与深层阶梯阴影与明暗递进 */
 .edge-tier-1 { z-index: 12; }
-.edge-tier-2 { z-index: 10; opacity: 0.94; filter: brightness(0.96); }
-.edge-tier-3 { z-index: 8;  opacity: 0.88; filter: brightness(0.92); }
-.edge-tier-4 { z-index: 6;  opacity: 0.82; filter: brightness(0.88); }
+.edge-tier-2 { z-index: 10; opacity: 0.90; }
+.edge-tier-3 { z-index: 8;  opacity: 0.80; }
+.edge-tier-4 { z-index: 6;  opacity: 0.70; }
 
 /* 暗色主题下的多层物理厚度发光与阶梯分层线 (明确多页阶梯立体轮廓) */
 [data-theme="dark"] .book-edge-left .book-edge-layer {
@@ -762,9 +799,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   gap: 14px;
   background: var(--panel);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(79,140,255,0.18);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(79,140,255,0.18);
   padding: 8px 20px;
   border-radius: 30px;
   color: var(--text);
@@ -778,8 +813,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .pb-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.1s linear; }
 
 .book-page-no {
-  position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
-  color: var(--faint); font-size: 12px; font-family: var(--mono);
+  display: none !important;
 }
 .book-hint { position: absolute; top: -34px; right: 0; color: var(--faint); font-size: 12px; }
 
@@ -796,27 +830,24 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   overflow-x: hidden;
   z-index: 45;
   scrollbar-width: none;
-  pointer-events: none;
+  pointer-events: auto;
   opacity: 0;
-  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
-  will-change: opacity, transform;
+  contain: layout style paint;
+  isolation: isolate;
+  transition: opacity 0.12s ease-out;
 }
 .book-side-col::-webkit-scrollbar { display: none; }
 .book-side-left {
   left: -170px;
   align-items: flex-end;
-  transform: translateX(10px);
 }
 .book-side-right {
   right: -170px;
   align-items: flex-start;
-  transform: translateX(-10px);
 }
 .book-side-col.is-revealed,
 .book-side-col:hover {
   opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
 }
 .edge-tab {
   position: relative;
@@ -833,12 +864,13 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   color: var(--text);
   font-size: 11px;
   cursor: pointer;
-  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, box-shadow 0.2s, border-color 0.2s;
   user-select: none;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
   flex-shrink: 0;
   box-sizing: border-box;
   pointer-events: auto;
+  contain: layout style paint;
+  transition: width 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.05s, box-shadow 0.08s;
 }
 .book-side-left .edge-tab {
   border-radius: 6px 0 0 6px;
@@ -856,13 +888,6 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-radius: 0 6px 6px 0;
   border-left: none;
   border-right: 4px solid var(--tab-color, var(--accent));
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px;
-}
-.book-side-right .edge-tab .et-name {
-  text-align: left;
 }
 .book-side-right .edge-tab:hover {
   width: 150px;
@@ -870,12 +895,6 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-color: var(--tab-color, var(--accent));
   box-shadow: 4px 4px 14px rgba(0,0,0,.3);
   z-index: 10;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-.book-side-right .edge-tab:hover .et-name {
-  text-align: right;
-  flex: 0 1 auto;
 }
 .edge-tab .et-no {
   font-family: var(--mono);
@@ -893,11 +912,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
-  transition: color 0.15s ease, text-align 0.15s ease;
+  text-align: left;
 }
 .edge-tab:hover .et-name {
-  color: var(--text);
-  font-weight: 700;
+  color: var(--tab-color, var(--accent));
 }
 
 /* 页面跳转闪烁提示 (Page Flash Animation) */
@@ -951,6 +969,73 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .tbl tr:nth-child(even) td { background: var(--panel2); }
 .score-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 
+/* 页角实体物理页码 (平时正常显示，当书页卷角悬停时自动淡出隐藏，移开卷角时立即恢复) */
+.corner-page-no {
+  position: absolute;
+  bottom: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dim);
+  letter-spacing: 0.5px;
+  user-select: none;
+  pointer-events: none;
+  z-index: 25;
+  opacity: 0.85;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+.corner-page-no-l {
+  left: 24px;
+}
+.corner-page-no-r {
+  right: 24px;
+}
+
+/* 卷角悬停时精准淡出对应的页码 */
+.corner-peek-l:hover ~ .corner-page-no-l,
+.corner-peek-r:hover ~ .corner-page-no-r,
+#pageLeft:has(.corner-peek-l:hover) .corner-page-no-l,
+#pageRight:has(.corner-peek-r:hover) .corner-page-no-r {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.book-page.page-blank .corner-page-no,
+.book.is-cover .corner-page-no,
+.book.is-back-cover .corner-page-no {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* 保证层级药丸与表格层级列绝不折行 */
+.pill-tier {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  flex: none;
+}
+.tbl-sources {
+  width: 100% !important;
+  table-layout: fixed !important;
+  font-size: 12px !important;
+}
+.tbl-sources th, .tbl-sources td {
+  padding: 6px 3px !important;
+  text-align: center !important;
+}
+.tbl-sources th:first-child, .tbl-sources td:first-child {
+  text-align: left !important;
+  padding-left: 8px !important;
+}
+.tbl-library-preview th, .tbl-library-preview td {
+  padding: 8px 6px !important;
+  font-size: 12.5px;
+}
+
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .card { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .card .c-title { font-weight: 800; font-size: 15.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -986,9 +1071,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 /* ============================ 面板 / 覆盖层 ============================ */
 .overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.86) 0%, rgba(3, 7, 18, 0.96) 100%);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.92) 0%, rgba(3, 7, 18, 0.98) 100%);
   display: flex; align-items: center; justify-content: center; padding: 14px;
   opacity: 1;
   transition: opacity 0.22s ease;
@@ -1675,7 +1758,7 @@ body.has-overlay-open .book-side-tab {
   <div class="brand" id="brandBtn" title="回到封面">
     <div class="brand-icon">研</div>
     <div class="brand-text">
-      <div class="brand-title">银行金融科技前沿技术研究成果</div>
+      <div class="brand-title">科技发展部前沿技术研究成果集</div>
       <div class="brand-sub">电子研究书 · 书籍 / 网页</div>
     </div>
   </div>
@@ -1705,6 +1788,7 @@ body.has-overlay-open .book-side-tab {
           <div class="curl-shadow"></div>
           <div class="curl-fold"><span class="curl-hint">‹ 翻页</span></div>
         </div>
+        <div class="corner-page-no corner-page-no-l" id="cornerPageNoL"></div>
       </div>
       <div class="book-page" id="pageRight">
         <div class="page-inner" id="pageRightInner"></div>
@@ -1712,6 +1796,7 @@ body.has-overlay-open .book-side-tab {
           <div class="curl-shadow"></div>
           <div class="curl-fold"><span class="curl-hint">翻页 ›</span></div>
         </div>
+        <div class="corner-page-no corner-page-no-r" id="cornerPageNoR"></div>
       </div>
       <div class="book-turn-wrap" id="turnWrap">
         <div class="book-turn" id="turnSheet">

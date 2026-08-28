@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>银行金融科技前沿技术研究成果 · 电子研究书</title>
+<title>科技发展部前沿技术研究成果集 · 电子研究书</title>
 <style>
 /* ============================ 基础与主题变量 ============================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +40,7 @@
 html, body { height: 100%; }
 body {
   font-family: var(--font);
-  background: radial-gradient(1200px 700px at 50% 10%, var(--bg2), var(--bg)) fixed;
+  background: radial-gradient(1200px 700px at 50% 10%, var(--bg2), var(--bg));
   color: var(--text);
   overflow: hidden;
   transition: background .4s, color .4s;
@@ -55,10 +55,8 @@ button { font-family: var(--font); cursor: pointer; }
 .topbar {
   height: var(--topbar-h); display: flex; align-items: center; gap: 14px;
   padding: 0 18px; border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--panel), transparent);
-  backdrop-filter: blur(10px); position: relative; z-index: 50;
-  transform: translateZ(0);
-  will-change: transform;
+  background: var(--panel);
+  position: relative; z-index: 50;
 }
 .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
 .brand-icon {
@@ -99,92 +97,223 @@ button { font-family: var(--font); cursor: pointer; }
 /* ============================ 书 ============================ */
 .book-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .book {
-  position: relative; width: min(1500px, 80vw); height: calc(100vh - var(--topbar-h) - 60px);
+  position: relative; width: min(1500px, 80vw); height: calc(100vh - var(--topbar-h) - 76px);
 }
 [data-theme="dark"] .book::before {
   content: "";
   position: absolute;
-  inset: -15px -60px -45px -45px;
-  background:
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.55) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 55% 85% at 100% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.45) 40%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 45% 75% at 0% 60%, rgba(56, 189, 248, 0.45) 0%, rgba(79, 140, 255, 0.22) 50%, transparent 85%);
-  filter: blur(32px);
-  transform: translateZ(0);
-  will-change: opacity, transform;
+  inset: 0;
+  border-radius: 16px;
   pointer-events: none;
   z-index: 0;
-  border-radius: 30px;
+  background: transparent;
+  box-shadow:
+    /* 1. 底部地坪主辉光 (多层平滑高斯衰减) */
+    0 16px 28px -4px rgba(56, 189, 248, 0.45),
+    0 32px 55px -8px rgba(56, 189, 248, 0.35),
+    0 55px 90px -14px rgba(79, 140, 255, 0.28),
+    0 80px 135px -20px rgba(56, 189, 248, 0.18),
+    0 110px 180px -28px rgba(79, 140, 255, 0.10),
+    /* 2. 右侧立体轮廓辉光 */
+    24px 10px 42px -6px rgba(56, 189, 248, 0.38),
+    48px 18px 75px -12px rgba(79, 140, 255, 0.24),
+    72px 26px 115px -18px rgba(56, 189, 248, 0.14),
+    /* 3. 左侧自然平衡微光 */
+    -16px 10px 38px -6px rgba(56, 189, 248, 0.22),
+    -32px 18px 65px -12px rgba(79, 140, 255, 0.12);
+  contain: strict;
 }
+
+[data-theme="light"] .book::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent;
+  box-shadow:
+    /* 1. 亮色模式：深邃地坪漫反射阴影 */
+    0 16px 30px -5px rgba(30, 50, 90, 0.28),
+    0 35px 60px -10px rgba(30, 50, 90, 0.22),
+    0 60px 95px -15px rgba(79, 140, 255, 0.16),
+    0 90px 145px -22px rgba(30, 50, 90, 0.12),
+    0 120px 190px -30px rgba(79, 140, 255, 0.07),
+    /* 2. 右侧立体雕塑阴影 */
+    26px 12px 48px -8px rgba(30, 50, 90, 0.24),
+    52px 20px 85px -14px rgba(79, 140, 255, 0.15),
+    78px 28px 125px -20px rgba(30, 50, 90, 0.09),
+    /* 3. 左侧平衡微光 */
+    -18px 12px 42px -8px rgba(30, 50, 90, 0.15),
+    -36px 20px 70px -14px rgba(79, 140, 255, 0.08);
+  contain: strict;
+}
+
 .book-page {
   position: absolute; top: 0; height: 100%; width: 50%;
   background: var(--paper); overflow: hidden;
   border: 1px solid var(--border);
   z-index: 10;
+  contain: content;
+  transform: translateZ(0);
 }
-#pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; box-shadow: -24px 28px 70px rgba(0,0,0,.5); }
-#pageRight { right: 0; border-radius: 4px 16px 16px 4px; box-shadow: 34px 34px 85px rgba(0,0,0,.55); }
-[data-theme="light"] #pageLeft:not(.page-blank)  { box-shadow: -22px 26px 60px rgba(40,60,100,.24); }
-[data-theme="light"] #pageRight:not(.page-blank) { box-shadow: 32px 34px 75px rgba(40,60,100,.35); }
+#pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; box-shadow: -18px 22px 55px rgba(0,0,0,.45); }
+#pageRight { right: 0; border-radius: 4px 16px 16px 4px; box-shadow: 24px 28px 65px rgba(0,0,0,.5); }
+
+/* 亮色主题深邃立体阴影体系 */
+[data-theme="light"] #pageLeft:not(.page-blank) {
+  box-shadow:
+    0 3px 10px rgba(30, 50, 90, 0.14),
+    -14px 18px 42px rgba(30, 50, 90, 0.26),
+    -24px 30px 65px rgba(30, 50, 90, 0.32),
+    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+}
+[data-theme="light"] #pageRight:not(.page-blank) {
+  box-shadow:
+    0 3px 10px rgba(30, 50, 90, 0.14),
+    14px 18px 42px rgba(30, 50, 90, 0.26),
+    24px 30px 65px rgba(30, 50, 90, 0.32),
+    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+}
+
+/* 暗色主题适度优雅光影体系 */
 [data-theme="dark"] #pageLeft:not(.page-blank) {
   box-shadow:
-    -24px 30px 80px rgba(0, 0, 0, 0.95),
-    -14px 18px 50px rgba(56, 189, 248, 0.55),
-    -3px 6px 20px rgba(79, 140, 255, 0.7),
-    0 14px 32px rgba(56, 189, 248, 0.35);
-  border-color: rgba(56, 189, 248, 0.45) !important;
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    -10px 12px 24px rgba(0, 0, 0, 0.4),
+    -12px 14px 32px rgba(56, 189, 248, 0.38),
+    0 18px 45px rgba(79, 140, 255, 0.25),
+    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
 }
 [data-theme="dark"] #pageRight:not(.page-blank) {
   box-shadow:
-    34px 36px 95px rgba(0, 0, 0, 0.98),
-    20px 24px 65px rgba(56, 189, 248, 0.85),
-    6px 10px 30px rgba(79, 140, 255, 0.95),
-    0 18px 45px rgba(56, 189, 248, 0.6);
-  border-color: rgba(56, 189, 248, 0.7) !important;
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    10px 12px 24px rgba(0, 0, 0, 0.4),
+    12px 14px 32px rgba(56, 189, 248, 0.38),
+    0 18px 45px rgba(79, 140, 255, 0.25),
+    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
 }
+
+/* 暗色封面与封底环境光 (全面对齐打开时的复合辉光密度与书边外扩) */
 [data-theme="dark"] .book.is-cover::before {
-  left: 50% !important;
-  right: -70px !important;
-  top: -15px !important;
-  bottom: -55px !important;
-  background:
-    radial-gradient(ellipse 70% 75% at 75% 75%, rgba(56, 189, 248, 0.8) 0%, rgba(79, 140, 255, 0.5) 35%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.6) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 45% 85% at 100% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.4) 45%, transparent 85%) !important;
-  filter: blur(32px) !important;
+  left: calc(50% - 20px) !important;
+  right: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 4px 16px 16px 4px !important;
+  background: transparent !important;
+  box-shadow:
+    /* 核心近场强烈漫反射 (对齐双页叠加亮度) */
+    0 8px 16px rgba(56, 189, 248, 0.85),
+    0 18px 30px rgba(56, 189, 248, 0.72),
+    0 32px 55px rgba(56, 189, 248, 0.60),
+    0 55px 90px rgba(79, 140, 255, 0.50),
+    0 85px 140px rgba(56, 189, 248, 0.35),
+    0 120px 190px rgba(79, 140, 255, 0.22),
+    /* 右侧强烈立体轮廓与书厚辉光 */
+    14px 6px 22px rgba(56, 189, 248, 0.90),
+    28px 12px 42px rgba(56, 189, 248, 0.75),
+    52px 18px 75px rgba(79, 140, 255, 0.55),
+    80px 26px 120px rgba(56, 189, 248, 0.32) !important;
 }
 [data-theme="dark"] .book.is-back-cover::before {
-  right: 50% !important;
-  left: -70px !important;
-  top: -15px !important;
-  bottom: -55px !important;
-  background:
-    radial-gradient(ellipse 70% 75% at 25% 75%, rgba(56, 189, 248, 0.8) 0%, rgba(79, 140, 255, 0.5) 35%, rgba(14, 165, 233, 0.2) 65%, transparent 85%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(56, 189, 248, 0.6) 0%, rgba(99, 102, 241, 0.3) 50%, transparent 85%),
-    radial-gradient(ellipse 45% 85% at 0% 60%, rgba(56, 189, 248, 0.75) 0%, rgba(79, 140, 255, 0.4) 45%, transparent 85%) !important;
-  filter: blur(32px) !important;
+  right: calc(50% - 20px) !important;
+  left: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 16px 4px 4px 16px !important;
+  background: transparent !important;
+  box-shadow:
+    /* 核心近场强烈漫反射 */
+    0 8px 16px rgba(56, 189, 248, 0.85),
+    0 18px 30px rgba(56, 189, 248, 0.72),
+    0 32px 55px rgba(56, 189, 248, 0.60),
+    0 55px 90px rgba(79, 140, 255, 0.50),
+    0 85px 140px rgba(56, 189, 248, 0.35),
+    0 120px 190px rgba(79, 140, 255, 0.22),
+    /* 左侧强烈立体轮廓与书厚辉光 */
+    -14px 6px 22px rgba(56, 189, 248, 0.90),
+    -28px 12px 42px rgba(56, 189, 248, 0.75),
+    -52px 18px 75px rgba(79, 140, 255, 0.55),
+    -80px 26px 120px rgba(56, 189, 248, 0.32) !important;
 }
+
 [data-theme="dark"] .book.is-cover #pageRight {
   box-shadow:
-    38px 42px 105px rgba(0, 0, 0, 0.98),
-    22px 28px 75px rgba(56, 189, 248, 0.9),
-    8px 14px 35px rgba(79, 140, 255, 1),
-    0 20px 48px rgba(56, 189, 248, 0.65) !important;
-  border-color: rgba(56, 189, 248, 0.8) !important;
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    12px 14px 28px rgba(0, 0, 0, 0.5),
+    16px 18px 38px rgba(56, 189, 248, 0.68),
+    0 20px 48px rgba(79, 140, 255, 0.50),
+    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+  border-color: rgba(56, 189, 248, 0.75) !important;
 }
 [data-theme="dark"] .book.is-back-cover #pageLeft {
   box-shadow:
-    -38px 42px 105px rgba(0, 0, 0, 0.98),
-    -22px 28px 75px rgba(56, 189, 248, 0.9),
-    -8px 14px 35px rgba(79, 140, 255, 1),
-    0 20px 48px rgba(56, 189, 248, 0.65) !important;
-  border-color: rgba(56, 189, 248, 0.8) !important;
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    -12px 14px 28px rgba(0, 0, 0, 0.5),
+    -16px 18px 38px rgba(56, 189, 248, 0.68),
+    0 20px 48px rgba(79, 140, 255, 0.50),
+    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+  border-color: rgba(56, 189, 248, 0.75) !important;
 }
+
+/* 亮色封面与封底环境光 */
+[data-theme="light"] .book.is-cover::before {
+  left: 50% !important;
+  right: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 4px 16px 16px 4px !important;
+  background: transparent !important;
+  box-shadow:
+    0 14px 28px rgba(30, 50, 90, 0.42),
+    0 30px 55px rgba(30, 50, 90, 0.35),
+    0 55px 90px rgba(79, 140, 255, 0.28),
+    0 85px 140px rgba(30, 50, 90, 0.20),
+    0 120px 190px rgba(79, 140, 255, 0.12),
+    14px 8px 24px rgba(30, 50, 90, 0.38),
+    28px 14px 50px rgba(30, 50, 90, 0.32),
+    55px 22px 90px rgba(79, 140, 255, 0.22),
+    82px 30px 130px rgba(30, 50, 90, 0.14) !important;
+}
+[data-theme="light"] .book.is-back-cover::before {
+  right: 50% !important;
+  left: -24px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  inset: auto !important;
+  border-radius: 16px 4px 4px 16px !important;
+  background: transparent !important;
+  box-shadow:
+    0 14px 28px rgba(30, 50, 90, 0.42),
+    0 30px 55px rgba(30, 50, 90, 0.35),
+    0 55px 90px rgba(79, 140, 255, 0.28),
+    0 85px 140px rgba(30, 50, 90, 0.20),
+    0 120px 190px rgba(79, 140, 255, 0.12),
+    -14px 8px 24px rgba(30, 50, 90, 0.38),
+    -28px 14px 50px rgba(30, 50, 90, 0.32),
+    -55px 22px 90px rgba(79, 140, 255, 0.22),
+    -82px 30px 130px rgba(30, 50, 90, 0.14) !important;
+}
+
 [data-theme="light"] .book.is-cover #pageRight {
-  box-shadow: 36px 40px 90px rgba(40, 60, 100, 0.38) !important;
+  box-shadow:
+    0 4px 12px rgba(30, 50, 90, 0.20),
+    18px 22px 52px rgba(30, 50, 90, 0.38),
+    32px 38px 82px rgba(30, 50, 90, 0.42),
+    0 22px 60px rgba(79, 140, 255, 0.28) !important;
 }
 [data-theme="light"] .book.is-back-cover #pageLeft {
-  box-shadow: -36px 40px 90px rgba(40, 60, 100, 0.38) !important;
+  box-shadow:
+    0 4px 12px rgba(30, 50, 90, 0.20),
+    -18px 22px 52px rgba(30, 50, 90, 0.38),
+    -32px 38px 82px rgba(30, 50, 90, 0.42),
+    0 22px 60px rgba(79, 140, 255, 0.28) !important;
 }
 
 #pageLeft::after, #pageRight::after,
@@ -253,7 +382,8 @@ button { font-family: var(--font); cursor: pointer; }
 /* ============================ ✨ 动效增强系统 (Phase 1 Refined) ============================ */
 #fxCanvas {
   position: fixed;
-  inset: 0;
+  top: var(--topbar-h);
+  left: 0; right: 0; bottom: 0;
   pointer-events: none;
   z-index: 0;
   opacity: 0;
@@ -288,8 +418,8 @@ body.fx-enabled #fxCanvas {
   border-style: solid;
   border-width: 0 0 0 0;
   border-color: transparent transparent var(--panel2) transparent;
-  filter: drop-shadow(-5px -5px 9px rgba(0,0,0,.45));
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  box-shadow: -5px -5px 9px rgba(0,0,0,.45);
+  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
 }
 .corner-peek-r .curl-fold::after {
   content: ""; position: absolute; right: 0; bottom: 0; width: 0; height: 0;
@@ -305,14 +435,14 @@ body.fx-enabled #fxCanvas {
   pointer-events: none;
 }
 
-/* 鼠标悬停时：平滑掀起 3D 折角 */
+/* 鼠标悬停时：平滑掀起 3D 折角（默认常驻原生微交互） */
 .corner-peek-r:hover .curl-shadow {
   width: 78px; height: 78px; opacity: 1;
 }
 .corner-peek-r:hover .curl-fold {
   border-width: 0 0 78px 78px;
   border-color: transparent transparent var(--card) transparent;
-  filter: drop-shadow(-8px -8px 16px rgba(0,0,0,.6));
+  box-shadow: -8px -8px 16px rgba(0,0,0,.6);
 }
 .corner-peek-r:hover .curl-fold::after {
   width: 78px; height: 78px; bottom: -78px;
@@ -334,8 +464,8 @@ body.fx-enabled #fxCanvas {
   border-style: solid;
   border-width: 0 0 0 0;
   border-color: transparent var(--panel2) transparent transparent;
-  filter: drop-shadow(5px -5px 9px rgba(0,0,0,.45));
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  box-shadow: 5px -5px 9px rgba(0,0,0,.45);
+  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
 }
 .corner-peek-l .curl-fold::after {
   content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 0;
@@ -356,7 +486,7 @@ body.fx-enabled #fxCanvas {
 .corner-peek-l:hover .curl-fold {
   border-width: 0 78px 78px 0;
   border-color: transparent var(--card) transparent transparent;
-  filter: drop-shadow(8px -8px 16px rgba(0,0,0,.6));
+  box-shadow: 8px -8px 16px rgba(0,0,0,.6);
 }
 .corner-peek-l:hover .curl-fold::after {
   width: 78px; height: 78px; bottom: -78px;
@@ -373,11 +503,11 @@ body.fx-enabled #fxCanvas {
   pointer-events: none;
   opacity: 0;
   z-index: 100;
-  mix-blend-mode: overlay;
   background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.4) 25%, rgba(255,255,255,0.9) 50%, rgba(0,0,0,0.3) 75%, transparent 100%);
 }
 body.fx-enabled .book-turn.turning .turn-sheen {
   opacity: 1;
+  mix-blend-mode: overlay;
 }
 body.fx-enabled .book-turn:not(.back).turning .turn-front .turn-sheen {
   animation: fxSheenSweep 0.85s cubic-bezier(.25,.7,.3,1) forwards;
@@ -405,25 +535,43 @@ body.fx-enabled .book-turn.back.turning .turn-back .turn-sheen {
   100% { transform: translateX(-100%) skewX(20deg); opacity: 0; }
 }
 
-/* 3. 封面全息与金属烫金流光 */
-body.fx-enabled .cover-full .cov-title {
-  background: linear-gradient(115deg, #eaf1ff 0%, #ffffff 20%, #60a5fa 40%, #22d3ee 55%, #c084fc 70%, #ffffff 85%, #eaf1ff 100%);
-  background-size: 250% auto;
+/* 3. 封面与封底全息金属流光（仅在显示封面或封底时激活，阅读内页时完全关闭 0 消耗） */
+.cover-full .cov-title {
+  background: linear-gradient(115deg, #eaf1ff 0%, #ffffff 30%, #93c5fd 60%, #ffffff 85%, #eaf1ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fxTitleShine 6s linear infinite;
+  filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
+}
+body.fx-enabled .book.is-cover .cover-full .cov-title,
+body.fx-enabled .book.is-back-cover .cover-full .cov-title {
+  background: linear-gradient(
+    115deg,
+    #eaf1ff 0%,
+    #ffffff 8%,
+    #60a5fa 18%,
+    #22d3ee 26%,
+    #c084fc 36%,
+    #ffffff 44%,
+    #eaf1ff 50%,
+    #ffffff 58%,
+    #60a5fa 68%,
+    #22d3ee 76%,
+    #c084fc 86%,
+    #ffffff 94%,
+    #eaf1ff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fxTitleShine 2.8s linear infinite;
   filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
 }
 @keyframes fxTitleShine {
   0% { background-position: 0% center; }
-  100% { background-position: 250% center; }
+  100% { background-position: -200% center; }
 }
 body.fx-enabled .cover-full .cov-rule {
-  animation: fxRuleGlow 3s ease-in-out infinite alternate;
-}
-@keyframes fxRuleGlow {
-  0% { box-shadow: 0 0 6px rgba(79,140,255,.4); }
-  100% { box-shadow: 0 0 20px rgba(34,211,238,.9); }
+  box-shadow: 0 0 12px rgba(34,211,238,.75);
 }
 
 /* 4. 六维雷达多边形轮廓绘制与节点弹簧点亮 (Native SVG Radar Drawing) */
@@ -445,7 +593,6 @@ body.fx-enabled .cover-full .cov-rule {
 }
 body.fx-enabled .radar-svg .radar-poly {
   animation: fxRadarGrow 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
-  filter: drop-shadow(0 0 6px rgba(79,140,255,0.45));
 }
 @keyframes fxNodePop {
   0% {
@@ -465,128 +612,22 @@ body.fx-enabled .radar-svg .radar-node {
   transform-box: fill-box;
   transform-origin: center center;
   animation: fxNodePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  filter: drop-shadow(0 0 4px var(--accent));
 }
 
-/* ============================ 书籍呼吸动态发光阴影 (Breathing Shadow & Glow) ============================ */
-@keyframes fxDarkAuraPulse {
-  0%, 100% {
-    opacity: 0.38;
-    transform: scale(0.98) translateZ(0);
-  }
-  50% {
-    opacity: 0.95;
-    transform: scale(1.02) translateZ(0);
-  }
-}
-
-@keyframes fxDarkPageLeftGlow {
-  0%, 100% {
-    box-shadow:
-      -22px 24px 65px rgba(0, 0, 0, 0.95),
-      -10px 14px 40px rgba(56, 189, 248, 0.4),
-      0 10px 22px rgba(79, 140, 255, 0.4);
-    border-color: rgba(56, 189, 248, 0.35) !important;
-  }
-  50% {
-    box-shadow:
-      -36px 42px 105px rgba(0, 0, 0, 0.98),
-      -22px 26px 70px rgba(56, 189, 248, 0.85),
-      -6px 12px 30px rgba(79, 140, 255, 0.95),
-      0 20px 45px rgba(56, 189, 248, 0.6);
-    border-color: rgba(56, 189, 248, 0.75) !important;
-  }
-}
-
-@keyframes fxDarkPageRightGlow {
-  0%, 100% {
-    box-shadow:
-      22px 24px 65px rgba(0, 0, 0, 0.95),
-      10px 14px 40px rgba(56, 189, 248, 0.45),
-      0 10px 22px rgba(79, 140, 255, 0.45);
-    border-color: rgba(56, 189, 248, 0.4) !important;
-  }
-  50% {
-    box-shadow:
-      36px 42px 105px rgba(0, 0, 0, 0.98),
-      22px 26px 70px rgba(56, 189, 248, 0.9),
-      6px 12px 30px rgba(79, 140, 255, 1),
-      0 20px 45px rgba(56, 189, 248, 0.65);
-    border-color: rgba(56, 189, 248, 0.8) !important;
-  }
-}
-
-@keyframes fxDarkEdgeLeftGlow {
-  0%, 100% {
-    box-shadow: -8px 10px 20px rgba(56, 189, 248, 0.35), -6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-left-color: rgba(56, 189, 248, 0.45);
-  }
-  50% {
-    box-shadow: -16px 20px 38px rgba(56, 189, 248, 0.85), -6px 10px 22px rgba(79, 140, 255, 0.9), -6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-left-color: rgba(56, 189, 248, 0.85);
-  }
-}
-
-@keyframes fxDarkEdgeRightGlow {
-  0%, 100% {
-    box-shadow: 8px 10px 20px rgba(56, 189, 248, 0.4), 6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-right-color: rgba(56, 189, 248, 0.5);
-  }
-  50% {
-    box-shadow: 16px 20px 38px rgba(56, 189, 248, 0.9), 6px 10px 22px rgba(79, 140, 255, 0.95), 6px 8px 18px rgba(0, 0, 0, 0.9);
-    border-right-color: rgba(56, 189, 248, 0.9);
-  }
-}
-
-@keyframes fxLightPageLeftGlow {
-  0%, 100% {
-    box-shadow: -20px 22px 48px rgba(40, 60, 100, 0.2);
-  }
-  50% {
-    box-shadow: -32px 34px 75px rgba(40, 60, 100, 0.35), -4px 6px 20px rgba(79, 140, 255, 0.25);
-  }
-}
-
-@keyframes fxLightPageRightGlow {
-  0%, 100% {
-    box-shadow: 20px 22px 48px rgba(40, 60, 100, 0.2);
-  }
-  50% {
-    box-shadow: 32px 34px 75px rgba(40, 60, 100, 0.35), 4px 6px 20px rgba(79, 140, 255, 0.25);
-  }
-}
-
-html[data-theme="dark"] body.fx-enabled .book::before,
-[data-theme="dark"] .book::before {
-  animation: fxDarkAuraPulse 3.8s ease-in-out infinite !important;
-}
-
-/* ⚡ 左右书页和书厚采用 GPU 静态位图缓存（0 重绘、0 逐帧高斯模糊，彻底告别卡顿发热） */
-#pageLeft, #pageRight, .book-edge-left, .book-edge-right {
+/* ⚡ 全书与光影采用纯静态 GPU 位图缓存（无任何呼吸动效，0 页面重绘，0 开销极度稳定） */
+.book::before, #pageLeft, #pageRight, .book-edge-left, .book-edge-right {
   animation: none !important;
   transform: translateZ(0);
 }
 
-/* ⚡ 极速静默模式（当用户点击顶栏关闭动效时，全面降级为 0 开销静态光影） */
-body.fx-disabled .book::before {
-  display: none !important;
-}
-body.fx-disabled #pageLeft,
-body.fx-disabled #pageRight,
-body.fx-disabled .book-edge-left,
-body.fx-disabled .book-edge-right,
-body.fx-disabled .corner-peek,
+/* ⚡ 动效开与关时，整本书阴影与光晕保持 100% 相同优雅静态（仅关闭图表与流光等微交互动效） */
 body.fx-disabled .radar-svg .radar-poly,
 body.fx-disabled .radar-svg .radar-node,
-body.fx-disabled .bar-fill-rect {
+body.fx-disabled .bar-fill-rect,
+body.fx-disabled .turn-sheen,
+body.fx-disabled .cov-title {
   animation: none !important;
   transition: none !important;
-}
-body.fx-disabled #pageLeft {
-  box-shadow: -10px 14px 30px rgba(0,0,0,0.4) !important;
-}
-body.fx-disabled #pageRight {
-  box-shadow: 10px 14px 30px rgba(0,0,0,0.4) !important;
 }
 
 /* 5. 能量评分条平滑充能自左向右实体增长 (Smooth Left-to-Right Energy Growth) */
@@ -594,20 +635,16 @@ body.fx-disabled #pageRight {
   0% {
     transform: scaleX(0);
     opacity: 0.6;
-    filter: drop-shadow(0 0 0px transparent);
   }
   25% {
     opacity: 1;
-    filter: drop-shadow(0 0 8px var(--accent));
   }
   65% {
     opacity: 1;
-    filter: drop-shadow(0 0 5px var(--accent));
   }
   100% {
     transform: scaleX(1);
     opacity: 1;
-    filter: drop-shadow(0 0 2px rgba(79,140,255,0.45));
   }
 }
 body.fx-enabled .bar > i {
@@ -712,9 +749,9 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 
 /* 次级层与深层阶梯阴影与明暗递进 */
 .edge-tier-1 { z-index: 12; }
-.edge-tier-2 { z-index: 10; opacity: 0.94; filter: brightness(0.96); }
-.edge-tier-3 { z-index: 8;  opacity: 0.88; filter: brightness(0.92); }
-.edge-tier-4 { z-index: 6;  opacity: 0.82; filter: brightness(0.88); }
+.edge-tier-2 { z-index: 10; opacity: 0.90; }
+.edge-tier-3 { z-index: 8;  opacity: 0.80; }
+.edge-tier-4 { z-index: 6;  opacity: 0.70; }
 
 /* 暗色主题下的多层物理厚度发光与阶梯分层线 (明确多页阶梯立体轮廓) */
 [data-theme="dark"] .book-edge-left .book-edge-layer {
@@ -762,9 +799,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   gap: 14px;
   background: var(--panel);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(79,140,255,0.18);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(79,140,255,0.18);
   padding: 8px 20px;
   border-radius: 30px;
   color: var(--text);
@@ -778,8 +813,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .pb-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.1s linear; }
 
 .book-page-no {
-  position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
-  color: var(--faint); font-size: 12px; font-family: var(--mono);
+  display: none !important;
 }
 .book-hint { position: absolute; top: -34px; right: 0; color: var(--faint); font-size: 12px; }
 
@@ -796,27 +830,24 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   overflow-x: hidden;
   z-index: 45;
   scrollbar-width: none;
-  pointer-events: none;
+  pointer-events: auto;
   opacity: 0;
-  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
-  will-change: opacity, transform;
+  contain: layout style paint;
+  isolation: isolate;
+  transition: opacity 0.12s ease-out;
 }
 .book-side-col::-webkit-scrollbar { display: none; }
 .book-side-left {
   left: -170px;
   align-items: flex-end;
-  transform: translateX(10px);
 }
 .book-side-right {
   right: -170px;
   align-items: flex-start;
-  transform: translateX(-10px);
 }
 .book-side-col.is-revealed,
 .book-side-col:hover {
   opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
 }
 .edge-tab {
   position: relative;
@@ -833,12 +864,13 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   color: var(--text);
   font-size: 11px;
   cursor: pointer;
-  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, box-shadow 0.2s, border-color 0.2s;
   user-select: none;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
   flex-shrink: 0;
   box-sizing: border-box;
   pointer-events: auto;
+  contain: layout style paint;
+  transition: width 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.05s, box-shadow 0.08s;
 }
 .book-side-left .edge-tab {
   border-radius: 6px 0 0 6px;
@@ -856,13 +888,6 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-radius: 0 6px 6px 0;
   border-left: none;
   border-right: 4px solid var(--tab-color, var(--accent));
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px;
-}
-.book-side-right .edge-tab .et-name {
-  text-align: left;
 }
 .book-side-right .edge-tab:hover {
   width: 150px;
@@ -870,12 +895,6 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-color: var(--tab-color, var(--accent));
   box-shadow: 4px 4px 14px rgba(0,0,0,.3);
   z-index: 10;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-.book-side-right .edge-tab:hover .et-name {
-  text-align: right;
-  flex: 0 1 auto;
 }
 .edge-tab .et-no {
   font-family: var(--mono);
@@ -893,11 +912,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
-  transition: color 0.15s ease, text-align 0.15s ease;
+  text-align: left;
 }
 .edge-tab:hover .et-name {
-  color: var(--text);
-  font-weight: 700;
+  color: var(--tab-color, var(--accent));
 }
 
 /* 页面跳转闪烁提示 (Page Flash Animation) */
@@ -951,6 +969,73 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .tbl tr:nth-child(even) td { background: var(--panel2); }
 .score-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 
+/* 页角实体物理页码 (平时正常显示，当书页卷角悬停时自动淡出隐藏，移开卷角时立即恢复) */
+.corner-page-no {
+  position: absolute;
+  bottom: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dim);
+  letter-spacing: 0.5px;
+  user-select: none;
+  pointer-events: none;
+  z-index: 25;
+  opacity: 0.85;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+.corner-page-no-l {
+  left: 24px;
+}
+.corner-page-no-r {
+  right: 24px;
+}
+
+/* 卷角悬停时精准淡出对应的页码 */
+.corner-peek-l:hover ~ .corner-page-no-l,
+.corner-peek-r:hover ~ .corner-page-no-r,
+#pageLeft:has(.corner-peek-l:hover) .corner-page-no-l,
+#pageRight:has(.corner-peek-r:hover) .corner-page-no-r {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.book-page.page-blank .corner-page-no,
+.book.is-cover .corner-page-no,
+.book.is-back-cover .corner-page-no {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* 保证层级药丸与表格层级列绝不折行 */
+.pill-tier {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  flex: none;
+}
+.tbl-sources {
+  width: 100% !important;
+  table-layout: fixed !important;
+  font-size: 12px !important;
+}
+.tbl-sources th, .tbl-sources td {
+  padding: 6px 3px !important;
+  text-align: center !important;
+}
+.tbl-sources th:first-child, .tbl-sources td:first-child {
+  text-align: left !important;
+  padding-left: 8px !important;
+}
+.tbl-library-preview th, .tbl-library-preview td {
+  padding: 8px 6px !important;
+  font-size: 12.5px;
+}
+
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .card { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .card .c-title { font-weight: 800; font-size: 15.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -986,9 +1071,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 /* ============================ 面板 / 覆盖层 ============================ */
 .overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.86) 0%, rgba(3, 7, 18, 0.96) 100%);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.92) 0%, rgba(3, 7, 18, 0.98) 100%);
   display: flex; align-items: center; justify-content: center; padding: 14px;
   opacity: 1;
   transition: opacity 0.22s ease;
@@ -1675,7 +1758,7 @@ body.has-overlay-open .book-side-tab {
   <div class="brand" id="brandBtn" title="回到封面">
     <div class="brand-icon">研</div>
     <div class="brand-text">
-      <div class="brand-title">银行金融科技前沿技术研究成果</div>
+      <div class="brand-title">科技发展部前沿技术研究成果集</div>
       <div class="brand-sub">电子研究书 · 书籍 / 网页</div>
     </div>
   </div>
@@ -1705,6 +1788,7 @@ body.has-overlay-open .book-side-tab {
           <div class="curl-shadow"></div>
           <div class="curl-fold"><span class="curl-hint">‹ 翻页</span></div>
         </div>
+        <div class="corner-page-no corner-page-no-l" id="cornerPageNoL"></div>
       </div>
       <div class="book-page" id="pageRight">
         <div class="page-inner" id="pageRightInner"></div>
@@ -1712,6 +1796,7 @@ body.has-overlay-open .book-side-tab {
           <div class="curl-shadow"></div>
           <div class="curl-fold"><span class="curl-hint">翻页 ›</span></div>
         </div>
+        <div class="corner-page-no corner-page-no-r" id="cornerPageNoR"></div>
       </div>
       <div class="book-turn-wrap" id="turnWrap">
         <div class="book-turn" id="turnSheet">
@@ -2471,7 +2556,7 @@ body.has-overlay-open .book-side-tab {
   ];
 
   window.DATA = {
-    book: { title: '银行金融科技前沿技术研究成果', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 关系图谱', org: '科技规划处', date: '2026年', version: '' },
+    book: { title: '科技发展部前沿技术研究成果集', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 关系图谱', org: '科技规划处 编制', date: '2026年', version: '' },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
     library: { fields: FIELDS, items: ITEMS }, graph: buildGraph(), graphRelations: RELATIONS,
@@ -2580,12 +2665,8 @@ body.has-overlay-open .book-side-tab {
     activeOverlayCount = Math.max(0, activeOverlayCount + delta);
     if (activeOverlayCount > 0) {
       document.body.classList.add('has-overlay-open');
-      // 弹出专题/弹窗时：彻底停止背景 Canvas 的 requestAnimationFrame 循环，CPU/GPU 占用完全归零！
-      stopFxLoop();
     } else {
       document.body.classList.remove('has-overlay-open');
-      // 关闭所有弹窗后：恢复背景 Canvas 粒子与极光
-      if (fxEnabled) startFxLoop();
     }
   }
 
@@ -2744,9 +2825,10 @@ body.has-overlay-open .book-side-tab {
       '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;right:-40px;bottom:-40px"></span>',
       '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;right:20%;top:8%"></span>'
     ].join('');
+    var coverTitle = esc(b.title).replace('科技发展部', '科技发展部<br>');
     return '<div class="cover-full">' + orbs +
       '<div class="cov-kicker">BANK FINTECH RESEARCH</div>' +
-      '<div class="cov-title">' + esc(b.title) + '</div>' +
+      '<div class="cov-title">' + coverTitle + '</div>' +
       '<div class="cov-sub">' + esc(b.subtitle) + '</div>' +
       '<div class="cov-rule"></div>' +
       '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + '</div>' +
@@ -2762,7 +2844,7 @@ body.has-overlay-open .book-side-tab {
       '<div class="page-title">' + esc(b.title) + '</div>' +
       '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书系统汇集银行金融科技前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
+      '<div class="pg-p">本电子研究书系统汇集科技发展部前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
       '<div class="stat-grid">' +
       '<div class="stat"><div class="num">' + lib + '</div><div class="lbl">长名单技术项</div></div>' +
       '<div class="stat"><div class="num">' + cats + '</div><div class="lbl">战略方向</div></div>' +
@@ -2887,10 +2969,10 @@ body.has-overlay-open .book-side-tab {
       it._total = total / 100;
     });
     items.sort(function (a, b) { return b._total - a._total; });
-    var head = '<tr><th>情报源</th><th>类型</th>' + crit.map(function (c) { return '<th>' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint)">(' + c.weight + ')</span></th>'; }).join('') + '<th>加权得分</th></tr>';
+    var head = '<tr><th style="width:23%">情报源</th><th style="width:11%">类型</th>' + crit.map(function (c) { return '<th style="width:11%">' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint);font-size:10px">(' + c.weight + ')</span></th>'; }).join('') + '<th style="width:12%">加权得分</th></tr>';
     var rows = items.map(function (it) {
-      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag">' + esc(it.type) + '</span></td>' +
-        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + '"></span>' + it[c.key] + '</td>'; }).join('') +
+      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag" style="padding:2px 4px;font-size:11px">' + esc(it.type) + '</span></td>' +
+        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + ';margin-right:2px;width:7px;height:7px"></span>' + it[c.key] + '</td>'; }).join('') +
         '<td><b style="color:' + scoreColor(it._total) + '">' + it._total.toFixed(1) + '</b></td></tr>';
     }).join('');
     var cards = items.map(function (it) {
@@ -2902,7 +2984,7 @@ body.has-overlay-open .book-side-tab {
       '<div class="page-title">情报源评判报告</div>' +
       '<div class="page-subtitle">共 ' + items.length + ' 类情报源 · 按「权威性 / 时效性 / 可信度 / 覆盖度 / 独特性」五维加权评判</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-section"><div class="pg-h">评判汇总表</div><div style="overflow:auto"><table class="tbl">' + head + rows + '</table></div></div>' +
+      '<div class="pg-section"><div class="pg-h">评判汇总表</div><table class="tbl tbl-sources">' + head + rows + '</table></div>' +
       '<div class="pg-section"><div class="pg-h">逐源评判</div><div class="cards">' + cards + '</div></div>' +
       '</div>';
   }
@@ -2911,14 +2993,14 @@ body.has-overlay-open .book-side-tab {
     var items = DATA.library.items.slice().sort(function (a, b) { return (tierOrder[a.tier] || 9) - (tierOrder[b.tier] || 9); }).slice(0, 8);
     var rows = items.map(function (it) {
       var mainName = it.short || it.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || it.name;
-      return '<tr><td><b>' + esc(mainName) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td>' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
+      return '<tr><td><b>' + esc(mainName) + '</b></td><td><span class="tag" style="border-color:' + catColor(it.category) + ';color:' + catColor(it.category) + '">' + esc(it.category) + '</span></td><td style="white-space:nowrap">' + tierPill(it.tier) + '</td><td>' + scorePill(it.maturity) + '</td><td>' + scorePill(it.strategicFit) + '</td><td>' + esc(it.disposal) + '</td></tr>';
     }).join('');
     return '<div class="page-pad">' +
       '<div class="page-title">前沿技术储备库</div>' +
       '<div class="page-subtitle">长名单 · ' + DATA.library.items.length + ' 项 × ' + DATA.library.fields.length + ' 字段</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-p">储备库覆盖 ' + DATA.categories.length + ' 大战略方向，按「布局 / 论证 / 研究 / 观察」四层动态滚动管理，每项技术按完整台账字段维护，支持全文检索、多维筛选与排序。</div>' +
-      '<div class="pg-section"><div class="pg-h">分层预览（节选）</div><table class="tbl"><tr><th>技术名称</th><th>战略方向</th><th>层级</th><th>成熟度</th><th>匹配度</th><th>处置档位</th></tr>' + rows + '</table></div>' +
+      '<div class="pg-section"><div class="pg-h">分层预览（节选）</div><table class="tbl tbl-library-preview"><tr><th>技术名称</th><th>战略方向</th><th style="white-space:nowrap;min-width:64px">层级</th><th>成熟度</th><th>匹配度</th><th>处置档位</th></tr>' + rows + '</table></div>' +
       '<div style="text-align:center;margin-top:14px"><button class="btn active" data-action="open-library">打开完整储备库（检索 / 筛选 / 全字段）</button></div>' +
       '</div>';
   }
@@ -3007,18 +3089,13 @@ body.has-overlay-open .book-side-tab {
     return '<div class="web-tech-container">' +
       '<div class="web-tech-head">' +
         '<div class="wth-left">' +
-          '<div class="page-title tech-title">' +
-            '<span class="tech-no-badge">' + esc(tech.id) + '</span> ' +
-            '<span>' + esc(tech.name) + '</span>' +
-            '<span style="font-size:13px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(tech.nameEn || '') + '</span>' +
-          '</div>' +
-          '<div class="tech-sub-tags">' + tags + '</div>' +
+          '<div class="tech-sub-tags"><span class="tech-no-badge">' + esc(tech.id) + '</span> ' + tags + '</div>' +
         '</div>' +
         '<div class="wth-right">' +
           '<button class="btn active" data-action="open-tech" data-id="' + tech.id + '">📄 查看完整专题（报告 / PPT / 一张图）</button>' +
         '</div>' +
       '</div>' +
-      '<div class="h-rule" style="margin:10px 0 16px"></div>' +
+      '<div class="h-rule" style="margin:8px 0 14px"></div>' +
       '<div class="web-tech-layout">' +
         '<div class="web-col-dash">' +
           '<div class="bento-card radar-card">' +
@@ -3075,7 +3152,7 @@ body.has-overlay-open .book-side-tab {
   function closingHTML() {
     return '<div class="page-pad">' +
       '<div class="page-title">结语</div><div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集银行金融科技前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
+      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集科技发展部前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
       '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
       '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
       '</div>';
@@ -3208,49 +3285,82 @@ body.has-overlay-open .book-side-tab {
   }
 
   function updatePageNo() {
+    var pnoL = $('cornerPageNoL'), pnoR = $('cornerPageNoR');
     if (isSingle()) {
       var label = pageLabels[singleIdx] || '';
       $('pageNo').textContent = label ? (label + ' · ' + (singleIdx + 1) + ' / ' + pages.length) : '';
+      if (pnoL) pnoL.textContent = '';
+      if (pnoR) pnoR.textContent = (singleIdx > 0 && singleIdx < pages.length - 1) ? (singleIdx + 1) : '';
     } else {
       var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
       if (spread === 0) {
-        $('pageNo').textContent = '封面 · 银行金融科技前沿技术研究成果';
+        $('pageNo').textContent = '封面 · 科技发展部前沿技术研究成果集';
+        if (pnoL) pnoL.textContent = '';
+        if (pnoR) pnoR.textContent = '';
       } else if (spread === 1) {
         $('pageNo').textContent = '扉页 · 成果总览与编制说明 · 跨页 2 / ' + (maxSpread + 1);
-      } else if (spread === 2) {
-        $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
+        if (pnoL) pnoL.textContent = '2';
+        if (pnoR) pnoR.textContent = '3';
       } else if (spread === maxSpread) {
         $('pageNo').textContent = (l || '封底') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (l && r) {
-        $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (l) {
-        $('pageNo').textContent = l + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-      } else if (r) {
-        $('pageNo').textContent = r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        var leftIdx = spread * 2;
+        if (pnoL) pnoL.textContent = (leftIdx < pages.length - 1) ? (leftIdx + 1) : '';
+        if (pnoR) pnoR.textContent = '';
       } else {
-        $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        if (spread === 2) {
+          $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
+        } else if (l && r) {
+          $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else if (l) {
+          $('pageNo').textContent = l + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else if (r) {
+          $('pageNo').textContent = r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        } else {
+          $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
+        }
+        var pLeft = spread * 2 + 1;
+        var pRight = spread * 2 + 2;
+        if (pnoL) pnoL.textContent = (pLeft < pages.length) ? pLeft : '';
+        if (pnoR) pnoR.textContent = (pRight < pages.length) ? pRight : '';
       }
     }
   }
-  function fitPage(el, idx) {
-    if (!el) return;
-    if (pageScroll[idx]) { el.classList.add('scroll'); return; }
+  // 准备阶段：只做重置写入，不读取任何布局属性
+  function prepareFit(el, idx) {
+    if (!el) return null;
+    if (pageScroll[idx]) { el.classList.add('scroll'); return null; }
     el.classList.remove('scroll');
     var pad = el.querySelector('.page-pad');
-    if (!pad) return;
+    if (!pad) return null;
     pad.style.transform = '';
-    var aw = el.clientWidth, ah = el.clientHeight;
-    var nw = pad.scrollWidth, nh = pad.scrollHeight;
-    if (nw <= aw + 1 && nh <= ah + 1) return;
-    var s = Math.min(aw / nw, ah / nh);
-    if (s >= 1) return;
-    pad.style.transformOrigin = 'top left';
-    pad.style.transform = 'scale(' + s + ')';
+    return { el: el, pad: pad };
+  }
+  // 应用阶段：把多个待处理页面的“读尺寸”和“写transform”分别集中批量执行，
+  // 避免逐个元素交替读写触发多次强制同步布局（layout thrashing）
+  function applyFits(items) {
+    items.forEach(function (m) {
+      if (!m) return;
+      m.aw = m.el.clientWidth; m.ah = m.el.clientHeight;
+      m.nw = m.pad.scrollWidth; m.nh = m.pad.scrollHeight;
+    });
+    items.forEach(function (m) {
+      if (!m) return;
+      if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) return;
+      var s = Math.min(m.aw / m.nw, m.ah / m.nh);
+      if (s >= 1) return;
+      m.pad.style.transformOrigin = 'top left';
+      m.pad.style.transform = 'scale(' + s + ')';
+    });
+  }
+  function fitPage(el, idx) {
+    applyFits([prepareFit(el, idx)]);
   }
   function fitSpread() {
     if (isSingle()) { fitPage($('pageRightInner'), singleIdx); return; }
-    fitPage($('pageLeftInner'), spread * 2);
-    fitPage($('pageRightInner'), spread * 2 + 1);
+    applyFits([
+      prepareFit($('pageLeftInner'), spread * 2),
+      prepareFit($('pageRightInner'), spread * 2 + 1)
+    ]);
   }
   function renderSpread() {
     if (isSingle()) {
@@ -3344,23 +3454,27 @@ body.has-overlay-open .book-side-tab {
     }
     el.innerHTML = html;
   }
-  function bindPageActions() {
-    var tocLis = document.querySelectorAll('#bookView .toc-list li');
-    tocLis.forEach(function (li) {
-      li.onclick = function (e) {
-        if (e) e.stopPropagation();
-        jumpToPage(parseInt(li.getAttribute('data-jump'), 10));
-      };
-    });
-    document.querySelectorAll('[data-action]').forEach(function (el) {
-      el.onclick = function (e) {
-        if (e) e.stopPropagation();
-        var action = el.getAttribute('data-action');
-        var id = el.getAttribute('data-id');
-        if (action === 'open-library') openLibraryPanel();
-        else if (action === 'open-graph') openGraphPanel();
-        else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
-      };
+  function bindPageActions(customRoot) {
+    // 绑定跨页书页及网页模式内容区中的链接与按钮交互
+    var roots = customRoot ? [customRoot] : [$('pageLeftInner'), $('pageRightInner'), $('webContent')];
+    roots.forEach(function (root) {
+      if (!root) return;
+      root.querySelectorAll('.toc-list li').forEach(function (li) {
+        li.onclick = function (e) {
+          if (e) e.stopPropagation();
+          jumpToPage(parseInt(li.getAttribute('data-jump'), 10));
+        };
+      });
+      root.querySelectorAll('[data-action]').forEach(function (el) {
+        el.onclick = function (e) {
+          if (e) e.stopPropagation();
+          var action = el.getAttribute('data-action');
+          var id = el.getAttribute('data-id');
+          if (action === 'open-library') openLibraryPanel();
+          else if (action === 'open-graph') openGraphPanel();
+          else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
+        };
+      });
     });
   }
   function jumpToPage(i) {
@@ -3410,20 +3524,29 @@ body.has-overlay-open .book-side-tab {
     $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldRight.trim());
     $('turnBackInner').parentElement.classList.toggle('page-blank', !newLeft.trim());
 
-    if (isGoingToBackCover) {
+    // 提前在翻页动画开始之前绘制好目标跨页的书本厚度与边框（绝无翻页后阴影突变）
+    if (targetSpread > 0 && targetSpread < maxSpread) {
+      var ratio = targetSpread / maxSpread;
+      var leftThick = Math.round(ratio * 26);
+      var rightThick = Math.round((1 - ratio) * 26);
+      renderEdgeLayers($('bookEdgeLeft'), leftThick, true);
+      renderEdgeLayers($('bookEdgeRight'), rightThick, false);
+    } else {
       renderEdgeLayers($('bookEdgeLeft'), 0, true);
       renderEdgeLayers($('bookEdgeRight'), 0, false);
-      if ($('cornerPeekR')) $('cornerPeekR').style.display = 'none';
     }
+    if (isGoingToBackCover && $('cornerPeekR')) $('cornerPeekR').style.display = 'none';
 
     var sheet = $('turnSheet');
     sheet.classList.remove('back');
     sheet.style.display = 'block';
     sheet.classList.remove('turning');
     void sheet.offsetWidth;
-    fitPage($('turnFrontInner'), spread * 2 + 1);
-    fitPage($('turnBackInner'), spread * 2 + 2);
-    fitPage($('pageRightInner'), spread * 2 + 3);
+    applyFits([
+      prepareFit($('turnFrontInner'), spread * 2 + 1),
+      prepareFit($('turnBackInner'), spread * 2 + 2),
+      prepareFit($('pageRightInner'), spread * 2 + 3)
+    ]);
     sheet.classList.add('turning');
 
     setTimeout(function () {
@@ -3484,20 +3607,29 @@ body.has-overlay-open .book-side-tab {
     $('turnFrontInner').parentElement.classList.toggle('page-blank', !oldLeft.trim());
     $('turnBackInner').parentElement.classList.toggle('page-blank', !newRight.trim());
 
-    if (isGoingToCover) {
+    // 提前在翻页动画开始之前绘制好目标跨页的书本厚度与边框（绝无翻页后阴影突变）
+    if (targetSpread > 0 && targetSpread < maxSpread) {
+      var ratio = targetSpread / maxSpread;
+      var leftThick = Math.round(ratio * 26);
+      var rightThick = Math.round((1 - ratio) * 26);
+      renderEdgeLayers($('bookEdgeLeft'), leftThick, true);
+      renderEdgeLayers($('bookEdgeRight'), rightThick, false);
+    } else {
       renderEdgeLayers($('bookEdgeLeft'), 0, true);
       renderEdgeLayers($('bookEdgeRight'), 0, false);
-      if ($('cornerPeekL')) $('cornerPeekL').style.display = 'none';
     }
+    if (isGoingToCover && $('cornerPeekL')) $('cornerPeekL').style.display = 'none';
 
     var sheet = $('turnSheet');
     sheet.classList.add('back');
     sheet.style.display = 'block';
     sheet.classList.remove('turning');
     void sheet.offsetWidth;
-    fitPage($('turnFrontInner'), spread * 2);
-    fitPage($('turnBackInner'), spread * 2 - 1);
-    fitPage($('pageLeftInner'), spread * 2 - 2);
+    applyFits([
+      prepareFit($('turnFrontInner'), spread * 2),
+      prepareFit($('turnBackInner'), spread * 2 - 1),
+      prepareFit($('pageLeftInner'), spread * 2 - 2)
+    ]);
     sheet.classList.add('turning');
 
     setTimeout(function () {
@@ -3527,8 +3659,8 @@ body.has-overlay-open .book-side-tab {
   }
 
   /* ==================== 网页视图（目录 + 滚动内容） ==================== */
-  function webSection(id, no, title, bodyHtml) {
-    return '<div class="sec" id="' + id + '"><div class="sec-head"><span class="sec-no">' + esc(no) + '</span><span class="sec-title">' + esc(title) + '</span></div><div class="sec-body">' + bodyHtml + '</div></div>';
+  function webSection(id, no, titleHtml, bodyHtml) {
+    return '<div class="sec" id="' + id + '"><div class="sec-head"><span class="sec-no">' + esc(no) + '</span><span class="sec-title">' + titleHtml + '</span></div><div class="sec-body">' + bodyHtml + '</div></div>';
   }
   function renderWeb() {
     var b = DATA.book;
@@ -3540,7 +3672,10 @@ body.has-overlay-open .book-side-tab {
     sections.push(webSection('s-library', '1.3', '前沿技术储备库（长名单）', libraryPreviewHTML()));
     sections.push(webSection('s-graph', '1.4', '各项前沿技术关系图谱', graphPreviewHTML()));
     DATA.technologies.forEach(function (t, i) {
-      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), t.name + ' 专题研究', techWebHTML(t)));
+      var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
+      var enName = t.nameEn || '';
+      var titleHtml = esc(pureName) + (enName ? (' <span style="font-size:13.5px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(enName) + '</span>') : '');
+      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), titleHtml, techWebHTML(t)));
     });
     sections.push(webSection('s-appendix', '附录', '术语 · 数据来源 · 版本', appendixHTML()));
     sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
@@ -3557,7 +3692,8 @@ body.has-overlay-open .book-side-tab {
     toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">1.4</span>技术关系图谱</div>');
     toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第二篇 · 各项前沿技术研究</div>');
     DATA.technologies.forEach(function (t, i) {
-      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(t.name) + '</div>');
+      var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
+      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(pureName) + '</div>');
     });
     toc.push('<div class="web-toc-item part" data-target="s-appendix">附录</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no"></span>术语 · 数据来源 · 版本</div>');
@@ -4089,12 +4225,9 @@ body.has-overlay-open .book-side-tab {
     else if (m === 'web') renderWeb();
   }
 
-  /* ==================== ✨ 动效增强系统 (Particle / Physics / Micro-FX) ==================== */
+  /* ==================== ✨ 动效增强系统 (UI / Micro-FX) ==================== */
   var fxEnabled = true;
   try { fxEnabled = localStorage.getItem('techbook_fx') !== '0'; } catch (e) {}
-
-  var fxCanvas = null, fxCtx = null, fxAnimId = null, fxParticles = [];
-  var fxMouse = { x: -1000, y: -1000 };
 
   function setFxMode(enabled, quiet) {
     fxEnabled = !!enabled;
@@ -4106,145 +4239,9 @@ body.has-overlay-open .book-side-tab {
       btn.innerHTML = fxEnabled ? '✨ 动效: 开' : '✨ 动效: 关';
       btn.classList.toggle('active', fxEnabled);
     }
-    if (fxEnabled) {
-      startFxLoop();
-      if (!quiet) toast('已开启【动效增强】模式 (粒子星空/铜版纸流光/悬停掀角/雷达脉冲)');
-    } else {
-      stopFxLoop();
-      if (!quiet) toast('已切换为【经典标准】模式 (0开销静态极速)');
+    if (!quiet) {
+      toast(fxEnabled ? '已开启【动效增强】模式 (翻页流光/悬停掀角/图表生长)' : '已切换为【经典极简】模式 (0开销纯净静态)');
     }
-  }
-
-  function initFxCanvas() {
-    fxCanvas = $('fxCanvas');
-    if (!fxCanvas) return;
-    fxCtx = fxCanvas.getContext('2d');
-    function resize() {
-      fxCanvas.width = window.innerWidth;
-      fxCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    window.addEventListener('mousemove', function (e) {
-      fxMouse.x = e.clientX;
-      fxMouse.y = e.clientY;
-    });
-    window.addEventListener('mouseleave', function () {
-      fxMouse.x = -1000;
-      fxMouse.y = -1000;
-    });
-
-    var count = Math.min(38, Math.floor(window.innerWidth * window.innerHeight / 32000));
-    var colors = ['#38bdf8', '#60a5fa', '#a855f7', '#22d3ee', '#818cf8'];
-    fxParticles = [];
-    for (var i = 0; i < count; i++) {
-      fxParticles.push({
-        x: Math.random() * fxCanvas.width,
-        y: Math.random() * fxCanvas.height,
-        vx: (Math.random() - 0.5) * 0.55,
-        vy: (Math.random() - 0.5) * 0.55,
-        r: Math.random() * 2.0 + 1.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        baseAlpha: Math.random() * 0.45 + 0.45
-      });
-    }
-    if (fxEnabled) startFxLoop();
-  }
-
-  function startFxLoop() {
-    if (fxAnimId) return;
-    function loop() {
-      if (!fxEnabled || document.hidden) { fxAnimId = null; return; }
-      drawParticles();
-      fxAnimId = requestAnimationFrame(loop);
-    }
-    fxAnimId = requestAnimationFrame(loop);
-  }
-
-  function stopFxLoop() {
-    if (fxAnimId) { cancelAnimationFrame(fxAnimId); fxAnimId = null; }
-    if (fxCtx && fxCanvas) fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-  }
-
-  function drawParticles() {
-    if (!fxCtx || !fxCanvas) return;
-    var W = fxCanvas.width, H = fxCanvas.height;
-    fxCtx.clearRect(0, 0, W, H);
-
-    var pCount = fxParticles.length;
-
-    // 2. 绘制星空连线 (曼哈顿距离快速剪枝 + 平方差计算，跳过85%无用几何开方)
-    for (var i = 0; i < pCount; i++) {
-      var p1 = fxParticles[i];
-      for (var j = i + 1; j < pCount; j++) {
-        var p2 = fxParticles[j];
-        var dx = p1.x - p2.x;
-        if (dx > 130 || dx < -130) continue;
-        var dy = p1.y - p2.y;
-        if (dy > 130 || dy < -130) continue;
-        var distSq = dx * dx + dy * dy;
-        if (distSq < 16900) { // 130^2
-          var dist = Math.sqrt(distSq);
-          var alpha = (1 - dist / 130) * 0.35;
-          fxCtx.strokeStyle = 'rgba(96, 165, 250, ' + alpha + ')';
-          fxCtx.lineWidth = 1.1;
-          fxCtx.beginPath();
-          fxCtx.moveTo(p1.x, p1.y);
-          fxCtx.lineTo(p2.x, p2.y);
-          fxCtx.stroke();
-        }
-      }
-    }
-
-    // 3. 鼠标交互光网 (快速剪枝)
-    if (fxMouse.x > 0 && fxMouse.y > 0) {
-      for (var m = 0; m < pCount; m++) {
-        var pm = fxParticles[m];
-        var mdx2 = fxMouse.x - pm.x;
-        if (mdx2 > 170 || mdx2 < -170) continue;
-        var mdy2 = fxMouse.y - pm.y;
-        if (mdy2 > 170 || mdy2 < -170) continue;
-        var mDistSq2 = mdx2 * mdx2 + mdy2 * mdy2;
-        if (mDistSq2 < 28900) { // 170^2
-          var mDist2 = Math.sqrt(mDistSq2);
-          var mAlpha = (1 - mDist2 / 170) * 0.5;
-          fxCtx.strokeStyle = 'rgba(34, 211, 238, ' + mAlpha + ')';
-          fxCtx.lineWidth = 1.3;
-          fxCtx.beginPath();
-          fxCtx.moveTo(pm.x, pm.y);
-          fxCtx.lineTo(fxMouse.x, fxMouse.y);
-          fxCtx.stroke();
-        }
-      }
-    }
-
-    // 4. 更新与绘制发光粒子 (轻量高效渲染 + 物理排斥快速剪枝)
-    for (var k = 0; k < pCount; k++) {
-      var p = fxParticles[k];
-      var mdx = fxMouse.x - p.x;
-      var mdy = fxMouse.y - p.y;
-      if (mdx < 160 && mdx > -160 && mdy < 160 && mdy > -160) {
-        var mDistSq = mdx * mdx + mdy * mdy;
-        if (mDistSq < 25600 && mDistSq > 1) {
-          var mDist = Math.sqrt(mDistSq);
-          var force = (160 - mDist) / 160 * 0.45;
-          p.x -= (mdx / mDist) * force;
-          p.y -= (mdy / mDist) * force;
-        }
-      }
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -15) p.x = W + 15; else if (p.x > W + 15) p.x = -15;
-      if (p.y < -15) p.y = H + 15; else if (p.y > H + 15) p.y = -15;
-
-      fxCtx.fillStyle = p.color;
-      fxCtx.globalAlpha = p.baseAlpha;
-      fxCtx.beginPath();
-      fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      fxCtx.fill();
-    }
-    fxCtx.globalAlpha = 1;
   }
 
   /* ==================== 大屏自动巡航放映模式 ==================== */
@@ -4301,7 +4298,6 @@ body.has-overlay-open .book-side-tab {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     bindOverlayClose();
     initSearch();
-    initFxCanvas();
     $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
@@ -4325,29 +4321,38 @@ body.has-overlay-open .book-side-tab {
         if (autoPlaying) stopAutoPlay();
       }
     });
+
+    // 缓存书本尺寸，避免鼠标滑动时调用 getBoundingClientRect() 触发强制同步重排 (Zero Forced Reflow)
+    var cachedBookRect = null;
+    function updateBookRect() {
+      var bookEl = $('book');
+      if (bookEl) cachedBookRect = bookEl.getBoundingClientRect();
+    }
+    updateBookRect();
+
     var sideLeft = $('bookSideLeft'), sideRight = $('bookSideRight');
     if (sideLeft) sideLeft.addEventListener('click', function (e) { e.stopPropagation(); });
     if (sideRight) sideRight.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    // 鼠标靠近书本外侧或移出书页时瞬发秒弹书签 (RAF 节流极致流畅，弹窗打开时跳过)
-    var bmMoveTicking = false;
+    // 鼠标位于书本外侧感应区时显示书签，在书页内阅读时不显示 (零 CPU 重绘开销，状态防抖)
+    var prevRevealedL = false, prevRevealedR = false;
     window.addEventListener('mousemove', function (e) {
       if (mode !== 'book' || !sideLeft || !sideRight || activeOverlayCount > 0) return;
-      if (!bmMoveTicking) {
-        bmMoveTicking = true;
-        var cx = e.clientX, cy = e.clientY;
-        requestAnimationFrame(function () {
-          bmMoveTicking = false;
-          var bookEl = $('book');
-          if (!bookEl) return;
-          var rect = bookEl.getBoundingClientRect();
-          var inVertical = (cy >= rect.top - 50 && cy <= rect.bottom + 50);
-          var isOutsideLeft = inVertical && (cx < rect.left + 50 && cx > rect.left - 300);
-          var isOutsideRight = inVertical && (cx > rect.right - 50 && cx < rect.right + 300);
+      if (!cachedBookRect) updateBookRect();
+      if (!cachedBookRect) return;
+      var rect = cachedBookRect;
+      var cx = e.clientX, cy = e.clientY;
+      var inVertical = (cy >= rect.top - 50 && cy <= rect.bottom + 50);
+      var isOutsideLeft = inVertical && (cx < rect.left + 25 && cx > rect.left - 300);
+      var isOutsideRight = inVertical && (cx > rect.right - 25 && cx < rect.right + 300);
 
-          sideLeft.classList.toggle('is-revealed', isOutsideLeft);
-          sideRight.classList.toggle('is-revealed', isOutsideRight);
-        });
+      if (prevRevealedL !== isOutsideLeft) {
+        prevRevealedL = isOutsideLeft;
+        sideLeft.classList.toggle('is-revealed', isOutsideLeft);
+      }
+      if (prevRevealedR !== isOutsideRight) {
+        prevRevealedR = isOutsideRight;
+        sideRight.classList.toggle('is-revealed', isOutsideRight);
       }
     }, { passive: true });
 
@@ -4355,12 +4360,16 @@ body.has-overlay-open .book-side-tab {
     book.addEventListener('click', function (e) {
       if (flipping || isSingle()) return;
       if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack')) return;
-      var rect = book.getBoundingClientRect();
+      if (!cachedBookRect) updateBookRect();
+      var rect = cachedBookRect || book.getBoundingClientRect();
       var x = e.clientX - rect.left;
       if (x < rect.width * 0.18) flipBackward();
       else if (x > rect.width * 0.82) flipForward();
     });
-    window.addEventListener('resize', function () { if (mode === 'book') renderSpread(); });
+    window.addEventListener('resize', function () {
+      updateBookRect();
+      if (mode === 'book') renderSpread();
+    });
     setFxMode(fxEnabled, true);
     renderSpread();
 

@@ -696,7 +696,7 @@
   ];
 
   window.DATA = {
-    book: { title: '银行金融科技前沿技术研究成果', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 关系图谱', org: '科技规划处', date: '2026年', version: '' },
+    book: { title: '科技发展部前沿技术研究成果集', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 关系图谱', org: '科技规划处 编制', date: '2026年', version: '' },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
     library: { fields: FIELDS, items: ITEMS }, graph: buildGraph(), graphRelations: RELATIONS,
