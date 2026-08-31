@@ -23,6 +23,7 @@
     source: '· Gartner《Hype Cycle for Agentic AI／for AI 2025》及2026 CIO调研（2025.08）\n· OWASP《Top 10 for Agentic Applications 2026》（2025.12）；新加坡IMDA《Agentic AI治理框架》（2026.01）\n· 国内：工行／邮储私有化部署大模型、广西银行桂小AI跨境智能体（2025.09）；人民银行推进大模型金融应用分级分类安全标准\n采集时间：2026-07-06。\n【2026-07增补】深化研究v2.0（04-01_v2.0）29条参考文献：arXiv 2510.25445/2402.02716/2503.16416；Gartner 2026 Hype Cycle；McKinsey银行运营与利润池测算；MIT NANDA《GenAI Divide 2025》；OWASP《Top 10 for Agentic Applications 2026》；IMDA《Model AI Governance Framework for Agentic AI》（2026-01）；央行2026年科技工作会议。勘误：广西案例应为“汇小二”（广西银行业自律机制联建），非“广西银行桂小AI”。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）；Linux基金会MCP项目统计（2026年初）\n·【2026-07-15深化增补】方法论专章依据Gartner《2026 Hype Cycle for Agentic AI》原有引注展开，未新增外部来源。\n·【2026-07-15二次更新增补】Gartner《Hype Cycle for Agentic AI, 2026》官方原文(G00842058)及国家金融监督管理总局《关于银行业保险业人工智能安全开发应用的指导意见》(金发〔2026〕8号)官方原文，均已全文存档于CK001（新增引注[32]，引注[5]补全著录信息）。', attention: '极高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。',
+    hypeCycle: 'assets/images/ZT001/001_Gartner原图_Hype_Cycle_for_Agentic_AI_2026.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T02', no: 2, name: 'AI原生应用架构（AI-Native）', short: 'AI原生应用架构', nameEn: 'AI-Native',
@@ -39,6 +40,7 @@
     source: '· Gartner《Hype Cycle for Application Architecture and Integration 2025》\n· Gartner《Maturity Model for AI-Native Software Engineering》\n· Gartner新闻稿：2026年40%企业应用含任务型智能体（2025.08.26）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Datadog《State of AI Engineering》及行业趋势综述（2026）\n·【2026-07-15深化增补】Gartner《Hype Cycle for AI in Software Engineering, 2026》（新增第19条引注）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
     externalSource: '',
     summary: '以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。',
+    hypeCycle: 'assets/images/ZT002/002_Gartner原图_Hype_Cycle_for_AI_in_Software_Engineering_2026.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T03', no: 3, name: '事件驱动架构（EDA）', short: '事件驱动架构', nameEn: 'EDA',
@@ -87,6 +89,7 @@
     source: '· Gartner《What is Data Fabric》及2024数据管理演进调研\n· Gartner：2028年80%自治数据产品源于fabric＋mesh互补架构\n· Starburst／WhereScape：Gartner关于fabric与mesh的解读\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Alation／Promethium数据架构比较研究（2026）\n·【2026-07-15深化增补】方法论专章依据既有Gartner数据管理成熟度曲线引注（[5][6]）展开，未新增外部来源。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
     externalSource: '',
     summary: '以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。',
+    hypeCycle: 'assets/images/ZT005/005_Gartner原图_Hype_Cycle_for_Data_Management_2025.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T06', no: 6, name: '数据网格（Data Mesh）', short: '数据网格', nameEn: 'Data Mesh',
@@ -103,6 +106,7 @@
     source: '· Gartner《Data Fabric and Data Mesh: same or different》\n· Gartner 2024数据管理演进调研（26%采用data mesh）\n· Alation／Intellias：data mesh与data fabric对比（2025/2026）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Alation／Promethium数据架构比较研究（2026）', attention: '中', status: '在库—已深化研究', updateDate: '2026-07-20',
     externalSource: '',
     summary: '一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。',
+    hypeCycle: 'assets/images/ZT006/006_Gartner原图_Hype_Cycle_for_Data_Management_2025.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T07', no: 7, name: '后量子密码学（PQC）/后量子身份验证（PQA）', short: '后量子密码学', nameEn: 'PQA',
@@ -594,6 +598,7 @@
     source: '· Gartner《Hype Cycle for Platform Engineering 2026》《AI Evaluation and Observability Platforms》Peer Insights\n· 行业 LLMOps 平台评测（Atlan/TrueFoundry 2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与002/011关联，以本条目为主、002/011为补充）\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）\n·【2026-07-15深化增补】方法论专章依据既有TrueFoundry对Gartner平台工程Hype Cycle的解读引注（[7]）展开，未新增外部来源。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-20',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。',
+    hypeCycle: 'assets/images/ZT036/036_Gartner原图_Hype_Cycle_for_Platform_Engineering_2026.png',
     assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   }
   ];
@@ -695,11 +700,80 @@
     { name: '产业与技术媒体', type: '媒体', authority: 6, timeliness: 10, credibility: 6, coverage: 8, uniqueness: 6, comment: '信息面广、时效高，权威性需交叉验证。' }
   ];
 
+  var RADAR_CONFIG = {
+    title: '技术影响力雷达图（Impact Radar）',
+    subtitle: '【影响时间推导逻辑】方法借鉴 Gartner Emerging Tech Impact Radar 框架。圈层距离代表技术对银行业务与架构产生实质性影响及主流采纳的预估时间跨度，由「技术成熟度（TRL）」、「战略紧迫度（监管与同业窗口）」与「引入可行度（工程治理短板）」交叉推导，并对标权威达峰周期（Time to Plateau）与政策导向综合判定：当前（0–1年）规模落地 · 1–3年关键推进 · 3–6年范式重塑 · 6–8年前瞻储备。气泡大小表征价值贡献度（1–5分），颜色表征处置档位。',
+    sectors: [
+      { key: '业务', label: '业务', startAngle: 0, endAngle: 72, labelAngle: 36 },
+      { key: '应用', label: '应用', startAngle: 72, endAngle: 144, labelAngle: 108 },
+      { key: '数据', label: '数据', startAngle: 144, endAngle: 216, labelAngle: 180 },
+      { key: '技术', label: '技术', startAngle: 216, endAngle: 288, labelAngle: 252 },
+      { key: '安全', label: '安全', startAngle: 288, endAngle: 360, labelAngle: 324 }
+    ],
+    rings: [
+      { key: '当前', label: '当前', minR: 0, maxR: 75, midR: 45 },
+      { key: '1-3年', label: '1-3年', minR: 75, maxR: 145, midR: 110 },
+      { key: '3-6年', label: '3-6年', minR: 145, maxR: 220, midR: 182 },
+      { key: '6-8年', label: '6-8年', minR: 220, maxR: 295, midR: 258 },
+      { key: '8年以上', label: '8年以上', minR: 295, maxR: 370, midR: 332 }
+    ],
+    tierColors: TIER_COLOR,
+    items: [
+      // 业务 (5)
+      { id: 'T28', no: '28', name: '数字人与空间计算', sector: '业务', ring: '3-6年', tier: '研究层', value: 3, r: 182, angle: 14 },
+      { id: 'T31', no: '31', name: '业务编排与自动化技术', sector: '业务', ring: '3-6年', tier: '布局层', value: 4, r: 202, angle: 29 },
+      { id: 'T01', no: '01', name: '自主型AI智能体', sector: '业务', ring: '3-6年', tier: '布局层', value: 5, r: 182, angle: 45 },
+      { id: 'T15', no: '15', name: '区块链资产代币化与可编程货币', sector: '业务', ring: '3-6年', tier: '观察层', value: 4, r: 204, angle: 59 },
+      { id: 'T32', no: '32', name: '客户数字孪生', sector: '业务', ring: '6-8年', tier: '观察层', value: 2, r: 275, angle: 36 },
+
+      // 应用 (10)
+      { id: 'T03', no: '03', name: '事件驱动架构', sector: '应用', ring: '当前', tier: '论证层', value: 4, r: 50, angle: 108 },
+      { id: 'T19', no: '19', name: '小语言模型与端侧AI', sector: '应用', ring: '1-3年', tier: '研究层', value: 3, r: 106, angle: 83 },
+      { id: 'T04', no: '04', name: 'WebAssembly', sector: '应用', ring: '1-3年', tier: '研究层', value: 3, r: 128, angle: 99 },
+      { id: 'T17', no: '17', name: 'AI智能体互操作协议', sector: '应用', ring: '1-3年', tier: '研究层', value: 4, r: 106, angle: 117 },
+      { id: 'T21', no: '21', name: '因果AI', sector: '应用', ring: '1-3年', tier: '研究层', value: 3, r: 128, angle: 133 },
+      { id: 'T27', no: '27', name: '神经符号AI／可推理AI', sector: '应用', ring: '3-6年', tier: '研究层', value: 3, r: 176, angle: 80 },
+      { id: 'T30', no: '30', name: '监管科技与合规科技', sector: '应用', ring: '3-6年', tier: '研究层', value: 3, r: 202, angle: 94 },
+      { id: 'T35', no: '35', name: '可组合核心银行系统', sector: '应用', ring: '3-6年', tier: '观察层', value: 4, r: 176, angle: 108 },
+      { id: 'T02', no: '02', name: 'AI原生应用架构', sector: '应用', ring: '3-6年', tier: '布局层', value: 4, r: 202, angle: 122 },
+      { id: 'T34', no: '34', name: '多智能体系统', sector: '应用', ring: '3-6年', tier: '布局层', value: 4, r: 176, angle: 136 },
+
+      // 数据 (6)
+      { id: 'T13', no: '13', name: '隐私增强计算／隐私计算', sector: '数据', ring: '1-3年', tier: '论证层', value: 4, r: 112, angle: 158 },
+      { id: 'T16', no: '16', name: '向量数据库与检索增强生成', sector: '数据', ring: '1-3年', tier: '论证层', value: 4, r: 132, angle: 180 },
+      { id: 'T33', no: '33', name: '决策智能平台', sector: '数据', ring: '1-3年', tier: '论证层', value: 5, r: 112, angle: 202 },
+      { id: 'T05', no: '05', name: '数据织网', sector: '数据', ring: '3-6年', tier: '布局层', value: 4, r: 184, angle: 158 },
+      { id: 'T06', no: '06', name: '数据网格', sector: '数据', ring: '3-6年', tier: '观察层', value: 3, r: 206, angle: 180 },
+      { id: 'T20', no: '20', name: '合成数据', sector: '数据', ring: '3-6年', tier: '研究层', value: 3, r: 184, angle: 202 },
+
+      // 技术 (7)
+      { id: 'T12', no: '12', name: '可观测性标准化', sector: '技术', ring: '当前', tier: '论证层', value: 4, r: 50, angle: 252 },
+      { id: 'T11', no: '11', name: '平台工程／IDP', sector: '技术', ring: '1-3年', tier: '论证层', value: 4, r: 112, angle: 230 },
+      { id: 'T29', no: '29', name: '绿色与可持续IT／液冷数据中心', sector: '技术', ring: '1-3年', tier: '论证层', value: 3, r: 132, angle: 252 },
+      { id: 'T36', no: '36', name: '人工智能应用开发平台与模型运维', sector: '技术', ring: '1-3年', tier: '论证层', value: 4, r: 112, angle: 274 },
+      { id: 'T10', no: '10', name: '算力网络', sector: '技术', ring: '3-6年', tier: '论证层', value: 4, r: 195, angle: 252 },
+      { id: 'T09', no: '09', name: '量子计算', sector: '技术', ring: '6-8年', tier: '研究层', value: 4, r: 275, angle: 238 },
+      { id: 'T26', no: '26', name: '神经形态与光子计算', sector: '技术', ring: '6-8年', tier: '观察层', value: 3, r: 275, angle: 266 },
+
+      // 安全 (8) - 彻底拉开环内半径与角度，杜绝交叠
+      { id: 'T08', no: '08', name: '零信任架构', sector: '安全', ring: '当前', tier: '论证层', value: 4, r: 40, angle: 296 },
+      { id: 'T18', no: '18', name: '人工智能安全平台', sector: '安全', ring: '当前', tier: '论证层', value: 4, r: 64, angle: 324 },
+      { id: 'T22', no: '22', name: '软件供应链安全', sector: '安全', ring: '当前', tier: '论证层', value: 4, r: 40, angle: 352 },
+      { id: 'T23', no: '23', name: '深度伪造检测与反AI欺诈', sector: '安全', ring: '1-3年', tier: '论证层', value: 5, r: 110, angle: 304 },
+      { id: 'T07', no: '07', name: '后量子密码学', sector: '安全', ring: '1-3年', tier: '观察层', value: 4, r: 134, angle: 344 },
+      { id: 'T14', no: '14', name: '机密计算', sector: '安全', ring: '3-6年', tier: '观察层', value: 4, r: 180, angle: 305 },
+      { id: 'T24', no: '24', name: '去中心化身份与可验证凭证', sector: '安全', ring: '3-6年', tier: '研究层', value: 3, r: 206, angle: 343 },
+      { id: 'T25', no: '25', name: '量子保密通信／量子密钥分发', sector: '安全', ring: '6-8年', tier: '观察层', value: 4, r: 275, angle: 324 }
+    ]
+  };
+
   window.DATA = {
-    book: { title: '科技发展部前沿技术研究成果集', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 关系图谱', org: '科技规划处 编制', date: '2026年', version: '' },
+    book: { title: '科技发展部前沿技术研究成果集', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 影响力雷达 · 关系图谱', org: '科技规划处 编制', date: '2026年', version: '' },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
-    library: { fields: FIELDS, items: ITEMS }, graph: buildGraph(), graphRelations: RELATIONS,
+    library: { fields: FIELDS, items: ITEMS },
+    impactRadar: RADAR_CONFIG,
+    graph: buildGraph(), graphRelations: RELATIONS,
     technologies: ITEMS
   };
 })();
