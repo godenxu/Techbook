@@ -1339,7 +1339,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   flex-direction: column;
   min-height: 0;
 }
-.panel-body.flex { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.panel-body.flex { display: flex; flex-direction: column; overflow: hidden; padding: 12px 18px; height: 100%; min-height: 0; }
 
 /* 专题视窗顶栏详细技术标题 (1.5x 放大) */
 .panel-tech-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; flex: 1; min-width: 0; }
@@ -1450,16 +1450,92 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .row-detail .rd .v { font-size: 14px; margin-top: 2px; }
 .row-detail .rd.full { grid-column: 1 / -1; }
 
-/* ============================ 图谱 ============================ */
+/* ============================ 企架十大中心前沿技术赋能蓝图 ============================ */
+.blueprint-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.blueprint-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+.tc-center-box {
+  transition: all .2s ease;
+}
+.tc-center-box:hover > .tc-box-rect {
+  stroke: var(--accent);
+  stroke-width: 1.8px;
+  filter: drop-shadow(0 2px 8px rgba(79, 140, 255, 0.25));
+}
+.tc-tech-pill {
+  cursor: pointer;
+  transition: transform .15s ease, filter .15s ease;
+}
+.tc-tech-pill:hover {
+  transform: translateY(-1px);
+}
+.tc-tech-pill:hover > .tc-pill-bg {
+  fill: var(--accent) !important;
+  stroke: var(--accent) !important;
+  stroke-width: 1.8px !important;
+  filter: drop-shadow(0 2px 8px rgba(79, 140, 255, 0.45));
+}
+.tc-tech-pill:hover text {
+  font-weight: 900 !important;
+  fill: #ffffff !important;
+}
+[data-theme="light"] .tc-tech-pill:hover > .tc-pill-bg {
+  fill: #2563eb !important;
+  stroke: #1d4ed8 !important;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.35));
+}
+[data-theme="light"] .tc-tech-pill:hover text {
+  fill: #ffffff !important;
+  font-weight: 800 !important;
+}
+.tc-flow-text {
+  font-size: 11px;
+  fill: var(--dim);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
 .graph-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
 .legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--dim); }
 .legend .lg { display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
 .legend .lg .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
 .legend .lg .line { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
 .legend .lg.off { opacity: .3; }
-#graphBox { position: relative; width: 100%; height: min(66vh, 640px); border: 1px solid var(--border); border-radius: 12px; background: var(--bg2); overflow: hidden; cursor: grab; }
-#graphBox svg { width: 100%; height: 100%; display: block; }
-#graphBox.dragging { cursor: grabbing; }
+#graphBox {
+  position: relative;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg2);
+  overflow: hidden;
+  padding: 6px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#graphBox svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  display: block;
+}
 .graph-tip { color: var(--faint); font-size: 12px; }
 
 /* ============================ 图表 ============================ */
@@ -1822,6 +1898,124 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   margin-top: 2px;
 }
 
+/* ============================ 技术成熟度曲线 (Gartner Hype Cycle) ============================ */
+.hc-page-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hc-stat-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hc-stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+.hc-stat-pill b {
+  color: var(--accent);
+  font-family: var(--mono);
+}
+.hc-preview-box {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.hc-preview-box:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(79, 140, 255, 0.15);
+}
+.hc-interactive-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+.hc-top-chart-box {
+  position: relative;
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.hc-top-chart-box svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.hc-node-g {
+  cursor: pointer;
+  transition: opacity .2s ease;
+}
+.hc-node-g .hc-hit-circle {
+  fill: transparent;
+  cursor: pointer;
+}
+.hc-node-g .hc-label-bg {
+  transition: fill .15s ease, stroke .15s ease, filter .15s ease;
+}
+.hc-node-g:hover .hc-label-bg,
+.hc-node-g.highlighted .hc-label-bg {
+  fill: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 2px 8px rgba(79, 140, 255, 0.45));
+}
+.hc-node-g:hover .hc-label-text,
+.hc-node-g.highlighted .hc-label-text {
+  fill: #ffffff !important;
+  font-weight: 900 !important;
+}
+.hc-node-g:hover .hc-sym-shape,
+.hc-node-g.highlighted .hc-sym-shape {
+  stroke: var(--accent) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 6px rgba(79, 140, 255, 0.6));
+}
+.hc-node-g:hover .hc-stem-line,
+.hc-node-g.highlighted .hc-stem-line {
+  stroke: var(--accent) !important;
+  stroke-width: 1.8px !important;
+  stroke-opacity: 0.95 !important;
+}
+[data-theme="light"] .hc-node-g:hover .hc-label-bg,
+[data-theme="light"] .hc-node-g.highlighted .hc-label-bg {
+  fill: #2563eb !important;
+  stroke: #1d4ed8 !important;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.35));
+}
+[data-theme="light"] .hc-node-g:hover .hc-label-text,
+[data-theme="light"] .hc-node-g.highlighted .hc-label-text {
+  fill: #ffffff !important;
+  font-weight: 800 !important;
+}
+.hc-node-g.filtered-out {
+  opacity: 0.12;
+  pointer-events: none;
+}
+
 @media (max-width: 1400px) {
   .radar-cockpit-layout {
     grid-template-columns: 260px 1fr 260px;
@@ -1846,28 +2040,37 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .radar-tooltip {
   position: absolute;
   pointer-events: none;
-  background: rgba(15, 23, 42, 0.94);
-  color: #ffffff;
+  background: var(--panel);
+  color: var(--text);
   padding: 10px 14px;
   border-radius: 10px;
   font-size: 13px;
   line-height: 1.5;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
   z-index: 1000;
-  max-width: 280px;
+  max-width: 300px;
   transform: translate(-50%, -110%);
   transition: opacity .15s;
+}
+[data-theme="light"] .radar-tooltip {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18) !important;
+}
+[data-theme="light"] .radar-tooltip b {
+  color: #0f172a !important;
 }
 .radar-tooltip-title {
   font-weight: 800;
   font-size: 14px;
-  color: #38bdf8;
+  color: var(--accent);
   margin-bottom: 4px;
 }
 .radar-tooltip-meta {
   font-size: 12px;
-  color: #cbd5e1;
+  color: var(--dim);
   display: flex;
   flex-direction: column;
   gap: 2px;

@@ -35,10 +35,10 @@
   }
   function catColor(name) { return DATA.categoryColor[name] || '#8fa3c0'; }
   function tierColor(name) {
-    if (name === '布局层') return '#fb7185';
+    if (name === '布局层') return '#34d399';
     if (name === '论证层') return '#38bdf8';
     if (name === '研究层') return '#fbbf24';
-    if (name === '观察层') return '#34d399';
+    if (name === '观察层') return '#fb7185';
     return (DATA && DATA.tierColor && DATA.tierColor[name]) || '#8fa3c0';
   }
   function scorePill(v) {
@@ -129,6 +129,16 @@
     };
     if (currentPanelMeta.type === 'library') {
       snap.libState = Object.assign({}, libState);
+    } else if (currentPanelMeta.type === 'hypeCycle') {
+      var hcWrap = $('panelBody') ? $('panelBody').querySelector('.hc-interactive-wrap') : null;
+      if (hcWrap) {
+        snap.hypeCycleFilters = {
+          phase: hcWrap.querySelector('.radar-btn-group[data-filter="phase"] .active') ? hcWrap.querySelector('.radar-btn-group[data-filter="phase"] .active').getAttribute('data-val') : 'all',
+          tier: hcWrap.querySelector('.radar-btn-group[data-filter="tier"] .active') ? hcWrap.querySelector('.radar-btn-group[data-filter="tier"] .active').getAttribute('data-val') : 'all',
+          plateau: hcWrap.querySelector('.radar-btn-group[data-filter="plateau"] .active') ? hcWrap.querySelector('.radar-btn-group[data-filter="plateau"] .active').getAttribute('data-val') : 'all',
+          q: hcWrap.querySelector('.hc-search-input') ? hcWrap.querySelector('.hc-search-input').value : ''
+        };
+      }
     } else if (currentPanelMeta.type === 'radar') {
       var rWrap = $('panelBody') ? $('panelBody').querySelector('.radar-interactive-wrap') : null;
       if (rWrap) {
@@ -156,6 +166,8 @@
     var snapshot = panelNavStack.pop();
     if (snapshot.meta.type === 'library') {
       openLibraryPanel(null, snapshot.libState, snapshot.scrollTop, true);
+    } else if (snapshot.meta.type === 'hypeCycle') {
+      openHypeCyclePanel(snapshot.hypeCycleFilters, snapshot.scrollTop, true);
     } else if (snapshot.meta.type === 'radar') {
       openRadarPanel(snapshot.radarFilters, snapshot.scrollTop, true);
     } else if (snapshot.meta.type === 'graph') {
@@ -287,10 +299,11 @@
     }
     for (k = 0; k < n; k++) { var p2 = pt(k, R); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p2[0] + '" y2="' + p2[1] + '" style="stroke:var(--border)" stroke-width="1"/>'; }
     var rounds = tech.assessment.rounds || [{ name: '本年度', scores: dims.map(function (d) { return d.score; }) }];
+    var tCol = (tech && tech.tier ? tierColor(tech.tier) : '#34d399') || '#34d399';
     rounds.forEach(function (rd, ri) {
       var pts2 = [];
       for (k = 0; k < n; k++) { var maxv = dims[k].max || 5; var pp = pt(k, rd.scores[k] / maxv * R); pts2.push(pp[0].toFixed(1) + ',' + pp[1].toFixed(1)); }
-      var col = ri === 0 ? '#4f8cff' : '#f59e0b';
+      var col = ri === 0 ? tCol : '#f59e0b';
       s += '<polygon class="radar-poly" points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2.5"/>';
       for (k = 0; k < n; k++) {
         var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
@@ -307,7 +320,7 @@
     s += '</svg>';
     var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
       rounds.map(function (rd, ri) {
-        return '<span style="margin:0 10px"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + (ri === 0 ? '#4f8cff' : '#f59e0b') + ';margin-right:5px"></span>' + esc(rd.name) + '</span>';
+        return '<span style="margin:0 10px"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + (ri === 0 ? tCol : '#f59e0b') + ';margin-right:5px"></span>' + esc(rd.name) + '</span>';
       }).join('') + '</div>' : '';
     return s + legend;
   }
@@ -341,7 +354,6 @@
     return '<div class="cover-full">' + orbs +
       '<div class="cov-kicker">BANK FINTECH RESEARCH</div>' +
       '<div class="cov-title">' + coverTitle + '</div>' +
-      '<div class="cov-sub">' + esc(b.subtitle) + '</div>' +
       '<div class="cov-rule"></div>' +
       '<div class="cov-meta">' + esc(b.org) + '<br>' + esc(b.date) + '</div>' +
       '</div>';
@@ -356,7 +368,7 @@
       '<div class="page-title">' + esc(b.title) + '</div>' +
       '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书系统汇集科技发展部前沿技术研究成果，分为两篇：<b>第一篇 · 整体研究成果</b>（工作方案、情报源评判、前沿技术储备库、技术关系图谱）与<b>第二篇 · 各项前沿技术研究</b>（评估表、专题报告、一张图概述）。</div>' +
+      '<div class="pg-p">本电子研究书系统汇集科技发展部前沿技术研究成果，分为三章：<b>第一章 · 工作方案与方法</b>（工作方案、情报源评判报告）、<b>第二章 · 整体研究成果</b>（前沿技术储备库、技术成熟度曲线、技术影响力雷达图、企架十大中心落位图谱）与<b>第三章 · 各项前沿技术研究</b>（六维研判评估表、专题研究报告、一张图概述）。</div>' +
       '<div class="stat-grid">' +
       '<div class="stat"><div class="num">' + lib + '</div><div class="lbl">长名单技术项</div></div>' +
       '<div class="stat"><div class="num">' + cats + '</div><div class="lbl">战略方向</div></div>' +
@@ -365,9 +377,10 @@
       '</div>' +
       '<div class="pg-section">' +
       '<div class="pg-h">成果体系架构</div>' +
-      '<div class="cards" style="grid-template-columns:1fr 1fr;gap:10px">' +
-      '<div class="card"><div class="c-title" style="color:var(--accent)">第一篇 · 整体研究成果</div><div class="c-comment">包含技术储备库（36项）、情报源评判报告、关系图谱及敏捷工作方案，支撑全行宏观研判与战略技术选型。</div></div>' +
-      '<div class="card"><div class="c-title" style="color:var(--accent2)">第二篇 · 各项前沿技术研究</div><div class="c-comment">针对重点前沿技术输出六维研判评估表、万字专题报告（Word/PPT）及一张图，深度赋能业务与架构落地。</div></div>' +
+      '<div class="cards" style="grid-template-columns:1fr 1fr 1fr;gap:8px">' +
+      '<div class="card"><div class="c-title" style="color:var(--accent)">第一章 · 工作方案与方法</div><div class="c-comment">工作方案与全景情报源评判报告，确立科学规范的前沿技术研究与评价方法论。</div></div>' +
+      '<div class="card"><div class="c-title" style="color:var(--accent2)">第二章 · 整体研究成果</div><div class="c-comment">技术储备库（36项）、成熟度曲线、影响力雷达及十大中心落位图谱，支撑全行宏观研判与战略选型。</div></div>' +
+      '<div class="card"><div class="c-title" style="color:#10b981">第三章 · 各项前沿技术研究</div><div class="c-comment">针对 36 项前沿技术输出六维研判评估表、万字专题报告（Word/PPT）及一张图概述，深度赋能业务落地。</div></div>' +
       '</div></div>' +
       '</div>';
   }
@@ -381,7 +394,7 @@
       '<div class="h-rule"></div>' +
       '<div class="pg-section">' +
       '<div class="pg-h">前沿技术储备库动态分层管理机制</div>' +
-      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；关系图谱共 ' + DATA.graph.nodes.length + ' 个节点、' + edges + ' 条关系边；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
+      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；落位图谱覆盖企架十大中心 36 项技术落位；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
       '<div class="pg-p dim">系统支持「书籍模式」沉浸式翻阅与「网页模式」大屏仪表盘，支持明暗主题自适应与实时检索。</div>' +
       '</div>' +
       '<div class="pg-section" style="margin-top:16px">' +
@@ -402,15 +415,17 @@
     add('', '扉页 · 成果总览', 'title', false);
     add('', '成果全景与说明', 'overview', false);
     add('', '目录 · 双页对开', 'toc1', false);
-    add('第一篇', '整体研究成果', 'part1', true);
+    add('第一章', '工作方案与方法', 'part1', true);
     add('1.1', '工作方案', 'workplan', false);
     add('1.2', '情报源评判报告', 'sources', false);
-    add('1.3', '前沿技术储备库（长名单）', 'library', false);
-    add('1.4', '技术影响力雷达图', 'radar', false);
-    add('1.5', '各项前沿技术关系图谱', 'graph', false);
-    add('第二篇', '各项前沿技术研究', 'part2', true);
+    add('第二章', '整体研究成果', 'part2', true);
+    add('2.1', '前沿技术储备库（长名单）', 'library', false);
+    add('2.2', '技术成熟度曲线（Gartner Hype Cycle）', 'hypeCycle', false);
+    add('2.3', '技术影响力雷达图', 'radar', false);
+    add('2.4', '前沿技术在企架十大中心的落位图谱', 'graph', false);
+    add('第三章', '各项前沿技术研究', 'part3', true);
     DATA.technologies.forEach(function (t, i) {
-      add('2.' + (i + 1), t.name, 'tech-' + t.id, false);
+      add('3.' + (i + 1), t.name, 'tech-' + t.id, false);
     });
     add('附录', '术语 · 数据来源 · 版本', 'appendix', false);
     add('', '结语', 'closing', false);
@@ -614,6 +629,462 @@
     }
   }
 
+  /* ==================== 技术成熟度曲线 (Gartner Hype Cycle) ==================== */
+  function getHypeCycleCurveY(x) {
+    if (x <= 310) {
+      // 萌芽期到膨胀期峰顶：平滑S曲线，峰顶平缓
+      var t = (x - 60) / (310 - 60);
+      var p0 = 460, p1 = 450, p2 = 65, p3 = 65;
+      var u = 1 - t;
+      return u*u*u*p0 + 3*u*u*t*p1 + 3*u*t*t*p2 + t*t*t*p3;
+    } else if (x <= 505) {
+      // 膨胀期峰顶到谷底：平滑过渡下坠，谷底宽阔平缓
+      var t = (x - 310) / (505 - 310);
+      var p0 = 65, p1 = 65, p2 = 450, p3 = 450;
+      var u = 1 - t;
+      return u*u*u*p0 + 3*u*u*t*p1 + 3*u*t*t*p2 + t*t*t*p3;
+    } else if (x <= 820) {
+      // 谷底爬升期：平滑爬升斜率，优雅接入成熟平稳期
+      var t = (x - 505) / (820 - 505);
+      var p0 = 450, p1 = 450, p2 = 270, p3 = 268;
+      var u = 1 - t;
+      return u*u*u*p0 + 3*u*u*t*p1 + 3*u*t*t*p2 + t*t*t*p3;
+    } else {
+      // 生产力成熟平稳期：平稳横线
+      var t = Math.min(1, (x - 820) / (950 - 820));
+      return 268 - t * 3;
+    }
+  }
+
+  function renderHypeCycleSVG(variant, containerId) {
+    var isMini = variant === 'mini';
+    var cfg = DATA.hypeCycle;
+    var W = 1000, H = 550;
+    var phases = cfg.phases;
+    var rawItems = cfg.items;
+
+    // 1. 5个阶段背景分色带与竖向分割线
+    var phaseBands = phases.map(function (ph, idx) {
+      var w = ph.endX - ph.startX;
+      var line = idx < phases.length - 1 ? '<line x1="' + ph.endX + '" y1="38" x2="' + ph.endX + '" y2="500" stroke="currentColor" stroke-opacity="0.16" stroke-dasharray="4 4" stroke-width="1.2"/>' : '';
+      return '<rect x="' + ph.startX + '" y="38" width="' + w + '" height="462" fill="' + ph.color + '"/>' + line;
+    }).join('');
+
+    // 2. 阶段标头 (精调紧凑字号 12px / 8.5px)
+    var phaseHeaders = phases.map(function (ph) {
+      var midX = (ph.startX + ph.endX) / 2;
+      return '<g class="hc-phase-header">' +
+        '<text x="' + midX + '" y="22" text-anchor="middle" font-size="12" font-weight="900" fill="var(--text)" letter-spacing="0.5">' + esc(ph.name) + '</text>' +
+        '<text x="' + midX + '" y="34" text-anchor="middle" font-size="8.5" font-weight="600" fill="var(--dim)" font-family="var(--sans)">' + esc(ph.nameEn) + '</text>' +
+        '</g>';
+    }).join('');
+
+    // 3. 坐标轴 (修复纵轴文字溢出：text-anchor="start" x="56"，绝不超出左边界)
+    var axes = '<g class="hc-axes" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.4">' +
+      '<line x1="50" y1="500" x2="50" y2="42" marker-end="url(#hcArr)"/>' +
+      '<text x="56" y="44" text-anchor="start" font-size="9.5" font-weight="750" fill="var(--dim)" stroke="none">期望值 / 产业关注度 (Expectations) ↑</text>' +
+      '<line x1="50" y1="500" x2="975" y2="500" marker-end="url(#hcArr)"/>' +
+      '<text x="970" y="515" text-anchor="end" font-size="9.5" font-weight="750" fill="var(--dim)" stroke="none">生命周期演进阶段 (Time / Maturity) →</text>' +
+      '</g>';
+
+    // 4. 经典 Hype Cycle 拟合平滑连续数学曲线 (100% 精确匹配节点点位)
+    var curvePathD = 'M 60,' + getHypeCycleCurveY(60).toFixed(1);
+    for (var cx = 65; cx <= 950; cx += 5) {
+      curvePathD += ' L ' + cx + ',' + getHypeCycleCurveY(cx).toFixed(1);
+    }
+    var curve = '<g class="hc-curve-group">' +
+      '<path d="' + curvePathD + '" fill="none" stroke="var(--accent)" stroke-opacity="0.2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="' + curvePathD + '" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</g>';
+
+    // 5. 动态计算胶囊全称宽度与力导向防重叠布局 (Non-overlapping Label Placement)
+    var BOX_H = 15;
+    var layoutNodes = rawItems.map(function (it, idx) {
+      var tech = findTech(it.id) || findLib(it.id);
+      var standardShort = tech ? (tech.short || tech.name) : it.name;
+      // 绝不截断省略，完整显示标准技术简称与编号
+      var fullLabelStr = it.id + ' ' + standardShort;
+
+      // 动态计算字符宽度 (汉字 7.6px, 西文 4.4px)
+      var charLen = 0;
+      for (var i = 0; i < fullLabelStr.length; i++) {
+        charLen += (fullLabelStr.charCodeAt(i) > 255 ? 7.6 : 4.4);
+      }
+      var bw = Math.max(38, Math.ceil(charLen + 10));
+
+      // 确保节点中心 Y 坐标 100% 严格落在曲线上
+      var exactY = Math.round(getHypeCycleCurveY(it.x));
+      var isTop = (it.labelPos === 'top');
+      if (!it.labelPos) isTop = (idx % 2 === 0);
+
+      var tx = it.x + (it.labelDx || 0);
+      var ty = exactY + (it.labelDy || (isTop ? -18 : 18));
+
+      return {
+        item: it,
+        tech: tech,
+        id: it.id,
+        labelStr: fullLabelStr,
+        bw: bw,
+        bh: BOX_H,
+        x: it.x,
+        y: exactY,
+        tx: tx,
+        ty: ty,
+        isTop: isTop
+      };
+    });
+
+    // 2D 碰撞消除迭代求解 (Relaxation loop)
+    for (var iter = 0; iter < 120; iter++) {
+      for (var i = 0; i < layoutNodes.length; i++) {
+        for (var j = i + 1; j < layoutNodes.length; j++) {
+          var a = layoutNodes[i];
+          var b = layoutNodes[j];
+
+          var minDistanceX = (a.bw + b.bw) / 2 + 3;
+          var minDistanceY = (a.bh + b.bh) / 2 + 3;
+
+          var dx = b.tx - a.tx;
+          var dy = b.ty - a.ty;
+
+          if (Math.abs(dx) < minDistanceX && Math.abs(dy) < minDistanceY) {
+            var overlapX = minDistanceX - Math.abs(dx);
+            var overlapY = minDistanceY - Math.abs(dy);
+
+            if (overlapY < overlapX * 1.4) {
+              var shiftY = (overlapY / 2);
+              if (dy > 0) { b.ty += shiftY; a.ty -= shiftY; }
+              else { b.ty -= shiftY; a.ty += shiftY; }
+            } else {
+              var shiftX = (overlapX / 2);
+              if (dx > 0) { b.tx += shiftX; a.tx -= shiftX; }
+              else { b.tx -= shiftX; a.tx += shiftX; }
+            }
+          }
+        }
+      }
+
+      // 严格限制在画布安全可见区域内（左边界 >= 20，绝不越界）
+      for (var k = 0; k < layoutNodes.length; k++) {
+        var n = layoutNodes[k];
+        if (n.tx - n.bw / 2 < 20) n.tx = 20 + n.bw / 2;
+        if (n.tx + n.bw / 2 > 980) n.tx = 980 - n.bw / 2;
+        if (n.ty - n.bh / 2 < 42) n.ty = 42 + n.bh / 2;
+        if (n.ty + n.bh / 2 > 512) n.ty = 512 - n.bh / 2;
+      }
+    }
+
+    // 6. 36个技术节点绘制 (中心点 100% 严格落在曲线上)
+    var nodes = layoutNodes.map(function (n) {
+      var it = n.item;
+      var tech = n.tech;
+      var tier = tech ? tech.tier : '布局层';
+      var tCol = tierColor(tier);
+      var symbolMarkup = '';
+
+      if (it.plateau === '<2年') {
+        symbolMarkup = '<circle class="hc-sym-shape" cx="' + n.x + '" cy="' + n.y + '" r="5.5" fill="' + tCol + '" stroke="var(--panel)" stroke-width="1.8"/>';
+      } else if (it.plateau === '2-5年') {
+        symbolMarkup = '<polygon class="hc-sym-shape" points="' + n.x + ',' + (n.y - 6.5) + ' ' + (n.x - 5.5) + ',' + (n.y + 4.5) + ' ' + (n.x + 5.5) + ',' + (n.y + 4.5) + '" fill="' + tCol + '" stroke="var(--panel)" stroke-width="1.8"/>';
+      } else if (it.plateau === '5-10年') {
+        symbolMarkup = '<rect class="hc-sym-shape" x="' + (n.x - 4.5) + '" y="' + (n.y - 4.5) + '" width="9" height="9" rx="1.8" fill="' + tCol + '" stroke="var(--panel)" stroke-width="1.8"/>';
+      } else {
+        symbolMarkup = '<polygon class="hc-sym-shape" points="' + n.x + ',' + (n.y - 6.5) + ' ' + (n.x + 5.5) + ',' + n.y + ' ' + n.x + ',' + (n.y + 6.5) + ' ' + (n.x - 5.5) + ',' + n.y + '" fill="' + tCol + '" stroke="var(--panel)" stroke-width="1.8"/>';
+      }
+
+      var halfW = n.bw / 2;
+      var labelBox = '<g class="hc-label-box" transform="translate(' + n.tx + ', ' + n.ty + ')">' +
+        '<rect class="hc-label-bg" x="' + (-halfW) + '" y="-7.5" width="' + n.bw + '" height="' + n.bh + '" rx="3.5" fill="var(--panel)" stroke="' + tCol + '" stroke-width="1.1"/>' +
+        '<text class="hc-label-text" x="0" y="3.2" text-anchor="middle" font-size="8.5" font-weight="750" fill="var(--text)">' + esc(n.labelStr) + '</text>' +
+        '</g>';
+
+      var isAbove = n.ty < n.y;
+      var stemY1 = isAbove ? (n.y - 6) : (n.y + 6);
+      var stemY2 = isAbove ? (n.ty + 7.5) : (n.ty - 7.5);
+      var stemLine = '<line class="hc-stem-line" x1="' + n.x + '" y1="' + stemY1 + '" x2="' + n.tx + '" y2="' + stemY2 + '" stroke="' + tCol + '" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="1.5 1.5"/>';
+
+      return '<g class="hc-node-g" data-id="' + esc(it.id) + '" data-no="' + esc(it.no) + '" data-tier="' + esc(tier) + '" data-maturity="' + esc(tech ? tech.maturity : '') + '" data-phase="' + esc(it.phase) + '" data-plateau="' + esc(it.plateau) + '" data-cat="' + esc(tech ? tech.category : '') + '" data-action="open-tech">' +
+        '<circle class="hc-hit-circle" cx="' + n.x + '" cy="' + n.y + '" r="14" fill="transparent" cursor="pointer"/>' +
+        stemLine +
+        symbolMarkup +
+        labelBox +
+        '</g>';
+    }).join('');
+
+    // 7. 底部图例 (精细适中 9.5px)
+    var legend = '<g class="hc-legends" font-size="9.5" fill="var(--dim)">' +
+      '<g transform="translate(60, 532)">' +
+        '<text x="0" y="0" font-weight="750" fill="var(--text)">达平稳期时间：</text>' +
+        '<circle cx="85" cy="-3.2" r="4" fill="var(--dim)"/>' +
+        '<text x="94" y="0">2年以内</text>' +
+        '<polygon points="152,-7 148,1 156,1" fill="var(--dim)"/>' +
+        '<text x="160" y="0">2–5年</text>' +
+        '<rect x="208" y="-7" width="7" height="7" rx="1.2" fill="var(--dim)"/>' +
+        '<text x="219" y="0">5–10年</text>' +
+        '<polygon points="270,-7 274,-3.5 270,0 266,-3.5" fill="var(--dim)"/>' +
+        '<text x="279" y="0">10年以上</text>' +
+      '</g>' +
+      '<g transform="translate(630, 532)">' +
+        '<text x="0" y="0" font-weight="750" fill="var(--text)">处置档位：</text>' +
+        '<circle cx="65" cy="-3.2" r="4.5" fill="#34d399"/>' +
+        '<text x="74" y="0">布局层</text>' +
+        '<circle cx="130" cy="-3.2" r="4.5" fill="#38bdf8"/>' +
+        '<text x="139" y="0">论证层</text>' +
+        '<circle cx="195" cy="-3.2" r="4.5" fill="#fbbf24"/>' +
+        '<text x="204" y="0">研究层</text>' +
+        '<circle cx="260" cy="-3.2" r="4.5" fill="#fb7185"/>' +
+        '<text x="269" y="0">观察层</text>' +
+      '</g>' +
+      '</g>';
+
+    var defs = '<defs>' +
+      '<marker id="hcArr" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="currentColor" opacity="0.45"/></marker>' +
+      '</defs>';
+
+    return '<svg class="hc-svg" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">' +
+      defs +
+      '<g class="hc-bg-layer">' + phaseBands + '</g>' +
+      '<g class="hc-header-layer">' + phaseHeaders + '</g>' +
+      axes +
+      curve +
+      '<g class="hc-nodes-layer">' + nodes + '</g>' +
+      legend +
+      '</svg>';
+  }
+
+  function hypeCyclePreviewHTML() {
+    return '<div class="page-pad">' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">技术成熟度曲线（Gartner Hype Cycle）</div>' +
+          '<div class="page-subtitle">5大生命周期阶段 · 5级六维成熟度评分 · 4大达平稳期跨度 · 36项前沿技术全景研判</div>' +
+        '</div>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-p">方法借鉴 Gartner 经典新兴技术成熟度曲线（Hype Cycle）分析框架，严密对齐我行36项前沿技术专题六维评价中的“技术成熟度”评分（1分萌芽起步、2分技术触发、3分早期采用/低谷攻坚、4分生产应用、5分主流成熟）。横轴自左向右依次呈现由前沿萌芽到主流成熟的生命周期演进轨迹，节点符号表征达到主流生产力平稳期的预估时间，颜色表征处置档位（布局/论证/研究/观察）。</div>' +
+      '<div class="hc-page-card">' +
+        '<div class="pg-h" style="margin:0 0 4px">生命周期演进分布（严格对应六维成熟度评级）</div>' +
+        '<div class="hc-stat-pills">' +
+          '<span class="hc-stat-pill">创新萌芽期: <b>10项</b> (1分1 / 2分4 / 3分5)</span>' +
+          '<span class="hc-stat-pill">期望膨胀期: <b>5项</b> (2分2 / 4分3)</span>' +
+          '<span class="hc-stat-pill">泡沫破裂谷底期: <b>9项</b> (2分1 / 3分8)</span>' +
+          '<span class="hc-stat-pill">稳步爬升恢复期: <b>9项</b> (3分2 / 4分7)</span>' +
+          '<span class="hc-stat-pill">生产力成熟期: <b>3项</b> (4分2 / 5分1)</span>' +
+        '</div>' +
+        '<div class="hc-stat-pills" style="margin-top:4px">' +
+          '<span class="hc-stat-pill" style="border-color:rgba(79, 140, 255, 0.4)">★ 六维技术成熟度评分分布：</span>' +
+          '<span class="hc-stat-pill">1分 (萌芽起步): <b>1项</b></span>' +
+          '<span class="hc-stat-pill">2分 (技术触发): <b>7项</b></span>' +
+          '<span class="hc-stat-pill">3分 (早期采用): <b>15项</b></span>' +
+          '<span class="hc-stat-pill">4分 (生产应用): <b>12项</b></span>' +
+          '<span class="hc-stat-pill">5分 (主流成熟): <b>1项</b></span>' +
+        '</div>' +
+        '<div class="hc-preview-box" data-action="open-hype-cycle" title="点击打开全屏技术成熟度曲线">' +
+          '<div style="width:100%;pointer-events:none">' +
+            renderHypeCycleSVG('preview') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function hypeCycleInteractiveHTML(containerId, isModal) {
+    var cfg = DATA.hypeCycle;
+
+    return '<div class="hc-interactive-wrap" id="' + containerId + '">' +
+      '<div class="radar-toolbar">' +
+        '<div class="radar-filter-group"><span style="font-weight:700">演进阶段:</span>' +
+          '<div class="radar-btn-group" data-filter="phase">' +
+            '<button class="active" data-val="all">全部 (36)</button>' +
+            '<button data-val="创新萌芽期">创新萌芽 (10)</button>' +
+            '<button data-val="期望膨胀期">期望膨胀 (5)</button>' +
+            '<button data-val="泡沫破裂谷底期">泡沫破裂 (9)</button>' +
+            '<button data-val="稳步爬升恢复期">稳步爬升 (9)</button>' +
+            '<button data-val="生产力成熟期">生产力成熟 (3)</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="radar-filter-group"><span style="font-weight:700">技术成熟度:</span>' +
+          '<div class="radar-btn-group" data-filter="maturity">' +
+            '<button class="active" data-val="all">全部</button>' +
+            '<button data-val="1">1分 (1)</button>' +
+            '<button data-val="2">2分 (7)</button>' +
+            '<button data-val="3">3分 (15)</button>' +
+            '<button data-val="4">4分 (12)</button>' +
+            '<button data-val="5">5分 (1)</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="radar-filter-group"><span style="font-weight:700">处置档位:</span>' +
+          '<div class="radar-btn-group" data-filter="tier">' +
+            '<button class="active" data-val="all">全部</button>' +
+            '<button data-val="布局层" style="color:#34d399">布局层</button>' +
+            '<button data-val="论证层" style="color:#38bdf8">论证层</button>' +
+            '<button data-val="研究层" style="color:#fbbf24">研究层</button>' +
+            '<button data-val="观察层" style="color:#fb7185">观察层</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="radar-filter-group"><span style="font-weight:700">达平稳期:</span>' +
+          '<div class="radar-btn-group" data-filter="plateau">' +
+            '<button class="active" data-val="all">全部</button>' +
+            '<button data-val="<2年"><2年</button>' +
+            '<button data-val="2-5年">2-5年</button>' +
+            '<button data-val="5-10年">5-10年</button>' +
+            '<button data-val=">10年">>10年</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="margin-left:auto;display:flex;align-items:center;gap:10px">' +
+          '<input type="text" class="hc-search-input radar-search-input" placeholder="🔍 搜索技术编号/名称...">' +
+        '</div>' +
+      '</div>' +
+
+      // 全屏全宽自适应曲线图 (纯净大屏)
+      '<div class="hc-top-chart-box">' +
+        renderHypeCycleSVG('full', containerId) +
+        '<div class="radar-tooltip hidden"></div>' +
+      '</div>' +
+
+      '<div class="radar-footer-note">' + esc(cfg.subtitle) + '</div>' +
+    '</div>';
+  }
+
+  function initHypeCycleInteractive(rootEl, savedFilters) {
+    if (!rootEl) return;
+    var container = rootEl.querySelector('.hc-top-chart-box');
+    var tooltip = rootEl.querySelector('.radar-tooltip');
+    var searchInput = rootEl.querySelector('.hc-search-input');
+    var nodes = rootEl.querySelectorAll('.hc-node-g');
+
+    var curPhase = 'all', curMaturity = 'all', curTier = 'all', curPlateau = 'all', curQuery = '';
+
+    if (savedFilters) {
+      curPhase = savedFilters.phase || 'all';
+      curMaturity = savedFilters.maturity || 'all';
+      curTier = savedFilters.tier || 'all';
+      curPlateau = savedFilters.plateau || 'all';
+      curQuery = savedFilters.q || '';
+      ['phase', 'maturity', 'tier', 'plateau'].forEach(function (filterType) {
+        var val = savedFilters[filterType] || 'all';
+        var grp = rootEl.querySelector('.radar-btn-group[data-filter="' + filterType + '"]');
+        if (grp) {
+          grp.querySelectorAll('button').forEach(function (btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-val') === val);
+          });
+        }
+      });
+      if (searchInput) searchInput.value = curQuery;
+    }
+
+    function applyFilter() {
+      nodes.forEach(function (nd) {
+        var id = nd.getAttribute('data-id');
+        var phase = nd.getAttribute('data-phase');
+        var maturity = nd.getAttribute('data-maturity');
+        var tier = nd.getAttribute('data-tier');
+        var plateau = nd.getAttribute('data-plateau');
+        var name = (nd.querySelector('.hc-label-text') ? nd.querySelector('.hc-label-text').textContent : '') + ' ' + id;
+
+        var passPhase = (curPhase === 'all' || phase === curPhase);
+        var passMaturity = (curMaturity === 'all' || String(maturity) === String(curMaturity));
+        var passTier = (curTier === 'all' || tier === curTier);
+        var passPlateau = (curPlateau === 'all' || plateau === curPlateau);
+        var passQ = (!curQuery || name.toLowerCase().indexOf(curQuery.toLowerCase()) !== -1 || id.toLowerCase().indexOf(curQuery.toLowerCase()) !== -1);
+
+        nd.classList.toggle('filtered-out', !(passPhase && passMaturity && passTier && passPlateau && passQ));
+      });
+    }
+
+    rootEl.querySelectorAll('.radar-btn-group button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var grp = btn.parentElement;
+        var fType = grp.getAttribute('data-filter');
+        var val = btn.getAttribute('data-val');
+        grp.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        if (fType === 'phase') curPhase = val;
+        else if (fType === 'maturity') curMaturity = val;
+        else if (fType === 'tier') curTier = val;
+        else if (fType === 'plateau') curPlateau = val;
+
+        applyFilter();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        curQuery = searchInput.value.trim();
+        applyFilter();
+      });
+    }
+
+    // 节点交互（平稳无抖动，浮窗详析与点击穿透）
+    nodes.forEach(function (nd) {
+      var id = nd.getAttribute('data-id');
+      nd.addEventListener('mouseenter', function (e) {
+        var tech = findTech(id) || findLib(id);
+        if (!tech) return;
+
+        nd.classList.add('highlighted');
+        var tCol = tierColor(tech.tier);
+        var matScore = tech.maturity || 3;
+        var matDesc = matScore === 1 ? '萌芽起步（渗透率<5%）' : matScore === 2 ? '技术触发（概念验证与实验阶段）' : matScore === 3 ? '早期采用（标准初定/低谷攻坚）' : matScore === 4 ? '生产应用（多行业规模化落地）' : '主流成熟（CNCF毕业事实标准）';
+
+        if (tooltip && container) {
+          tooltip.innerHTML = '<div style="font-weight:900;color:' + tCol + ';font-size:13.5px;margin-bottom:4px">' + esc(tech.id) + ' ' + esc(tech.short || tech.name) + '</div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">技术成熟度评分：<b style="color:var(--accent)">' + esc(matScore) + ' 分</b> <span style="font-size:11px;color:var(--dim)">(' + esc(matDesc) + ')</span></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">生命周期演进阶段：<b>' + esc(nd.getAttribute('data-phase')) + '</b></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">达平稳期预估时间：<b>' + esc(nd.getAttribute('data-plateau')) + '</b></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:4px">处置档位：<span style="color:' + tCol + ';font-weight:700">[' + esc(tech.tier) + '] ' + esc(tech.disposal || '') + '</span></div>' +
+            '<div style="font-size:11.5px;color:var(--dim);line-height:1.4;margin-top:4px;border-top:1px dashed var(--border);padding-top:4px"><b>研判依据：</b>' + esc(tech.maturityBasis || tech.definition || '') + '</div>';
+          tooltip.classList.remove('hidden');
+        }
+      });
+      nd.addEventListener('mousemove', function (e) {
+        if (tooltip && container) {
+          var rect = container.getBoundingClientRect();
+          var x = e.clientX - rect.left + 16;
+          var y = e.clientY - rect.top - 12;
+          if (x + 300 > rect.width) x = e.clientX - rect.left - 310;
+          if (y + 160 > rect.height) y = e.clientY - rect.top - 150;
+          if (x < 10) x = 10;
+          if (y < 10) y = 10;
+          tooltip.style.left = x + 'px';
+          tooltip.style.top = y + 'px';
+        }
+      });
+      nd.addEventListener('mouseleave', function () {
+        nd.classList.remove('highlighted');
+        if (tooltip) tooltip.classList.add('hidden');
+      });
+      nd.addEventListener('click', function () {
+        var tech = findTech(id) || findLib(id);
+        if (tech) openTechPanel(tech);
+      });
+    });
+
+    applyFilter();
+  }
+
+  function openHypeCyclePanel(savedFilters, savedScrollTop, isNavBack) {
+    if (!isNavBack) {
+      if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'hypeCycle') {
+        var snap = capturePanelSnapshot();
+        if (snap) panelNavStack.push(snap);
+      } else {
+        panelNavStack = [];
+      }
+    }
+    currentPanelMeta = { type: 'hypeCycle', name: '成熟度曲线' };
+    openPanel('技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('modalHypeCycleWrap', true), function () {
+      var wrap = $('modalHypeCycleWrap');
+      if (wrap) {
+        initHypeCycleInteractive(wrap, savedFilters);
+        if (savedScrollTop && $('panelBody')) $('panelBody').scrollTop = savedScrollTop;
+      }
+    }, false);
+  }
+
   /* ==================== 技术影响力雷达图 (Impact Radar) ==================== */
   function renderImpactRadarSVG(variant, containerId) {
     var isMini = variant === 'mini';
@@ -759,10 +1230,10 @@
         '<div class="radar-filter-group"><span style="font-weight:700">处置档位:</span>' +
           '<div class="radar-btn-group" data-filter="tier">' +
             '<button class="active" data-val="all">全部</button>' +
-            '<button data-val="布局层" style="color:#fb7185">布局层</button>' +
+            '<button data-val="布局层" style="color:#34d399">布局层</button>' +
             '<button data-val="论证层" style="color:#38bdf8">论证层</button>' +
             '<button data-val="研究层" style="color:#fbbf24">研究层</button>' +
-            '<button data-val="观察层" style="color:#34d399">观察层</button>' +
+            '<button data-val="观察层" style="color:#fb7185">观察层</button>' +
           '</div>' +
         '</div>' +
         '<div class="radar-filter-group"><span style="font-weight:700">影响时间:</span>' +
@@ -1000,27 +1471,210 @@
     }, false);
   }
 
+  /* ==================== 企架十大中心前沿技术落位图谱 ==================== */
+  function renderTenCentersBlueprintSVG() {
+    var W = 1000, H = 750;
+
+    var centers = [
+      {
+        id: 'c1', no: 1, name: '对客服务中心',
+        sub: '手机银行 · 网上银行 · 浦惠来了 · 全球司库 · 智能柜面',
+        techs: [{ id: 'T28' }, { id: 'T19' }, { id: 'T01' }, { id: 'T24' }],
+        x: 250, y: 16, w: 500, h: 96, type: 'grid2'
+      },
+      {
+        id: 'c2', no: 2, name: '智慧运营中心',
+        sub: '数智运营服务平台 · 智能工厂',
+        techs: [{ id: 'T31' }, { id: 'T34' }, { id: 'T01' }, { id: 'T02' }],
+        x: 105, y: 146, w: 345, h: 104, type: 'grid2'
+      },
+      {
+        id: 'c3', no: 3, name: '客户经营中心',
+        sub: '统一商机平台 · 对公驾驶舱',
+        techs: [{ id: 'T32' }, { id: 'T33' }, { id: 'T21' }, { id: 'T01' }],
+        x: 550, y: 146, w: 345, h: 104, type: 'grid2'
+      },
+      {
+        id: 'c4', no: 4, name: '产品合约中心',
+        sub: '产品目录 · 合约管理 · 差异化定价',
+        techs: [{ id: 'T15' }, { id: 'T27' }],
+        x: 30, y: 286, w: 140, h: 220, type: 'stack'
+      },
+      {
+        id: 'c5', no: 5, name: '业务处理中心',
+        sub: '企业信贷 · 在线融资 · 零售信贷 · 保理 · 单证 · 票据',
+        techs: [{ id: 'T03' }, { id: 'T31' }, { id: 'T34' }, { id: 'T04' }],
+        x: 250, y: 286, w: 500, h: 106, type: 'grid2'
+      },
+      {
+        id: 'c7', no: 7, name: '账务交易中心',
+        sub: '对公分布式核心 · 零售分布式核心 · 信用卡核心',
+        techs: [{ id: 'T35' }, { id: 'T03' }],
+        x: 250, y: 420, w: 500, h: 86, type: 'row'
+      },
+      {
+        id: 'c6', no: 6, name: '风险管理中心',
+        sub: '天眼系统 · 信用风险智能决策',
+        techs: [{ id: 'T23' }, { id: 'T13' }, { id: 'T18' }, { id: 'T21' }, { id: 'T33' }],
+        x: 830, y: 286, w: 140, h: 220, type: 'stack'
+      },
+      {
+        id: 'c8', no: 8, name: '管理支持中心',
+        sub: '企业治理 · 监管报送 · 全链路合规',
+        techs: [{ id: 'T30' }, { id: 'T22' }],
+        x: 30, y: 530, w: 260, h: 200, type: 'stack'
+      },
+      {
+        id: 'c9', no: 9, name: '数智能力中心',
+        sub: 'AI基础设施 · 知识中枢 · 数据要素底座',
+        techs: [{ id: 'T05' }, { id: 'T06' }, { id: 'T16' }, { id: 'T20' }, { id: 'T36' }, { id: 'T17' }],
+        x: 310, y: 530, w: 380, h: 200, type: 'grid2'
+      },
+      {
+        id: 'c10', no: 10, name: '技术服务中心',
+        sub: '云原生底座 · 算力网络 · 前沿安全',
+        techs: [{ id: 'T10' }, { id: 'T11' }, { id: 'T12' }, { id: 'T14' }, { id: 'T08' }, { id: 'T07' }, { id: 'T25' }, { id: 'T09' }, { id: 'T26' }, { id: 'T29' }],
+        x: 710, y: 530, w: 260, h: 200, type: 'grid2'
+      }
+    ];
+
+    function renderPillSVG(tObj, x, y, w, h) {
+      var tech = findTech(tObj.id) || findLib(tObj.id);
+      var tier = tech ? tech.tier : '布局层';
+      var tColor = tierColor(tier);
+      var standardShort = tech ? tech.short : tObj.id;
+      var label = tObj.id + ' ' + standardShort;
+
+      var fSize = 10.5;
+      var approxW = label.length * 10;
+      if (approxW > w - 10) {
+        fSize = Math.max(8.2, Math.floor(((w - 10) / label.length) * 10) / 10);
+      }
+
+      return '<g class="tc-tech-pill" data-action="open-tech" data-id="' + tObj.id + '" data-tier="' + tier + '">' +
+        '<rect class="tc-pill-bg" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="5" ry="5" fill="var(--panel2)" stroke="' + tColor + '" stroke-width="1.2"/>' +
+        '<text x="' + (x + w / 2) + '" y="' + (y + h / 2 + 4) + '" text-anchor="middle" font-size="' + fSize + '" font-weight="700" fill="var(--text)">' + esc(label) + '</text>' +
+        '</g>';
+    }
+
+    function renderCenterGroup(c) {
+      var titleColor = '#38bdf8';
+      if (c.no === 1) titleColor = '#38bdf8';
+      else if (c.no === 2 || c.no === 3) titleColor = '#0ea5e9';
+      else if (c.no === 4 || c.no === 6) titleColor = '#f59e0b';
+      else if (c.no === 5 || c.no === 7) titleColor = '#ef4444';
+      else titleColor = '#10b981';
+
+      var pillsMarkup = '';
+      if (c.type === 'row') {
+        var pWidth = Math.floor((c.w - 20 - (c.techs.length - 1) * 8) / c.techs.length);
+        c.techs.forEach(function (t, i) {
+          var px = c.x + 10 + i * (pWidth + 8);
+          var py = c.y + c.h - 32;
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, 24);
+        });
+      } else if (c.type === 'grid2') {
+        var pWidth = Math.floor((c.w - 20 - 8) / 2);
+        var pHeight = 22;
+        c.techs.forEach(function (t, i) {
+          var colIdx = i % 2;
+          var rowIdx = Math.floor(i / 2);
+          var px = c.x + 10 + colIdx * (pWidth + 8);
+          var py = c.y + 44 + rowIdx * (pHeight + 5);
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight);
+        });
+      } else if (c.type === 'stack') {
+        var pWidth = c.w - 18;
+        var pHeight = 22;
+        c.techs.forEach(function (t, i) {
+          var px = c.x + 9;
+          var py = c.y + 50 + i * (pHeight + 6);
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight);
+        });
+      }
+
+      return '<g class="tc-center-box" data-center="' + c.id + '">' +
+        '<rect class="tc-box-rect" x="' + c.x + '" y="' + c.y + '" width="' + c.w + '" height="' + c.h + '" rx="8" ry="8" fill="var(--panel)" stroke="var(--border)" stroke-width="1.2"/>' +
+        '<text x="' + (c.x + c.w / 2) + '" y="' + (c.y + 20) + '" text-anchor="middle" font-size="14.5" font-weight="900" fill="' + titleColor + '">' + esc(c.name) + '</text>' +
+        '<text x="' + (c.x + c.w / 2) + '" y="' + (c.y + 36) + '" text-anchor="middle" font-size="10.5" fill="var(--dim)">' + esc(c.sub) + '</text>' +
+        pillsMarkup +
+        '</g>';
+    }
+
+    var defs = '<defs>' +
+      '<marker id="tcArr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor" opacity="0.45"/></marker>' +
+      '<marker id="tcArrRev" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="currentColor" opacity="0.45"/></marker>' +
+      '<marker id="tcArrAct" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker>' +
+      '</defs>';
+
+    var lines = [
+      // 对客 -> 运营 / 经营
+      '<line x1="280" y1="112" x2="280" y2="146" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
+      '<text x="230" y="128" class="tc-flow-text" text-anchor="middle">全渠道协同</text>',
+      '<line x1="720" y1="112" x2="720" y2="146" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
+      '<text x="770" y="128" class="tc-flow-text" text-anchor="middle">营销协同</text>',
+
+      // 对客 <-> 业务处理 (单个竖向双向箭头 + 左右竖排文字)
+      '<line x1="500" y1="116" x2="500" y2="282" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
+      '<text x="478" y="174" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="700">' +
+        '<tspan x="478" dy="0">产</tspan><tspan x="478" dy="16">品</tspan><tspan x="478" dy="16">流</tspan><tspan x="478" dy="16">程</tspan>' +
+      '</text>' +
+      '<text x="522" y="174" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="700">' +
+        '<tspan x="522" dy="0">销</tspan><tspan x="522" dy="16">售</tspan><tspan x="522" dy="16">办</tspan><tspan x="522" dy="16">理</tspan>' +
+      '</text>',
+
+      // 运营 / 经营 -> 业务处理
+      '<line x1="280" y1="250" x2="280" y2="286" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
+      '<text x="280" y="270" class="tc-flow-text" text-anchor="middle">流程办理</text>',
+      '<line x1="720" y1="250" x2="720" y2="286" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
+      '<text x="720" y="270" class="tc-flow-text" text-anchor="middle">流程办理</text>',
+
+      // 产品合约 <-> 业务处理 & 账务交易 (两组双向箭头，中间单组文字)
+      '<line x1="174" y1="339" x2="246" y2="339" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
+      '<line x1="174" y1="463" x2="246" y2="463" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
+      '<text x="210" y="395" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">产品管理</text>' +
+      '<text x="210" y="413" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">合约及定价</text>',
+
+      // 风险管理 <-> 业务处理 & 账务交易 (两组双向箭头，中间单组文字)
+      '<line x1="754" y1="339" x2="826" y2="339" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
+      '<line x1="754" y1="463" x2="826" y2="463" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
+      '<text x="790" y="395" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">风险检测</text>' +
+      '<text x="790" y="413" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">风险管控</text>',
+
+      // 业务处理 -> 账务交易
+      '<line x1="500" y1="392" x2="500" y2="420" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.6" marker-end="url(#tcArr)"/>' +
+      '<text x="500" y="408" class="tc-flow-text" text-anchor="middle" font-size="10.5">账务处理</text>',
+
+      // 底座支撑虚线
+      '<line x1="160" y1="530" x2="160" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>',
+      '<line x1="500" y1="530" x2="500" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>',
+      '<line x1="840" y1="530" x2="840" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>'
+    ].join('');
+
+    var centersMarkup = centers.map(renderCenterGroup).join('');
+
+    return '<svg class="blueprint-svg" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="color:var(--text);">' +
+      defs +
+      '<g class="tc-lines-layer">' + lines + '</g>' +
+      '<g class="tc-centers-layer">' + centersMarkup + '</g>' +
+      '</svg>';
+  }
+
   function graphPreviewHTML() {
-    var g = DATA.graph;
-    var relLegend = DATA.graphRelations.map(function (r) {
-      return '<span class="lg"><span class="line" style="background:' + r.color + '"></span>' + esc(r.label) + '</span>';
-    }).join('');
-    var catLegend = DATA.categories.map(function (c) {
-      return '<span class="lg"><span class="dot" style="background:' + catColor(c) + '"></span>' + esc(c) + '</span>';
-    }).join('');
     return '<div class="page-pad">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
-          '<div class="page-title">各项前沿技术关系图谱</div>' +
-          '<div class="page-subtitle">' + g.nodes.length + ' 个技术节点 · ' + g.edges.length + ' 条关系边</div>' +
+          '<div class="page-title">前沿技术在企架十大中心的落位图谱</div>' +
+          '<div class="page-subtitle">企架建设十大中心 · 36项前沿技术精准落位与跨中心业务协同</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-graph">⛶ 交互图谱</button>' +
       '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-p">以力导向图刻画 ' + g.nodes.length + ' 项技术之间的「同族 / 依赖 / 互补 / 竞争」关系，支持拖拽、缩放、按关系筛选，点击节点直达对应技术详情。</div>' +
-      '<div class="pg-section"><div class="pg-h">关系类型</div><div class="legend">' + relLegend + '</div></div>' +
-      '<div class="pg-section"><div class="pg-h">战略方向</div><div class="legend">' + catLegend + '</div></div>' +
-      '</div>';
+      '<div class="pg-p">基于我行「企架建设十大中心」架构蓝图，将 36 项前沿技术精准映射至对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易及底层管理/数智/技术支撑中心，全景展现技术对各中心业务流转、风控防线与底座算力的驱动链路。点击技术标签可穿透查看专题档案。</div>' +
+      '<div class="blueprint-card">' +
+        renderTenCentersBlueprintSVG() +
+      '</div>' +
+    '</div>';
   }
   /* ==================== 专享：书籍模式纵向排版 (Vertical Book Page) ==================== */
   function techBookHTML(tech) {
@@ -1152,7 +1806,7 @@
   function closingHTML() {
     return '<div class="page-pad">' +
       '<div class="page-title">结语</div><div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集科技发展部前沿技术研究的关键结论：长名单识别重点方向与分层，关系图谱刻画技术间同族、依赖、互补与竞争关系，专题报告与评估表支撑逐项研判。</div>' +
+      '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集科技发展部前沿技术研究的关键结论：长名单识别重点方向与分层，落位图谱展现企架十大中心协同与技术映射，专题报告与评估表支撑逐项研判。</div>' +
       '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
       '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
       '</div>';
@@ -1183,14 +1837,16 @@
   addPage('overview', '成果全景与说明', overviewPageHTML());
   addPage('toc1', '目录（上）', toc1HTML);
   addPage('toc2', '目录（下）', toc2HTML);
-  addPage('part1', '第一篇', dividerHTML('第一篇', '整体研究成果', '工作方案 · 情报源评判 · 前沿技术储备库 · 技术影响力雷达 · 技术关系图谱', '01'));
-  addPage('workplan', '第一篇 · 工作方案', workplanHTML());
-  addPage('sources', '第一篇 · 情报源评判报告', sourcesHTML());
-  addPage('library', '第一篇 · 前沿技术储备库', libraryPreviewHTML());
-  addPage('radar', '第一篇 · 技术影响力雷达图', radarPreviewHTML);
-  addPage('graph', '第一篇 · 关系图谱', graphPreviewHTML());
-  addPage('part2', '第二篇', dividerHTML('第二篇', '各项前沿技术研究', '评估表 · 专题研究报告（Word / PPT）· 一张图概述', '02'));
-  DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第二篇 · ' + t.name, techBookHTML(t)); });
+  addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判', '01'));
+  addPage('workplan', '第一章 · 工作方案', workplanHTML());
+  addPage('sources', '第一章 · 情报源评判报告', sourcesHTML());
+  addPage('part2', '第二章', dividerHTML('第二章', '整体研究成果', '前沿技术储备库 · 技术成熟度曲线 · 技术影响力雷达 · 企架十大中心落位图谱', '02'));
+  addPage('library', '第二章 · 前沿技术储备库', libraryPreviewHTML());
+  addPage('hypeCycle', '第二章 · 技术成熟度曲线', hypeCyclePreviewHTML);
+  addPage('radar', '第二章 · 技术影响力雷达图', radarPreviewHTML);
+  addPage('graph', '第二章 · 落位图谱', graphPreviewHTML());
+  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '六维评估表 · 专题研究报告（Word / PPT）· 一张图概述', '03'));
+  DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
   addPage('appendix', '附录', appendixHTML());
   addPage('closing', '结语', closingHTML());
   // 确保封底始终位于最终闭合跨页的左侧页（偶数索引）：如果正文结束于奇数总页数，在封底前补充一页优雅衬页
@@ -1207,13 +1863,15 @@
       { id: 'cover', no: '封面', short: '成果总览', name: '封面 · 成果总览', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
       { id: 'title', no: '扉页', short: '成果总览', name: '扉页 · 成果总览', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 2, color: '#818cf8', tier: '前序' },
       { id: 'toc1', no: '目录', short: '本书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
-      { id: 'part1', no: '第一篇', short: '整体成果', name: '第一篇 · 整体研究成果', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一篇' },
-      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一篇 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一篇' },
-      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一篇 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一篇' },
-      { id: 'library', no: '1.3', short: '技术储备库', name: '第一篇 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 9, color: '#6366f1', tier: '第一篇' },
-      { id: 'radar', no: '1.4', short: '影响力雷达', name: '第一篇 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 10, color: '#6366f1', tier: '第一篇' },
-      { id: 'graph', no: '1.5', short: '关系图谱', name: '第一篇 · 各项前沿技术关系图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 11, color: '#6366f1', tier: '第一篇' },
-      { id: 'part2', no: '第二篇', short: '专题研究', name: '第二篇 · 各项前沿技术研究', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 12, color: '#a855f7', tier: '第二篇' }
+      { id: 'part1', no: '第一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
+      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一章 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
+      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一章 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
+      { id: 'part2', no: '第二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 9, color: '#3b82f6', tier: '第二章' },
+      { id: 'library', no: '2.1', short: '技术储备库', name: '第二章 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 10, color: '#3b82f6', tier: '第二章' },
+      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '第二章 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 11, color: '#3b82f6', tier: '第二章' },
+      { id: 'radar', no: '2.3', short: '影响力雷达', name: '第二章 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 12, color: '#3b82f6', tier: '第二章' },
+      { id: 'graph', no: '2.4', short: '落位图谱', name: '第二章 · 前沿技术在企架十大中心的落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 13, color: '#3b82f6', tier: '第二章' },
+      { id: 'part3', no: '第三章', short: '专题研究', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 14, color: '#a855f7', tier: '第三章' }
     ];
 
     DATA.technologies.forEach(function (t) {
@@ -1480,6 +2138,7 @@
           var action = el.getAttribute('data-action');
           var id = el.getAttribute('data-id');
           if (action === 'open-library') openLibraryPanel();
+          else if (action === 'open-hype-cycle') openHypeCyclePanel();
           else if (action === 'open-radar') openRadarPanel();
           else if (action === 'open-graph') openGraphPanel();
           else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
@@ -1694,34 +2353,38 @@
     sections.push(webSection('s-overview', '序', '成果全景与说明', overviewPageHTML()));
     sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
     sections.push(webSection('s-sources', '1.2', '情报源评判报告', sourcesHTML()));
-    sections.push(webSection('s-library', '1.3', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
-    sections.push(webSection('s-radar', '1.4', '技术影响力雷达图（Impact Radar）', radarInteractiveHTML('webRadarWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>'));
-    sections.push(webSection('s-graph', '1.5', '各项前沿技术关系图谱', graphPreviewHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-graph">⛶ 交互图谱</button>'));
+    sections.push(webSection('s-library', '2.1', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
+    sections.push(webSection('s-hype-cycle', '2.2', '技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('webHypeCycleWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>'));
+    sections.push(webSection('s-radar', '2.3', '技术影响力雷达图（Impact Radar）', radarInteractiveHTML('webRadarWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>'));
+    sections.push(webSection('s-graph', '2.4', '前沿技术在企架十大中心的落位图谱', graphPreviewHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-graph">⛶ 交互图谱</button>'));
     DATA.technologies.forEach(function (t, i) {
       var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
       var enName = t.nameEn || '';
       var titleHtml = esc(pureName) + (enName ? (' <span style="font-size:13.5px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(enName) + '</span>') : '');
-      sections.push(webSection('s-tech-' + t.id, '2.' + (i + 1), titleHtml, techWebHTML(t)));
+      sections.push(webSection('s-tech-' + t.id, '3.' + (i + 1), titleHtml, techWebHTML(t)));
     });
     sections.push(webSection('s-appendix', '附录', '术语 · 数据来源 · 版本', appendixHTML()));
     sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
     $('webContent').innerHTML = sections.join('');
+    initHypeCycleInteractive($('webHypeCycleWrap'));
     initImpactRadarInteractive($('webRadarWrap'));
 
     // 目录
     var toc = ['<h3>目录</h3>'];
     toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>扉页 · 成果总览</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>成果全景与说明</div>');
-    toc.push('<div class="web-toc-item part" data-target="s-workplan">第一篇 · 整体研究成果</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-workplan">第一章 · 工作方案与方法</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>情报源评判报告</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">1.3</span>前沿技术储备库</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-radar"><span class="wt-no">1.4</span>技术影响力雷达</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">1.5</span>技术关系图谱</div>');
-    toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第二篇 · 各项前沿技术研究</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-library">第二章 · 整体研究成果</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">2.1</span>前沿技术储备库</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-hype-cycle"><span class="wt-no">2.2</span>技术成熟度曲线</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-radar"><span class="wt-no">2.3</span>技术影响力雷达</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">2.4</span>企架十大中心落位图谱</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第三章 · 各项前沿技术研究</div>');
     DATA.technologies.forEach(function (t, i) {
       var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
-      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">2.' + (i + 1) + '</span>' + esc(pureName) + '</div>');
+      toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">3.' + (i + 1) + '</span>' + esc(pureName) + '</div>');
     });
     toc.push('<div class="web-toc-item part" data-target="s-appendix">附录</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no"></span>术语 · 数据来源 · 版本</div>');
@@ -1930,14 +2593,39 @@
     $('mdOpenTech').onclick = function () { closeModal(); openTechPanel(findTech(id)); };
   }
 
-  /* ==================== 关系图谱面板（力导向） ==================== */
+  /* ==================== 企架十大中心交互图谱面板 ==================== */
   function graphToolbarHTML() {
-    var rels = DATA.graphRelations.map(function (r) {
-      return '<span class="lg" data-rel="' + r.key + '"><span class="line" style="background:' + r.color + '"></span>' + esc(r.label) + '</span>';
+    var centers = [
+      { id: 'all', label: '全部 (10)' },
+      { id: 'c1', label: '1.对客服务' },
+      { id: 'c2', label: '2.智慧运营' },
+      { id: 'c3', label: '3.客户经营' },
+      { id: 'c4', label: '4.产品合约' },
+      { id: 'c5', label: '5.业务处理' },
+      { id: 'c7', label: '6.账务交易' },
+      { id: 'c6', label: '7.风险管理' },
+      { id: 'c8', label: '8.管理支持' },
+      { id: 'c9', label: '9.数智能力' },
+      { id: 'c10', label: '10.技术服务' }
+    ];
+
+    var btnHtml = centers.map(function (c, idx) {
+      return '<button class="' + (idx === 0 ? 'active' : '') + '" data-center="' + c.id + '">' + esc(c.label) + '</button>';
     }).join('');
-    return '<div class="graph-toolbar"><div class="legend">' + rels + '</div>' +
-      '<button class="btn" id="graphReset" style="margin-left:auto">重置布局</button></div>';
+
+    return '<div class="radar-toolbar" style="margin-bottom:8px;padding:8px 14px;gap:8px 12px;flex:none">' +
+      '<div class="radar-filter-group" style="flex-wrap:wrap;gap:6px 8px">' +
+        '<span style="font-weight:700">十大中心:</span>' +
+        '<div class="radar-btn-group" id="graphCenterFilterGroup" style="flex-wrap:wrap">' +
+          btnHtml +
+        '</div>' +
+      '</div>' +
+      '<div class="radar-filter-group" style="margin-left:auto">' +
+        '<input type="text" class="radar-search-input" id="graphSearchInput" placeholder="🔍 检索技术 (如 T01、智能体)..." style="width:200px">' +
+      '</div>' +
+    '</div>';
   }
+
   function openGraphPanel(savedScrollTop, isNavBack) {
     if (!isNavBack) {
       if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'graph') {
@@ -1947,156 +2635,91 @@
         panelNavStack = [];
       }
     }
-    currentPanelMeta = { type: 'graph', name: '关系图谱' };
-    openPanel('各项前沿技术关系图谱', graphToolbarHTML() + '<div id="graphBox"></div><div class="graph-tip" style="margin-top:8px">滚轮缩放 · 拖拽空白平移 · 拖拽节点调整 · 点击节点查看详情</div>', function () {
-      initForceGraph();
+    currentPanelMeta = { type: 'graph', name: '前沿技术在企架十大中心的落位图谱' };
+    openPanel('前沿技术在企架十大中心的落位图谱', graphToolbarHTML() + '<div id="graphBox">' + renderTenCentersBlueprintSVG() + '</div><div class="graph-tip" style="margin-top:6px;flex:none">💡 提示：上方可按十个中心逐一聚焦高亮；点击任意前沿技术标签可直接穿透查看专题档案。</div>', function () {
+      initTenCentersPanelEvents();
       if (savedScrollTop && $('panelBody')) $('panelBody').scrollTop = savedScrollTop;
-    });
+    }, true);
   }
 
-  function initForceGraph() {
+  function initTenCentersPanelEvents() {
     var box = $('graphBox');
     if (!box) return;
-    var W = box.clientWidth || 900, H = box.clientHeight || 560;
-    var g = DATA.graph;
-    var svgNS = 'http://www.w3.org/2000/svg';
-    var nodes = g.nodes.map(function (n, i) {
-      var ci = DATA.categories.indexOf(n.category);
-      var ang = (ci / DATA.categories.length) * Math.PI * 2 + i * 0.5;
-      return { id: n.id, name: n.name, cat: n.category, trl: n.trl, tier: n.tier,
-        x: W / 2 + Math.cos(ang) * W * 0.32, y: H / 2 + Math.sin(ang) * H * 0.32, vx: 0, vy: 0 };
-    });
-    var edges = g.edges.map(function (e) { return { s: e.source, t: e.target, rel: e.relation }; });
-    var activeRel = {}; DATA.graphRelations.forEach(function (r) { activeRel[r.key] = true; });
-    var idx = {}; nodes.forEach(function (n) { idx[n.id] = n; });
 
-    box.innerHTML = '';
-    var svg = document.createElementNS(svgNS, 'svg');
-    var viewport = document.createElementNS(svgNS, 'g');
-    svg.appendChild(viewport); box.appendChild(svg);
-    var edgeLayer = document.createElementNS(svgNS, 'g');
-    var nodeLayer = document.createElementNS(svgNS, 'g');
-    viewport.appendChild(edgeLayer); viewport.appendChild(nodeLayer);
-    var dimColor = getComputedStyle(document.documentElement).getPropertyValue('--dim').trim() || '#8fa3c0';
-
-    nodes.forEach(function (n) {
-      var c = document.createElementNS(svgNS, 'circle');
-      c.setAttribute('r', 10); c.setAttribute('fill', catColor(n.cat));
-      c.setAttribute('stroke', 'rgba(255,255,255,.55)'); c.setAttribute('stroke-width', 1.5);
-      c.style.cursor = 'pointer';
-      var t = document.createElementNS(svgNS, 'text');
-      t.setAttribute('font-size', '10.5'); t.setAttribute('text-anchor', 'middle');
-      t.style.fill = dimColor; t.style.pointerEvents = 'none';
-      t.textContent = n.name.length > 9 ? n.name.slice(0, 9) + '…' : n.name;
-      n.el = c; n.label = t;
-      nodeLayer.appendChild(c); nodeLayer.appendChild(t);
-    });
-    edges.forEach(function (e) {
-      var l = document.createElementNS(svgNS, 'line');
-      l.setAttribute('stroke', relColor(e.rel)); l.setAttribute('stroke-width', 1.4); l.setAttribute('opacity', .55);
-      e.el = l; edgeLayer.appendChild(l);
-    });
-
-    function draw() {
-      edges.forEach(function (e) {
-        var s = idx[e.s], t = idx[e.t];
-        if (!s || !t) return;
-        var visible = activeRel[e.rel] !== false;
-        e.el.setAttribute('x1', s.x); e.el.setAttribute('y1', s.y);
-        e.el.setAttribute('x2', t.x); e.el.setAttribute('y2', t.y);
-        e.el.style.display = visible ? '' : 'none';
-      });
-      nodes.forEach(function (n) {
-        n.el.setAttribute('cx', n.x); n.el.setAttribute('cy', n.y);
-        n.label.setAttribute('x', n.x); n.label.setAttribute('y', n.y + 22);
+    var btnGroup = $('graphCenterFilterGroup');
+    if (btnGroup) {
+      btnGroup.querySelectorAll('button').forEach(function (btn) {
+        btn.onclick = function () {
+          btnGroup.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var cid = btn.getAttribute('data-center');
+          applySingleCenterFilter(cid);
+        };
       });
     }
 
-    function tick(alpha) {
-      var i, j, a, b;
-      for (i = 0; i < nodes.length; i++) {
-        a = nodes[i];
-        for (j = i + 1; j < nodes.length; j++) {
-          b = nodes[j];
-          var dx = b.x - a.x, dy = b.y - a.y;
-          var d2 = dx * dx + dy * dy; if (d2 < 1) d2 = 1;
-          var f = 2600 * alpha / d2;
-          var d = Math.sqrt(d2);
-          var fx = dx / d * f, fy = dy / d * f;
-          a.vx -= fx; a.vy -= fy; b.vx += fx; b.vy += fy;
+    var sInput = $('graphSearchInput');
+    if (sInput) {
+      sInput.oninput = function () {
+        var q = sInput.value.trim().toLowerCase();
+        applyTechSearchFilter(q);
+      };
+    }
+
+    function applySingleCenterFilter(targetCid) {
+      var centerBoxes = box.querySelectorAll('.tc-center-box');
+      centerBoxes.forEach(function (cb) {
+        var cid = cb.getAttribute('data-center');
+        var visible = (targetCid === 'all' || cid === targetCid);
+        cb.style.opacity = visible ? '1' : '0.15';
+        cb.style.transition = 'opacity .2s ease';
+        var rect = cb.querySelector('.tc-box-rect');
+        if (rect) {
+          if (targetCid !== 'all' && cid === targetCid) {
+            rect.style.stroke = 'var(--accent)';
+            rect.style.strokeWidth = '2.2px';
+            rect.style.filter = 'drop-shadow(0 0 12px rgba(79, 140, 255, 0.45))';
+          } else {
+            rect.style.stroke = 'var(--border)';
+            rect.style.strokeWidth = '1.2px';
+            rect.style.filter = 'none';
+          }
         }
-      }
-      edges.forEach(function (e) {
-        var s = idx[e.s], t = idx[e.t]; if (!s || !t) return;
-        var dx = t.x - s.x, dy = t.y - s.y;
-        var d = Math.sqrt(dx * dx + dy * dy) || 1;
-        var f = (d - 90) * 0.02 * alpha;
-        var fx = dx / d * f, fy = dy / d * f;
-        s.vx += fx; s.vy += fy; t.vx -= fx; t.vy -= fy;
-      });
-      nodes.forEach(function (n) {
-        n.vx += (W / 2 - n.x) * 0.0012 * alpha;
-        n.vy += (H / 2 - n.y) * 0.0012 * alpha;
-        n.x += n.vx; n.y += n.vy;
-        n.vx *= 0.82; n.vy *= 0.82;
-        n.x = Math.max(18, Math.min(W - 18, n.x));
-        n.y = Math.max(18, Math.min(H - 18, n.y));
       });
     }
-    var alpha = 1, running = true;
-    function step() {
-      if (!running) return;
-      tick(alpha); draw();
-      alpha *= 0.975;
-      if (alpha > 0.015) requestAnimationFrame(step); else { running = false; }
-    }
-    draw(); requestAnimationFrame(step);
 
-    document.querySelectorAll('.legend [data-rel]').forEach(function (lg) {
-      lg.onclick = function () {
-        var r = lg.getAttribute('data-rel');
-        activeRel[r] = activeRel[r] === false ? true : false;
-        lg.classList.toggle('off', activeRel[r] === false);
-        draw();
+    function applyTechSearchFilter(query) {
+      var pills = box.querySelectorAll('.tc-tech-pill');
+      if (!query) {
+        pills.forEach(function (p) {
+          p.style.opacity = '1';
+          var bg = p.querySelector('.tc-pill-bg');
+          if (bg) bg.style.strokeWidth = '1.2px';
+        });
+        return;
+      }
+      pills.forEach(function (p) {
+        var id = (p.getAttribute('data-id') || '').toLowerCase();
+        var tech = findTech(p.getAttribute('data-id')) || findLib(p.getAttribute('data-id'));
+        var name = tech ? tech.name.toLowerCase() : '';
+        var short = tech ? (tech.short || '').toLowerCase() : '';
+        var match = id.indexOf(query) >= 0 || name.indexOf(query) >= 0 || short.indexOf(query) >= 0;
+        p.style.opacity = match ? '1' : '0.15';
+        var bg = p.querySelector('.tc-pill-bg');
+        if (bg) {
+          bg.style.strokeWidth = match ? '2.2px' : '1px';
+        }
+      });
+    }
+
+    box.querySelectorAll('.tc-tech-pill').forEach(function (pill) {
+      pill.onclick = function (e) {
+        e.stopPropagation();
+        var id = pill.getAttribute('data-id');
+        var tech = findTech(id) || findLib(id);
+        if (tech) openTechPanel(tech);
       };
     });
-    $('graphReset').onclick = function () { initForceGraph(); };
-
-    var tx = 0, ty = 0, k = 1;
-    function applyView() { viewport.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + k + ')'); }
-    applyView();
-    var dragNode = null, panning = false, px = 0, py = 0;
-    svg.addEventListener('mousedown', function (e) {
-      var t = e.target;
-      if (t.tagName === 'circle') {
-        nodes.forEach(function (n) { if (n.el === t) dragNode = n; });
-        if (dragNode) { running = false; return; }
-      }
-      panning = true; px = e.clientX; py = e.clientY; box.classList.add('dragging');
-    });
-    nodes.forEach(function (n) {
-      n.el.addEventListener('click', function () { openTechPanel(findTech(n.id)); });
-    });
-    window.addEventListener('mousemove', function (e) {
-      if (dragNode) {
-        var rect = svg.getBoundingClientRect();
-        dragNode.x = (e.clientX - rect.left - tx) / k;
-        dragNode.y = (e.clientY - rect.top - ty) / k;
-        draw();
-      } else if (panning) {
-        tx += e.clientX - px; ty += e.clientY - py; px = e.clientX; py = e.clientY; applyView();
-      }
-    });
-    window.addEventListener('mouseup', function () { dragNode = null; panning = false; box.classList.remove('dragging'); });
-    svg.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      var rect = svg.getBoundingClientRect();
-      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      var nk = k * (e.deltaY > 0 ? 0.9 : 1.1);
-      nk = Math.max(0.4, Math.min(4, nk));
-      tx = mx - (mx - tx) * (nk / k); ty = my - (my - ty) * (nk / k);
-      k = nk; applyView();
-    }, { passive: false });
   }
 
   /* ==================== 技术专题详情面板 ==================== */
@@ -2286,11 +2909,23 @@
       if (!q) { hide(); return; }
       var ql = q.toLowerCase();
       var hits = [];
-      if ('技术影响力雷达图 影响力雷达 impact radar 1.4'.toLowerCase().indexOf(ql) >= 0) {
-        hits.push({ id: '_radar', name: '1.4 技术影响力雷达图（Impact Radar）', cat: '第一篇 · 整体成果', tier: '全景雷达', sum: '5大企业级架构维度 · 4大影响时间圈层 · 36项长名单全景' });
+      if ('工作方案 1.1'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_workplan', name: '1.1 工作方案', cat: '第一章 · 工作方案与方法', tier: '工作方案', sum: '敏捷工作机制与组织分工' });
       }
-      if ('各项前沿技术关系图谱 关系图谱 1.5 graph'.toLowerCase().indexOf(ql) >= 0) {
-        hits.push({ id: '_graph', name: '1.5 各项前沿技术关系图谱', cat: '第一篇 · 整体成果', tier: '力导向图', sum: '36项技术依赖 / 互补 / 竞争 / 同族关系网络' });
+      if ('情报源评判 1.2'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_sources', name: '1.2 情报源评判报告', cat: '第一章 · 工作方案与方法', tier: '情报源', sum: '共 16 类情报源五维加权评判' });
+      }
+      if ('前沿技术储备库 长名单 2.1'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_library', name: '2.1 前沿技术储备库（长名单）', cat: '第二章 · 整体成果', tier: '储备库', sum: '36项长名单前沿技术全景台账' });
+      }
+      if ('技术成熟度曲线 gartner hype cycle 2.2 成熟度曲线'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_hypeCycle', name: '2.2 技术成熟度曲线（Gartner Hype Cycle）', cat: '第二章 · 整体成果', tier: '成熟度曲线', sum: '36项前沿技术生命周期演进5阶段与达平稳期全景研判' });
+      }
+      if ('技术影响力雷达图 影响力雷达 impact radar 2.3'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_radar', name: '2.3 技术影响力雷达图（Impact Radar）', cat: '第二章 · 整体成果', tier: '全景雷达', sum: '5大企业级架构维度 · 4大影响时间圈层 · 36项长名单全景' });
+      }
+      if ('前沿技术在企架十大中心的落位图谱 企架十大中心 落位图谱 关系图谱 2.4 graph'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_graph', name: '2.4 前沿技术在企架十大中心的落位图谱', cat: '第二章 · 整体成果', tier: '落位图谱', sum: '36项前沿技术在企架十大中心的精准落位与业务流转' });
       }
       lib.forEach(function (it) {
         var hay = (it.name + ' ' + it.nameEn + ' ' + it.summary + ' ' + it.definition + ' ' + it.bankValue + ' ' + it.category + ' ' + it.tier).toLowerCase();
@@ -2306,7 +2941,11 @@
         el.onclick = function () {
           var h = hits[parseInt(el.getAttribute('data-i'), 10)];
           hide(); input.value = '';
-          if (h.id === '_radar') openRadarPanel();
+          if (h.id === '_workplan') { if (pageKeyMap['workplan'] != null) jumpToPage(pageKeyMap['workplan']); }
+          else if (h.id === '_sources') { if (pageKeyMap['sources'] != null) jumpToPage(pageKeyMap['sources']); }
+          else if (h.id === '_library') openLibraryPanel();
+          else if (h.id === '_hypeCycle') openHypeCyclePanel();
+          else if (h.id === '_radar') openRadarPanel();
           else if (h.id === '_graph') openGraphPanel();
           else openTechPanel(findTech(h.id));
         };
@@ -2493,6 +3132,8 @@
       var h = location.hash.substring(1);
       setTimeout(function () {
         if (h === 'library') openLibraryPanel();
+        else if (h === 'hype-cycle' || h === 'hypeCycle') openHypeCyclePanel();
+        else if (h === 'radar') openRadarPanel();
         else if (h === 'graph') openGraphPanel();
         else if (h === 'web') setMode('web');
         else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));

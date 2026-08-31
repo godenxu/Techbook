@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   var CATEGORY_COLOR = {"人工智能":"#4f8cff","数据要素":"#10b981","量子科技":"#8b5cf6","安全":"#f43f5e","基础设施":"#06b6d4","合规科技":"#14b8a6","客户体验":"#f59e0b"};
-  var TIER_COLOR = {"布局层":"#fb7185","论证层":"#38bdf8","研究层":"#fbbf24","观察层":"#34d399"};
+  var TIER_COLOR = {"布局层":"#34d399","论证层":"#38bdf8","研究层":"#fbbf24","观察层":"#fb7185"};
   var CATEGORIES = Object.keys(CATEGORY_COLOR);
   var TIERS = Object.keys(TIER_COLOR);
   var ITEMS = [
@@ -669,14 +669,14 @@
     ],
     phases: [
       { phase: '第一阶段', time: '第1-2周',  title: '工作方案制定与情报源评估', items: ['明确金融科技研究方向与范围', '建立情报源清单并评判', '制定六维评级与分层标准'] },
-      { phase: '第二阶段', time: '第3-5周',  title: '长名单遴选与分层研判', items: ['多源扫描形成长名单(36项)', '逐项补齐字段与六维评级', '构建技术关系图谱与储备库'] },
+      { phase: '第二阶段', time: '第3-5周',  title: '长名单遴选与分层研判', items: ['多源扫描形成长名单(36项)', '逐项补齐字段与六维评级', '构建企架十大中心落位图谱与储备库'] },
       { phase: '第三阶段', time: '第6-10周', title: '重点技术专题研究', items: ['对重点技术开展深度专题研究', '形成评估表与专题报告(Word)', '制作专题报告PPT与一张图'] },
       { phase: '第四阶段', time: '第11-12周',title: '成果集成与滚动更新', items: ['汇总裁剪形成成果包', '开发电子研究书展示平台', '月度采集例会动态调层与留痕'] }
     ],
     org: [
       { role: '项目负责人', duty: '总体统筹、资源协调、成果把关' },
       { role: '情报组',     duty: '情报采集、情报源评判、长名单维护' },
-      { role: '研判组',     duty: '六维评级、分层定档、关系图谱构建' },
+      { role: '研判组',     duty: '六维评级、分层定档、企架十大中心落位图谱构建' },
       { role: '专题组',     duty: '重点技术专题研究与成果制作' },
       { role: '平台组',     duty: '数据规范、展示平台开发与维护' }
     ]
@@ -767,11 +767,83 @@
     ]
   };
 
+  var HYPE_CYCLE_CONFIG = {
+    title: '技术成熟度曲线（Gartner Hype Cycle）',
+    subtitle: '【成熟度研判逻辑】方法借鉴 Gartner 经典新兴技术成熟度曲线（Hype Cycle）分析框架。横轴自左向右表征技术生命周期的5个核心演进阶段：创新萌芽期 · 期望膨胀期 · 泡沫破裂谷底期 · 稳步爬升恢复期 · 生产力成熟期。纵轴表征市场期望值与技术可见度（Expectations）。点位符号表征达平稳期时间（Time to Plateau），颜色表征我行处置档位。',
+    phases: [
+      { key: '萌芽', name: '创新萌芽期', nameEn: 'Innovation Trigger', startX: 50, endX: 265, color: 'rgba(56, 189, 248, 0.05)' },
+      { key: '膨胀', name: '期望膨胀期', nameEn: 'Peak of Inflated Expectations', startX: 265, endX: 375, color: 'rgba(245, 158, 11, 0.05)' },
+      { key: '谷底', name: '泡沫破裂谷底期', nameEn: 'Trough of Disillusionment', startX: 375, endX: 580, color: 'rgba(251, 113, 133, 0.05)' },
+      { key: '恢复', name: '稳步爬升恢复期', nameEn: 'Slope of Enlightenment', startX: 580, endX: 840, color: 'rgba(52, 211, 153, 0.05)' },
+      { key: '成熟', name: '生产力成熟期', nameEn: 'Plateau of Productivity', startX: 840, endX: 965, color: 'rgba(99, 102, 241, 0.05)' }
+    ],
+    plateaus: [
+      { key: '<2年', label: '2年以内', symbol: 'circle', desc: '主流采纳度快速成型' },
+      { key: '2-5年', label: '2-5年', symbol: 'triangle', desc: '技术迭代与标准化突破' },
+      { key: '5-10年', label: '5-10年', symbol: 'square', desc: '工程治理与生态建设中' },
+      { key: '>10年', label: '10年以上', symbol: 'diamond', desc: '前沿底层物理与基础理论' }
+    ],
+    items: [
+      // 1. 创新萌芽期 (10项)
+      { id: 'T32', no: '32', name: '客户数字孪生', phase: '创新萌芽期', plateau: '5-10年', x: 68, y: 458, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T09', no: '09', name: '量子计算', phase: '创新萌芽期', plateau: '>10年', x: 88, y: 444, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T26', no: '26', name: '神经形态与光子计算', phase: '创新萌芽期', plateau: '>10年', x: 108, y: 418, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T25', no: '25', name: '量子保密通信', phase: '创新萌芽期', plateau: '>10年', x: 128, y: 384, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T21', no: '21', name: '因果AI', phase: '创新萌芽期', plateau: '5-10年', x: 150, y: 339, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T27', no: '27', name: '神经符号AI', phase: '创新萌芽期', plateau: '5-10年', x: 172, y: 289, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T07', no: '07', name: '后量子密码学', phase: '创新萌芽期', plateau: '5-10年', x: 194, y: 238, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T10', no: '10', name: '算力网络', phase: '创新萌芽期', plateau: '5-10年', x: 216, y: 188, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T02', no: '02', name: 'AI原生应用架构', phase: '创新萌芽期', plateau: '2-5年', x: 236, y: 146, labelPos: 'top', labelDx: 0, labelDy: -18 },
+      { id: 'T17', no: '17', name: 'AI智能体互操作协议', phase: '创新萌芽期', plateau: '2-5年', x: 254, y: 114, labelPos: 'top', labelDx: 0, labelDy: -18 },
+
+      // 2. 期望膨胀期 (5项)
+      { id: 'T34', no: '34', name: '多智能体系统', phase: '期望膨胀期', plateau: '2-5年', x: 280, y: 80, labelPos: 'bottom', labelDx: 0, labelDy: 38 },
+      { id: 'T01', no: '01', name: '自主型AI智能体', phase: '期望膨胀期', plateau: '2-5年', x: 305, y: 65, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T36', no: '36', name: '模型开发平台与运维LLMOps', phase: '期望膨胀期', plateau: '2-5年', x: 326, y: 72, labelPos: 'bottom', labelDx: -12, labelDy: 20 },
+      { id: 'T18', no: '18', name: '人工智能安全平台', phase: '期望膨胀期', plateau: '2-5年', x: 346, y: 100, labelPos: 'top', labelDx: 10, labelDy: -20 },
+      { id: 'T33', no: '33', name: '决策智能平台', phase: '期望膨胀期', plateau: '2-5年', x: 366, y: 142, labelPos: 'bottom', labelDx: 12, labelDy: 20 },
+
+      // 3. 泡沫破裂谷底期 (9项) - 波峰至波谷下坠斜坡与谷底盆地（与 Gartner 原图 100% 吻合）
+      { id: 'T06', no: '06', name: '数据网格', phase: '泡沫破裂谷底期', plateau: '2-5年', x: 390, y: 206, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T35', no: '35', name: '可组合核心银行系统', phase: '泡沫破裂谷底期', plateau: '5-10年', x: 408, y: 259, labelPos: 'bottom', labelDx: -12, labelDy: 20 },
+      { id: 'T05', no: '05', name: '数据织网', phase: '泡沫破裂谷底期', plateau: '2-5年', x: 426, y: 312, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T20', no: '20', name: '合成数据', phase: '泡沫破裂谷底期', plateau: '2-5年', x: 446, y: 366, labelPos: 'bottom', labelDx: 12, labelDy: 20 },
+      { id: 'T15', no: '15', name: '区块链资产代币化与可编程货币', phase: '泡沫破裂谷底期', plateau: '5-10年', x: 468, y: 414, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T28', no: '28', name: '数字人与空间计算', phase: '泡沫破裂谷底期', plateau: '5-10年', x: 490, y: 444, labelPos: 'bottom', labelDx: -12, labelDy: 20 },
+      { id: 'T24', no: '24', name: '去中心化身份与可验证凭证', phase: '泡沫破裂谷底期', plateau: '5-10年', x: 512, y: 450, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T04', no: '04', name: 'WebAssembly', phase: '泡沫破裂谷底期', plateau: '2-5年', x: 536, y: 445, labelPos: 'bottom', labelDx: 12, labelDy: 20 },
+      { id: 'T14', no: '14', name: '机密计算', phase: '泡沫破裂谷底期', plateau: '2-5年', x: 560, y: 435, labelPos: 'top', labelDx: 0, labelDy: -20 },
+
+      // 4. 稳步爬升恢复期 (9项)
+      { id: 'T30', no: '30', name: '监管科技与合规科技', phase: '稳步爬升恢复期', plateau: '2-5年', x: 592, y: 416, labelPos: 'bottom', labelDx: -10, labelDy: 20 },
+      { id: 'T31', no: '31', name: '业务编排与自动化技术', phase: '稳步爬升恢复期', plateau: '2-5年', x: 616, y: 399, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T13', no: '13', name: '隐私增强计算', phase: '稳步爬升恢复期', plateau: '2-5年', x: 642, y: 377, labelPos: 'bottom', labelDx: 0, labelDy: 20 },
+      { id: 'T16', no: '16', name: '向量数据库与检索增强生成', phase: '稳步爬升恢复期', plateau: '2-5年', x: 668, y: 355, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T19', no: '19', name: '小语言模型与端侧AI', phase: '稳步爬升恢复期', plateau: '2-5年', x: 694, y: 333, labelPos: 'bottom', labelDx: 0, labelDy: 20 },
+      { id: 'T23', no: '23', name: '深度伪造检测与反AI欺诈', phase: '稳步爬升恢复期', plateau: '2-5年', x: 720, y: 312, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T22', no: '22', name: '软件供应链安全', phase: '稳步爬升恢复期', plateau: '2-5年', x: 750, y: 292, labelPos: 'bottom', labelDx: 0, labelDy: 20 },
+      { id: 'T11', no: '11', name: '平台工程', phase: '稳步爬升恢复期', plateau: '2-5年', x: 780, y: 277, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T29', no: '29', name: '绿色与可持续IT', phase: '稳步爬升恢复期', plateau: '2-5年', x: 812, y: 268, labelPos: 'bottom', labelDx: 0, labelDy: 20 },
+
+      // 5. 生产力成熟期 (3项)
+      { id: 'T08', no: '08', name: '零信任架构', phase: '生产力成熟期', plateau: '<2年', x: 855, y: 267, labelPos: 'top', labelDx: 0, labelDy: -20 },
+      { id: 'T03', no: '03', name: '事件驱动架构', phase: '生产力成熟期', plateau: '<2年', x: 900, y: 266, labelPos: 'bottom', labelDx: 0, labelDy: 20 },
+      { id: 'T12', no: '12', name: '可观测性标准化', phase: '生产力成熟期', plateau: '<2年', x: 945, y: 265, labelPos: 'top', labelDx: 0, labelDy: -20 }
+    ]
+  };
+
   window.DATA = {
-    book: { title: '科技发展部前沿技术研究成果集', subtitle: '工作方案 · 情报源评判 · 前沿技术储备库 · 影响力雷达 · 关系图谱', org: '科技规划处 编制', date: '2026年', version: '' },
+    book: {
+      title: '科技发展部前沿技术研究成果集',
+      subtitle: '前沿技术研究与战略布局全景报告',
+      org: '科技规划处 编制',
+      date: '2026年',
+      version: ''
+    },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
     library: { fields: FIELDS, items: ITEMS },
+    hypeCycle: HYPE_CYCLE_CONFIG,
     impactRadar: RADAR_CONFIG,
     graph: buildGraph(), graphRelations: RELATIONS,
     technologies: ITEMS
