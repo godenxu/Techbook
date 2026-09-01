@@ -29,10 +29,39 @@ fs.writeFileSync(indexPath, indexHtml, 'utf8');
 
 const appJs = fs.readFileSync(appPath, 'utf8');
 
-let out = indexHtml;
-out = out.replace('<script src="data.js"></script>', '<script>\n' + dataJs + '\n</script>');
+// 提取并内联所有引用的图片资源（转换为 Base64 Data URL，确保 index-standalone.html 100% 真正单文件自包含）
+const regex = /["'](assets\/[^"']+\.(png|jpg|jpeg|svg))["']/g;
+let match;
+const imagePaths = new Set();
+while ((match = regex.exec(dataJs)) !== null) {
+  imagePaths.add(match[1]);
+}
+while ((match = regex.exec(indexHtml)) !== null) {
+  imagePaths.add(match[1]);
+}
+
+let replacedDataJs = dataJs;
+let replacedIndexHtml = indexHtml;
+let inlinedCount = 0;
+
+imagePaths.forEach(relPath => {
+  const diskPath = path.join(root, relPath.replace(/\//g, '\\'));
+  if (fs.existsSync(diskPath)) {
+    const ext = path.extname(diskPath).toLowerCase().replace('.', '');
+    const mime = (ext === 'svg') ? 'image/svg+xml' : ((ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png');
+    const b64 = fs.readFileSync(diskPath).toString('base64');
+    const dataUri = `data:${mime};base64,${b64}`;
+    
+    replacedDataJs = replacedDataJs.split(relPath).join(dataUri);
+    replacedIndexHtml = replacedIndexHtml.split(relPath).join(dataUri);
+    inlinedCount++;
+  }
+});
+
+let out = replacedIndexHtml;
+out = out.replace('<script src="data.js"></script>', '<script>\n' + replacedDataJs + '\n</script>');
 out = out.replace('<script src="js/app.js"></script>', '<script>\n' + appJs + '\n</script>');
 
 fs.writeFileSync(destPath, out, 'utf8');
-console.log(`Successfully packed index-standalone.html! Version: ${versionStr}, Length: ${out.length}`);
+console.log(`Successfully packed index-standalone.html! Version: ${versionStr}, Inlined Images: ${inlinedCount}, Length: ${(out.length / 1024 / 1024).toFixed(2)} MB`);
 

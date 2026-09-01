@@ -628,6 +628,7 @@
     add('第一章', '工作方案与方法', 'part1', true);
     add('1.1', '工作方案', 'workplan', false);
     add('1.2', '情报源评判报告', 'sources', false);
+    add('1.3', '研究方法论工具运用', 'methodology_appl', false);
     add('第二章', '整体研究成果', 'part2', true);
     add('2.1', '前沿技术储备库（长名单）', 'library', false);
     add('2.2', '技术成熟度曲线（Gartner Hype Cycle）', 'hypeCycle', false);
@@ -637,7 +638,9 @@
     DATA.technologies.forEach(function (t, i) {
       add('3.' + (i + 1), t.name, 'tech-' + t.id, false);
     });
-    add('附录', '术语 · 数据来源 · 版本', 'appendix', false);
+    add('附录', '研究方法论工具与说明', 'partAppendix', true);
+    add('附录一', '前沿技术研究方法论工具体系', 'appendix_methodology', false);
+    add('附录二', '术语表 · 数据来源 · 版本说明', 'appendix', false);
     add('', '结语', 'closing', false);
     return items;
   }
@@ -725,6 +728,136 @@
       '<div class="pg-section"><div class="pg-h">评判汇总表</div><table class="tbl tbl-sources">' + head + rows + '</table></div>' +
       '<div class="pg-section"><div class="pg-h">逐源评判</div><div class="cards">' + cards + '</div></div>' +
       '</div>';
+  }
+
+  /* ==================== 方法论工具扁平映射 ==================== */
+  var toolShortNames = [
+    'Hype Cycle 曲线',
+    'NASA TRL 量化',
+    'TOGAF ADM 架构',
+    'JTBD 业务逻辑',
+    'APQC 标杆对标',
+    'Priority Matrix 矩阵',
+    '新兴技术雷达',
+    'PESTEL 宏观扫描',
+    'FMEA 风险优先级',
+    'NIST CSF 与 FAIR',
+    'TAM/SAM/SOM 空间',
+    '双向交叉验证',
+    'IDC MarketScape',
+    '波特五力模型',
+    '魔力象限 MQ',
+    '关键能力配套工具',
+    'SWOT 交叉分析',
+    '实物期权 Real Options',
+    'McKinsey 7S 模型',
+    '德尔菲专家共识',
+    '三角数据验证',
+    'Kotter 变革八步法',
+    '技术路线图 Roadmap',
+    'PDCA 迭代闭环',
+    'OKR 目标对齐'
+  ];
+
+  function getMethodologyFlatList() {
+    var mt = DATA.methodologyToolkit || {};
+    var list = [];
+    var count = 0;
+    (mt.sections || []).forEach(function (sec, sIdx) {
+      if (sIdx < 8) {
+        (sec.subsections || []).forEach(function (sub, subIdx) {
+          count++;
+          var numStr = (count < 10 ? '0' : '') + count;
+          var clean = sub.title.replace(/^\d+、/, '');
+          list.push({
+            id: 'tool-' + sIdx + '-' + subIdx,
+            globalIdx: count - 1,
+            num: count,
+            numStr: numStr,
+            isTool: true,
+            secId: sec.id,
+            secTitle: sec.title,
+            secShort: sec.title.replace(/^[一二三四五六七八九十]、/, ''),
+            subTitle: sub.title,
+            cleanName: clean,
+            shortName: toolShortNames[count - 1] || clean.split('：')[0].split('（')[0],
+            items: sub.items || []
+          });
+        });
+      } else {
+        // Section 9: Supplementary explanation (merged)
+        list.push({
+          id: 'supp-sec9',
+          globalIdx: count, // 25
+          num: null,
+          numStr: null,
+          isTool: false,
+          secId: sec.id,
+          secTitle: sec.title,
+          secShort: '方法论选择与整合说明',
+          subTitle: '方法论选择的内在张力与整合思路',
+          cleanName: '方法论选择的内在张力与整合思路',
+          shortName: '内在张力与整合思路',
+          subsections: sec.subsections || []
+        });
+      }
+    });
+    return list;
+  }
+
+  function methodologyApplHTML() {
+    var ma = DATA.methodologyApplication || {};
+    var stages = ma.stages || [];
+    var toolList = getMethodologyFlatList();
+
+    var stageToolIndices = [
+      [0, 1, 2],                 // 1. 成熟度判断: 01, 02, 03 (3项)
+      [3, 4, 5, 6],              // 2. 场景验证: 04, 05, 06, 07 (4项)
+      [7, 8, 9],                 // 3. 风险评估: 08, 09, 10 (3项)
+      [10, 11, 12],              // 4. 市场规模: 11, 12, 13 (3项)
+      [13, 14, 15],              // 5. 行业格局: 14, 15, 16 (3项)
+      [16, 17, 18],              // 6. 战略定位: 17, 18, 19 (3项)
+      [19, 20],                  // 7. 结论收敛: 20, 21 (2项)
+      [21, 22, 23, 24]           // 8. 实施建议: 22, 23, 24, 25 (4项)
+    ];
+
+    var cards = stages.map(function (s, idx) {
+      var indices = stageToolIndices[idx] || [];
+      var chips = indices.map(function (tIdx) {
+        var t = toolList[tIdx];
+        if (!t) return '';
+        return '<span class="method-tool-chip" data-action="open-tool" data-tool-idx="' + t.globalIdx + '" title="点击查看 ' + t.numStr + '. ' + esc(t.cleanName) + '">' +
+          '<span class="mtc-num">' + t.numStr + '.</span> ' + esc(t.shortName) +
+        '</span>';
+      }).join('');
+
+      return '<div class="method-stage-card" style="--stage-color:' + (s.tagColor || 'var(--accent)') + '">' +
+        '<div class="method-stage-head" data-action="open-methodology" data-sec="' + s.secId + '" title="点击在方法论体系面板中查看该环节全部工具">' +
+          '<span class="method-stage-badge">' + (idx + 1) + '. ' + esc(s.stage) + '</span>' +
+          '<span class="method-stage-focus">' + esc(s.focus) + '</span>' +
+        '</div>' +
+        '<div class="method-tool-chips">' + chips + '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="page-pad">' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">' + esc(ma.title || '前沿技术研究方法论工具运用') + '</div>' +
+          '<div class="page-subtitle">覆盖技术研判全流程 8 大环节 · 25 项方法论工具矩阵支撑</div>' +
+        '</div>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-p" style="margin-bottom:6px">' + esc(ma.intro || '') + '</div>' +
+      '<div class="pg-section" style="margin-bottom:4px">' +
+        '<div class="pg-h" style="margin-bottom:5px">研判全流程方法论工具矩阵（全量 25 项工具 · 点击直达详述）</div>' +
+        '<div class="method-stage-grid">' + cards + '</div>' +
+      '</div>' +
+      '<div class="method-footer-callout">' +
+        '<div class="mfc-text">💡 <b>体系化运用：</b>点击上方任意工具标签即可打开方法论详析面板直达该工具详述。各方法具体定义见附录一。</div>' +
+      '</div>' +
+    '</div>';
   }
   var libPreviewPage = 0;
   function libraryPreviewHTML(pageIdx, isWeb) {
@@ -2288,18 +2421,87 @@
       '</div>' +
     '</div>';
   }
-  function appendixHTML() {
+  function appendixMethodologyHTML() {
+    var toolList = getMethodologyFlatList();
+
+    function renderToolChips(indices) {
+      return indices.map(function (tIdx) {
+        var t = toolList[tIdx];
+        if (!t) return '';
+        return '<span class="method-tool-chip" data-action="open-tool" data-tool-idx="' + t.globalIdx + '" title="点击查看 ' + t.numStr + '. ' + esc(t.cleanName) + '">' +
+          '<span class="mtc-num">' + t.numStr + '.</span> ' + esc(t.shortName) +
+        '</span>';
+      }).join('');
+    }
+
+    var layer1Chips = renderToolChips([0, 1, 2, 7, 10, 11, 12, 13]); // 8 tools: 01, 02, 03, 08, 11, 12, 13, 14
+    var layer2Chips = renderToolChips([3, 4, 5, 6, 8, 9, 14, 15, 16, 17, 18]); // 11 tools: 04, 05, 06, 07, 09, 10, 15, 16, 17, 18, 19
+    var layer3Chips = renderToolChips([19, 20, 21, 22, 23, 24]); // 6 tools: 20, 21, 22, 23, 24, 25
+
     return '<div class="page-pad">' +
-      '<div class="page-title">附录</div><div class="h-rule"></div>' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">前沿技术研究方法论工具体系</div>' +
+          '<div class="page-subtitle">附录一 · 覆盖研判全生命周期 8 大维度 25 项方法论工具全景导航</div>' +
+        '</div>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="pg-section" style="margin-bottom:6px">' +
+        '<div class="pg-h" style="margin-bottom:5px">方法论整合框架（三层推进逻辑 · 全量 25 项工具导航 · 点击直达）</div>' +
+        '<div class="method-bento-row">' +
+          '<div class="method-bento-card">' +
+            '<div class="method-bento-title">1. 认知建立层（定位与宏观扫描 · 8项）</div>' +
+            '<div class="method-bento-desc">行业标尺定位、硬科技量化刻度、架构准入规范、宏观风险扫描、市场规模与竞争结构。</div>' +
+            '<div class="method-tool-chips">' + layer1Chips + '</div>' +
+          '</div>' +
+          '<div class="method-bento-card">' +
+            '<div class="method-bento-title">2. 深入分析层（多维严谨验证 · 11项）</div>' +
+            '<div class="method-bento-desc">业务任务拆解、APQC流程对标、优先级矩阵、技术雷达、失效模式、厂商测评与组织落地。</div>' +
+            '<div class="method-tool-chips">' + layer2Chips + '</div>' +
+          '</div>' +
+          '<div class="method-bento-card">' +
+            '<div class="method-bento-title">3. 方案输出层（收敛与执行闭环 · 6项）</div>' +
+            '<div class="method-bento-desc">专家共识收敛、多源数据校准、变革路径设计、路线图规划、持续迭代与目标对齐闭环。</div>' +
+            '<div class="method-tool-chips">' + layer3Chips + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pg-section" style="margin-bottom:4px">' +
+        '<div class="pg-h" style="margin-bottom:5px">方法论选择的三大内在张力与平衡（框架指引 · 点击查看详析）</div>' +
+        '<div class="method-tensions-list">' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+            '<div class="method-tension-title">⚖️ 定性判断 vs. 量化计算</div>' +
+            '<div class="method-tension-body">经验洞察与严谨工程打分互补，定性定框架、定量定刻度。</div>' +
+          '</div>' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+            '<div class="method-tension-title">⏱️ 权威性 vs. 时效性</div>' +
+            '<div class="method-tension-body">国际权威年度报告与行内敏捷动态情报源双轨融合。</div>' +
+          '</div>' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+            '<div class="method-tension-title">🏦 通用模型 vs. 金融特殊性</div>' +
+            '<div class="method-tension-body">通用科技分析框架与强监管合规、高可用风控强约束结合。</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function appendixTermsHTML() {
+    return '<div class="page-pad">' +
+      '<div class="page-title">术语表与数据来源</div>' +
+      '<div class="page-subtitle">附录二 · 术语定义 · 评判口径 · 数据来源 · 系统版本说明</div>' +
+      '<div class="h-rule"></div>' +
       '<div class="pg-section"><div class="pg-h">术语表</div><table class="tbl">' +
-      '<tr><th>术语</th><th>含义</th></tr>' +
-      '<tr><td>六维评级</td><td>技术成熟度、战略匹配度、价值贡献度、引入可行度、战略紧迫度、生态开放度（1–5 分制，越高越有利）。</td></tr>' +
-      '<tr><td>储备库分层</td><td>布局层/论证层/研究层/观察层四层，对应提前布局、系统论证、深入研究、动态观察。</td></tr>' +
+      '<tr><th style="width:24%">术语</th><th>含义与口径</th></tr>' +
+      '<tr><td><b>六维评级</b></td><td>技术成熟度、战略匹配度、价值贡献度、引入可行度、战略紧迫度、生态开放度（1–5 分制，越高越有利）。</td></tr>' +
+      '<tr><td><b>储备库分层</b></td><td>布局层（提前布局）、论证层（系统论证）、研究层（深入研究）、观察层（动态观察）四层。</td></tr>' +
+      '<tr><td><b>企架十大中心</b></td><td>对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易、管理支持、数智能力、技术服务中心。</td></tr>' +
       '</table></div>' +
-      '<div class="pg-section"><div class="pg-h">数据来源</div><div class="pg-p dim">评估内容来源于监管与标准组织、研究机构、金融同业实践、学术文献及开源社区，按六维评级口径客观研判。</div></div>' +
-      '<div class="pg-section"><div class="pg-h">系统说明</div><div class="pg-p dim">' + esc(DATA.book.org) + ' · ' + esc(DATA.book.date) + ' · 本系统为纯静态离线展示，双击 index.html 即可打开。</div></div>' +
+      '<div class="pg-section"><div class="pg-h">数据来源与研究依据</div><div class="pg-p dim">评估内容来源于国家监管政策与金融标准、国际权威咨询智库（Gartner、IDC等）、国内外金融同业实践案例、前沿学术文献及全球主流开源技术生态，基于客观情报源评分体系与六维研判口径严谨推导。</div></div>' +
+      '<div class="pg-section"><div class="pg-h">系统运行说明</div><div class="pg-p dim">' + esc(DATA.book.org) + ' · ' + esc(DATA.book.date) + ' · 本系统采用纯静态离线单文件架构，免服务端依赖，双击 index.html 即可即时交互体验。</div></div>' +
       '</div>';
   }
+  var appendixHTML = appendixTermsHTML;
   function backCoverHTML() {
     return '<div class="cover-full">' +
       '<div class="cov-kicker">THANK YOU</div>' +
@@ -2342,9 +2544,10 @@
   addPage('overview', '成果全景与说明', overviewPageHTML());
   addPage('toc1', '目录（上）', toc1HTML);
   addPage('toc2', '目录（下）', toc2HTML);
-  addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判', '01'));
+  addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判 · 方法论工具矩阵', '01'));
   addPage('workplan', '第一章 · 工作方案', workplanHTML());
   addPage('sources', '第一章 · 情报源评判报告', sourcesHTML());
+  addPage('methodology_appl', '第一章 · 研究方法论工具运用', methodologyApplHTML());
   addPage('part2', '第二章', dividerHTML('第二章', '整体研究成果', '前沿技术储备库 · 技术成熟度曲线 · 技术影响力雷达 · 企架十大中心落位图谱', '02'));
   addPage('library', '第二章 · 前沿技术储备库', libraryPreviewHTML());
   addPage('hypeCycle', '第二章 · 技术成熟度曲线', hypeCyclePreviewHTML);
@@ -2352,7 +2555,9 @@
   addPage('graph', '第二章 · 落位图谱', graphPreviewHTML());
   addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '六维评估表 · 专题研究报告（Word / PPT）· 一张图概述', '03'));
   DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
-  addPage('appendix', '附录', appendixHTML());
+  addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论工具与说明', '前沿技术研究方法论工具体系 · 术语表与数据来源', '附'));
+  addPage('appendix_methodology', '附录一 · 方法论工具体系', appendixMethodologyHTML());
+  addPage('appendix', '附录二 · 术语与数据来源', appendixTermsHTML());
   addPage('closing', '结语', closingHTML());
   // 确保封底始终位于最终闭合跨页的左侧页（偶数索引）：如果正文结束于奇数总页数，在封底前补充一页优雅衬页
   if (pages.length % 2 !== 0) {
@@ -2371,12 +2576,13 @@
       { id: 'part1', no: '第一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
       { id: 'workplan', no: '1.1', short: '工作方案', name: '第一章 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
       { id: 'sources', no: '1.2', short: '情报源评判', name: '第一章 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
-      { id: 'part2', no: '第二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 9, color: '#3b82f6', tier: '第二章' },
-      { id: 'library', no: '2.1', short: '技术储备库', name: '第二章 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 10, color: '#3b82f6', tier: '第二章' },
-      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '第二章 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 11, color: '#3b82f6', tier: '第二章' },
-      { id: 'radar', no: '2.3', short: '影响力雷达', name: '第二章 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 12, color: '#3b82f6', tier: '第二章' },
-      { id: 'graph', no: '2.4', short: '落位图谱', name: '第二章 · 前沿技术在企架十大中心的落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 13, color: '#3b82f6', tier: '第二章' },
-      { id: 'part3', no: '第三章', short: '专题研究', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 14, color: '#a855f7', tier: '第三章' }
+      { id: 'methodology_appl', no: '1.3', short: '方法论运用', name: '第一章 · 研究方法论工具运用', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
+      { id: 'part2', no: '第二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 10, color: '#3b82f6', tier: '第二章' },
+      { id: 'library', no: '2.1', short: '技术储备库', name: '第二章 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 11, color: '#3b82f6', tier: '第二章' },
+      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '第二章 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 12, color: '#3b82f6', tier: '第二章' },
+      { id: 'radar', no: '2.3', short: '影响力雷达', name: '第二章 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 13, color: '#3b82f6', tier: '第二章' },
+      { id: 'graph', no: '2.4', short: '落位图谱', name: '第二章 · 前沿技术在企架十大中心的落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 14, color: '#3b82f6', tier: '第二章' },
+      { id: 'part3', no: '第三章', short: '专题研究', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 15, color: '#a855f7', tier: '第三章' }
     ];
 
     DATA.technologies.forEach(function (t) {
@@ -2394,7 +2600,9 @@
       });
     });
 
-    bms.push({ id: 'appendix', no: '附录', short: '术语与来源', name: '附录 · 术语 · 数据来源 · 版本', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'partAppendix', no: '附录', short: '附录扉页', name: '附录 · 研究方法论工具与说明', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix_methodology', no: '附录一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 4), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix', no: '附录二', short: '术语与来源', name: '附录二 · 术语 · 数据来源 · 版本', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
     bms.push({ id: 'closing', no: '结语', short: '研究结语', name: '结语', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
     if (pageKeyMap['back'] != null) {
       bms.push({ id: 'back', no: '封底', short: '封底', name: '封底', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
@@ -2646,6 +2854,8 @@
           else if (action === 'open-hype-cycle') openHypeCyclePanel();
           else if (action === 'open-radar') openRadarPanel();
           else if (action === 'open-graph') openGraphPanel();
+          else if (action === 'open-methodology') openMethodologyPanel(el.getAttribute('data-sec'));
+          else if (action === 'open-tool') openMethodologyPanel(null, parseInt(el.getAttribute('data-tool-idx'), 10));
           else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
           else if (action === 'lib-prev-page') {
             libPreviewPage = Math.max(0, libPreviewPage - 1);
@@ -2868,6 +3078,7 @@
     sections.push(webSection('s-overview', '序', '成果全景与说明', overviewPageHTML()));
     sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
     sections.push(webSection('s-sources', '1.2', '情报源评判报告', sourcesHTML()));
+    sections.push(webSection('s-methodology-appl', '1.3', '研究方法论工具运用', methodologyApplHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 完整方法论体系</button>'));
     sections.push(webSection('s-library', '2.1', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
     sections.push(webSection('s-hype-cycle', '2.2', '技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('webHypeCycleWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>'));
     sections.push(webSection('s-radar', '2.3', '技术影响力雷达图（Impact Radar）', radarInteractiveHTML('webRadarWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>'));
@@ -2878,7 +3089,9 @@
       var titleHtml = esc(pureName) + (enName ? (' <span style="font-size:13.5px;color:var(--dim);font-weight:400;margin-left:8px">' + esc(enName) + '</span>') : '');
       sections.push(webSection('s-tech-' + t.id, '3.' + (i + 1), titleHtml, techWebHTML(t)));
     });
-    sections.push(webSection('s-appendix', '附录', '术语 · 数据来源 · 版本', appendixHTML()));
+    sections.push(webSection('s-part-appendix', '附录', '附录与研究方法论工具', '<div class="pg-p">收录前沿技术研究方法论工具体系、术语定义与数据来源依据。</div>'));
+    sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
+    sections.push(webSection('s-appendix', '附录二', '术语表 · 数据来源 · 版本说明', appendixTermsHTML()));
     sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
     $('webContent').innerHTML = sections.join('');
     initHypeCycleInteractive($('webHypeCycleWrap'));
@@ -2891,6 +3104,7 @@
     toc.push('<div class="web-toc-item part" data-target="s-workplan">第一章 · 工作方案与方法</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>情报源评判报告</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-methodology-appl"><span class="wt-no">1.3</span>研究方法论工具运用</div>');
     toc.push('<div class="web-toc-item part" data-target="s-library">第二章 · 整体研究成果</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">2.1</span>前沿技术储备库</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-hype-cycle"><span class="wt-no">2.2</span>技术成熟度曲线</div>');
@@ -2901,8 +3115,9 @@
       var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
       toc.push('<div class="web-toc-item sub" data-target="s-tech-' + t.id + '"><span class="wt-no">3.' + (i + 1) + '</span>' + esc(pureName) + '</div>');
     });
-    toc.push('<div class="web-toc-item part" data-target="s-appendix">附录</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no"></span>术语 · 数据来源 · 版本</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-part-appendix">附录 · 研究方法论工具与说明</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-appendix-methodology"><span class="wt-no">附录一</span>方法论工具体系</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no">附录二</span>术语表 · 数据来源</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-closing"><span class="wt-no"></span>结语</div>');
     $('webToc').innerHTML = toc.join('');
 
@@ -3275,6 +3490,218 @@
     }
 
     bindBlueprintPillTooltips(box);
+  }
+
+  /* ==================== 前沿技术研究方法论工具体系详析面板 (Master-Detail Cockpit) ==================== */
+  var toolListGlobal = [];
+
+  function renderToolDetailHTML(tool, idx, total) {
+    if (!tool) return '<div class="method-tool-card"><div class="method-card-body">请在左侧选择方法论工具</div></div>';
+
+    if (!tool.isTool) {
+      var subsHtml = (tool.subsections || []).map(function (sub) {
+        var itemsHtml = (sub.items || []).map(function (it) {
+          if (it.type === 'p') {
+            return '<p>' + esc(it.text) + '</p>';
+          } else if (it.type === 'table') {
+            var thead = (it.headers && it.headers.length) ? ('<thead><tr>' + it.headers.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead>') : '';
+            var tbody = (it.rows || []).map(function (r) {
+              return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>';
+            }).join('');
+            return '<div class="tbl-wrap" style="overflow-x:auto;margin:6px 0"><table class="tbl method-tbl">' + thead + '<tbody>' + tbody + '</tbody></table></div>';
+          }
+          return '';
+        }).join('');
+
+        return '<div style="margin-bottom:12px">' +
+          '<h3 class="method-sub-title" style="margin:8px 0 6px">' + esc(sub.title) + '</h3>' +
+          itemsHtml +
+        '</div>';
+      }).join('');
+
+      var prevBtn = '<button class="btn btn-sm" id="btnMethodPrev" data-idx="' + (idx - 1) + '">← 上一个：' + toolListGlobal[idx - 1].numStr + '. ' + esc(toolListGlobal[idx - 1].shortName) + '</button>';
+
+      return '<div class="method-tool-card">' +
+        '<div class="method-card-head">' +
+          '<div class="method-card-tags">' +
+            '<span class="method-card-sec-badge">' + esc(tool.secTitle) + '</span>' +
+            '<span class="method-card-idx-badge">方法论整体指引</span>' +
+          '</div>' +
+          '<h2 class="method-card-title">' + esc(tool.cleanName) + '</h2>' +
+        '</div>' +
+        '<div class="method-card-body">' + subsHtml + '</div>' +
+        '<div class="method-card-footer">' + prevBtn + '<div></div></div>' +
+      '</div>';
+    }
+
+    var itemsHtml = (tool.items || []).map(function (it) {
+      if (it.type === 'p') {
+        return '<p>' + esc(it.text) + '</p>';
+      } else if (it.type === 'table') {
+        var thead = (it.headers && it.headers.length) ? ('<thead><tr>' + it.headers.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead>') : '';
+        var tbody = (it.rows || []).map(function (r) {
+          return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>';
+        }).join('');
+        return '<div class="tbl-wrap" style="overflow-x:auto;margin:6px 0"><table class="tbl method-tbl">' + thead + '<tbody>' + tbody + '</tbody></table></div>';
+      } else if (it.type === 'image') {
+        return '<div class="method-fig-box">' +
+          '<img src="' + it.src + '" alt="' + esc(it.caption || '') + '" class="method-fig-img">' +
+          '<div class="method-fig-cap">' + esc(it.caption || '') + '</div>' +
+        '</div>';
+      }
+      return '';
+    }).join('');
+
+    var prevBtn = idx > 0 ? ('<button class="btn btn-sm" id="btnMethodPrev" data-idx="' + (idx - 1) + '">← 上一个：' + (toolListGlobal[idx - 1].isTool ? (toolListGlobal[idx - 1].numStr + '. ' + esc(toolListGlobal[idx - 1].shortName)) : esc(toolListGlobal[idx - 1].cleanName)) + '</button>') : '<div></div>';
+    var nextBtn = idx < total - 1 ? ('<button class="btn btn-sm" id="btnMethodNext" data-idx="' + (idx + 1) + '">下一个：' + (toolListGlobal[idx + 1].isTool ? (toolListGlobal[idx + 1].numStr + '. ' + esc(toolListGlobal[idx + 1].shortName)) : esc(toolListGlobal[idx + 1].cleanName)) + ' →</button>') : '<div></div>';
+
+    var toolCountTotal = toolListGlobal.filter(function (t) { return t.isTool; }).length || 29;
+
+    return '<div class="method-tool-card">' +
+      '<div class="method-card-head">' +
+        '<div class="method-card-tags">' +
+          '<span class="method-card-sec-badge">' + esc(tool.secTitle) + '</span>' +
+          '<span class="method-card-idx-badge">方法论工具 ' + tool.numStr + ' / ' + toolCountTotal + '</span>' +
+        '</div>' +
+        '<h2 class="method-card-title">' + tool.numStr + '. ' + esc(tool.cleanName) + '</h2>' +
+      '</div>' +
+      '<div class="method-card-body">' + itemsHtml + '</div>' +
+      '<div class="method-card-footer">' + prevBtn + nextBtn + '</div>' +
+    '</div>';
+  }
+
+  function methodologyPanelHTML() {
+    var mt = DATA.methodologyToolkit || {};
+    var sections = mt.sections || [];
+    toolListGlobal = getMethodologyFlatList();
+
+    var treeHtml = sections.map(function (s, sIdx) {
+      if (sIdx < 8) {
+        var toolsInSec = toolListGlobal.filter(function (t) { return t.secId === s.id; }).map(function (t) {
+          return '<div class="method-tool-nav-item ' + (t.globalIdx === 0 ? 'active' : '') + '" data-idx="' + t.globalIdx + '" data-sec-id="' + s.id + '">' +
+            '<span class="method-tool-num">' + t.numStr + '.</span>' +
+            '<span class="method-tool-name" title="' + esc(t.cleanName) + '">' + esc(t.cleanName) + '</span>' +
+          '</div>';
+        }).join('');
+
+        return '<div class="method-sec-group" data-sec-id="' + s.id + '">' +
+          '<div class="method-group-header">' + esc(s.title) + '</div>' +
+          toolsInSec +
+        '</div>';
+      } else {
+        var suppItem = toolListGlobal.find(function (t) { return t.id === 'supp-sec9'; });
+        var idx = suppItem ? suppItem.globalIdx : 25;
+        return '<div class="method-sec-group" data-sec-id="' + s.id + '">' +
+          '<div class="method-group-header">' + esc(s.title) + '</div>' +
+          '<div class="method-tool-nav-item" data-idx="' + idx + '" data-sec-id="' + s.id + '">' +
+            '<span class="method-tool-num" style="color:var(--accent2)">📖</span>' +
+            '<span class="method-tool-name" title="方法论内在张力与整合思路">内在张力与整合思路</span>' +
+          '</div>' +
+        '</div>';
+      }
+    }).join('');
+
+    var initialDetail = toolListGlobal.length > 0 ? renderToolDetailHTML(toolListGlobal[0], 0, toolListGlobal.length) : '';
+
+    return '<div class="method-cockpit">' +
+      '<div class="method-sidebar">' +
+        '<div class="method-search-wrap">' +
+          '<input type="text" class="method-search-input" id="methodSearchInput" placeholder="🔍 检索方法论工具 (如 Hype Cycle, SWOT)...">' +
+        '</div>' +
+        '<div class="method-tree-wrap" id="methodTreeWrap">' + treeHtml + '</div>' +
+      '</div>' +
+      '<div class="method-detail-pane" id="methodDetailPane">' + initialDetail + '</div>' +
+    '</div>';
+  }
+
+  function initMethodologyPanel(initialSec, initialToolIdx) {
+    var searchInput = $('methodSearchInput');
+    var treeWrap = $('methodTreeWrap');
+    var detailPane = $('methodDetailPane');
+    if (!treeWrap || !detailPane) return;
+
+    function selectTool(idx) {
+      idx = Math.max(0, Math.min(toolListGlobal.length - 1, idx));
+      detailPane.innerHTML = renderToolDetailHTML(toolListGlobal[idx], idx, toolListGlobal.length);
+      detailPane.scrollTop = 0;
+
+      treeWrap.querySelectorAll('.method-tool-nav-item').forEach(function (item) {
+        var itemIdx = parseInt(item.getAttribute('data-idx'), 10);
+        item.classList.toggle('active', itemIdx === idx);
+        if (itemIdx === idx) {
+          try { item.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+        }
+      });
+
+      var btnPrev = $('btnMethodPrev');
+      if (btnPrev) {
+        btnPrev.onclick = function () {
+          var pIdx = parseInt(this.getAttribute('data-idx'), 10);
+          selectTool(pIdx);
+        };
+      }
+      var btnNext = $('btnMethodNext');
+      if (btnNext) {
+        btnNext.onclick = function () {
+          var nIdx = parseInt(this.getAttribute('data-idx'), 10);
+          selectTool(nIdx);
+        };
+      }
+    }
+
+    treeWrap.querySelectorAll('.method-tool-nav-item').forEach(function (item) {
+      item.onclick = function (e) {
+        e.preventDefault();
+        var idx = parseInt(this.getAttribute('data-idx'), 10);
+        selectTool(idx);
+      };
+    });
+
+    if (searchInput) {
+      searchInput.oninput = function () {
+        var q = this.value.trim().toLowerCase();
+        var groups = treeWrap.querySelectorAll('.method-sec-group');
+        groups.forEach(function (grp) {
+          var items = grp.querySelectorAll('.method-tool-nav-item');
+          var visibleCount = 0;
+          items.forEach(function (it) {
+            var text = it.textContent.toLowerCase();
+            var match = !q || text.indexOf(q) >= 0;
+            it.style.display = match ? 'flex' : 'none';
+            if (match) visibleCount++;
+          });
+          grp.style.display = (!q || visibleCount > 0) ? 'flex' : 'none';
+        });
+      };
+    }
+
+    var targetIdx = 0;
+    if (initialToolIdx !== undefined && initialToolIdx !== null) {
+      targetIdx = parseInt(initialToolIdx, 10);
+    } else if (initialSec) {
+      for (var i = 0; i < toolListGlobal.length; i++) {
+        if (toolListGlobal[i].secId === initialSec) {
+          targetIdx = i;
+          break;
+        }
+      }
+    }
+    selectTool(targetIdx);
+  }
+
+  function openMethodologyPanel(initialSec, initialToolIdx, isNavBack) {
+    if (!isNavBack) {
+      if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'methodology') {
+        var snap = capturePanelSnapshot();
+        if (snap) panelNavStack.push(snap);
+      } else {
+        panelNavStack = [];
+      }
+    }
+    currentPanelMeta = { type: 'methodology', name: '方法论工具体系', sec: initialSec, toolIdx: initialToolIdx };
+    openPanel('前沿技术研究方法论工具体系', methodologyPanelHTML(), function () {
+      initMethodologyPanel(initialSec, initialToolIdx);
+    }, true);
   }
 
   /* ==================== 技术专题详情面板 ==================== */
@@ -3868,6 +4295,7 @@
         else if (h === 'hype-cycle' || h === 'hypeCycle') openHypeCyclePanel();
         else if (h === 'radar') openRadarPanel();
         else if (h === 'graph') openGraphPanel();
+        else if (h === 'methodology' || h === 'method') openMethodologyPanel();
         else if (h === 'web') setMode('web');
         else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));
       }, 0);
