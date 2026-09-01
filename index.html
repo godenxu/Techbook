@@ -58,14 +58,19 @@ button { font-family: var(--font); cursor: pointer; }
   background: var(--panel);
   position: relative; z-index: 50;
 }
-.brand { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.brand { display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; flex-shrink: 0; }
 .brand-icon {
-  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+  width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff; font-weight: 700; font-size: 17px; box-shadow: var(--glow);
+  color: #fff; font-weight: 800; font-size: 19px; box-shadow: var(--glow);
+  flex-shrink: 0;
 }
-.brand-title { font-weight: 700; font-size: 15px; letter-spacing: .5px; }
-.brand-sub { font-size: 11px; color: var(--dim); }
+.brand-title {
+  font-weight: 800; font-size: 18px; letter-spacing: .6px; color: var(--text);
+  white-space: nowrap; transition: color .2s ease;
+}
+.brand:hover .brand-title { color: var(--accent); }
+.brand-sub { display: none !important; }
 .search-wrap { flex: 1; max-width: 460px; position: relative; }
 .search-wrap input {
   width: 100%; height: 38px; border-radius: 20px; border: 1px solid var(--border);
@@ -1366,9 +1371,38 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .modal-body { padding: 24px; overflow: auto; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
 
 /* 灯箱 */
-.lightbox-toolbar { display: flex; align-items: center; gap: 12px; width: min(1200px, 94vw); color: var(--text); }
-.lightbox-toolbar span { flex: 1; font-size: 14px; }
-#lightboxImg { max-width: 94vw; max-height: 84vh; border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
+.lightbox-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(1200px, 94vw); color: var(--text); padding: 8px 0; z-index: 10; flex: none; }
+.lightbox-toolbar span { flex: 1; font-size: 15px; font-weight: 750; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lightbox-tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.lightbox-tools .btn { padding: 4px 11px; font-size: 13.5px; font-weight: 800; height: 32px; min-width: 32px; border-radius: 8px; }
+.lightbox-stage {
+  position: relative;
+  width: min(1200px, 94vw);
+  height: 84vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 12px;
+}
+.lightbox-stage.is-dragging { cursor: grabbing; }
+#lightboxImg {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  transform-origin: center center;
+  transition: transform 0.05s linear;
+  will-change: transform;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 
 /* ============================ 长名单表格 ============================ */
 .lib-container-layout {
@@ -1448,64 +1482,232 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .row-detail .rd { padding: 8px 0; border-bottom: 1px dashed var(--border); }
 .row-detail .rd .k { color: var(--dim); font-size: 12px; }
 .row-detail .rd .v { font-size: 14px; margin-top: 2px; }
-.row-detail .rd.full { grid-column: 1 / -1; }
-
 /* ============================ 企架十大中心前沿技术赋能蓝图 ============================ */
+.tc-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px 10px;
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .tc-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.tc-stat-pill {
+  cursor: pointer;
+  transition: all .15s ease;
+  user-select: none;
+  white-space: nowrap;
+  justify-content: space-between;
+  padding: 4.5px 10px;
+}
+.tc-stat-pill span, .tc-stat-pill b {
+  white-space: nowrap;
+}
+.tc-stat-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--panel);
+  transform: translateY(-1.5px);
+  box-shadow: 0 3px 10px rgba(79, 140, 255, 0.2);
+}
 .blueprint-card {
-  background: var(--panel2);
+  background: var(--bg2);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 10px 12px;
   margin-top: 8px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all .2s ease;
 }
+.blueprint-card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 32px rgba(79, 140, 255, 0.25) !important;
+}
+[data-theme="light"] .blueprint-card,
+[data-theme="light"] #graphBox {
+  background: radial-gradient(circle at 50% 10%, #f8fafc 0%, #e2e8f0 100%) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.9), 0 8px 26px rgba(15, 23, 42, 0.08) !important;
+}
+[data-theme="light"] .blueprint-card:hover {
+  border-color: #2563eb !important;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.9), 0 12px 36px rgba(37, 99, 235, 0.18) !important;
+}
+[data-theme="dark"] .blueprint-card,
+[data-theme="dark"] #graphBox {
+  background: radial-gradient(circle at 50% 10%, #111a2e 0%, #090d16 100%) !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.04), 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+[data-theme="dark"] .blueprint-card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.04), 0 12px 36px rgba(79, 140, 255, 0.3) !important;
+}
+
 .blueprint-svg {
   width: 100%;
   height: auto;
   display: block;
   user-select: none;
 }
+
 .tc-center-box {
   transition: all .2s ease;
 }
-.tc-center-box:hover > .tc-box-rect {
-  stroke: var(--accent);
-  stroke-width: 1.8px;
-  filter: drop-shadow(0 2px 8px rgba(79, 140, 255, 0.25));
+.tc-center-box > .tc-box-rect {
+  transition: all .2s ease;
+  rx: 10px;
+  ry: 10px;
 }
+
+/* 亮色模式下十大中心各色系柔和高质感卡片底色与立体阴影 */
+[data-theme="light"] .tc-center-box[data-center="c1"] > .tc-box-rect {
+  fill: #f0f9ff !important;
+  stroke: #7dd3fc !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 12px rgba(14, 165, 233, 0.15));
+}
+[data-theme="light"] .tc-center-box[data-center="c2"] > .tc-box-rect,
+[data-theme="light"] .tc-center-box[data-center="c3"] > .tc-box-rect {
+  fill: #f0fdfa !important;
+  stroke: #99f6e4 !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 12px rgba(20, 184, 166, 0.12));
+}
+[data-theme="light"] .tc-center-box[data-center="c4"] > .tc-box-rect,
+[data-theme="light"] .tc-center-box[data-center="c6"] > .tc-box-rect {
+  fill: #fffbeb !important;
+  stroke: #fde047 !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.14));
+}
+[data-theme="light"] .tc-center-box[data-center="c5"] > .tc-box-rect,
+[data-theme="light"] .tc-center-box[data-center="c7"] > .tc-box-rect {
+  fill: #fff1f2 !important;
+  stroke: #fecdd3 !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 12px rgba(244, 63, 94, 0.13));
+}
+[data-theme="light"] .tc-center-box[data-center="c8"] > .tc-box-rect,
+[data-theme="light"] .tc-center-box[data-center="c9"] > .tc-box-rect,
+[data-theme="light"] .tc-center-box[data-center="c10"] > .tc-box-rect {
+  fill: #f8fafc !important;
+  stroke: #cbd5e1 !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 12px rgba(100, 116, 139, 0.14));
+}
+
+/* 暗色模式下十大中心各色系通透光晕与立体阴影 */
+[data-theme="dark"] .tc-center-box[data-center="c1"] > .tc-box-rect {
+  fill: rgba(14, 165, 233, 0.08) !important;
+  stroke: rgba(56, 189, 248, 0.45) !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+}
+[data-theme="dark"] .tc-center-box[data-center="c2"] > .tc-box-rect,
+[data-theme="dark"] .tc-center-box[data-center="c3"] > .tc-box-rect {
+  fill: rgba(20, 184, 166, 0.07) !important;
+  stroke: rgba(45, 212, 191, 0.4) !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+}
+[data-theme="dark"] .tc-center-box[data-center="c4"] > .tc-box-rect,
+[data-theme="dark"] .tc-center-box[data-center="c6"] > .tc-box-rect {
+  fill: rgba(245, 158, 11, 0.07) !important;
+  stroke: rgba(251, 191, 36, 0.4) !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+}
+[data-theme="dark"] .tc-center-box[data-center="c5"] > .tc-box-rect,
+[data-theme="dark"] .tc-center-box[data-center="c7"] > .tc-box-rect {
+  fill: rgba(244, 63, 94, 0.07) !important;
+  stroke: rgba(251, 113, 133, 0.4) !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+}
+[data-theme="dark"] .tc-center-box[data-center="c8"] > .tc-box-rect,
+[data-theme="dark"] .tc-center-box[data-center="c9"] > .tc-box-rect,
+[data-theme="dark"] .tc-center-box[data-center="c10"] > .tc-box-rect {
+  fill: rgba(16, 185, 129, 0.06) !important;
+  stroke: rgba(52, 211, 153, 0.4) !important;
+  stroke-width: 1.4px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+}
+
+.tc-center-box:hover > .tc-box-rect {
+  stroke: var(--accent) !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 6px 20px rgba(79, 140, 255, 0.35)) !important;
+}
+
+/* 技术胶囊胶囊微阴影与质感 */
 .tc-tech-pill {
   cursor: pointer;
   transition: transform .15s ease, filter .15s ease;
 }
 .tc-tech-pill:hover {
-  transform: translateY(-1px);
+  transform: translateY(-1.5px);
 }
 .tc-tech-pill:hover > .tc-pill-bg {
   fill: var(--accent) !important;
   stroke: var(--accent) !important;
   stroke-width: 1.8px !important;
-  filter: drop-shadow(0 2px 8px rgba(79, 140, 255, 0.45));
+  filter: drop-shadow(0 4px 12px rgba(79, 140, 255, 0.5)) !important;
 }
 .tc-tech-pill:hover text {
   font-weight: 900 !important;
   fill: #ffffff !important;
 }
+
+[data-theme="light"] .tc-pill-bg {
+  fill: #ffffff !important;
+  stroke-width: 1.3px;
+  filter: drop-shadow(0 2px 5px rgba(15, 23, 42, 0.08));
+}
 [data-theme="light"] .tc-tech-pill:hover > .tc-pill-bg {
   fill: #2563eb !important;
   stroke: #1d4ed8 !important;
-  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.35));
+  filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.4)) !important;
 }
 [data-theme="light"] .tc-tech-pill:hover text {
   fill: #ffffff !important;
   font-weight: 800 !important;
 }
+
+[data-theme="dark"] .tc-pill-bg {
+  fill: #1e293b !important;
+  stroke-width: 1.3px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.tc-flow-line {
+  transition: stroke .2s ease, opacity .2s ease;
+}
+[data-theme="light"] .tc-flow-line {
+  stroke: #475569 !important;
+}
+[data-theme="dark"] .tc-flow-line {
+  stroke: #94a3b8 !important;
+}
+
 .tc-flow-text {
   font-size: 11px;
   fill: var(--dim);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.3px;
+}
+[data-theme="light"] .tc-flow-text {
+  fill: #334155 !important;
+  font-weight: 750 !important;
+}
+[data-theme="dark"] .tc-flow-text {
+  fill: #cbd5e1 !important;
+  font-weight: 700 !important;
 }
 .graph-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
 .legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--dim); }
@@ -1537,6 +1739,93 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   display: block;
 }
 .graph-tip { color: var(--faint); font-size: 12px; }
+
+/* 落位图谱悬浮详析卡片 */
+.graph-tooltip {
+  position: absolute;
+  z-index: 1200;
+  max-width: 380px;
+  min-width: 270px;
+  background: var(--panel);
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px 15px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: opacity 0.12s ease;
+  will-change: transform, opacity;
+}
+.graph-tooltip.hidden {
+  display: none !important;
+}
+[data-theme="light"] .graph-tooltip {
+  background: #ffffff;
+  border: 1.5px solid #2563eb;
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.2), 0 6px 18px rgba(0, 0, 0, 0.10);
+}
+[data-theme="light"] .graph-tooltip .gt-reason-box {
+  background: #f1f5f9;
+  border-left: 3px solid #2563eb;
+}
+.graph-tooltip .gt-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.graph-tooltip .gt-id {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 900;
+}
+.graph-tooltip .gt-tier {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.graph-tooltip .gt-center {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.graph-tooltip .gt-reason-box {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--accent);
+}
+.graph-tooltip .gt-reason-label {
+  font-size: 11.5px;
+  font-weight: 750;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.graph-tooltip .gt-reason-text {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text);
+}
+.graph-tooltip .gt-foot {
+  font-size: 11px;
+  color: var(--accent2);
+  text-align: right;
+  font-weight: 600;
+}
+
+/* 右下角版本号徽标 (用户要求暂时隐藏) */
+.app-version-badge {
+  display: none !important;
+}
 
 /* ============================ 图表 ============================ */
 .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -2654,16 +2943,14 @@ body.has-overlay-open .book-side-tab {
 <header class="topbar">
   <div class="brand" id="brandBtn" title="回到封面">
     <div class="brand-icon">研</div>
-    <div class="brand-text">
-      <div class="brand-title">科技发展部前沿技术研究成果集</div>
-      <div class="brand-sub">电子研究书 · 书籍 / 网页</div>
-    </div>
+    <div class="brand-title">科技发展部前沿技术研究成果集</div>
   </div>
   <div class="search-wrap">
     <input id="searchInput" type="text" placeholder="搜索技术名称 / 关键词，回车跳转…" autocomplete="off">
     <div id="searchResults" class="search-results hidden"></div>
   </div>
   <div class="topbar-actions">
+    <button class="btn" id="btnFullscreenPlay" title="全屏播放整本书">⛶ 全屏播放</button>
     <button class="btn" id="btnAutoPlay" title="开启大屏自动放映巡航">▶ 自动放映</button>
     <button class="btn" id="btnFxToggle" title="切换炫酷动效增强模式">✨ 动效: 开</button>
     <button class="btn mode-btn active" id="btnBook" title="书籍模式">📖 书籍</button>
@@ -2733,9 +3020,16 @@ body.has-overlay-open .book-side-tab {
 <div class="overlay hidden" id="lightbox">
   <div class="lightbox-toolbar">
     <span id="lightboxTitle"></span>
-    <button class="panel-close" id="lightboxClose" title="关闭">✕</button>
+    <div class="lightbox-tools">
+      <button class="btn btn-sm" id="lightboxZoomIn" title="放大">+</button>
+      <button class="btn btn-sm" id="lightboxZoomOut" title="缩小">−</button>
+      <button class="btn btn-sm" id="lightboxReset" title="还原">1:1</button>
+      <button class="panel-close" id="lightboxClose" title="关闭">✕</button>
+    </div>
   </div>
-  <img id="lightboxImg" alt="预览图">
+  <div class="lightbox-stage" id="lightboxStage">
+    <img id="lightboxImg" alt="预览图" draggable="false">
+  </div>
 </div>
 
 <div class="overlay hidden" id="modal">
@@ -2754,6 +3048,7 @@ body.has-overlay-open .book-side-tab {
 </div>
 
 <div class="toast hidden" id="toast"></div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609011132">v202609011132</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>

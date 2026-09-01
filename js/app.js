@@ -94,6 +94,7 @@
 
   /* ==================== 覆盖层动效性能智能冻结机制 ==================== */
   var activeOverlayCount = 0;
+  var lastOverlayCloseTimestamp = 0;
   function updateOverlayState(delta) {
     activeOverlayCount = Math.max(0, activeOverlayCount + delta);
     if (activeOverlayCount > 0) {
@@ -159,6 +160,7 @@
   }
 
   function popPanelNav() {
+    lastOverlayCloseTimestamp = Date.now();
     if (panelNavStack.length === 0) {
       closePanel(true);
       return;
@@ -196,6 +198,7 @@
   function closePanel(force) {
     var el = $('panel');
     if (!el || el.classList.contains('hidden')) return;
+    lastOverlayCloseTimestamp = Date.now();
     if (!force && panelNavStack.length > 0) {
       popPanelNav();
       return;
@@ -228,6 +231,7 @@
   function closeModal() {
     var el = $('modal');
     if (!el || el.classList.contains('hidden')) return;
+    lastOverlayCloseTimestamp = Date.now();
     el.classList.add('is-closing');
     setTimeout(function () {
       el.classList.add('hidden');
@@ -236,13 +240,41 @@
       updateOverlayState(-1);
     }, 220);
   }
+  /* ==================== 灯箱 (图片全手势拖拽平移与双指缩放) ==================== */
+  var lbScale = 1, lbTranslateX = 0, lbTranslateY = 0;
+  var lbIsDragging = false, lbStartX = 0, lbStartY = 0, lbStartTx = 0, lbStartTy = 0;
+  var lbPinchStartDist = 0, lbPinchStartScale = 1;
+  var lbLastTapTime = 0;
+
+  function updateLightboxTransform(animate) {
+    var img = $('lightboxImg');
+    if (!img) return;
+    if (animate) {
+      img.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1)';
+    } else {
+      img.style.transition = 'none';
+    }
+    img.style.transform = 'translate3d(' + lbTranslateX + 'px, ' + lbTranslateY + 'px, 0px) scale(' + lbScale + ')';
+  }
+
+  function resetLightboxTransform(animate) {
+    lbScale = 1;
+    lbTranslateX = 0;
+    lbTranslateY = 0;
+    updateLightboxTransform(animate);
+  }
+
   function openLightbox(src, title) {
     var el = $('lightbox');
     el.classList.remove('is-closing');
-    $('lightboxImg').src = src; $('lightboxTitle').textContent = title || '';
-    el.classList.remove('hidden'); el.style.display = 'flex';
+    $('lightboxImg').src = src;
+    $('lightboxTitle').textContent = title || '';
+    resetLightboxTransform(false);
+    el.classList.remove('hidden');
+    el.style.display = 'flex';
     updateOverlayState(1);
   }
+
   function closeLightbox() {
     var el = $('lightbox');
     if (!el || el.classList.contains('hidden')) return;
@@ -251,17 +283,194 @@
       el.classList.add('hidden');
       el.classList.remove('is-closing');
       el.style.display = '';
+      resetLightboxTransform(false);
       updateOverlayState(-1);
     }, 220);
   }
+
+  function initLightboxInteractions() {
+    var stage = $('lightboxStage');
+    var img = $('lightboxImg');
+    if (!stage || !img) return;
+
+    if ($('lightboxZoomIn')) {
+      $('lightboxZoomIn').onclick = function (e) {
+        e.stopPropagation();
+        lbScale = Math.min(5, lbScale * 1.35);
+        updateLightboxTransform(true);
+      };
+    }
+    if ($('lightboxZoomOut')) {
+      $('lightboxZoomOut').onclick = function (e) {
+        e.stopPropagation();
+        lbScale = Math.max(0.6, lbScale / 1.35);
+        if (lbScale <= 1) { lbTranslateX = 0; lbTranslateY = 0; }
+        updateLightboxTransform(true);
+      };
+    }
+    if ($('lightboxReset')) {
+      $('lightboxReset').onclick = function (e) {
+        e.stopPropagation();
+        resetLightboxTransform(true);
+      };
+    }
+
+    stage.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var rect = stage.getBoundingClientRect();
+      var mouseX = e.clientX - rect.left - rect.width / 2;
+      var mouseY = e.clientY - rect.top - rect.height / 2;
+      var delta = (e.deltaY < 0) ? 1.2 : 0.83;
+      var newScale = Math.max(0.6, Math.min(5, lbScale * delta));
+      lbTranslateX = mouseX - (mouseX - lbTranslateX) * (newScale / lbScale);
+      lbTranslateY = mouseY - (mouseY - lbTranslateY) * (newScale / lbScale);
+      lbScale = newScale;
+      updateLightboxTransform(false);
+    }, { passive: false });
+
+    stage.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      lbIsDragging = true;
+      stage.classList.add('is-dragging');
+      lbStartX = e.clientX;
+      lbStartY = e.clientY;
+      lbStartTx = lbTranslateX;
+      lbStartTy = lbTranslateY;
+    });
+
+    window.addEventListener('mousemove', function (e) {
+      if (!lbIsDragging) return;
+      lbTranslateX = lbStartTx + (e.clientX - lbStartX);
+      lbTranslateY = lbStartTy + (e.clientY - lbStartY);
+      updateLightboxTransform(false);
+    });
+
+    window.addEventListener('mouseup', function () {
+      if (lbIsDragging) {
+        lbIsDragging = false;
+        if (stage) stage.classList.remove('is-dragging');
+      }
+    });
+
+    function getTouchDist(t1, t2) {
+      var dx = t1.clientX - t2.clientX;
+      var dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    stage.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 1) {
+        lbIsDragging = true;
+        lbStartX = e.touches[0].clientX;
+        lbStartY = e.touches[0].clientY;
+        lbStartTx = lbTranslateX;
+        lbStartTy = lbTranslateY;
+
+        var now = Date.now();
+        if (now - lbLastTapTime < 300) {
+          e.preventDefault();
+          if (lbScale > 1.2) {
+            resetLightboxTransform(true);
+          } else {
+            var rect = stage.getBoundingClientRect();
+            var tapX = e.touches[0].clientX - rect.left - rect.width / 2;
+            var tapY = e.touches[0].clientY - rect.top - rect.height / 2;
+            lbScale = 2.5;
+            lbTranslateX = -tapX * 1.5;
+            lbTranslateY = -tapY * 1.5;
+            updateLightboxTransform(true);
+          }
+          lbLastTapTime = 0;
+          return;
+        }
+        lbLastTapTime = now;
+      } else if (e.touches.length === 2) {
+        lbIsDragging = false;
+        lbPinchStartDist = getTouchDist(e.touches[0], e.touches[1]);
+        lbPinchStartScale = lbScale;
+      }
+    }, { passive: false });
+
+    stage.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      if (e.touches.length === 1 && lbIsDragging) {
+        lbTranslateX = lbStartTx + (e.touches[0].clientX - lbStartX);
+        lbTranslateY = lbStartTy + (e.touches[0].clientY - lbStartY);
+        updateLightboxTransform(false);
+      } else if (e.touches.length === 2 && lbPinchStartDist > 0) {
+        var dist = getTouchDist(e.touches[0], e.touches[1]);
+        var factor = dist / lbPinchStartDist;
+        lbScale = Math.max(0.6, Math.min(5, lbPinchStartScale * factor));
+        updateLightboxTransform(false);
+      }
+    }, { passive: false });
+
+    stage.addEventListener('touchend', function (e) {
+      if (e.touches.length === 0) {
+        lbIsDragging = false;
+        lbPinchStartDist = 0;
+      } else if (e.touches.length === 1) {
+        lbIsDragging = true;
+        lbStartX = e.touches[0].clientX;
+        lbStartY = e.touches[0].clientY;
+        lbStartTx = lbTranslateX;
+        lbStartTy = lbTranslateY;
+        lbPinchStartDist = 0;
+      }
+    });
+
+    stage.addEventListener('touchcancel', function () {
+      lbIsDragging = false;
+      lbPinchStartDist = 0;
+    });
+  }
+
   function bindOverlayClose() {
-    $('panelClose').onclick = function () { closePanel(); };
-    if ($('panelBack')) $('panelBack').onclick = function () { popPanelNav(); };
-    $('modalClose').onclick = closeModal;
-    $('lightboxClose').onclick = closeLightbox;
-    $('panel').onclick = function (e) { if (e.target === this) closePanel(); };
-    $('modal').onclick = function (e) { if (e.target === this) closeModal(); };
-    $('lightbox').onclick = function (e) { if (e.target === this) closeLightbox(); };
+    $('panelClose').onclick = function (e) {
+      if (e) { e.stopPropagation(); e.preventDefault(); }
+      lastOverlayCloseTimestamp = Date.now();
+      closePanel();
+    };
+    if ($('panelBack')) $('panelBack').onclick = function (e) {
+      if (e) { e.stopPropagation(); e.preventDefault(); }
+      lastOverlayCloseTimestamp = Date.now();
+      popPanelNav();
+    };
+    $('modalClose').onclick = function (e) {
+      if (e) { e.stopPropagation(); e.preventDefault(); }
+      lastOverlayCloseTimestamp = Date.now();
+      closeModal();
+    };
+    $('lightboxClose').onclick = function (e) {
+      if (e) { e.stopPropagation(); e.preventDefault(); }
+      lastOverlayCloseTimestamp = Date.now();
+      closeLightbox();
+    };
+    $('panel').onclick = function (e) {
+      if (e.target === this) {
+        e.stopPropagation();
+        e.preventDefault();
+        lastOverlayCloseTimestamp = Date.now();
+        closePanel();
+      }
+    };
+    $('modal').onclick = function (e) {
+      if (e.target === this) {
+        e.stopPropagation();
+        e.preventDefault();
+        lastOverlayCloseTimestamp = Date.now();
+        closeModal();
+      }
+    };
+    $('lightbox').onclick = function (e) {
+      if (e.target === this || e.target === $('lightboxStage')) {
+        e.stopPropagation();
+        e.preventDefault();
+        lastOverlayCloseTimestamp = Date.now();
+        closeLightbox();
+      }
+    };
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         if (!$('lightbox').classList.contains('hidden')) { closeLightbox(); return; }
@@ -269,6 +478,7 @@
         if (!$('panel').classList.contains('hidden')) { closePanel(); }
       }
     });
+    initLightboxInteractions();
   }
   function toggleFullscreen(el) {
     if (!el) { toast('无预览内容'); return; }
@@ -1018,7 +1228,7 @@
       });
     }
 
-    // 节点交互（平稳无抖动，浮窗详析与点击穿透）
+    // 节点交互（平稳无抖动，浮窗详析与点击穿透，全面支持移动端触摸）
     nodes.forEach(function (nd) {
       var id = nd.getAttribute('data-id');
       nd.addEventListener('mouseenter', function (e) {
@@ -1053,6 +1263,34 @@
           tooltip.style.top = y + 'px';
         }
       });
+      nd.addEventListener('touchstart', function (e) {
+        var tech = findTech(id) || findLib(id);
+        if (!tech) return;
+        nodes.forEach(function (n) { n.classList.remove('highlighted'); });
+        nd.classList.add('highlighted');
+        var tCol = tierColor(tech.tier);
+        var matScore = tech.maturity || 3;
+        var matDesc = matScore === 1 ? '萌芽起步（渗透率<5%）' : matScore === 2 ? '技术触发（概念验证与实验阶段）' : matScore === 3 ? '早期采用（标准初定/低谷攻坚）' : matScore === 4 ? '生产应用（多行业规模化落地）' : '主流成熟（CNCF毕业事实标准）';
+
+        if (tooltip && container) {
+          tooltip.innerHTML = '<div style="font-weight:900;color:' + tCol + ';font-size:13.5px;margin-bottom:4px">' + esc(tech.id) + ' ' + esc(tech.short || tech.name) + '</div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">技术成熟度评分：<b style="color:var(--accent)">' + esc(matScore) + ' 分</b> <span style="font-size:11px;color:var(--dim)">(' + esc(matDesc) + ')</span></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">生命周期演进阶段：<b>' + esc(nd.getAttribute('data-phase')) + '</b></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:2px">达平稳期预估时间：<b>' + esc(nd.getAttribute('data-plateau')) + '</b></div>' +
+            '<div style="font-size:12px;color:var(--text);margin-bottom:4px">处置档位：<span style="color:' + tCol + ';font-weight:700">[' + esc(tech.tier) + '] ' + esc(tech.disposal || '') + '</span></div>' +
+            '<div style="font-size:11.5px;color:var(--dim);line-height:1.4;margin-top:4px;border-top:1px dashed var(--border);padding-top:4px"><b>研判依据：</b>' + esc(tech.maturityBasis || tech.definition || '') + '</div>';
+          var rect = container.getBoundingClientRect();
+          var touch = e.touches[0];
+          var x = touch.clientX - rect.left + 10;
+          var y = touch.clientY - rect.top - 130;
+          if (x + 280 > rect.width) x = rect.width - 290;
+          if (y < 10) y = touch.clientY - rect.top + 20;
+          if (x < 10) x = 10;
+          tooltip.style.left = x + 'px';
+          tooltip.style.top = y + 'px';
+          tooltip.classList.remove('hidden');
+        }
+      }, { passive: true });
       nd.addEventListener('mouseleave', function () {
         nd.classList.remove('highlighted');
         if (tooltip) tooltip.classList.add('hidden');
@@ -1062,6 +1300,15 @@
         if (tech) openTechPanel(tech);
       });
     });
+
+    if (container) {
+      container.addEventListener('touchstart', function (e) {
+        if (!e.target.closest('.hc-node-g') && tooltip) {
+          nodes.forEach(function (n) { n.classList.remove('highlighted'); });
+          tooltip.classList.add('hidden');
+        }
+      }, { passive: true });
+    }
 
     applyFilter();
   }
@@ -1413,6 +1660,34 @@
         }
       };
 
+      b.ontouchstart = function (e) {
+        bubbles.forEach(function (otherB) { var g = otherB.querySelector('.glow-circle'); if (g) g.setAttribute('opacity', '0'); });
+        if (glow) glow.setAttribute('opacity', '0.65');
+        var matchingRow = rootEl.querySelector('.radar-item-row[data-id="' + id + '"]');
+        if (matchingRow) {
+          matchingRow.classList.add('highlighted');
+          matchingRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        if (tech && tooltip && container) {
+          var rect = container.getBoundingClientRect();
+          var bRect = b.getBoundingClientRect();
+          var tipX = bRect.left + bRect.width / 2 - rect.left;
+          var tipY = bRect.top - rect.top - 8;
+
+          tooltip.innerHTML = '<div class="radar-tooltip-title">[' + esc(tech.id) + '] ' + esc(tech.short || tech.name) + '</div>' +
+            '<div class="radar-tooltip-meta">' +
+              '<div><b>架构维度:</b> ' + esc(b.getAttribute('data-sector')) + ' · <b>时间圈层:</b> ' + esc(b.getAttribute('data-ring')) + '</div>' +
+              '<div><b>处置档位:</b> ' + esc(tech.tier) + ' (' + esc(tech.disposal || '') + ')</div>' +
+              '<div><b>价值贡献:</b> ' + tech.value + '/5 · <b>成熟度:</b> ' + tech.maturity + '/5</div>' +
+              '<div style="color:var(--accent2);margin-top:4px;font-size:11px">👉 点击查看完整专题</div>' +
+            '</div>';
+          tooltip.style.left = tipX + 'px';
+          tooltip.style.top = tipY + 'px';
+          tooltip.classList.remove('hidden');
+        }
+      };
+
       b.onmouseleave = function () {
         if (glow) glow.setAttribute('opacity', '0');
         var matchingRow = rootEl.querySelector('.radar-item-row[data-id="' + id + '"]');
@@ -1426,6 +1701,15 @@
         openTechPanel(findTech(id) || findLib(id));
       };
     });
+
+    if (container) {
+      container.addEventListener('touchstart', function (e) {
+        if (!e.target.closest('.radar-bubble-g') && tooltip) {
+          bubbles.forEach(function (b) { var g = b.querySelector('.glow-circle'); if (g) g.setAttribute('opacity', '0'); });
+          tooltip.classList.add('hidden');
+        }
+      }, { passive: true });
+    }
 
     // 列表项交互
     listRows.forEach(function (r) {
@@ -1472,73 +1756,74 @@
   }
 
   /* ==================== 企架十大中心前沿技术落位图谱 ==================== */
+  /* ==================== 企架十大中心前沿技术落位图谱 ==================== */
   function renderTenCentersBlueprintSVG() {
-    var W = 1000, H = 750;
+    var W = 1000, H = 760;
 
     var centers = [
       {
         id: 'c1', no: 1, name: '对客服务中心',
-        sub: '手机银行 · 网上银行 · 浦惠来了 · 全球司库 · 智能柜面',
-        techs: [{ id: 'T28' }, { id: 'T19' }, { id: 'T01' }, { id: 'T24' }],
-        x: 250, y: 16, w: 500, h: 96, type: 'grid2'
+        subLines: ['手机银行、网上银行、浦惠来了、全球司库、柜面'],
+        techs: [{ id: 'T28' }, { id: 'T24' }, { id: 'T04' }, { id: 'T19' }],
+        x: 246, y: 14, w: 508, h: 104, type: 'grid2', pillsY: 50
       },
       {
         id: 'c2', no: 2, name: '智慧运营中心',
-        sub: '数智运营服务平台 · 智能工厂',
-        techs: [{ id: 'T31' }, { id: 'T34' }, { id: 'T01' }, { id: 'T02' }],
-        x: 105, y: 146, w: 345, h: 104, type: 'grid2'
+        subLines: ['数智运营服务平台、智能工厂'],
+        techs: [{ id: 'T34' }, { id: 'T12' }],
+        x: 95, y: 148, w: 355, h: 104, type: 'row', pillsY: 58
       },
       {
         id: 'c3', no: 3, name: '客户经营中心',
-        sub: '统一商机平台 · 对公驾驶舱',
-        techs: [{ id: 'T32' }, { id: 'T33' }, { id: 'T21' }, { id: 'T01' }],
-        x: 550, y: 146, w: 345, h: 104, type: 'grid2'
+        subLines: ['统一商机平台、对公驾驶舱'],
+        techs: [{ id: 'T32' }, { id: 'T02' }],
+        x: 550, y: 148, w: 355, h: 104, type: 'row', pillsY: 58
       },
       {
         id: 'c4', no: 4, name: '产品合约中心',
-        sub: '产品目录 · 合约管理 · 差异化定价',
-        techs: [{ id: 'T15' }, { id: 'T27' }],
-        x: 30, y: 286, w: 140, h: 220, type: 'stack'
+        subLines: ['产品目录系统、合约管理系统', '产品定价系统、客户定价系统'],
+        techs: [{ id: 'T15' }],
+        x: 20, y: 284, w: 160, h: 236, type: 'stack', pillsY: 110
       },
       {
         id: 'c5', no: 5, name: '业务处理中心',
-        sub: '企业信贷 · 在线融资 · 零售信贷 · 保理 · 单证 · 票据',
-        techs: [{ id: 'T03' }, { id: 'T31' }, { id: 'T34' }, { id: 'T04' }],
-        x: 250, y: 286, w: 500, h: 106, type: 'grid2'
+        subLines: ['企业信贷系统、在线融资系统、零售信贷系统', '保理、单证、票据'],
+        techs: [{ id: 'T31' }, { id: 'T13' }],
+        x: 246, y: 284, w: 508, h: 122, type: 'row', pillsY: 78
       },
       {
         id: 'c7', no: 7, name: '账务交易中心',
-        sub: '对公分布式核心 · 零售分布式核心 · 信用卡核心',
+        subLines: ['对公分布式核心系统、零售分布式核心系统、信用卡核心系统'],
         techs: [{ id: 'T35' }, { id: 'T03' }],
-        x: 250, y: 420, w: 500, h: 86, type: 'row'
+        x: 246, y: 432, w: 508, h: 88, type: 'row', pillsY: 48
       },
       {
         id: 'c6', no: 6, name: '风险管理中心',
-        sub: '天眼系统 · 信用风险智能决策',
-        techs: [{ id: 'T23' }, { id: 'T13' }, { id: 'T18' }, { id: 'T21' }, { id: 'T33' }],
-        x: 830, y: 286, w: 140, h: 220, type: 'stack'
+        subLines: ['天眼系统', '信用风险智能决策系统'],
+        techs: [{ id: 'T23' }, { id: 'T33' }, { id: 'T21' }, { id: 'T20' }, { id: 'T27' }, { id: 'T30' }],
+        x: 820, y: 284, w: 160, h: 236, type: 'stack', pillsY: 74
       },
       {
         id: 'c8', no: 8, name: '管理支持中心',
-        sub: '企业治理 · 监管报送 · 全链路合规',
-        techs: [{ id: 'T30' }, { id: 'T22' }],
-        x: 30, y: 530, w: 260, h: 200, type: 'stack'
+        subLines: [],
+        techs: [{ id: 'T29' }, { id: 'T22' }],
+        x: 20, y: 546, w: 230, h: 194, type: 'stack', pillsY: 56
       },
       {
         id: 'c9', no: 9, name: '数智能力中心',
-        sub: 'AI基础设施 · 知识中枢 · 数据要素底座',
-        techs: [{ id: 'T05' }, { id: 'T06' }, { id: 'T16' }, { id: 'T20' }, { id: 'T36' }, { id: 'T17' }],
-        x: 310, y: 530, w: 380, h: 200, type: 'grid2'
+        subLines: [],
+        techs: [{ id: 'T01' }, { id: 'T05' }, { id: 'T06' }, { id: 'T16' }, { id: 'T17' }],
+        x: 270, y: 546, w: 386, h: 194, type: 'grid2', pillsY: 50
       },
       {
         id: 'c10', no: 10, name: '技术服务中心',
-        sub: '云原生底座 · 算力网络 · 前沿安全',
-        techs: [{ id: 'T10' }, { id: 'T11' }, { id: 'T12' }, { id: 'T14' }, { id: 'T08' }, { id: 'T07' }, { id: 'T25' }, { id: 'T09' }, { id: 'T26' }, { id: 'T29' }],
-        x: 710, y: 530, w: 260, h: 200, type: 'grid2'
+        subLines: [],
+        techs: [{ id: 'T07' }, { id: 'T08' }, { id: 'T09' }, { id: 'T10' }, { id: 'T11' }, { id: 'T14' }, { id: 'T18' }, { id: 'T25' }, { id: 'T26' }, { id: 'T36' }],
+        x: 676, y: 546, w: 304, h: 194, type: 'grid2', pillsY: 46
       }
     ];
 
-    function renderPillSVG(tObj, x, y, w, h) {
+    function renderPillSVG(tObj, x, y, w, h, centerId, centerName) {
       var tech = findTech(tObj.id) || findLib(tObj.id);
       var tier = tech ? tech.tier : '布局层';
       var tColor = tierColor(tier);
@@ -1548,10 +1833,10 @@
       var fSize = 10.5;
       var approxW = label.length * 10;
       if (approxW > w - 10) {
-        fSize = Math.max(8.2, Math.floor(((w - 10) / label.length) * 10) / 10);
+        fSize = Math.max(7.8, Math.floor(((w - 10) / label.length) * 10) / 10);
       }
 
-      return '<g class="tc-tech-pill" data-action="open-tech" data-id="' + tObj.id + '" data-tier="' + tier + '">' +
+      return '<g class="tc-tech-pill" data-action="open-tech" data-id="' + tObj.id + '" data-tier="' + tier + '" data-center-id="' + esc(centerId || '') + '" data-center="' + esc(centerName || '') + '">' +
         '<rect class="tc-pill-bg" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="5" ry="5" fill="var(--panel2)" stroke="' + tColor + '" stroke-width="1.2"/>' +
         '<text x="' + (x + w / 2) + '" y="' + (y + h / 2 + 4) + '" text-anchor="middle" font-size="' + fSize + '" font-weight="700" fill="var(--text)">' + esc(label) + '</text>' +
         '</g>';
@@ -1565,99 +1850,304 @@
       else if (c.no === 5 || c.no === 7) titleColor = '#ef4444';
       else titleColor = '#10b981';
 
+      var subLines = c.subLines || (c.sub ? [c.sub] : []);
+      var subMarkup = '';
+      var titleY = c.y + 19;
+      var subStartY = titleY + 15;
+
+      if (subLines.length > 0) {
+        var tspans = '';
+        var subFSize = (c.w < 200 || subLines.length > 1) ? 9.2 : 10.2;
+        var lineGap = 13.5;
+        subLines.forEach(function (line, idx) {
+          var approxW = line.length * (subFSize * 0.95);
+          var lineF = subFSize;
+          if (approxW > c.w - 12) {
+            lineF = Math.max(7.2, Math.floor(((c.w - 12) / line.length) * 10) / 10);
+          }
+          var dy = idx === 0 ? 0 : lineGap;
+          tspans += '<tspan x="' + (c.x + c.w / 2) + '" dy="' + dy + '" font-size="' + lineF + '">' + esc(line) + '</tspan>';
+        });
+        subMarkup = '<text x="' + (c.x + c.w / 2) + '" y="' + subStartY + '" text-anchor="middle" fill="var(--dim)">' + tspans + '</text>';
+      }
+
+      var pillsStartY = subStartY + (subLines.length * 14) + 4;
+      if (subLines.length === 0) {
+        titleY = c.y + 24;
+        pillsStartY = c.y + 44;
+      }
+
       var pillsMarkup = '';
       if (c.type === 'row') {
         var pWidth = Math.floor((c.w - 20 - (c.techs.length - 1) * 8) / c.techs.length);
+        var py = c.pillsY !== undefined ? (c.y + c.pillsY) : Math.max(pillsStartY, c.y + c.h - 32);
         c.techs.forEach(function (t, i) {
           var px = c.x + 10 + i * (pWidth + 8);
-          var py = c.y + c.h - 32;
-          pillsMarkup += renderPillSVG(t, px, py, pWidth, 24);
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, 24, c.id, c.name);
         });
       } else if (c.type === 'grid2') {
         var pWidth = Math.floor((c.w - 20 - 8) / 2);
-        var pHeight = 22;
+        var pHeight = c.techs.length > 6 ? 21 : 22;
+        var gapY = c.techs.length > 6 ? 4 : 5;
+        var startGridY = c.pillsY !== undefined ? (c.y + c.pillsY) : pillsStartY;
         c.techs.forEach(function (t, i) {
           var colIdx = i % 2;
           var rowIdx = Math.floor(i / 2);
           var px = c.x + 10 + colIdx * (pWidth + 8);
-          var py = c.y + 44 + rowIdx * (pHeight + 5);
-          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight);
+          var py = startGridY + rowIdx * (pHeight + gapY);
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight, c.id, c.name);
         });
       } else if (c.type === 'stack') {
-        var pWidth = c.w - 18;
-        var pHeight = 22;
+        var pWidth = c.w - 16;
+        var pHeight = c.techs.length > 4 ? 20.5 : 23;
+        var gap = c.techs.length > 4 ? 3.5 : 6;
+        var startStackY = c.pillsY !== undefined ? (c.y + c.pillsY) : pillsStartY;
         c.techs.forEach(function (t, i) {
-          var px = c.x + 9;
-          var py = c.y + 50 + i * (pHeight + 6);
-          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight);
+          var px = c.x + 8;
+          var py = startStackY + i * (pHeight + gap);
+          pillsMarkup += renderPillSVG(t, px, py, pWidth, pHeight, c.id, c.name);
         });
       }
 
       return '<g class="tc-center-box" data-center="' + c.id + '">' +
-        '<rect class="tc-box-rect" x="' + c.x + '" y="' + c.y + '" width="' + c.w + '" height="' + c.h + '" rx="8" ry="8" fill="var(--panel)" stroke="var(--border)" stroke-width="1.2"/>' +
-        '<text x="' + (c.x + c.w / 2) + '" y="' + (c.y + 20) + '" text-anchor="middle" font-size="14.5" font-weight="900" fill="' + titleColor + '">' + esc(c.name) + '</text>' +
-        '<text x="' + (c.x + c.w / 2) + '" y="' + (c.y + 36) + '" text-anchor="middle" font-size="10.5" fill="var(--dim)">' + esc(c.sub) + '</text>' +
+        '<rect class="tc-box-rect" x="' + c.x + '" y="' + c.y + '" width="' + c.w + '" height="' + c.h + '" rx="10" ry="10" fill="var(--panel)" stroke="var(--border)" stroke-width="1.2"/>' +
+        '<text x="' + (c.x + c.w / 2) + '" y="' + titleY + '" text-anchor="middle" font-size="14.5" font-weight="900" fill="' + titleColor + '">' + esc(c.name) + '</text>' +
+        subMarkup +
         pillsMarkup +
         '</g>';
     }
 
-    var defs = '<defs>' +
-      '<marker id="tcArr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="currentColor" opacity="0.45"/></marker>' +
-      '<marker id="tcArrRev" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="currentColor" opacity="0.45"/></marker>' +
-      '<marker id="tcArrAct" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker>' +
-      '</defs>';
-
     var lines = [
-      // 对客 -> 运营 / 经营
-      '<line x1="280" y1="112" x2="280" y2="146" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
-      '<text x="230" y="128" class="tc-flow-text" text-anchor="middle">全渠道协同</text>',
-      '<line x1="720" y1="112" x2="720" y2="146" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
-      '<text x="770" y="128" class="tc-flow-text" text-anchor="middle">营销协同</text>',
+      // 对客 <-> 运营 (全渠道协同，竖向双向箭头)
+      '<g class="tc-flow-group" data-centers="c1 c2">' +
+        '<line class="tc-flow-line" x1="272" y1="126" x2="272" y2="140" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="272,120 267.5,127 276.5,127" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="272,146 267.5,139 276.5,139" fill="currentColor" opacity="0.92"/>' +
+        '<text x="222" y="133" class="tc-flow-text" text-anchor="middle">全渠道协同</text>' +
+      '</g>',
 
-      // 对客 <-> 业务处理 (单个竖向双向箭头 + 左右竖排文字)
-      '<line x1="500" y1="116" x2="500" y2="282" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
-      '<text x="478" y="174" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="700">' +
-        '<tspan x="478" dy="0">产</tspan><tspan x="478" dy="16">品</tspan><tspan x="478" dy="16">流</tspan><tspan x="478" dy="16">程</tspan>' +
-      '</text>' +
-      '<text x="522" y="174" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="700">' +
-        '<tspan x="522" dy="0">销</tspan><tspan x="522" dy="16">售</tspan><tspan x="522" dy="16">办</tspan><tspan x="522" dy="16">理</tspan>' +
-      '</text>',
+      // 对客 <-> 经营 (营销协同，竖向双向箭头)
+      '<g class="tc-flow-group" data-centers="c1 c3">' +
+        '<line class="tc-flow-line" x1="728" y1="126" x2="728" y2="140" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="728,120 723.5,127 732.5,127" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="728,146 723.5,139 732.5,139" fill="currentColor" opacity="0.92"/>' +
+        '<text x="778" y="133" class="tc-flow-text" text-anchor="middle">营销协同</text>' +
+      '</g>',
 
-      // 运营 / 经营 -> 业务处理
-      '<line x1="280" y1="250" x2="280" y2="286" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
-      '<text x="280" y="270" class="tc-flow-text" text-anchor="middle">流程办理</text>',
-      '<line x1="720" y1="250" x2="720" y2="286" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4" marker-end="url(#tcArr)"/>' +
-      '<text x="720" y="270" class="tc-flow-text" text-anchor="middle">流程办理</text>',
+      // 对客 <-> 业务处理 (竖向双向箭头 + 左右竖排文字)
+      '<g class="tc-flow-group" data-centers="c1 c5">' +
+        '<line class="tc-flow-line" x1="500" y1="126" x2="500" y2="274" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="500,120 495.5,127 504.5,127" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="500,280 495.5,273 504.5,273" fill="currentColor" opacity="0.92"/>' +
+        '<text x="478" y="174" class="tc-flow-text" text-anchor="middle" font-size="11.5" font-weight="750">' +
+          '<tspan x="478" dy="0">产</tspan><tspan x="478" dy="16">品</tspan><tspan x="478" dy="16">销</tspan><tspan x="478" dy="16">售</tspan>' +
+        '</text>' +
+        '<text x="522" y="174" class="tc-flow-text" text-anchor="middle" font-size="11.5" font-weight="750">' +
+          '<tspan x="522" dy="0">流</tspan><tspan x="522" dy="16">程</tspan><tspan x="522" dy="16">办</tspan><tspan x="522" dy="16">理</tspan>' +
+        '</text>' +
+      '</g>',
 
-      // 产品合约 <-> 业务处理 & 账务交易 (两组双向箭头，中间单组文字)
-      '<line x1="174" y1="339" x2="246" y2="339" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
-      '<line x1="174" y1="463" x2="246" y2="463" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
-      '<text x="210" y="395" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">产品管理</text>' +
-      '<text x="210" y="413" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">合约及定价</text>',
+      // 运营 <-> 业务处理 (流程办理，竖向双向箭头)
+      '<g class="tc-flow-group" data-centers="c2 c5">' +
+        '<line class="tc-flow-line" x1="250" y1="260" x2="250" y2="276" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="250,254 245.5,261 254.5,261" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="250,282 245.5,275 254.5,275" fill="currentColor" opacity="0.92"/>' +
+        '<text x="290" y="268" class="tc-flow-text" text-anchor="middle">流程办理</text>' +
+      '</g>',
 
-      // 风险管理 <-> 业务处理 & 账务交易 (两组双向箭头，中间单组文字)
-      '<line x1="754" y1="339" x2="826" y2="339" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
-      '<line x1="754" y1="463" x2="826" y2="463" stroke="currentColor" stroke-opacity="0.38" stroke-width="1.5" marker-start="url(#tcArrRev)" marker-end="url(#tcArr)"/>' +
-      '<text x="790" y="395" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">风险检测</text>' +
-      '<text x="790" y="413" class="tc-flow-text" text-anchor="middle" font-size="10.5" font-weight="700">风险管控</text>',
+      // 经营 <-> 业务处理 (流程办理，竖向双向箭头)
+      '<g class="tc-flow-group" data-centers="c3 c5">' +
+        '<line class="tc-flow-line" x1="710" y1="260" x2="710" y2="276" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="710,254 705.5,261 714.5,261" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="710,282 705.5,275 714.5,275" fill="currentColor" opacity="0.92"/>' +
+        '<text x="750" y="268" class="tc-flow-text" text-anchor="middle">流程办理</text>' +
+      '</g>',
 
-      // 业务处理 -> 账务交易
-      '<line x1="500" y1="392" x2="500" y2="420" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.6" marker-end="url(#tcArr)"/>' +
-      '<text x="500" y="408" class="tc-flow-text" text-anchor="middle" font-size="10.5">账务处理</text>',
+      // 产品合约 <-> 业务处理 (水平双向箭头)
+      '<g class="tc-flow-group" data-centers="c4 c5">' +
+        '<line class="tc-flow-line" x1="190" y1="345" x2="236" y2="345" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="184,345 191,340.5 191,349.5" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="242,345 235,340.5 235,349.5" fill="currentColor" opacity="0.92"/>' +
+        '<text x="213" y="398" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="750">产品管理</text>' +
+      '</g>',
+
+      // 产品合约 <-> 账务交易 (水平双向箭头)
+      '<g class="tc-flow-group" data-centers="c4 c7">' +
+        '<line class="tc-flow-line" x1="190" y1="476" x2="236" y2="476" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="184,476 191,471.5 191,480.5" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="242,476 235,471.5 235,480.5" fill="currentColor" opacity="0.92"/>' +
+        '<text x="213" y="416" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="750">合约及定价</text>' +
+      '</g>',
+
+      // 风险管理 <-> 业务处理 (水平双向箭头)
+      '<g class="tc-flow-group" data-centers="c6 c5">' +
+        '<line class="tc-flow-line" x1="764" y1="345" x2="810" y2="345" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="758,345 765,340.5 765,349.5" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="816,345 809,340.5 809,349.5" fill="currentColor" opacity="0.92"/>' +
+        '<text x="787" y="398" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="750">风险检测</text>' +
+      '</g>',
+
+      // 风险管理 <-> 账务交易 (水平双向箭头)
+      '<g class="tc-flow-group" data-centers="c6 c7">' +
+        '<line class="tc-flow-line" x1="764" y1="476" x2="810" y2="476" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="758,476 765,471.5 765,480.5" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="816,476 809,471.5 809,480.5" fill="currentColor" opacity="0.92"/>' +
+        '<text x="787" y="416" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="750">风险管控</text>' +
+      '</g>',
+
+      // 业务处理 <-> 账务交易 (竖向双向箭头)
+      '<g class="tc-flow-group" data-centers="c5 c7">' +
+        '<line class="tc-flow-line" x1="470" y1="413" x2="470" y2="425" stroke="currentColor" stroke-opacity="0.9" stroke-width="1.8"/>' +
+        '<polygon class="tc-flow-arrow" points="470,408 465.5,415 474.5,415" fill="currentColor" opacity="0.92"/>' +
+        '<polygon class="tc-flow-arrow" points="470,430 465.5,423 474.5,423" fill="currentColor" opacity="0.92"/>' +
+        '<text x="512" y="422" class="tc-flow-text" text-anchor="middle" font-size="11" font-weight="750">账务处理</text>' +
+      '</g>',
 
       // 底座支撑虚线
-      '<line x1="160" y1="530" x2="160" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>',
-      '<line x1="500" y1="530" x2="500" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>',
-      '<line x1="840" y1="530" x2="840" y2="506" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3" stroke-width="1.2"/>'
+      '<g class="tc-flow-group" data-centers="c8 c4 c5">' +
+        '<line class="tc-flow-line" x1="135" y1="544" x2="135" y2="522" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3" stroke-width="1.4"/>' +
+      '</g>',
+      '<g class="tc-flow-group" data-centers="c9 c5 c7">' +
+        '<line class="tc-flow-line" x1="463" y1="544" x2="463" y2="522" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3" stroke-width="1.4"/>' +
+      '</g>',
+      '<g class="tc-flow-group" data-centers="c10 c6 c7">' +
+        '<line class="tc-flow-line" x1="828" y1="544" x2="828" y2="522" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3" stroke-width="1.4"/>' +
+      '</g>'
     ].join('');
 
     var centersMarkup = centers.map(renderCenterGroup).join('');
 
     return '<svg class="blueprint-svg" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="color:var(--text);">' +
-      defs +
       '<g class="tc-lines-layer">' + lines + '</g>' +
       '<g class="tc-centers-layer">' + centersMarkup + '</g>' +
       '</svg>';
+  }
+
+  /* ==================== 落位图谱技术卡片浮窗提示交互 ==================== */
+  function bindBlueprintPillTooltips(container) {
+    if (!container) return;
+    var tooltip = container.querySelector('.graph-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.className = 'graph-tooltip hidden';
+      container.appendChild(tooltip);
+    }
+
+    var pills = container.querySelectorAll('.tc-tech-pill');
+    pills.forEach(function (pill) {
+      var id = pill.getAttribute('data-id');
+      var tech = findTech(id) || findLib(id);
+      var info = (window.DATA && window.DATA.centerMappings && window.DATA.centerMappings[id]) || {};
+      var reason = (tech && tech.centerReason) || info.reason || (tech && tech.bankValue) || '暂无详细落位简述';
+      var centerName = (tech && tech.center) || info.center || pill.getAttribute('data-center') || '企架十大中心';
+
+      function showTip(pillEl) {
+        if (!tech) return;
+        var tCol = tierColor(tech.tier) || 'var(--accent)';
+        var cleanName = tech.short || tech.name;
+        tooltip.innerHTML = '<div class="gt-title">' +
+          '<span class="gt-id">[' + esc(tech.id) + ']</span> ' + esc(cleanName) +
+          ' <span class="gt-tier" style="background:' + tCol + '22;color:' + tCol + ';border:1px solid ' + tCol + '55">' + esc(tech.tier) + ' · ' + esc(tech.disposal || '') + '</span>' +
+        '</div>' +
+        '<div class="gt-center">🏢 <b>落位中心：</b><span style="color:var(--text);font-weight:700">' + esc(centerName) + '</span></div>' +
+        '<div class="gt-reason-box">' +
+          '<div class="gt-reason-label">🎯 落位原因简述：</div>' +
+          '<div class="gt-reason-text">' + esc(reason) + '</div>' +
+        '</div>' +
+        '<div class="gt-foot">👉 点击查看完整专题档案</div>';
+
+        tooltip.classList.remove('hidden');
+
+        var pRect = pillEl.getBoundingClientRect();
+        var cRect = container.getBoundingClientRect();
+        var tipRect = tooltip.getBoundingClientRect();
+        var tipW = tipRect.width || 340;
+        var tipH = tipRect.height || 150;
+
+        var pillLeft = pRect.left - cRect.left;
+        var pillRight = pRect.right - cRect.left;
+        var pillTop = pRect.top - cRect.top;
+        var pillBottom = pRect.bottom - cRect.top;
+        var pillMidX = (pillLeft + pillRight) / 2;
+
+        var spaceBelow = cRect.height - pillBottom;
+        var spaceAbove = pillTop;
+
+        var x = pillMidX - tipW / 2;
+        var y;
+
+        // 优先在胶囊下方弹出，若空间不足则在上方弹出，绝不遮挡当前技术胶囊
+        if (spaceBelow >= tipH + 14) {
+          y = pillBottom + 10;
+        } else if (spaceAbove >= tipH + 14) {
+          y = pillTop - tipH - 10;
+        } else {
+          // 上下方均局促时在左右侧弹出
+          if (cRect.width - pillRight >= tipW + 14) {
+            x = pillRight + 12;
+            y = Math.max(10, Math.min(cRect.height - tipH - 10, pillTop - 20));
+          } else if (pillLeft >= tipW + 14) {
+            x = pillLeft - tipW - 12;
+            y = Math.max(10, Math.min(cRect.height - tipH - 10, pillTop - 20));
+          } else {
+            y = spaceBelow > spaceAbove ? (pillBottom + 8) : (pillTop - tipH - 8);
+          }
+        }
+
+        // 边界平滑夹紧
+        if (x < 10) x = 10;
+        if (x + tipW > cRect.width - 10) x = cRect.width - tipW - 10;
+        if (y < 10) y = 10;
+        if (y + tipH > cRect.height - 10) y = cRect.height - tipH - 10;
+
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+      }
+
+      pill.addEventListener('mouseenter', function (e) {
+        showTip(pill);
+        pill.classList.add('highlighted');
+        var bg = pill.querySelector('.tc-pill-bg');
+        if (bg) {
+          bg.style.strokeWidth = '2.4px';
+          bg.style.filter = 'drop-shadow(0 2px 8px rgba(79, 140, 255, 0.5))';
+        }
+      });
+
+      pill.addEventListener('mouseleave', function () {
+        tooltip.classList.add('hidden');
+        pill.classList.remove('highlighted');
+        var bg = pill.querySelector('.tc-pill-bg');
+        if (bg) {
+          bg.style.strokeWidth = '1.2px';
+          bg.style.filter = 'none';
+        }
+      });
+
+      pill.addEventListener('touchstart', function (e) {
+        showTip(pill);
+      }, { passive: true });
+
+      pill.addEventListener('click', function (e) {
+        e.stopPropagation();
+        tooltip.classList.add('hidden');
+        if (tech) openTechPanel(tech);
+      });
+    });
+
+    container.addEventListener('touchstart', function (e) {
+      if (!e.target.closest('.tc-tech-pill') && tooltip) {
+        tooltip.classList.add('hidden');
+      }
+    }, { passive: true });
+
+    if (container.getAttribute('data-action') === 'open-graph' || container.classList.contains('blueprint-preview-box')) {
+      container.onclick = function (e) {
+        if (e.target.closest('.tc-tech-pill')) return;
+        if (tooltip) tooltip.classList.add('hidden');
+        openGraphPanel();
+      };
+    }
   }
 
   function graphPreviewHTML() {
@@ -1667,12 +2157,27 @@
           '<div class="page-title">前沿技术在企架十大中心的落位图谱</div>' +
           '<div class="page-subtitle">企架建设十大中心 · 36项前沿技术精准落位与跨中心业务协同</div>' +
         '</div>' +
-        '<button class="btn btn-sm active page-head-btn" data-action="open-graph">⛶ 交互图谱</button>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-graph">⛶ 全屏落位图谱</button>' +
       '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-p">基于我行「企架建设十大中心」架构蓝图，将 36 项前沿技术精准映射至对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易及底层管理/数智/技术支撑中心，全景展现技术对各中心业务流转、风控防线与底座算力的驱动链路。点击技术标签可穿透查看专题档案。</div>' +
-      '<div class="blueprint-card">' +
-        renderTenCentersBlueprintSVG() +
+      '<div class="pg-p">基于我行「企架建设十大中心」架构蓝图，将 36 项前沿技术精准映射至对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易及底层管理/数智/技术支撑中心，全景展现技术对各中心业务流转、风控防线与底座算力的驱动链路。点击图谱卡片可进入全屏交互界面，点击技术标签可穿透查看专题档案。</div>' +
+      '<div class="radar-page-card" style="padding:14px 18px;gap:10px;margin-top:6px">' +
+        '<div class="pg-h" style="margin:0 0 2px">企架十大中心前沿技术落位分布</div>' +
+        '<div class="tc-stat-grid">' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c1" title="点击在全屏图谱中聚焦查看 对客服务中心"><span>对客服务中心:</span> <b>4项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c2" title="点击在全屏图谱中聚焦查看 智慧运营中心"><span>智慧运营中心:</span> <b>2项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c3" title="点击在全屏图谱中聚焦查看 客户经营中心"><span>客户经营中心:</span> <b>2项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c4" title="点击在全屏图谱中聚焦查看 产品合约中心"><span>产品合约中心:</span> <b>1项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c5" title="点击在全屏图谱中聚焦查看 业务处理中心"><span>业务处理中心:</span> <b>2项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c6" title="点击在全屏图谱中聚焦查看 风险管理中心"><span>风险管理中心:</span> <b>6项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c7" title="点击在全屏图谱中聚焦查看 账务交易中心"><span>账务交易中心:</span> <b>2项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c8" title="点击在全屏图谱中聚焦查看 管理支持中心"><span>管理支持中心:</span> <b>2项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c9" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 数智能力中心"><span>数智能力中心:</span> <b>5项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c10" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 技术服务中心"><span>技术服务中心:</span> <b>10项</b></span>' +
+        '</div>' +
+        '<div class="blueprint-card blueprint-preview-box" data-action="open-graph" style="margin-top:0" title="点击打开全屏企架十大中心落位交互图谱">' +
+          renderTenCentersBlueprintSVG() +
+        '</div>' +
       '</div>' +
     '</div>';
   }
@@ -2152,6 +2657,16 @@
           }
         };
       });
+      root.querySelectorAll('.blueprint-card, .blueprint-svg-wrap, #graphBox').forEach(function (card) {
+        bindBlueprintPillTooltips(card);
+      });
+      root.querySelectorAll('.tc-stat-pill').forEach(function (pill) {
+        pill.onclick = function (e) {
+          if (e) e.stopPropagation();
+          var cid = pill.getAttribute('data-center');
+          openGraphPanel(null, false, cid);
+        };
+      });
     });
   }
   function jumpToPage(i) {
@@ -2596,7 +3111,7 @@
   /* ==================== 企架十大中心交互图谱面板 ==================== */
   function graphToolbarHTML() {
     var centers = [
-      { id: 'all', label: '全部 (10)' },
+      { id: 'all', label: '全部 (36)' },
       { id: 'c1', label: '1.对客服务' },
       { id: 'c2', label: '2.智慧运营' },
       { id: 'c3', label: '3.客户经营' },
@@ -2609,24 +3124,34 @@
       { id: 'c10', label: '10.技术服务' }
     ];
 
-    var btnHtml = centers.map(function (c, idx) {
+    var centerBtnHtml = centers.map(function (c, idx) {
       return '<button class="' + (idx === 0 ? 'active' : '') + '" data-center="' + c.id + '">' + esc(c.label) + '</button>';
     }).join('');
 
-    return '<div class="radar-toolbar" style="margin-bottom:8px;padding:8px 14px;gap:8px 12px;flex:none">' +
+    return '<div class="radar-toolbar" style="margin-bottom:8px;padding:8px 14px;gap:8px 14px;flex:none">' +
       '<div class="radar-filter-group" style="flex-wrap:wrap;gap:6px 8px">' +
         '<span style="font-weight:700">十大中心:</span>' +
-        '<div class="radar-btn-group" id="graphCenterFilterGroup" style="flex-wrap:wrap">' +
-          btnHtml +
+        '<div class="radar-btn-group" id="graphCenterFilterGroup" data-filter="center" style="flex-wrap:wrap">' +
+          centerBtnHtml +
+        '</div>' +
+      '</div>' +
+      '<div class="radar-filter-group" style="flex-wrap:wrap;gap:6px 8px">' +
+        '<span style="font-weight:700">处置档位:</span>' +
+        '<div class="radar-btn-group" id="graphTierFilterGroup" data-filter="tier">' +
+          '<button class="active" data-tier="all">全部</button>' +
+          '<button data-tier="布局层" style="color:#34d399">布局层</button>' +
+          '<button data-tier="论证层" style="color:#38bdf8">论证层</button>' +
+          '<button data-tier="研究层" style="color:#fbbf24">研究层</button>' +
+          '<button data-tier="观察层" style="color:#fb7185">观察层</button>' +
         '</div>' +
       '</div>' +
       '<div class="radar-filter-group" style="margin-left:auto">' +
-        '<input type="text" class="radar-search-input" id="graphSearchInput" placeholder="🔍 检索技术 (如 T01、智能体)..." style="width:200px">' +
+        '<input type="text" class="radar-search-input" id="graphSearchInput" placeholder="🔍 检索技术 (如 T01、智能体)..." style="width:190px">' +
       '</div>' +
     '</div>';
   }
 
-  function openGraphPanel(savedScrollTop, isNavBack) {
+  function openGraphPanel(savedScrollTop, isNavBack, initialCenter) {
     if (!isNavBack) {
       if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'graph') {
         var snap = capturePanelSnapshot();
@@ -2636,24 +3161,103 @@
       }
     }
     currentPanelMeta = { type: 'graph', name: '前沿技术在企架十大中心的落位图谱' };
-    openPanel('前沿技术在企架十大中心的落位图谱', graphToolbarHTML() + '<div id="graphBox">' + renderTenCentersBlueprintSVG() + '</div><div class="graph-tip" style="margin-top:6px;flex:none">💡 提示：上方可按十个中心逐一聚焦高亮；点击任意前沿技术标签可直接穿透查看专题档案。</div>', function () {
-      initTenCentersPanelEvents();
+    openPanel('前沿技术在企架十大中心的落位图谱', graphToolbarHTML() + '<div id="graphBox">' + renderTenCentersBlueprintSVG() + '</div><div class="graph-tip" style="margin-top:6px;flex:none">💡 提示：上方可按十个中心与处置档位多维联动筛选；点击任意前沿技术标签可直接穿透查看专题档案。</div>', function () {
+      initTenCentersPanelEvents(initialCenter);
       if (savedScrollTop && $('panelBody')) $('panelBody').scrollTop = savedScrollTop;
     }, true);
   }
 
-  function initTenCentersPanelEvents() {
+  function initTenCentersPanelEvents(initialCenter) {
     var box = $('graphBox');
     if (!box) return;
 
-    var btnGroup = $('graphCenterFilterGroup');
-    if (btnGroup) {
-      btnGroup.querySelectorAll('button').forEach(function (btn) {
+    var activeCenter = initialCenter || 'all';
+    var activeTier = 'all';
+    var searchQuery = '';
+
+    function applyCombinedFilters() {
+      var pills = box.querySelectorAll('.tc-tech-pill');
+      var centerBoxes = box.querySelectorAll('.tc-center-box');
+
+      // 1. 过滤技术胶囊
+      pills.forEach(function (p) {
+        var id = p.getAttribute('data-id');
+        var tech = findTech(id) || findLib(id);
+        var pCenterId = p.getAttribute('data-center-id') || '';
+        var pTier = (tech && tech.tier) || p.getAttribute('data-tier') || '';
+
+        var matchCenter = (activeCenter === 'all' || pCenterId === activeCenter);
+        var matchTier = (activeTier === 'all' || pTier === activeTier || pTier.indexOf(activeTier.replace('层', '')) >= 0);
+        var matchQuery = true;
+        if (searchQuery) {
+          var name = tech ? tech.name.toLowerCase() : '';
+          var short = tech ? (tech.short || '').toLowerCase() : '';
+          var idLower = (id || '').toLowerCase();
+          matchQuery = idLower.indexOf(searchQuery) >= 0 || name.indexOf(searchQuery) >= 0 || short.indexOf(searchQuery) >= 0;
+        }
+
+        var visible = matchCenter && matchTier && matchQuery;
+        p.style.opacity = visible ? '1' : '0.12';
+        p.style.transition = 'opacity .2s ease, transform .15s ease';
+        var bg = p.querySelector('.tc-pill-bg');
+        if (bg) {
+          bg.style.strokeWidth = visible && (activeTier !== 'all' || searchQuery) ? '2.2px' : '1.2px';
+        }
+      });
+
+      // 2. 聚焦十大中心外框
+      centerBoxes.forEach(function (cb) {
+        var cid = cb.getAttribute('data-center');
+        var isCenterActive = (activeCenter === 'all' || cid === activeCenter);
+        cb.style.opacity = isCenterActive ? '1' : '0.15';
+        cb.style.transition = 'opacity .2s ease';
+        var rect = cb.querySelector('.tc-box-rect');
+        if (rect) {
+          if (activeCenter !== 'all' && cid === activeCenter) {
+            rect.style.stroke = 'var(--accent)';
+            rect.style.strokeWidth = '2.2px';
+            rect.style.filter = 'drop-shadow(0 0 12px rgba(79, 140, 255, 0.45))';
+          } else {
+            rect.style.stroke = '';
+            rect.style.strokeWidth = '';
+            rect.style.filter = '';
+          }
+        }
+      });
+
+      // 3. 联动蒙版流程连线与标注说明 (筛选具体中心时，所有流程连线、双向箭头及说明文字全部蒙版淡化，使视觉绝对聚焦于所选中心本身)
+      var flowGroups = box.querySelectorAll('.tc-flow-group');
+      flowGroups.forEach(function (fg) {
+        fg.style.opacity = (activeCenter === 'all') ? '1' : '0.08';
+        fg.style.transition = 'opacity .2s ease';
+      });
+    }
+
+    var centerGroup = $('graphCenterFilterGroup');
+    if (centerGroup) {
+      if (initialCenter) {
+        centerGroup.querySelectorAll('button').forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-center') === initialCenter);
+        });
+      }
+      centerGroup.querySelectorAll('button').forEach(function (btn) {
         btn.onclick = function () {
-          btnGroup.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+          centerGroup.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
-          var cid = btn.getAttribute('data-center');
-          applySingleCenterFilter(cid);
+          activeCenter = btn.getAttribute('data-center') || 'all';
+          applyCombinedFilters();
+        };
+      });
+    }
+
+    var tierGroup = $('graphTierFilterGroup');
+    if (tierGroup) {
+      tierGroup.querySelectorAll('button').forEach(function (btn) {
+        btn.onclick = function () {
+          tierGroup.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          activeTier = btn.getAttribute('data-tier') || 'all';
+          applyCombinedFilters();
         };
       });
     }
@@ -2661,65 +3265,16 @@
     var sInput = $('graphSearchInput');
     if (sInput) {
       sInput.oninput = function () {
-        var q = sInput.value.trim().toLowerCase();
-        applyTechSearchFilter(q);
+        searchQuery = sInput.value.trim().toLowerCase();
+        applyCombinedFilters();
       };
     }
 
-    function applySingleCenterFilter(targetCid) {
-      var centerBoxes = box.querySelectorAll('.tc-center-box');
-      centerBoxes.forEach(function (cb) {
-        var cid = cb.getAttribute('data-center');
-        var visible = (targetCid === 'all' || cid === targetCid);
-        cb.style.opacity = visible ? '1' : '0.15';
-        cb.style.transition = 'opacity .2s ease';
-        var rect = cb.querySelector('.tc-box-rect');
-        if (rect) {
-          if (targetCid !== 'all' && cid === targetCid) {
-            rect.style.stroke = 'var(--accent)';
-            rect.style.strokeWidth = '2.2px';
-            rect.style.filter = 'drop-shadow(0 0 12px rgba(79, 140, 255, 0.45))';
-          } else {
-            rect.style.stroke = 'var(--border)';
-            rect.style.strokeWidth = '1.2px';
-            rect.style.filter = 'none';
-          }
-        }
-      });
+    if (initialCenter && initialCenter !== 'all') {
+      applyCombinedFilters();
     }
 
-    function applyTechSearchFilter(query) {
-      var pills = box.querySelectorAll('.tc-tech-pill');
-      if (!query) {
-        pills.forEach(function (p) {
-          p.style.opacity = '1';
-          var bg = p.querySelector('.tc-pill-bg');
-          if (bg) bg.style.strokeWidth = '1.2px';
-        });
-        return;
-      }
-      pills.forEach(function (p) {
-        var id = (p.getAttribute('data-id') || '').toLowerCase();
-        var tech = findTech(p.getAttribute('data-id')) || findLib(p.getAttribute('data-id'));
-        var name = tech ? tech.name.toLowerCase() : '';
-        var short = tech ? (tech.short || '').toLowerCase() : '';
-        var match = id.indexOf(query) >= 0 || name.indexOf(query) >= 0 || short.indexOf(query) >= 0;
-        p.style.opacity = match ? '1' : '0.15';
-        var bg = p.querySelector('.tc-pill-bg');
-        if (bg) {
-          bg.style.strokeWidth = match ? '2.2px' : '1px';
-        }
-      });
-    }
-
-    box.querySelectorAll('.tc-tech-pill').forEach(function (pill) {
-      pill.onclick = function (e) {
-        e.stopPropagation();
-        var id = pill.getAttribute('data-id');
-        var tech = findTech(id) || findLib(id);
-        if (tech) openTechPanel(tech);
-      };
-    });
+    bindBlueprintPillTooltips(box);
   }
 
   /* ==================== 技术专题详情面板 ==================== */
@@ -2998,8 +3553,69 @@
     }
   }
 
-  /* ==================== 大屏自动巡航放映模式 ==================== */
+  /* ==================== 大屏自动巡航与整本书全屏播放模式 ==================== */
   var autoPlaying = false, autoPlayTimer = null, autoProgressTimer = null, autoInterval = 6000;
+  var isFullscreenPlaying = false;
+
+  function isFsActive() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+  }
+
+  function enterBrowserFullscreen() {
+    var de = document.documentElement;
+    var req = de.requestFullscreen || de.webkitRequestFullscreen || de.mozRequestFullScreen || de.msRequestFullscreen;
+    if (req && !isFsActive()) {
+      try { req.call(de).catch(function () {}); } catch (err) {}
+    }
+  }
+
+  function exitBrowserFullscreen() {
+    var exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if (isFsActive() && exitFs) {
+      try { exitFs.call(document).catch(function () {}); } catch (err) {}
+    }
+  }
+
+  function updateFullscreenPlayBtn(active) {
+    var btn = $('btnFullscreenPlay');
+    if (!btn) return;
+    if (active) {
+      btn.textContent = '⛶ 退出全屏';
+      btn.classList.add('active');
+    } else {
+      btn.textContent = '⛶ 全屏播放';
+      btn.classList.remove('active');
+    }
+  }
+
+  function startFullscreenPlay() {
+    isFullscreenPlaying = true;
+    if (mode !== 'book') setMode('book');
+    enterBrowserFullscreen();
+    updateFullscreenPlayBtn(true);
+    setTimeout(function () {
+      fitSpread();
+    }, 150);
+    toast('已进入整本书全屏模式 (按 ESC 或点击退出)');
+  }
+
+  function stopFullscreenPlay() {
+    isFullscreenPlaying = false;
+    exitBrowserFullscreen();
+    updateFullscreenPlayBtn(false);
+    setTimeout(function () {
+      fitSpread();
+    }, 150);
+  }
+
+  function toggleFullscreenPlay() {
+    if (isFsActive() || isFullscreenPlaying) {
+      stopFullscreenPlay();
+    } else {
+      startFullscreenPlay();
+    }
+  }
+
   function startAutoPlay() {
     autoPlaying = true;
     if (mode !== 'book') setMode('book');
@@ -3008,6 +3624,7 @@
     $('presenterBar').classList.remove('hidden');
     runPresenterTick();
   }
+
   function stopAutoPlay() {
     autoPlaying = false;
     if (autoPlayTimer) clearTimeout(autoPlayTimer);
@@ -3017,6 +3634,7 @@
     $('presenterBar').classList.add('hidden');
     $('pbFill').style.width = '0%';
   }
+
   function toggleAutoPlay() {
     if (autoPlaying) stopAutoPlay(); else startAutoPlay();
   }
@@ -3047,16 +3665,109 @@
     }, autoInterval);
   }
 
+  /* ==================== 移动端手指滑动/拖拽翻页手势 (Mobile Touch Swipe Gestures) ==================== */
+  function initBookTouchGestures() {
+    var bookEl = $('book');
+    var wrapEl = $('readerWrap') || document.body;
+    if (!bookEl) return;
+
+    var touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+    var isTracking = false, isHorizontalSwipe = false;
+
+    wrapEl.addEventListener('touchstart', function (e) {
+      if (mode !== 'book' || activeOverlayCount > 0 || flipping) return;
+      if (e.touches.length !== 1) return;
+      // 避免误触按钮、链接、侧边栏或搜索框
+      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack, select, input, .search-wrap, .brand')) return;
+
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+      isTracking = true;
+      isHorizontalSwipe = false;
+    }, { passive: true });
+
+    wrapEl.addEventListener('touchmove', function (e) {
+      if (!isTracking || e.touches.length !== 1) return;
+      var currentX = e.touches[0].clientX;
+      var currentY = e.touches[0].clientY;
+      var deltaX = currentX - touchStartX;
+      var deltaY = currentY - touchStartY;
+
+      if (!isHorizontalSwipe) {
+        if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+          if (Math.abs(deltaX) > Math.abs(deltaY) * 1.1) {
+            isHorizontalSwipe = true;
+          } else {
+            isTracking = false;
+          }
+        }
+      }
+
+      if (isHorizontalSwipe) {
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
+
+    wrapEl.addEventListener('touchend', function (e) {
+      if (!isTracking) return;
+      isTracking = false;
+      var touchEndTime = Date.now();
+      var duration = touchEndTime - touchStartTime;
+      var touchEndX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : touchStartX;
+      var touchEndY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
+      var deltaX = touchEndX - touchStartX;
+      var deltaY = touchEndY - touchStartY;
+
+      if (isHorizontalSwipe || Math.abs(deltaX) > Math.abs(deltaY)) {
+        var minDistance = 28;
+        var isQuickFlick = (duration < 350 && Math.abs(deltaX) > 18);
+
+        if (Math.abs(deltaX) >= minDistance || isQuickFlick) {
+          if (deltaX < 0) {
+            // 向左滑拖动 -> 下一页
+            flipForward();
+          } else {
+            // 向右滑拖动 -> 上一页
+            flipBackward();
+          }
+          return;
+        }
+      }
+
+      // 如果是手机端轻触点击 (Tap)
+      if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15 && duration < 350) {
+        if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack, select, input, .search-wrap, .brand')) return;
+        var rect = bookEl.getBoundingClientRect();
+        var clickX = touchEndX - rect.left;
+        var clickRatio = clickX / rect.width;
+        if (clickRatio < 0.28) {
+          flipBackward();
+        } else if (clickRatio > 0.72) {
+          flipForward();
+        }
+      }
+    }, { passive: true });
+
+    wrapEl.addEventListener('touchcancel', function () {
+      isTracking = false;
+      isHorizontalSwipe = false;
+    });
+  }
+
   /* ==================== 初始化 ==================== */
   function init() {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     bindOverlayClose();
     initSearch();
-    $('brandBtn').onclick = function () { setMode('book'); jumpToPage(1); };
+    initBookTouchGestures();
+    $('brandBtn').onclick = function () { setMode('book'); jumpToPage(0); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
     $('btnTheme').onclick = toggleTheme;
     $('btnFxToggle').onclick = function () { setFxMode(!fxEnabled); };
+    var btnFsPlay = $('btnFullscreenPlay');
+    if (btnFsPlay) btnFsPlay.onclick = toggleFullscreenPlay;
     $('btnAutoPlay').onclick = toggleAutoPlay;
     $('pbExit').onclick = stopAutoPlay;
     var nNext = $('navNext'), nPrev = $('navPrev');
@@ -3066,13 +3777,26 @@
     if (peekR) peekR.onclick = function (e) { e.stopPropagation(); flipForward(); };
     if (peekL) peekL.onclick = function (e) { e.stopPropagation(); flipBackward(); };
 
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(function (ev) {
+      document.addEventListener(ev, function () {
+        var fs = isFsActive();
+        isFullscreenPlaying = fs;
+        updateFullscreenPlayBtn(fs);
+        setTimeout(function () {
+          updateBookRect();
+          fitSpread();
+        }, 150);
+      });
+    });
+
     document.addEventListener('keydown', function (e) {
       if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
       if (e.key === 'ArrowRight') flipForward();
       else if (e.key === 'ArrowLeft') flipBackward();
-      else if (e.key === 'Home') jumpToPage(1);
+      else if (e.key === 'Home') jumpToPage(0);
       else if (e.key === 'Escape') {
-        if (autoPlaying) stopAutoPlay();
+        if (isFullscreenPlaying) stopFullscreenPlay();
+        else if (autoPlaying) stopAutoPlay();
       }
     });
 
@@ -3112,13 +3836,13 @@
 
     var book = $('book');
     book.addEventListener('click', function (e) {
-      if (flipping || isSingle()) return;
+      if (flipping || activeOverlayCount > 0 || (Date.now() - lastOverlayCloseTimestamp < 450)) return;
       if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack')) return;
       if (!cachedBookRect) updateBookRect();
       var rect = cachedBookRect || book.getBoundingClientRect();
       var x = e.clientX - rect.left;
-      if (x < rect.width * 0.18) flipBackward();
-      else if (x > rect.width * 0.82) flipForward();
+      if (x < rect.width * 0.28) flipBackward();
+      else if (x > rect.width * 0.72) flipForward();
     });
     window.addEventListener('resize', function () {
       updateBookRect();
@@ -3126,6 +3850,15 @@
     });
     setFxMode(fxEnabled, true);
     renderSpread();
+
+    var verBadge = $('appVersionBadge');
+    if (verBadge) {
+      var v = (window.DATA && window.DATA.book && window.DATA.book.version) ? window.DATA.book.version : '';
+      if (v) {
+        verBadge.textContent = 'v' + v;
+        verBadge.title = '发布版本号（UTC+8）：' + v;
+      }
+    }
 
     // URL 深链
     if (location.hash) {

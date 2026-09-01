@@ -24,7 +24,7 @@
     externalSource: '',
     summary: '以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。',
     hypeCycle: 'assets/images/ZT001/001_Gartner原图_Hype_Cycle_for_Agentic_AI_2026.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '价值横跨效率、风控、客户体验、新业务四大类，无单一业务中心可完全承载，作为通用能力供给', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T02', no: 2, name: 'AI原生应用架构（AI-Native）', short: 'AI原生应用架构', nameEn: 'AI-Native',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '新兴（向关键演进）',
@@ -41,7 +41,7 @@
     externalSource: '',
     summary: '以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。',
     hypeCycle: 'assets/images/ZT002/002_Gartner原图_Hype_Cycle_for_AI_in_Software_Engineering_2026.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '客户经营中心', centerReason: '以个性化服务、重塑客服与营销应用形态为主要价值，与统一商机平台的精准营销、个性化触达能力对应', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T03', no: 3, name: '事件驱动架构（EDA）', short: '事件驱动架构', nameEn: 'EDA',
     category: '数据要素／技术', categoryKey: '数据要素', archDim: '应用', attr: '关键',
@@ -57,7 +57,7 @@
     source: '· Confluent《Event-Driven Architecture 完整introduction》\n· Latinia／RTInsights：EDA在银行与金融服务的实时化实践（2025）\n· ACI Worldwide：实时支付2028年全球超5750亿笔预测\n采集时间：2026-07-06。\n·【2026-07-14复核增补】Infosys Finacle《Banking Architecture Trend 2026》（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以事件的产生、检测、消费为核心的软件架构风格，组件通过异步事件解耦，实现实时响应与松耦合。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '账务交易中心', centerReason: '核心价值首推实时支付处理与事件驱动的反欺诈，实时支付处理直接对应核心账务处理', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T04', no: 4, name: 'WebAssembly（WASM／Edge）', short: 'WebAssembly', nameEn: 'WASM／Edge',
     category: '技术', categoryKey: '基础设施', archDim: '应用', attr: '新兴',
@@ -73,7 +73,7 @@
     source: '· Platform.uno《The State of WebAssembly 2025/2026》\n· Fermyon／WasmEdge：Wasm边缘与AI推理生产实践（2025）\n· 行业报道：American Express WASM FaaS、Akamai收购Fermyon（2025）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】The New Stack及State of WebAssembly 2026（2026.02–04）', attention: '中', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '一种可移植、高性能的字节码格式与运行时，使代码以接近原生速度在浏览器、服务端、边缘的安全沙箱中运行。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '对客服务中心', centerReason: '边缘计算贴近客户触点、就近处理可降低时延，适合提升手机银行、柜面等终端的响应速度，兼具边缘风控场景潜力', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T05', no: 5, name: '数据织网（Data Fabric）', short: '数据织网', nameEn: 'Data Fabric',
     category: '数据要素', categoryKey: '数据要素', archDim: '数据', attr: '关键',
@@ -90,7 +90,7 @@
     externalSource: '',
     summary: '以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。',
     hypeCycle: 'assets/images/ZT005/005_Gartner原图_Hype_Cycle_for_Data_Management_2025.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '定位为统一数据视图、支撑AI应用的数据基础设施能力', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T06', no: 6, name: '数据网格（Data Mesh）', short: '数据网格', nameEn: 'Data Mesh',
     category: '数据要素', categoryKey: '数据要素', archDim: '数据', attr: '新兴',
@@ -107,7 +107,7 @@
     externalSource: '',
     summary: '一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。',
     hypeCycle: 'assets/images/ZT006/006_Gartner原图_Hype_Cycle_for_Data_Management_2025.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '定位为数据所有权下沉、数据产品化的数据治理范式', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T07', no: 7, name: '后量子密码学（PQC）/后量子身份验证（PQA）', short: '后量子密码学', nameEn: 'PQA',
     category: '量子科技／安全', categoryKey: '量子科技', archDim: '安全', attr: '关键',
@@ -123,7 +123,7 @@
     source: '· NIST：FIPS 203/204/205（2024.08.13）；FIPS 206 与 HQC 草案（2026）；IR 8547 迁移指引；CSWP 39 密码敏捷（2025.12.19）\n· G7 网络专家组《金融业 PQC 路线图》（2026-01-13）；美国 PQC 迁移行政令（2026-06-22）\n· NSA CNSA 2.0 迁移时间表（2030/2033）；FIPS 140-2 认证2026-09-21转历史状态\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】美国白宫M-26-15备忘录（2026.06）；英国NCSC迁移时间表更新（2026.02）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '能抵抗量子计算攻击的密码算法体系，用于替换现有易受量子威胁的RSA／ECC等公钥密码。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为抗量子、推动密码敏捷性建设的加密基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T08', no: 8, name: '零信任架构（Zero Trust）', short: '零信任架构', nameEn: 'Zero Trust',
     category: '安全', categoryKey: '安全', archDim: '安全', attr: '关键',
@@ -139,7 +139,7 @@
     source: '· NIST SP 800-207《Zero Trust Architecture》\n· NIST NCCoE《Implementing a Zero Trust Architecture》\n· 研究文献：零信任在现代银行平台的落地与遗留系统挑战（2025）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】ISACA《Preparing Zero Trust for AI Disruption》（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '从不信任、持续验证的安全架构范式，以身份为中心、最小权限、动态访问控制取代边界信任（NIST SP 800-207）。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为最小权限、持续验证的安全架构', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T09', no: 9, name: '量子计算（Quantum）', short: '量子计算', nameEn: 'Quantum',
     category: '量子科技', categoryKey: '量子科技', archDim: '技术', attr: '未来',
@@ -155,7 +155,7 @@
     source: '· McKinsey《Quantum Technology Monitor 2026》\n· Google Willow纠错突破（2024.12）；IBM Starling容错路线（2029）\n· 金融业调研：87%视为机遇但73%未找到商用场景\n采集时间：2026-07-06。\n·【2026-07-14复核增补】IBM量子路线图（2026）；行业年度盘点（2026.06）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '利用量子叠加与纠缠进行计算的新范式，在特定问题（优化、模拟、因数分解）上具指数级潜力。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为远期加速计算能力，属前沿算力储备', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T10', no: 10, name: '算力网络（Compute Network）', short: '算力网络', nameEn: 'Compute Network',
     category: '技术／算力', categoryKey: '基础设施', archDim: '技术', attr: '关键',
@@ -173,7 +173,7 @@
     summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
     reportDocx: 'assets/docs/ZT010/ZT010_专题研究_算力网络_ComputeNetwork_v4.0.docx', reportPdf: 'assets/preview/ZT010/report.pdf',
     slidesPptx: 'assets/docs/ZT010/ZT010_专题研究_算力网络_ComputeNetwork.pptx', slidesPdf: 'assets/preview/ZT010/slides.pdf', image: 'assets/images/ZT010/onepage-computing-network.svg',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为弹性调度、算力普惠的算力基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
     category: '技术', categoryKey: '基础设施', archDim: '技术', attr: '关键',
@@ -189,7 +189,7 @@
     source: '· Gartner：2026年80%软件组织设平台团队\n· Gartner《2025 Market Guide for Internal Developer Portals》\n· 行业报告：2025年55%组织采纳平台工程、86%高管视为AI落地关键\n采集时间：2026-07-06。\n·【2026-07-14复核增补】LeanOps／platformengineering.org年度趋势（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以内部开发者平台（IDP）为载体，将基础设施、流水线、环境等自助化封装为黄金路径，提升研发效能。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为标准化平台、改善开发者体验的研发效能平台', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T12', no: 12, name: '可观测性标准化（OpenTelemetry）', short: '可观测性标准化', nameEn: 'OpenTelemetry',
     category: '技术', categoryKey: '基础设施', archDim: '技术', attr: '关键',
@@ -205,7 +205,7 @@
     source: '· CNCF：OpenTelemetry晋级毕业项目（2026.05）\n· InfoQ／DevOps.com：OTel达CNCF最高成熟度\n· OpenTelemetry官方博客：毕业与Profiling／eBPF进展（2026）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】wasmCloud社区进展与LLM可观测性平台综述（2026.02）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '一套开源、厂商中立的可观测性数据（指标／日志／链路）采集标准与工具集，统一遥测数据规范。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:5, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '智慧运营中心', centerReason: '提供全链路可观测、快速定位、智能运维能力，直接支撑数智运营服务平台/智能工厂的稳定运行监控', assessment: { dimensions: [{ label:'技术成熟度', score:5, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T13', no: 13, name: '隐私增强计算／隐私计算（PETs：联邦学习·MPC·全同态加密FHE）', short: '隐私增强计算', nameEn: 'PETs：联邦学习·MPC·全同态加密FHE',
     category: '数据要素／安全', categoryKey: '数据要素', archDim: '数据·安全', attr: '关键（新兴向关键演进）',
@@ -221,7 +221,7 @@
     source: '安全内参《基于隐私计算的商业银行数据要素流通应用场景研究》2024；北京金融科技产业联盟《金融业数据应用发展报告2024—2025》2026-01；国家数据局等《"数据要素×"三年行动计划(2024—2026)》。\n·【2026-07-14复核增补】方达《金融法律监管年度报告（2026）：金融科技篇》（2026）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '一组"数据可用不可见"技术，含联邦学习、多方安全计算、差分隐私与全同态加密，使多方在不暴露原始数据前提下联合计算与建模。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '业务处理中心', centerReason: '支撑供应链金融\"数据不出域\"的合规流通，与该中心的保理、单证等业务直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T14', no: 14, name: '机密计算（Confidential Computing／TEE）', short: '机密计算', nameEn: 'Confidential Computing／TEE',
     category: '数据要素／安全', categoryKey: '数据要素', archDim: '安全·技术', attr: '新兴',
@@ -237,7 +237,7 @@
     source: 'Cyberus《Confidential Computing in 2026》；Fortune/Mordor机密计算市场报告2025—2026；Red Hat密态AI推理2025-10。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '基于硬件可信执行环境（TEE，如Intel TDX/SGX、ARM CCA）在使用中加密数据与代码，构建可远程证明的隔离计算飞地。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为敏感工作负载上云、数据主权保护的可信执行环境基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
   },
   { id: 'T15', no: 15, name: '区块链资产代币化与可编程货币', short: '区块链资产代币化与可编程货币', nameEn: '',
     category: '数据要素／未来（金融基础设施）', categoryKey: '数据要素', archDim: '业务', attr: '未来',
@@ -253,7 +253,7 @@
     source: '· 美国 GENIUS Act（2025-07-18）；OCC Bulletin 2026-3；FDIC 实施 GENIUS Act 拟议规则（2026-04-07 通过）\n· Brookings《Next steps for GENIUS payment stablecoins》（2026）；Wolters Kluwer《GENIUS Act 2026》\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】八部门《关于进一步防范和处置虚拟货币交易炒作风险的通知》（2026.02.06）；香港金管局首批稳定币发牌（2026.04.10）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '以分布式账本将存款、债券、基金及现实世界资产（RWA）代币化，并以合规稳定币/代币化存款承载链上支付结算。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+    center: '产品合约中心', centerReason: '以代币化存款、债券/基金代币化与RWA新业务为核心，本质是创设新产品形态', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
   },
   { id: 'T16', no: 16, name: '向量数据库与检索增强生成（Vector DB·RAG／GraphRAG）', short: '向量数据库与检索增强生成', nameEn: 'Vector DB·RAG／GraphRAG',
     category: '人工智能／数据要素', categoryKey: '人工智能', archDim: '数据·应用', attr: '关键',
@@ -269,7 +269,7 @@
     source: 'Techment《RAG in 2026》；Neo4j《What is GraphRAG》；VentureBeat 2026数据预测；Onyx企业RAG平台指南2026。\n·【2026-07-14复核增补】Gartner《Top Trends in D&A 2026：GraphRAG》（2026）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以向量数据库存储语义嵌入，结合知识图谱做混合检索，为大模型提供可溯源的外部知识，降低幻觉。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '是自主型AI智能体、AI原生应用落地的必备组件，属AI能力底座', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T17', no: 17, name: 'AI智能体互操作协议（MCP·A2A·ACP）', short: 'AI智能体互操作协议', nameEn: 'MCP·A2A·ACP',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用·技术', attr: '新兴',
@@ -285,7 +285,7 @@
     source: 'Zylos Research《Agent Interoperability Protocols 2026》；arXiv 2505.02279 协议综述；Turion.ai《AI Agent Protocol Stack 2026》。\n·【2026-07-14复核增补】Linux基金会MCP项目统计与A2A采用情况（2026年初）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '智能体与工具、智能体与智能体间的标准通信协议：MCP（agent-tool）、A2A（agent-agent）、ACP等，构建可互操作的智能体生态。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '为自主型AI智能体落地提供协作底座，与其同属智能体能力集群', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T18', no: 18, name: '人工智能安全平台（AISP）及AI在网络风险管理中的应用', short: '人工智能安全平台', nameEn: '',
     category: '人工智能／安全', categoryKey: '人工智能', archDim: '安全', attr: '关键',
@@ -303,7 +303,7 @@
     summary: '覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。',
     reportDocx: 'assets/docs/ZT018/ZT018_专题研究_人工智能安全平台AISP_v2.1(1).docx', reportPdf: 'assets/preview/ZT018/report.pdf',
     slidesPptx: 'assets/docs/ZT018/ZT018_专题研究_人工智能安全平台AISP.pptx', slidesPdf: 'assets/preview/ZT018/slides.pdf', image: 'assets/images/ZT018/onepage-aisp.svg',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '是自主型AI智能体、AI原生应用、智能体互操作协议等落地的前置护栏，与后量子密码学、零信任架构、机密计算同属安全工程基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T19', no: 19, name: '小语言模型与端侧AI（SLM·On-device／Edge AI）', short: '小语言模型与端侧AI', nameEn: 'SLM·On-device／Edge AI',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用·技术', attr: '新兴',
@@ -319,7 +319,7 @@
     source: 'Zylos《Small Language Models & Edge AI 2026》；InfoWorld/ Dell Edge AI 2026；Iterathon SLM成本指南2026。\n·【2026-07-14复核增补】Gartner预测与Emerging Tech报告（2025.04／2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '参数量较小、面向特定任务、可在端侧/本地部署的语言模型，兼顾成本、时延与数据不出域。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '对客服务中心', centerReason: '与WebAssembly同属端侧技术路线，高频重复任务降本、低时延的特点适用于手机银行等对客终端的本地化AI处理', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T20', no: 20, name: '合成数据（Synthetic Data）', short: '合成数据', nameEn: 'Synthetic Data',
     category: '数据要素／人工智能', categoryKey: '数据要素', archDim: '数据', attr: '新兴',
@@ -335,7 +335,7 @@
     source: 'NayaOne《Synthetic Data\'s Moment》；geekfence 2026合成数据产品；arXiv 2602.09288 金融合成数据隐私风险。\n·【2026-07-14复核增补】2026年中国AI发展趋势前瞻（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '核心价值首推反欺诈/风控样本增强与类别均衡，直接服务天眼系统的模型训练需求', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T21', no: 21, name: '因果AI（Causal AI）', short: '因果AI', nameEn: 'Causal AI',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
@@ -351,7 +351,7 @@
     source: 'FIRM e.V.《Causal AI in risk management and finance》；EJBEMA 2025 因果欺诈检测；Springer《financial explainable AI》综述。\n·【2026-07-14复核增补】行业趋势综述与决策智能相关报告（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '融合因果推断与机器学习，估计变量间因果效应而非仅相关性，提供可解释、稳健的决策依据。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '服务信贷风控、反欺诈，满足监管\"理由码\"要求，为信用风险智能决策系统提供可解释归因能力', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T22', no: 22, name: '软件供应链安全（SBOM·供应链治理）', short: '软件供应链安全', nameEn: 'SBOM·供应链治理',
     category: '安全', categoryKey: '安全', archDim: '安全', attr: '关键',
@@ -367,7 +367,7 @@
     source: 'Sonatype《2026 State of the Software Supply Chain》；ReversingLabs 2026指南；Cloudsmith《2026 Guide to Software Supply Chain Security》。\n·【2026-07-14复核增补】欧盟CRA实施指引与SBOM合规要求（2026.06）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以软件物料清单（SBOM）、来源证明与安全开发框架管理开源与第三方组件风险，覆盖构建到部署全链路。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
+    center: '管理支持中心', centerReason: '满足DORA等监管对ICT第三方与软件供应链风险管理要求，属第三方/供应商合规治理职能', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:5, weight:10, max:5 }] }
   },
   { id: 'T23', no: 23, name: '深度伪造检测与反AI欺诈（Anti-deepfake·合成身份防御）', short: '深度伪造检测与反AI欺诈', nameEn: 'Anti-deepfake·合成身份防御',
     category: '安全／人工智能', categoryKey: '安全', archDim: '安全·业务', attr: '关键',
@@ -383,7 +383,7 @@
     source: 'deepidv《Deepfake Detection for KYC 2026》；Sumsub《AI Fake ID Challenge for KYC》；GetReal《2026 Deepfake Summit》。\n·【2026-07-14复核增补】Sumsub《Fraud Trends 2026》；Forbes技术委员会（2026.04）\n·【2026-08-18深化增补】Innovatrics/ID Tech Wire（Air Bank案例）；Mobile ID World（新加坡ABS案例）；Jumio注入攻击专项披露（2025-08）；Biometric Update账户接管欺诈数据（2026-07）；Gartner《身份核验魔力象限》(2024首发/2026更新)、《数字身份成熟度曲线，2026》(2026-07-06)转引；AFIP/DuckDuckGoose深伪检测技术原理研究；FinCEN深伪欺诈预警(2024-11)细化；欧盟《人工智能法案》第50条透明度义务(2026-08-02生效)；国内《人工智能生成合成内容标识办法》（国信办通字〔2025〕2号，2025-09-01施行）。', attention: '高', status: '在库—已深化研究', updateDate: '2026-08-18',
     externalSource: '',
     summary: '检测AI生成的人脸/声音/证件与合成身份的技术，强化活体检测、多模态一致性与欺诈研判。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '保护远程开户、人脸支付、代客交易与KYC，直接对冲深伪与合成身份欺诈，与天眼系统的反欺诈监测能力对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T24', no: 24, name: '去中心化身份与可验证凭证（DID·VC·eIDAS 2.0数字钱包）', short: '去中心化身份与可验证凭证', nameEn: 'DID·VC·eIDAS 2.0数字钱包',
     category: '安全／数据要素', categoryKey: '安全', archDim: '安全·业务', attr: '新兴',
@@ -399,7 +399,7 @@
     source: 'Ping Identity《Decentralized Identity in EU Finance》；《Enterprise Playbook 2026》；eIDAS 2.0 EUDI Wallet KYC指南2026。\n·【2026-07-14复核增补】行业综述（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '对客服务中心', centerReason: '有助于改善开户与授权体验，直接服务手机银行、网银等渠道的开户与身份核验环节', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T25', no: 25, name: '量子保密通信／量子密钥分发（QKD·量子保密通信）', short: '量子保密通信', nameEn: 'QKD·量子保密通信',
     category: '量子科技／安全', categoryKey: '量子科技', archDim: '安全', attr: '未来',
@@ -415,7 +415,7 @@
     source: 'The Quantum Insider 2026量子密码公司盘点；Mordor QKD市场报告；Yale JIA《China\'s Quantum Ambitions》。\n·【2026-07-14复核增补】NIST后量子迁移FAQ及行业分析（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '基于量子物理原理分发密钥（QKD），提供对窃听敏感、理论上信息论安全的通信保护。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为关键链路灾备通信的抗窃听保护，属通信安全基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
   },
   { id: 'T26', no: 26, name: '神经形态与光子计算（Neuromorphic·Photonic Computing）', short: '神经形态与光子计算', nameEn: 'Neuromorphic·Photonic Computing',
     category: '未来计算（算力）', categoryKey: '基础设施', archDim: '技术', attr: '未来',
@@ -431,7 +431,7 @@
     source: 'PatSnap《Photonic/Neuromorphic Computing Landscape 2026》；Nature《integrated photonic accelerator》2025；Wiley《Integrated Neuromorphic Photonic Computing》2026。\n·【2026-07-14复核增补】Xanadu上市公告与PsiQuantum进展（2026.03）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '类脑脉冲神经与硅光/光电器件的新型计算范式，追求超低功耗、超低时延的AI加速。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:1, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '定位为远期超低功耗算力选项，属前瞻算力储备', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:1, weight:20, max:5 }, { label:'引入可行度', score:1, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:2, weight:10, max:5 }] }
   },
   { id: 'T27', no: 27, name: '神经符号AI／可推理AI（Neuro-symbolic AI）', short: '神经符号AI', nameEn: 'Neuro-symbolic AI',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
@@ -447,7 +447,7 @@
     source: 'Cogent《The Year of Neuro-Symbolic AI 2026》；Stanford Tech Review 2026；arXiv 2604.00555 企业智能体神经符号架构。\n·【2026-07-14复核增补】Gartner领域专用模型趋势（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '融合神经网络与符号逻辑推理，兼顾模式识别与可解释、可审计的结构化推理。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '核心价值聚焦授信、合规、风控场景的可解释推理与规则约束', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T28', no: 28, name: '数字人与空间计算（Digital Human·Spatial Computing）', short: '数字人与空间计算', nameEn: 'Digital Human·Spatial Computing',
     category: '客户体验／人工智能', categoryKey: '客户体验', archDim: '业务·应用', attr: '新兴',
@@ -463,7 +463,7 @@
     source: 'Forbes/Dell《Digital Humans in Financial Services》2026；Precedence《AI Avatar Market》；Nasdaq《AI Digital Human Advisors》。\n·【2026-07-14复核增补】《金融产品网络营销管理办法》（施行日2026.09.30）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '由生成式AI驱动、具多模态与持续记忆的数字人，结合空间计算/实时渲染提供拟人交互。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '对客服务中心', centerReason: '契合智能客服、财富顾问、网点与远程服务的体验升级方向，直接对应手机银行/网银/柜面等对客渠道', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T29', no: 29, name: '绿色与可持续IT／液冷数据中心', short: '绿色与可持续IT', nameEn: '',
     category: '信息基础设施（绿色算力）', categoryKey: '基础设施', archDim: '技术', attr: '关键',
@@ -479,7 +479,7 @@
     source: 'CoreSite《Data Center Outlook 2026》；Data Center Knowledge液冷趋势2026；MIT News核启发冷却2026-06。\n·【2026-07-14复核增补】工信部数据中心新规与行业研究（2026.01–03）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以直冷/浸没式液冷、余热回收、零水冷等提升数据中心能效（PUE）与可持续性，支撑高密度AI算力。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '管理支持中心', centerReason: '满足双碳与ESG要求，属企业管理治理职能', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T30', no: 30, name: '监管科技与合规科技（RegTech·SupTech·AI-native合规）', short: '监管科技与合规科技', nameEn: 'RegTech·SupTech·AI-native合规',
     category: '合规科技（RegTech）', categoryKey: '合规科技', archDim: '应用·业务', attr: '关键',
@@ -495,7 +495,7 @@
     source: 'Central Banking《RegTech & SupTech in central banks 2026》；MDPI《Digital Regulatory Governance》2025；TechMagic《RegTech 2026》。\n·【2026-07-14复核增补】央行科技工作会议（2026.03）；金融监管总局实施方案（2025.12）与指导意见（2026.06.18）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以AI/NLP/知识图谱自动化合规：监管报送、交易监控、反洗钱、客户尽调与法规解析。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '重点提升AML/交易监控与报送效率，AML/交易监控与天眼系统职能直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:4, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T31', no: 31, name: '业务编排与自动化技术（Business Orchestration and Automation Technologies，BOAT）', short: '业务编排与自动化技术', nameEn: 'Business Orchestration and Automation Technologies，BOAT',
     category: '数据要素／未来（企业级流程自动化）', categoryKey: '数据要素', archDim: '业务（跨应用）', attr: '新兴（向关键演进）',
@@ -513,7 +513,7 @@
     summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
     reportDocx: 'assets/docs/ZT031/ZT031_专题研究_业务编排与自动化BOAT_v3.0.docx', reportPdf: 'assets/preview/ZT031/report.pdf',
     slidesPptx: 'assets/docs/ZT031/ZT031_专题研究_业务编排与自动化BOAT.pptx', slidesPdf: 'assets/preview/ZT031/slides.pdf', image: 'assets/images/ZT031/onepage-boat.svg',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '业务处理中心', centerReason: '以统一编排支撑授信审批、账户运营等端到端流程自动化，授信审批正是该中心的核心系统职能', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
     category: '数据要素（仿真与决策）', categoryKey: '数据要素', archDim: '业务', attr: '未来',
@@ -532,7 +532,7 @@
     reportDocx: 'assets/docs/ZT032/ZT032_专题研究_客户数字孪生DToC_v3.0.docx', reportPdf: 'assets/preview/ZT032/report.pdf',
     slidesPptx: 'assets/docs/ZT032/ZT032_专题研究_客户数字孪生DToC.pptx', slidesPdf: 'assets/preview/ZT032/slides.pdf',
     image: 'assets/images/ZT032/OP032_一页图_客户数字孪生DToC_v1.0.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
     category: '数据要素（决策智能）', categoryKey: '数据要素', archDim: '数据', attr: '关键',
@@ -550,7 +550,7 @@
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     reportDocx: 'assets/docs/ZT033/ZT033_专题研究_决策智能平台DIP_v3.1.docx', reportPdf: 'assets/preview/ZT033/report.pdf',
     slidesPptx: 'assets/docs/ZT033/ZT033_专题研究_决策智能平台DIP.pptx', slidesPdf: 'assets/preview/ZT033/slides.pdf', image: 'assets/images/ZT033/onepage-dip.svg',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T34', no: 34, name: '多智能体系统（Multi-Agent Systems，MAS）', short: '多智能体系统', nameEn: 'Multi-Agent Systems，MAS',
     category: '人工智能（智能体协同）', categoryKey: '人工智能', archDim: '应用（跨业务）', attr: '新兴（向关键演进）',
@@ -566,7 +566,7 @@
     source: '· Gartner《Top Strategic Technology Trends 2026: Multiagent Systems》《Multiagent Systems in Enterprise AI》\n· S&P Global/McKinsey 智能体生产部署统计（2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与001/017关联，以本条目为主、001/017为补充；护栏依赖018 AISP）\n·【2026-07-14复核增补】Accenture银行业展望2026；多智能体系统行业白皮书（2026）', attention: '极高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '由多个任务专精的 AI 智能体分工协作、相互通信与协调以完成复杂任务的系统；在单体自主智能体（001）之上引入编排、角色分工与协作机制，提升可扩展性与专业度。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '智慧运营中心', centerReason: '多智能体协同自动化契合运营场景，与智能工厂的产线化协同作业逻辑一致', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T35', no: 35, name: '可组合核心银行系统（Composable Core Banking System）', short: '可组合核心银行系统', nameEn: 'Composable Core Banking System',
     category: '数据要素／未来（核心系统现代化）', categoryKey: '数据要素', archDim: '应用', attr: '关键',
@@ -582,7 +582,7 @@
     source: '· Gartner《Magic Quadrant/Critical Capabilities for Retail Core Banking Systems》（2026）《Composable Technology: A Top Banking Trend》\n· Gartner 4项可组合银行原则；ebankIT/DBP 洞察\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增，已联网核实）\n·【2026-07-14复核增补】Forbes／Visa可组合核心现代化专文（2026.06.24）；香港金管局（2026.04）\n·【2026-07-15深化增补】方法论专章依据既有Retail Core Banking Systems/Banking Payment Hub Platforms魔力象限引注（[1][2][3][4][5][8]）展开，未新增外部来源。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-20',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '以 API 化模块与打包业务能力（Packaged Business Capabilities，PBC）搭建的核心银行系统，允许银行按需组合、快速配置产品与旅程，强调可组合性、云原生与业务功能广度，替代单体式核心。',
-    assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '账务交易中心', centerReason: '支撑核心系统现代化，直接对应对公/零售分布式核心、信用卡核心系统', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T36', no: 36, name: '人工智能应用开发平台与模型运维（AI Application Development Platform & LLMOps）', short: '人工智能应用开发平台与模型运维', nameEn: 'AI Application Development Platform & LLMOps',
     category: '人工智能（AI工程化）', categoryKey: '人工智能', archDim: '技术', attr: '关键',
@@ -599,7 +599,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。',
     hypeCycle: 'assets/images/ZT036/036_Gartner原图_Hype_Cycle_for_Platform_Engineering_2026.png',
-    assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '技术服务中心', centerReason: '与平台工程/IDP协同，形成AI工程化内部平台，同属工程效能平台集群', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   }
   ];
 
@@ -611,6 +611,8 @@
     { key: 'attr', label: '技术属性', type: 'enum', main: true },
     { key: 'tier', label: '储备库层级', type: 'enum', main: true },
     { key: 'disposal', label: '处置档位', type: 'enum', main: true },
+    { key: 'center', label: '企架十大中心落位', type: 'enum', main: true },
+    { key: 'centerReason', label: '落位原因简述', type: 'text' },
     { key: 'maturity', label: '技术成熟度', type: 'num' },
     { key: 'strategicFit', label: '战略匹配度', type: 'num' },
     { key: 'value', label: '价值贡献度', type: 'num' },
@@ -637,6 +639,153 @@
     { key: 'remark', label: '备注', type: 'text' },
     { key: 'summary', label: '一句话概述', type: 'text' },
   ];
+
+  var CENTER_MAPPINGS = {
+    "T28": {
+      "center": "对客服务中心",
+      "reason": "契合智能客服、财富顾问、网点与远程服务的体验升级方向，直接对应手机银行/网银/柜面等对客渠道"
+    },
+    "T24": {
+      "center": "对客服务中心",
+      "reason": "有助于改善开户与授权体验，直接服务手机银行、网银等渠道的开户与身份核验环节"
+    },
+    "T04": {
+      "center": "对客服务中心",
+      "reason": "边缘计算贴近客户触点、就近处理可降低时延，适合提升手机银行、柜面等终端的响应速度，兼具边缘风控场景潜力"
+    },
+    "T19": {
+      "center": "对客服务中心",
+      "reason": "与WebAssembly同属端侧技术路线，高频重复任务降本、低时延的特点适用于手机银行等对客终端的本地化AI处理"
+    },
+    "T34": {
+      "center": "智慧运营中心",
+      "reason": "多智能体协同自动化契合运营场景，与智能工厂的产线化协同作业逻辑一致"
+    },
+    "T12": {
+      "center": "智慧运营中心",
+      "reason": "提供全链路可观测、快速定位、智能运维能力，直接支撑数智运营服务平台/智能工厂的稳定运行监控"
+    },
+    "T32": {
+      "center": "客户经营中心",
+      "reason": "核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能"
+    },
+    "T02": {
+      "center": "客户经营中心",
+      "reason": "以个性化服务、重塑客服与营销应用形态为主要价值，与统一商机平台的精准营销、个性化触达能力对应"
+    },
+    "T15": {
+      "center": "产品合约中心",
+      "reason": "以代币化存款、债券/基金代币化与RWA新业务为核心，本质是创设新产品形态"
+    },
+    "T31": {
+      "center": "业务处理中心",
+      "reason": "以统一编排支撑授信审批、账户运营等端到端流程自动化，授信审批正是该中心的核心系统职能"
+    },
+    "T13": {
+      "center": "业务处理中心",
+      "reason": "支撑供应链金融\\\"数据不出域\\\"的合规流通，与该中心的保理、单证等业务直接对应"
+    },
+    "T35": {
+      "center": "账务交易中心",
+      "reason": "支撑核心系统现代化，直接对应对公/零售分布式核心、信用卡核心系统"
+    },
+    "T03": {
+      "center": "账务交易中心",
+      "reason": "核心价值首推实时支付处理与事件驱动的反欺诈，实时支付处理直接对应核心账务处理"
+    },
+    "T23": {
+      "center": "风险管理中心",
+      "reason": "保护远程开户、人脸支付、代客交易与KYC，直接对冲深伪与合成身份欺诈，与天眼系统的反欺诈监测能力对应"
+    },
+    "T33": {
+      "center": "风险管理中心",
+      "reason": "核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应"
+    },
+    "T21": {
+      "center": "风险管理中心",
+      "reason": "服务信贷风控、反欺诈，满足监管\\\"理由码\\\"要求，为信用风险智能决策系统提供可解释归因能力"
+    },
+    "T20": {
+      "center": "风险管理中心",
+      "reason": "核心价值首推反欺诈/风控样本增强与类别均衡，直接服务天眼系统的模型训练需求"
+    },
+    "T27": {
+      "center": "风险管理中心",
+      "reason": "核心价值聚焦授信、合规、风控场景的可解释推理与规则约束"
+    },
+    "T30": {
+      "center": "风险管理中心",
+      "reason": "重点提升AML/交易监控与报送效率，AML/交易监控与天眼系统职能直接对应"
+    },
+    "T29": {
+      "center": "管理支持中心",
+      "reason": "满足双碳与ESG要求，属企业管理治理职能"
+    },
+    "T22": {
+      "center": "管理支持中心",
+      "reason": "满足DORA等监管对ICT第三方与软件供应链风险管理要求，属第三方/供应商合规治理职能"
+    },
+    "T01": {
+      "center": "数智能力中心",
+      "reason": "价值横跨效率、风控、客户体验、新业务四大类，无单一业务中心可完全承载，作为通用能力供给"
+    },
+    "T05": {
+      "center": "数智能力中心",
+      "reason": "定位为统一数据视图、支撑AI应用的数据基础设施能力"
+    },
+    "T06": {
+      "center": "数智能力中心",
+      "reason": "定位为数据所有权下沉、数据产品化的数据治理范式"
+    },
+    "T16": {
+      "center": "数智能力中心",
+      "reason": "是自主型AI智能体、AI原生应用落地的必备组件，属AI能力底座"
+    },
+    "T17": {
+      "center": "数智能力中心",
+      "reason": "为自主型AI智能体落地提供协作底座，与其同属智能体能力集群"
+    },
+    "T07": {
+      "center": "技术服务中心",
+      "reason": "定位为抗量子、推动密码敏捷性建设的加密基础设施"
+    },
+    "T08": {
+      "center": "技术服务中心",
+      "reason": "定位为最小权限、持续验证的安全架构"
+    },
+    "T09": {
+      "center": "技术服务中心",
+      "reason": "定位为远期加速计算能力，属前沿算力储备"
+    },
+    "T10": {
+      "center": "技术服务中心",
+      "reason": "定位为弹性调度、算力普惠的算力基础设施"
+    },
+    "T11": {
+      "center": "技术服务中心",
+      "reason": "定位为标准化平台、改善开发者体验的研发效能平台"
+    },
+    "T14": {
+      "center": "技术服务中心",
+      "reason": "定位为敏感工作负载上云、数据主权保护的可信执行环境基础设施"
+    },
+    "T18": {
+      "center": "技术服务中心",
+      "reason": "是自主型AI智能体、AI原生应用、智能体互操作协议等落地的前置护栏，与后量子密码学、零信任架构、机密计算同属安全工程基础设施"
+    },
+    "T25": {
+      "center": "技术服务中心",
+      "reason": "定位为关键链路灾备通信的抗窃听保护，属通信安全基础设施"
+    },
+    "T26": {
+      "center": "技术服务中心",
+      "reason": "定位为远期超低功耗算力选项，属前瞻算力储备"
+    },
+    "T36": {
+      "center": "技术服务中心",
+      "reason": "与平台工程/IDP协同，形成AI工程化内部平台，同属工程效能平台集群"
+    }
+  };
 
   var RELATIONS = [
     { key: 'depend', label: '依赖', color: '#f43f5e' },
@@ -838,14 +987,14 @@
       subtitle: '前沿技术研究与战略布局全景报告',
       org: '科技规划处 编制',
       date: '2026年',
-      version: ''
+      version: '202609011132'
     },
     fields: FIELDS, categories: CATEGORIES, categoryColor: CATEGORY_COLOR, tiers: TIERS, tierColor: TIER_COLOR,
     workplan: WORKPLAN, sources: { criteria: SOURCE_CRITERIA, items: SOURCES },
     library: { fields: FIELDS, items: ITEMS },
     hypeCycle: HYPE_CYCLE_CONFIG,
     impactRadar: RADAR_CONFIG,
-    graph: buildGraph(), graphRelations: RELATIONS,
+    graph: buildGraph(), graphRelations: RELATIONS, centerMappings: CENTER_MAPPINGS,
     technologies: ITEMS
   };
 })();
