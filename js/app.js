@@ -627,7 +627,7 @@
     add('', '目录 · 双页对开', 'toc1', false);
     add('第一章', '工作方案与方法', 'part1', true);
     add('1.1', '工作方案', 'workplan', false);
-    add('1.2', '情报源评判报告', 'sources', false);
+    add('1.2', '信息来源评判报告', 'sources', false);
     add('1.3', '研究方法论工具运用', 'methodology_appl', false);
     add('第二章', '整体研究成果', 'part2', true);
     add('2.1', '前沿技术储备库（长名单）', 'library', false);
@@ -703,31 +703,89 @@
       '</div>';
   }
   function sourcesHTML() {
-    var crit = DATA.sources.criteria, items = DATA.sources.items.slice();
-    items.forEach(function (it) {
-      var total = 0;
-      crit.forEach(function (c) { total += it[c.key] * c.weight; });
-      it._total = total / 100;
-    });
-    items.sort(function (a, b) { return b._total - a._total; });
-    var head = '<tr><th style="width:23%">情报源</th><th style="width:11%">类型</th>' + crit.map(function (c) { return '<th style="width:11%">' + esc(c.label) + '<br><span style="font-weight:400;color:var(--faint);font-size:10px">(' + c.weight + ')</span></th>'; }).join('') + '<th style="width:12%">加权得分</th></tr>';
-    var rows = items.map(function (it) {
-      return '<tr><td><b>' + esc(it.name) + '</b></td><td><span class="tag" style="padding:2px 4px;font-size:11px">' + esc(it.type) + '</span></td>' +
-        crit.map(function (c) { return '<td><span class="score-dot" style="background:' + scoreColor(it[c.key]) + ';margin-right:2px;width:7px;height:7px"></span>' + it[c.key] + '</td>'; }).join('') +
-        '<td><b style="color:' + scoreColor(it._total) + '">' + it._total.toFixed(1) + '</b></td></tr>';
+    var src = DATA.sources || {};
+    var topRankings = src.topRankings || [];
+    var domainChains = src.domainChains || [];
+    var categories = src.categories || [];
+
+    var topRows = topRankings.map(function (r) {
+      var rCls = r.rank === 1 ? 'r1' : (r.rank === 2 ? 'r2' : (r.rank === 3 ? 'r3' : ''));
+      return '<tr>' +
+        '<td style="text-align:center"><span class="rank-badge ' + rCls + '">' + r.rank + '</span></td>' +
+        '<td><b>' + esc(r.name) + '</b></td>' +
+        '<td><span class="tag ' + (r.badge || '') + '">' + esc(r.cat) + '</span></td>' +
+        '<td><b style="color:var(--accent)">' + esc(r.score) + '</b></td>' +
+        '<td title="' + esc(r.feat) + '">' + esc(r.feat) + '</td>' +
+      '</tr>';
     }).join('');
-    var cards = items.map(function (it) {
-      return '<div class="card"><div class="c-title"><span>' + esc(it.name) + '</span><span class="badge acc">' + esc(it.type) + '</span></div>' +
-        '<div class="c-comment">' + esc(it.comment) + '</div>' +
-        '<div style="margin-top:8px">' + scoreBar(it._total) + '</div></div>';
+
+    var catStrips = categories.map(function (c) {
+      return '<span class="scs-item"><i style="background:' + (c.color || 'var(--accent)') + '"></i>' + esc(c.name) + ' (' + c.count + ')</span>';
     }).join('');
-    return '<div class="page-pad">' +
-      '<div class="page-title">情报源评判报告</div>' +
-      '<div class="page-subtitle">共 ' + items.length + ' 类情报源 · 按「权威性 / 时效性 / 可信度 / 覆盖度 / 独特性」五维加权评判</div>' +
-      '<div class="h-rule"></div>' +
-      '<div class="pg-section"><div class="pg-h">评判汇总表</div><table class="tbl tbl-sources">' + head + rows + '</table></div>' +
-      '<div class="pg-section"><div class="pg-h">逐源评判</div><div class="cards">' + cards + '</div></div>' +
+
+    var chainRows = domainChains.map(function (d) {
+      return '<div class="sdc-row">' +
+        '<span class="sdc-lbl">' + esc(d.domain) + '</span>' +
+        '<span class="sdc-chain">' + d.chain + '</span>' +
       '</div>';
+    }).join('');
+
+    return '<div class="page-pad page-sources-v4">' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">' + esc(src.title || '前沿科技研究信息来源评判报告') + '</div>' +
+          '<div class="page-subtitle">' + esc(src.subtitle || '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估') + '</div>' +
+        '</div>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-sources-report" title="点击在独立大屏面板中交互预览 21 个渠道详情、对比表与图表">📖 打开完整评判报告</button>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
+      '<div class="sources-kpi-bar">' +
+        '<div class="skpi-item"><div class="skpi-val">21 <span class="skpi-unit">家</span></div><div class="skpi-lbl">全量盘点权威渠道</div></div>' +
+        '<div class="skpi-item"><div class="skpi-val">5 <span class="skpi-unit">大</span></div><div class="skpi-lbl">核心渠道类别</div></div>' +
+        '<div class="skpi-item"><div class="skpi-val">4.50 <span class="skpi-unit">分</span></div><div class="skpi-lbl">TOP 1 中国信通院</div></div>' +
+        '<div class="skpi-item"><div class="skpi-val">4.40 <span class="skpi-unit">分</span></div><div class="skpi-lbl">TOP 2 Gartner</div></div>' +
+        '<div class="skpi-item"><div class="skpi-val">100%</div><div class="skpi-lbl">官方真源核验可溯</div></div>' +
+      '</div>' +
+      '<div class="sources-bento-grid">' +
+        '<div class="sources-col-left">' +
+          '<div class="sources-box-header">' +
+            '<span class="sbh-title">🏆 权威渠道综合能力 TOP 梯队</span>' +
+            '<span class="sbh-sub">五维加权量化评分</span>' +
+          '</div>' +
+          '<table class="tbl sources-top-tbl">' +
+            '<thead><tr><th style="width:36px;text-align:center">排名</th><th style="width:100px">渠道名称</th><th style="width:68px">类型</th><th style="width:45px">评分</th><th>核心优势与定位</th></tr></thead>' +
+            '<tbody>' + topRows + '</tbody>' +
+          '</table>' +
+          '<div class="sources-cat-strip">' + catStrips + '</div>' +
+        '</div>' +
+        '<div class="sources-col-right">' +
+          '<div class="sources-box-header">' +
+            '<span class="sbh-title">🧭 五大战略领域获取链路</span>' +
+            '<span class="sbh-sub">权威度与时效性递进优先级</span>' +
+          '</div>' +
+          '<div class="sources-domain-chains">' + chainRows + '</div>' +
+          '<div class="sources-box-header" style="margin-top:6px">' +
+            '<span class="sbh-title">🎯 场景选型策略与双端建议</span>' +
+          '</div>' +
+          '<div class="sources-scenarios-grid">' +
+            '<div class="ssc-card">' +
+              '<div class="ssc-title"><span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981">权威完整</span> 深度立项论证</div>' +
+              '<div class="ssc-desc">首选信通院、Gartner、达摩院、华为云、工信安全中心，<b>官网下载完整PDF</b>。</div>' +
+            '</div>' +
+            '<div class="ssc-card">' +
+              '<div class="ssc-title"><span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444">时效快速</span> 热点动态监测</div>' +
+              '<div class="ssc-desc">关注量子位、36氪研究院、艾瑞、信通院公众号，<b>微信端第一时间推送</b>。</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sources-footer-callout">' +
+        '<div class="sfc-icon">💡</div>' +
+        '<div class="sfc-text">' +
+          '<b>最佳综合采纳组合：</b>【中国信通院 + 阿里达摩院官网 + 36氪研究院 + arXiv + 麦肯锡/BCG中文公众号】。双端发布策略：政府科研与企业研究院以「官网完整PDF」为主，媒体智库以「公众号」为主。点击右上角按钮即可进入沉浸式交互大屏预览 21 个渠道画像与完整图表。' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }
 
   /* ==================== 方法论工具扁平映射 ==================== */
@@ -2546,7 +2604,7 @@
   addPage('toc2', '目录（下）', toc2HTML);
   addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判 · 方法论工具矩阵', '01'));
   addPage('workplan', '第一章 · 工作方案', workplanHTML());
-  addPage('sources', '第一章 · 情报源评判报告', sourcesHTML());
+  addPage('sources', '第一章 · 信息来源评判报告', sourcesHTML());
   addPage('methodology_appl', '第一章 · 研究方法论工具运用', methodologyApplHTML());
   addPage('part2', '第二章', dividerHTML('第二章', '整体研究成果', '前沿技术储备库 · 技术成熟度曲线 · 技术影响力雷达 · 企架十大中心落位图谱', '02'));
   addPage('library', '第二章 · 前沿技术储备库', libraryPreviewHTML());
@@ -2575,7 +2633,7 @@
       { id: 'toc1', no: '目录', short: '本书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
       { id: 'part1', no: '第一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
       { id: 'workplan', no: '1.1', short: '工作方案', name: '第一章 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
-      { id: 'sources', no: '1.2', short: '情报源评判', name: '第一章 · 情报源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
+      { id: 'sources', no: '1.2', short: '信息来源', name: '第一章 · 前沿科技研究信息来源评判报告', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
       { id: 'methodology_appl', no: '1.3', short: '方法论运用', name: '第一章 · 研究方法论工具运用', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
       { id: 'part2', no: '第二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 10, color: '#3b82f6', tier: '第二章' },
       { id: 'library', no: '2.1', short: '技术储备库', name: '第二章 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 11, color: '#3b82f6', tier: '第二章' },
@@ -2856,6 +2914,7 @@
           else if (action === 'open-graph') openGraphPanel();
           else if (action === 'open-methodology') openMethodologyPanel(el.getAttribute('data-sec'));
           else if (action === 'open-tool') openMethodologyPanel(null, parseInt(el.getAttribute('data-tool-idx'), 10));
+          else if (action === 'open-sources-report') openSourcesReportPanel();
           else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
           else if (action === 'lib-prev-page') {
             libPreviewPage = Math.max(0, libPreviewPage - 1);
@@ -3077,7 +3136,7 @@
     sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">' + esc(b.title) + '</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
     sections.push(webSection('s-overview', '序', '成果全景与说明', overviewPageHTML()));
     sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
-    sections.push(webSection('s-sources', '1.2', '情报源评判报告', sourcesHTML()));
+    sections.push(webSection('s-sources', '1.2', '前沿科技研究信息来源评判报告', sourcesHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-sources-report">📖 完整评判大屏</button>'));
     sections.push(webSection('s-methodology-appl', '1.3', '研究方法论工具运用', methodologyApplHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 完整方法论体系</button>'));
     sections.push(webSection('s-library', '2.1', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
     sections.push(webSection('s-hype-cycle', '2.2', '技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('webHypeCycleWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>'));
@@ -3103,7 +3162,7 @@
     toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>成果全景与说明</div>');
     toc.push('<div class="web-toc-item part" data-target="s-workplan">第一章 · 工作方案与方法</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>情报源评判报告</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>信息来源评判报告</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-methodology-appl"><span class="wt-no">1.3</span>研究方法论工具运用</div>');
     toc.push('<div class="web-toc-item part" data-target="s-library">第二章 · 整体研究成果</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">2.1</span>前沿技术储备库</div>');
@@ -3704,6 +3763,46 @@
     }, true);
   }
 
+  function openSourcesReportPanel(isNavBack) {
+    if (!isNavBack) {
+      if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'sources_report') {
+        var snap = capturePanelSnapshot();
+        if (snap) panelNavStack.push(snap);
+      } else {
+        panelNavStack = [];
+      }
+    }
+    currentPanelMeta = { type: 'sources_report', name: '前沿科技研究信息来源评判报告' };
+
+    var webPath = (DATA.sources && DATA.sources.webReport) || 'assets/reports/sources_report.html';
+    var docxPath = (DATA.sources && DATA.sources.docxReport) || 'sources/reports/前沿科技研究信息来源报告_V4.docx';
+
+    var toolbar = '<div class="preview-toolbar" style="margin-bottom:8px">' +
+      '<a href="' + esc(docxPath) + '" download>⬇ 下载 Word 原报告 (V4)</a>' +
+      '<a href="' + esc(webPath) + '" target="_blank">↗ 新窗口全屏打开</a>' +
+      '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button>' +
+    '</div>';
+
+    var stage = '<div class="preview-stage" data-stage="1" style="height:calc(100vh - 165px);min-height:600px;border-radius:8px;overflow:hidden;background:#060a12">' +
+      '<iframe src="' + esc(webPath) + '" style="width:100%;height:100%;border:none" title="前沿科技研究信息来源评判报告"></iframe>' +
+    '</div>';
+
+    openPanel('前沿科技研究信息来源评判报告（2026 全景版）', toolbar + stage, function () {
+      var panel = $('panel');
+      var fsBtn = panel.querySelector('[data-fs="1"]');
+      var stageEl = panel.querySelector('[data-stage="1"]');
+      if (fsBtn && stageEl) {
+        fsBtn.onclick = function () {
+          if (!document.fullscreenElement) {
+            (stageEl.requestFullscreen || stageEl.webkitRequestFullscreen || stageEl.msRequestFullscreen).call(stageEl);
+          } else {
+            (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+          }
+        };
+      }
+    }, true);
+  }
+
   /* ==================== 技术专题详情面板 ==================== */
   function techTabs(tech) {
     var tabs = [];
@@ -3894,8 +3993,8 @@
       if ('工作方案 1.1'.toLowerCase().indexOf(ql) >= 0) {
         hits.push({ id: '_workplan', name: '1.1 工作方案', cat: '第一章 · 工作方案与方法', tier: '工作方案', sum: '敏捷工作机制与组织分工' });
       }
-      if ('情报源评判 1.2'.toLowerCase().indexOf(ql) >= 0) {
-        hits.push({ id: '_sources', name: '1.2 情报源评判报告', cat: '第一章 · 工作方案与方法', tier: '情报源', sum: '共 16 类情报源五维加权评判' });
+      if ('信息来源 前沿科技研究信息来源评判报告 情报源 1.2 sources caict gartner'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_sources', name: '1.2 前沿科技研究信息来源评判报告', cat: '第一章 · 工作方案与方法', tier: '信息来源', sum: '系统盘点 5 大类别 21 个权威渠道与量化评估' });
       }
       if ('前沿技术储备库 长名单 2.1'.toLowerCase().indexOf(ql) >= 0) {
         hits.push({ id: '_library', name: '2.1 前沿技术储备库（长名单）', cat: '第二章 · 整体成果', tier: '储备库', sum: '36项长名单前沿技术全景台账' });

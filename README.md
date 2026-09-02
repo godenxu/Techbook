@@ -81,25 +81,22 @@
 
 ```
 前沿技术研究/
-├── index.html               # 🌐 主入口（原生 CSS + DOM 结构）
-├── index-standalone.html    # 📦 独立单文件版（CSS/JS/数据全内联，开箱即用）
-├── data.js                  # 💾 核心数据层（36项技术、六维评级、关系图谱与工作方案）
-├── start.bat                # ⚡ Windows 一键启动脚本
+├── index.html               # 🌐 主入口（多文件标准版）
+├── index-standalone.html    # 📦 独立单文件版（8.67 MB，全书及图表全内联）
+├── data.js                  # 💾 核心数据层（36项技术、25个方法论工具及关系网络）
+├── start.bat                # ⚡ Windows 一键启动脚本（直接调用浏览器打开）
 ├── README.md                # 📘 项目说明文档
-├── 使用说明.md              # 📖 维护规范与报告接入指南
 ├── js/
-│   └── app.js               # 🧠 前端核心控制器（双视图引擎、3D翻书、SVG雷达、图谱、搜索）
-├── assets/
-│   ├── TZ000_前沿技术储备库分层台账_v1.30.xlsx  # 来源 Excel 原始台账
-│   ├── docs/                # 重点专题的原始 Word 报告 / PPT 演示文稿（供下载）
-│   ├── preview/             # 预转换的高保真 PDF 版本（供浏览器原生内嵌预览）
-│   └── images/              # 重点技术“一张图概述”的 SVG 矢量图
-└── scripts/                 # ⚙️ 工具链与辅助脚本
-    ├── pack.js              # 一键打包生成 index-standalone.html (Node.js)
-    ├── pack.ps1             # 一键打包生成 index-standalone.html (PowerShell)
-    ├── convert.ps1          # Office Word/PPT 转 PDF 工具（需本机装有 Office）
-    ├── docx2html.ps1        # 无 Office 环境下的 docx 正文与 HTML 提取
-    └── make_downloads.ps1   # 样例及下载资源维护工具
+│   └── app.js               # 🧠 前端核心控制器（翻书/网页视图、雷达、方法论面板）
+├── assets/                  # 🚀 Web 线上运行时资产库（14.2 MB，供打包部署）
+│   ├── methodology/figures/ # 24 张标准方法论高清矢量图
+│   └── technologies/        # 36 项技术线上图表及 10 个在线阅读 PDF
+├── sources/                 # 📚 办公编辑与研究源文档库（纯本地工作留档）
+│   ├── arch/                # 企架十大中心大图、雷达图原件
+│   ├── ledgers/             # Excel 统计台账与落位对照表
+│   ├── methodology/         # 方法论 Word 母版（v1.3 最新版及历史归档）
+│   └── technologies/        # 各技术 DOCX 报告母版与 PPT 原件（含 38MB PPT）
+└── scripts/                 # ⚙️ 工具链与辅助脚本（含一键打包 pack.js 等）
 ```
 
 ---

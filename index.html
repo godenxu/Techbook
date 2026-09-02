@@ -2541,6 +2541,218 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   font-size: 12px;
 }
 
+/* ==================== 1.2 信息来源评判报告 V4 单页排版 ==================== */
+.page-sources-v4 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.sources-kpi-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.skpi-item {
+  flex: 1;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  text-align: center;
+}
+.skpi-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+}
+.skpi-unit {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--faint);
+}
+.skpi-lbl {
+  font-size: 10px;
+  color: var(--faint);
+  margin-top: 1px;
+}
+.sources-bento-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 6px;
+}
+.sources-col-left, .sources-col-right {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+.sources-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 3px;
+}
+.sbh-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sbh-sub {
+  font-size: 10px;
+  color: var(--faint);
+}
+.sources-top-tbl {
+  width: 100%;
+  font-size: 10.5px;
+  border-collapse: collapse;
+  margin-bottom: 4px;
+  flex: 1;
+}
+.sources-top-tbl th {
+  background: var(--panel);
+  padding: 2.5px 4px;
+  font-size: 10px;
+  color: var(--faint);
+  text-align: left;
+}
+.sources-top-tbl td {
+  padding: 2.5px 4px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rank-badge {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text);
+  font-size: 9.5px;
+  font-weight: 700;
+}
+.rank-badge.r1 { background: #f59e0b; color: #fff; }
+.rank-badge.r2 { background: #64748b; color: #fff; }
+.rank-badge.r3 { background: #b45309; color: #fff; }
+
+.tag-govt { border-color: rgba(59,130,246,0.4); color: #3b82f6; }
+.tag-cons { border-color: rgba(16,185,129,0.4); color: #10b981; }
+.tag-corp { border-color: rgba(245,158,11,0.4); color: #f59e0b; }
+.tag-media { border-color: rgba(239,68,68,0.4); color: #ef4444; }
+.tag-acad { border-color: rgba(139,92,246,0.4); color: #8b5cf6; }
+
+.sources-cat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 6px;
+  font-size: 10px;
+  color: var(--faint);
+  padding-top: 3px;
+}
+.scs-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.scs-item i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.sources-domain-chains {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+}
+.sdc-row {
+  display: flex;
+  align-items: center;
+  font-size: 10.5px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2.5px 5px;
+}
+.sdc-lbl {
+  font-weight: 600;
+  width: 95px;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.sdc-chain {
+  color: var(--text-sec);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sdc-chain .arr {
+  color: var(--accent);
+  font-style: normal;
+  margin: 0 1px;
+}
+
+.sources-scenarios-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+.ssc-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 5px;
+}
+.ssc-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.ssc-desc {
+  font-size: 9.5px;
+  color: var(--faint);
+  line-height: 1.35;
+}
+
+.sources-footer-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: rgba(79, 140, 255, 0.08);
+  border: 1px solid rgba(79, 140, 255, 0.25);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 10.5px;
+  line-height: 1.38;
+  color: var(--text);
+}
+.sfc-icon {
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.sfc-text {
+  flex: 1;
+}
+
 /* 附录一 书页：方法论体系全景与三层全量工具直达 */
 .method-bento-row {
   display: grid;
@@ -3445,7 +3657,7 @@ body.has-overlay-open .book-side-tab {
 </div>
 
 <div class="toast hidden" id="toast"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609011834">v202609011834</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609021559">v202609021559</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>
