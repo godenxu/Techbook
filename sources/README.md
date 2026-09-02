@@ -16,10 +16,10 @@ sources/
 │   ├── GJ000_前沿技术研究方法论工具_v1.3.docx  # 当前最新版方法论 Word
 │   └── _archive/                   # 历史版本归档（v1.0 节选版、早期图表等）
 ├── technologies/                   # 36 项技术的研究母版文件（按技术专属目录存放）
-│   ├── ZT010_算力网络/ (report.docx, slides.pptx)
-│   ├── ZT018_人工智能安全平台/ (report.docx, slides.pptx)
-│   ├── ZT031_业务编排与自动化/ (report.docx, slides.pptx)
-│   ├── ZT032_客户数字孪生/ (report.docx, slides.pptx [38MB])
-│   └── ZT033_决策智能平台/ (report.docx, slides.pptx)
+│   ├── T010_算力网络/ (专题研究报告.docx, 演示汇报.pptx)
+│   ├── T018_人工智能安全平台/ (专题研究报告.docx, 演示汇报.pptx)
+│   ├── T031_业务编排与自动化/ (专题研究报告.docx, 演示汇报.pptx)
+│   ├── T032_客户数字孪生/ (专题研究报告.docx, 演示汇报.pptx [38MB])
+│   └── T033_决策智能平台/ (专题研究报告.docx, 演示汇报.pptx)
 └── _archive/                       # 全局冗余备份隔离区
 ```
