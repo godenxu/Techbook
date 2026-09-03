@@ -335,7 +335,7 @@
     source: 'NayaOne《Synthetic Data\'s Moment》；geekfence 2026合成数据产品；arXiv 2602.09288 金融合成数据隐私风险。\n·【2026-07-14复核增补】2026年中国AI发展趋势前瞻（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
-    center: '风险管理中心', centerReason: '核心价值首推反欺诈/风控样本增强与类别均衡，直接服务天眼系统的模型训练需求', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '数智能力中心', centerReason: '定位为企业级数据要素供给与AI训练底座，横跨AI模型训练、风控长尾样本增强、跨域合规流通及研发仿真测试，属全行通用数智基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T21', no: 21, name: '因果AI（Causal AI）', short: '因果AI', nameEn: 'Causal AI',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
@@ -706,8 +706,8 @@
       "reason": "服务信贷风控、反欺诈，满足监管\\\"理由码\\\"要求，为信用风险智能决策系统提供可解释归因能力"
     },
     "T20": {
-      "center": "风险管理中心",
-      "reason": "核心价值首推反欺诈/风控样本增强与类别均衡，直接服务天眼系统的模型训练需求"
+      "center": "数智能力中心",
+      "reason": "定位为企业级数据要素供给与AI训练底座，横跨AI模型训练、风控长尾样本增强、跨域合规流通及研发仿真测试，属全行通用数智基础设施"
     },
     "T27": {
       "center": "风险管理中心",
@@ -862,7 +862,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609031334',
+    version: '202609031829',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'sources/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [

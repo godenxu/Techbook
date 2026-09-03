@@ -2126,7 +2126,7 @@
       {
         id: 'c6', no: 6, name: '风险管理中心',
         subLines: ['天眼系统', '信用风险智能决策系统'],
-        techs: [{ id: 'T23' }, { id: 'T33' }, { id: 'T21' }, { id: 'T20' }, { id: 'T27' }, { id: 'T30' }],
+        techs: [{ id: 'T23' }, { id: 'T33' }, { id: 'T21' }, { id: 'T27' }, { id: 'T30' }],
         x: 820, y: 284, w: 160, h: 236, type: 'stack', pillsY: 74
       },
       {
@@ -2138,7 +2138,7 @@
       {
         id: 'c9', no: 9, name: '数智能力中心',
         subLines: [],
-        techs: [{ id: 'T01' }, { id: 'T05' }, { id: 'T06' }, { id: 'T16' }, { id: 'T17' }],
+        techs: [{ id: 'T01' }, { id: 'T05' }, { id: 'T06' }, { id: 'T16' }, { id: 'T17' }, { id: 'T20' }],
         x: 270, y: 546, w: 386, h: 194, type: 'grid2', pillsY: 50
       },
       {
@@ -2495,10 +2495,10 @@
           '<span class="radar-stat-pill tc-stat-pill" data-center="c3" title="点击在全屏图谱中聚焦查看 客户经营中心"><span>客户经营中心:</span> <b>2项</b></span>' +
           '<span class="radar-stat-pill tc-stat-pill" data-center="c4" title="点击在全屏图谱中聚焦查看 产品合约中心"><span>产品合约中心:</span> <b>1项</b></span>' +
           '<span class="radar-stat-pill tc-stat-pill" data-center="c5" title="点击在全屏图谱中聚焦查看 业务处理中心"><span>业务处理中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c6" title="点击在全屏图谱中聚焦查看 风险管理中心"><span>风险管理中心:</span> <b>6项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c6" title="点击在全屏图谱中聚焦查看 风险管理中心"><span>风险管理中心:</span> <b>5项</b></span>' +
           '<span class="radar-stat-pill tc-stat-pill" data-center="c7" title="点击在全屏图谱中聚焦查看 账务交易中心"><span>账务交易中心:</span> <b>2项</b></span>' +
           '<span class="radar-stat-pill tc-stat-pill" data-center="c8" title="点击在全屏图谱中聚焦查看 管理支持中心"><span>管理支持中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c9" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 数智能力中心"><span>数智能力中心:</span> <b>5项</b></span>' +
+          '<span class="radar-stat-pill tc-stat-pill" data-center="c9" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 数智能力中心"><span>数智能力中心:</span> <b>6项</b></span>' +
           '<span class="radar-stat-pill tc-stat-pill" data-center="c10" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 技术服务中心"><span>技术服务中心:</span> <b>10项</b></span>' +
         '</div>' +
         '<div class="blueprint-card blueprint-preview-box" data-action="open-graph" style="margin-top:0" title="点击打开全屏企架十大中心落位交互图谱">' +
