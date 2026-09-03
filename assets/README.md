@@ -11,6 +11,11 @@
 
 ```text
 assets/
+├── plans/                          # 方案在线高清预览 PDF
+│   └── FA000_工作推进方案.pdf
+├── reports/                        # 专项报告在线预览 PDF/HTML
+│   ├── 前沿科技研究信息来源报告.pdf
+│   └── 前沿科技研究信息来源报告.html
 ├── methodology/
 │   └── figures/                    # 24 张标准方法论高清矢量图（fig_v13_01.png ~ fig_v13_24.png）
 └── technologies/                   # 36 项技术的线上发布资产（按技术专属目录）

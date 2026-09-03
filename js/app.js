@@ -496,8 +496,8 @@
   /* ==================== 图表（雷达/柱状） ==================== */
   function radarSVG(tech, compact) {
     var dims = tech.assessment.dimensions, n = dims.length;
-    var W = compact ? 320 : 380, H = compact ? 230 : 280;
-    var cx = W / 2, cy = H / 2, R = compact ? 78 : 100;
+    var W = compact ? 340 : 380, H = compact ? 230 : 280;
+    var cx = W / 2, cy = H / 2, R = compact ? 74 : 100;
     var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
     var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
@@ -525,7 +525,7 @@
       var lp = pt(k, R + offset), a = angle(k);
       var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
       var scoreVal = dims[k].score;
-      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 3.5 : 5)).toFixed(1) + '" font-size="' + (compact ? '11' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="800">' + scoreVal + '</tspan>') : '') + '</text>';
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 4 : 5)).toFixed(1) + '" font-size="' + (compact ? '13' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="normal">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="normal">' + scoreVal + '</tspan>') : '') + '</text>';
     }
     s += '</svg>';
     var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
@@ -572,58 +572,108 @@
     var b = DATA.book;
     var lib = DATA.library.items.length;
     var cats = DATA.categories.length;
-    var srcs = DATA.sources.items.length;
-    var techs = DATA.technologies.length;
-    return '<div class="page-pad">' +
-      '<div class="page-title">' + esc(b.title) + '</div>' +
-      '<div class="page-subtitle">' + esc(b.subtitle) + '</div>' +
-      '<div class="h-rule"></div>' +
-      '<div class="pg-p">本电子研究书系统汇集科技发展部前沿技术研究成果，分为三章：<b>第一章 · 工作方案与方法</b>（工作方案、信息来源评估）、<b>第二章 · 整体研究成果</b>（前沿技术储备库、技术成熟度曲线、技术影响力雷达图、企架十大中心落位图谱）与<b>第三章 · 各项前沿技术研究</b>（六维研判评估表、专题研究报告、一张图概述）。</div>' +
-      '<div class="stat-grid">' +
-      '<div class="stat"><div class="num">' + lib + '</div><div class="lbl">长名单技术项</div></div>' +
-      '<div class="stat"><div class="num">' + cats + '</div><div class="lbl">战略方向</div></div>' +
-      '<div class="stat"><div class="num">' + srcs + '</div><div class="lbl">情报源</div></div>' +
-      '<div class="stat"><div class="num">' + techs + '</div><div class="lbl">专题研究项</div></div>' +
+    var srcs = 21;
+    var methods = 25;
+    var deepTechs = 5;
+
+    return '<div class="page-pad page-pad-title">' +
+      '<div class="page-head-row" style="margin-bottom:2px">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">前言与阅读指引</div>' +
+          '<div class="page-subtitle">前瞻技术研判 · 决策赋能定位 · 全书架构导航</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="pg-section">' +
-      '<div class="pg-h">成果体系架构</div>' +
-      '<div class="cards" style="grid-template-columns:1fr 1fr 1fr;gap:8px">' +
-      '<div class="card"><div class="c-title" style="color:var(--accent)">第一章 · 工作方案与方法</div><div class="c-comment">工作方案与信息来源评估，确立科学规范的前沿技术研究与评价方法论。</div></div>' +
-      '<div class="card"><div class="c-title" style="color:var(--accent2)">第二章 · 整体研究成果</div><div class="c-comment">技术储备库（36项）、成熟度曲线、影响力雷达及十大中心落位图谱，支撑全行宏观研判与战略选型。</div></div>' +
-      '<div class="card"><div class="c-title" style="color:#10b981">第三章 · 各项前沿技术研究</div><div class="c-comment">针对 36 项前沿技术输出六维研判评估表、万字专题报告（Word/PPT）及一张图概述，深度赋能业务落地。</div></div>' +
-      '</div></div>' +
-      '</div>';
+      '<div class="h-rule" style="margin-bottom:12px"></div>' +
+
+      '<div class="title-purpose-card">' +
+        '<div class="tpc-label">🎯 编制背景与战略定位</div>' +
+        '<div class="tpc-text">为深入贯彻全行数字化转型战略，有力支撑<b>“十五五”信息科技规划编制、全行重大科技投资决策与新技术验证立项</b>，科技规划处牵头建立前瞻性、体系化、决策导向的前沿技术常态化研判能力。本书系统汇聚外部多源情报与自主研究成果，构建<b>“前沿技术雷达”</b>与<b>“分层储备库”</b>，推动前沿洞察从“零散跟踪”向“常态研判”升级、从“信息搬运”向“价值研判”升级，为全行科技创新提供坚实的技术选型与路线指引。</div>' +
+      '</div>' +
+
+      '<div class="title-tags-row">' +
+        '<span class="title-res-tag tag-blue"><b class="trt-num">' + lib + '</b> 项长名单技术</span>' +
+        '<span class="title-res-tag tag-cyan"><b class="trt-num">' + cats + '</b> 大战略前沿领域</span>' +
+        '<span class="title-res-tag tag-emerald"><b class="trt-num">' + srcs + '</b> 家情报源盘点</span>' +
+        '<span class="title-res-tag tag-amber"><b class="trt-num">' + methods + '</b> 项方法论工具</span>' +
+        '<span class="title-res-tag tag-purple"><b class="trt-num">' + deepTechs + '</b> 项深度专题包</span>' +
+      '</div>' +
+
+      '<div class="pg-section" style="margin-bottom:0">' +
+        '<div class="pg-h" style="font-size:15px;margin-bottom:8px">成果体系架构与交付形态</div>' +
+        '<div class="title-chap-grid">' +
+          '<div class="title-chap-card">' +
+            '<div class="tcc-head"><span class="tcc-tag tag-p1">第一章</span><span class="tcc-title">工作方案与方法</span></div>' +
+            '<div class="tcc-desc">确立常态化前沿技术研究机制与科学评价方法论。</div>' +
+            '<div class="tcc-badges">' +
+              '<span class="badge">五级漏斗机制</span><span class="badge">21家情报源评估</span><span class="badge">25项方法论矩阵</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="title-chap-card">' +
+            '<div class="tcc-head"><span class="tcc-tag tag-p2">第二章</span><span class="tcc-title">整体研究成果</span></div>' +
+            '<div class="tcc-desc">宏观研判全行技术储备与布局全景，支撑全行顶层选型。</div>' +
+            '<div class="tcc-badges">' +
+              '<span class="badge">36项技术储备库</span><span class="badge">Hype Cycle 曲线</span><span class="badge">影响力雷达</span><span class="badge">企架十大中心落位</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="title-chap-card">' +
+            '<div class="tcc-head"><span class="tcc-tag tag-p3">第三章</span><span class="tcc-title">各项前沿技术研究</span></div>' +
+            '<div class="tcc-desc">逐项深研技术机理、银行应用场景、落地成效与合规约束。</div>' +
+            '<div class="tcc-badges">' +
+              '<span class="badge">36项六维评估表</span><span class="badge">万字专题报告</span><span class="badge">演示PPT</span><span class="badge">架构一张图</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }
 
   function overviewPageHTML() {
     var b = DATA.book;
-    var edges = DATA.graph.edges.length;
-    return '<div class="page-pad">' +
-      '<div class="page-title">成果全景与说明</div>' +
-      '<div class="page-subtitle">编制说明 · 管理机制 · 研判标准</div>' +
-      '<div class="h-rule"></div>' +
-      '<div class="pg-section">' +
-      '<div class="pg-h">前沿技术储备库动态分层管理机制</div>' +
-      '<div class="pg-p dim">储备库按「布局 / 论证 / 研究 / 观察」四层动态滚动管理；落位图谱覆盖企架十大中心 36 项技术落位；每项技术含完整台账字段（定义 / 趋势 / 研判依据等）与六维评级（1–5 分制）。</div>' +
-      '<div class="pg-p dim">系统支持「书籍模式」沉浸式翻阅与「网页模式」大屏仪表盘，支持明暗主题自适应与实时检索。</div>' +
+    return '<div class="page-pad page-pad-overview">' +
+      '<div class="page-head-row" style="margin-bottom:2px">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">研究规范与机制</div>' +
+          '<div class="page-subtitle">核心准则 · 储备库分层规则 · 数字化系统说明</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="pg-section" style="margin-top:16px">' +
-      '<div class="pg-h">编制与发布信息</div>' +
-      '<table class="tbl">' +
-      '<tr><th style="width:90px">编制单位</th><td>' + esc(b.org) + '</td></tr>' +
-      '<tr><th>发布时间</th><td>' + esc(b.date) + '</td></tr>' +
-      '<tr><th>研究范围</th><td>前沿技术长名单36项（布局6 / 论证10 / 研究10 / 观察10），覆盖人工智能、数据要素、算力网络等战略方向。</td></tr>' +
-      '<tr><th>更新机制</th><td>月度滚动研判跟踪，关键技术动态升级，确保研究成果与前沿趋势深度同频。</td></tr>' +
-      '</table>' +
+      '<div class="h-rule" style="margin-bottom:8px"></div>' +
+
+      '<div class="pg-section" style="margin-bottom:8px">' +
+        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">编制准则与核心原则</div>' +
+        '<div class="overview-principle-grid">' +
+          '<div class="op-card"><span class="op-tag">战略导向</span>聚焦人工智能、数据要素、算力网络三大核心方向，紧扣全行战略与科技规划布局。</div>' +
+          '<div class="op-card"><span class="op-tag">金融适配</span>以“战略匹配度”为核心标尺，突出银行具体业务场景赋能、风险可控与监管合规边界。</div>' +
+          '<div class="op-card"><span class="op-tag">客观真源</span>多源情报交叉核验，五维加权量化评分，确保研判依据客观可溯、结论可靠闭环。</div>' +
+          '<div class="op-card"><span class="op-tag">分层滚动</span>储备库四层动态调入调出，设定可行度与紧迫度阈值约束，实现研判资产常态演进。</div>' +
+        '</div>' +
       '</div>' +
-      '</div>';
+
+      '<div class="pg-section" style="margin-bottom:8px">' +
+        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">前沿技术储备库动态分层管理机制</div>' +
+        '<div class="overview-tiers-grid">' +
+          '<div class="ot-card t-layout"><div class="ot-tier">布局层 (6项)</div><div class="ot-desc">战略匹配与价值双高，资源前置、提前布局试验（如自主型AI智能体、AI原生应用架构）</div></div>' +
+          '<div class="ot-card t-prove"><div class="ot-tier">论证层 (10项)</div><div class="ot-desc">应用前景明确、紧迫度高，开展系统性技术可行性与工程论证（如算力网络、AI安全平台）</div></div>' +
+          '<div class="ot-card t-study"><div class="ot-tier">研究层 (10项)</div><div class="ot-desc">技术演进趋势明确，与我行具潜在关联，保持技术机理深入跟踪与原型预研（如因果AI、去中心化身份）</div></div>' +
+          '<div class="ot-card t-watch"><div class="ot-tier">观察层 (10项)</div><div class="ot-desc">新兴萌芽或当前约束较高，纳入雷达常态观测，跟踪技术成熟度演进拐点（如量子计算、神经形态）</div></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="pg-section" style="margin-bottom:0">' +
+        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">编制与发布信息</div>' +
+        '<table class="tbl" style="font-size:13px">' +
+          '<tr><th style="width:85px;padding:3.5px 8px">编制单位</th><td style="padding:3.5px 8px">' + esc(b.org) + '</td><th style="width:85px;padding:3.5px 8px">发布周期</th><td style="padding:3.5px 8px">' + esc(b.date) + '（年度总体研判 + 季度动态跟踪）</td></tr>' +
+          '<tr><th style="padding:3.5px 8px">研究范围</th><td style="padding:3.5px 8px">前沿技术长名单 36 项，全面映射企架十大中心落位</td><th style="padding:3.5px 8px">滚动机制</th><td style="padding:3.5px 8px">月度例会动态调档 · 季度动态简报呈报 · 年度趋势总报告定稿</td></tr>' +
+          '<tr><th style="padding:3.5px 8px">系统架构</th><td colspan="3" style="padding:3.5px 8px">纯静态离线单文件架构，免外部服务依赖；支持「双页对开书籍模式」与「网页大屏模式」即开即用。</td></tr>' +
+        '</table>' +
+      '</div>' +
+    '</div>';
   }
 
   function getTocItems() {
     var items = [];
     function add(no, label, key, part) { items.push({ no: no, label: label, key: key, part: part }); }
-    add('', '扉页 · 成果总览', 'title', false);
-    add('', '成果全景与说明', 'overview', false);
+    add('', '前言与阅读指引', 'title', false);
+    add('', '研究规范与机制', 'overview', false);
     add('', '目录 · 双页对开', 'toc1', false);
     add('第一章', '工作方案与方法', 'part1', true);
     add('1.1', '工作方案', 'workplan', false);
@@ -641,24 +691,29 @@
     add('附录', '研究方法论工具与说明', 'partAppendix', true);
     add('附录一', '前沿技术研究方法论工具体系', 'appendix_methodology', false);
     add('附录二', '术语表 · 数据来源 · 版本说明', 'appendix', false);
-    add('', '结语', 'closing', false);
+    add('结语', '全书研判总结与未来展望', 'closing', true);
     return items;
   }
 
-  function renderTocPage(title, items) {
+  function renderTocPage(title, sub, items) {
     var lis = items.map(function (it) {
       var pIdx = pageKeyMap[it.key];
       if (pIdx == null) pIdx = 1;
-      var cls = it.part ? 'toc-part' : (it.key.indexOf('tech-') === 0 ? 'toc-indent' : '');
+      var cls = it.part ? 'toc-part' : ((it.key === 'title' || it.key === 'overview') ? '' : 'toc-indent');
       return '<li data-jump="' + pIdx + '" class="' + cls + '">' +
         '<span class="toc-no">' + esc(it.no) + '</span>' +
-        '<span class="toc-label">' + esc(it.label) + '</span>' +
+        '<span class="toc-label" title="' + esc(it.label) + '">' + esc(it.label) + '</span>' +
         '<span class="toc-dots"></span>' +
         '<span class="toc-page-num">P.' + (pIdx + 1) + '</span>' +
       '</li>';
     }).join('');
-    return '<div class="page-pad">' +
-      '<div class="page-title">' + title + '</div>' +
+    return '<div class="page-pad page-pad-toc">' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">' + title + '</div>' +
+          '<div class="page-subtitle">' + sub + '</div>' +
+        '</div>' +
+      '</div>' +
       '<div class="h-rule"></div>' +
       '<ul class="toc-list">' + lis + '</ul>' +
     '</div>';
@@ -666,16 +721,18 @@
 
   function toc1HTML() {
     var all = getTocItems();
+    all = all.filter(function(it) { return it.key !== 'toc1'; });
     var mid = Math.ceil(all.length / 2);
     var items = all.slice(0, mid);
-    return renderTocPage('目 录（上）', items);
+    return renderTocPage('目 录（上）', '前序导读 · 第一章 工作方案与方法 · 第二章 整体研究成果 · 第三章 专题技术研判', items);
   }
 
   function toc2HTML() {
     var all = getTocItems();
+    all = all.filter(function(it) { return it.key !== 'toc1'; });
     var mid = Math.ceil(all.length / 2);
     var items = all.slice(mid);
-    return renderTocPage('目 录（下）', items);
+    return renderTocPage('目 录（下）', '第三章 专题技术研判（续）· 附录与方法论工具体系 · 结语与版权', items);
   }
   function dividerHTML(part, title, desc, num) {
     return '<div class="divider-full"><div class="dv-num">' + num + '</div>' +
@@ -684,23 +741,112 @@
       '<div class="dv-desc">' + esc(desc) + '</div></div>';
   }
   function workplanHTML() {
-    var wp = DATA.workplan;
-    var phases = wp.phases.map(function (p) {
-      return '<div class="tl-item"><div class="tl-time">' + esc(p.phase) + ' · ' + esc(p.time) + '</div>' +
-        '<div class="tl-title">' + esc(p.title) + '</div>' +
-        '<div class="tl-items">' + p.items.map(esc).join('；') + '</div></div>';
-    }).join('');
-    var orgRows = wp.org.map(function (o) {
-      return '<tr><th>' + esc(o.role) + '</th><td>' + esc(o.duty) + '</td></tr>';
-    }).join('');
-    return '<div class="page-pad">' +
-      '<div class="page-title">工作方案</div><div class="h-rule"></div>' +
-      '<div class="pg-section"><div class="pg-h">研究目标</div><div class="pg-p">' + esc(wp.goal) + '</div></div>' +
-      '<div class="pg-section"><div class="pg-h">基本原则</div><ul class="pg-list">' +
-      wp.principles.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="pg-section"><div class="pg-h">实施阶段</div><div class="timeline">' + phases + '</div></div>' +
-      '<div class="pg-section"><div class="pg-h">组织分工</div><table class="tbl"><tr><th>角色</th><th>职责</th></tr>' + orgRows + '</table></div>' +
+    var wp = DATA.workplan || {};
+    var funnel = wp.funnel || [];
+    var cadence = wp.cadence || [];
+    var org = wp.org || [];
+
+    var funnelSvg = '<svg width="260" height="238" viewBox="0 0 260 238" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs>' +
+        '<linearGradient id="cyber1" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.8"/><stop offset="50%" stop-color="#3b82f6" stop-opacity="0.6"/><stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.8"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="cyber2" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#0e7490" stop-opacity="0.8"/><stop offset="50%" stop-color="#06b6d4" stop-opacity="0.6"/><stop offset="100%" stop-color="#0e7490" stop-opacity="0.8"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="cyber3" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#047857" stop-opacity="0.8"/><stop offset="50%" stop-color="#10b981" stop-opacity="0.6"/><stop offset="100%" stop-color="#047857" stop-opacity="0.8"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="cyber4" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#b45309" stop-opacity="0.8"/><stop offset="50%" stop-color="#f59e0b" stop-opacity="0.6"/><stop offset="100%" stop-color="#b45309" stop-opacity="0.8"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="cyber5" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#6d28d9" stop-opacity="0.8"/><stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.6"/><stop offset="100%" stop-color="#6d28d9" stop-opacity="0.8"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+
+      '<polygon points="0,0 260,0 234,41 26,41" fill="url(#cyber1)" stroke="#60a5fa" stroke-width="2" />' +
+      '<text x="130" y="26" fill="#ffffff" stroke="#0b1329" stroke-width="2.2" paint-order="stroke fill" font-size="13.5" font-weight="900" text-anchor="middle" letter-spacing="0.5">01 · 多源情报动态扫描</text>' +
+
+      '<polygon points="29,45 231,45 209,86 51,86" fill="url(#cyber2)" stroke="#22d3ee" stroke-width="2" />' +
+      '<text x="130" y="71" fill="#ffffff" stroke="#0b1329" stroke-width="2.2" paint-order="stroke fill" font-size="13.5" font-weight="900" text-anchor="middle" letter-spacing="0.5">02 · 知识库归集与标引</text>' +
+
+      '<polygon points="54,90 206,90 186,131 74,131" fill="url(#cyber3)" stroke="#34d399" stroke-width="2" />' +
+      '<text x="130" y="116" fill="#ffffff" stroke="#0b1329" stroke-width="2.2" paint-order="stroke fill" font-size="13.5" font-weight="900" text-anchor="middle" letter-spacing="0.5">03 · 前沿技术长名单</text>' +
+
+      '<polygon points="77,135 183,135 165,176 95,176" fill="url(#cyber4)" stroke="#fbbf24" stroke-width="2" />' +
+      '<text x="130" y="161" fill="#ffffff" stroke="#0b1329" stroke-width="2.2" paint-order="stroke fill" font-size="13.5" font-weight="900" text-anchor="middle" letter-spacing="0.5">04 · 六维研判分层定档</text>' +
+
+      '<polygon points="98,180 162,180 148,221 112,221" fill="url(#cyber5)" stroke="#c084fc" stroke-width="2" />' +
+      '<text x="130" y="206" fill="#ffffff" stroke="#0b1329" stroke-width="2.2" paint-order="stroke fill" font-size="12.5" font-weight="900" text-anchor="middle" letter-spacing="0.5">05 · 重点专题深研</text>' +
+
+      '<polygon points="123,225 137,225 130,236" fill="#c084fc" />' +
+    '</svg>';
+
+    var colors = ['#3b82f6', '#22d3ee', '#10b981', '#f59e0b', '#a855f7'];
+    var funnelRows = funnel.map(function (f, i) {
+      var c = colors[i] || 'var(--accent)';
+      return '<div class="funnel-row-item" style="border-left:3.5px solid ' + c + '">' +
+        '<div class="fri-top"><span class="fri-badge" style="background:' + c + '22;color:' + c + '">第 ' + f.step + ' 级</span><span class="fri-title">' + esc(f.name) + '</span></div>' +
+        '<div class="fri-desc">' + esc(f.desc) + '</div>' +
       '</div>';
+    }).join('');
+
+    var cadenceCards = cadence.map(function (c) {
+      return '<div class="wp-cadence-card">' +
+        '<div class="wcc-period">' + esc(c.period) + '</div>' +
+        '<div class="wcc-title">' + esc(c.title) + '</div>' +
+        '<div class="wcc-desc">' + esc(c.desc) + '</div>' +
+      '</div>';
+    }).join('');
+
+    var orgCards = org.map(function (o) {
+      return '<div class="wp-org-card">' +
+        '<div class="woc-role">' + esc(o.role) + '</div>' +
+        '<div class="woc-duty">' + esc(o.duty) + '</div>' +
+        '</div>';
+    }).join('');
+
+    return '<div class="page-pad page-workplan-v2">' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">' + esc(wp.title || '工作方案') + '</div>' +
+          '<div class="page-subtitle">' + esc(wp.subtitle || '敏捷工作机制 · 五级漏斗筛选闭环 · 全流程常态研判') + '</div>' +
+        '</div>' +
+        '<button class="btn btn-sm active page-head-btn" data-action="open-workplan-report" title="在线预览工作推进方案（定稿）原生 Word 文档">📖 预览工作方案</button>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
+
+      '<div class="sources-stack-upper" style="margin-bottom:4px;padding:6px 10px">' +
+        '<div class="sources-box-header" style="margin-bottom:4px">' +
+          '<div class="sbh-title">🌪️ 前沿技术五级漏斗筛选机制与研判闭环</div>' +
+          '<div class="sbh-sub">从海量情报动态感知到关键专题深度落地</div>' +
+        '</div>' +
+        '<div class="funnel-flex-wrap">' +
+          '<div class="funnel-svg-col">' +
+            funnelSvg +
+            '<div class="funnel-svg-sub">逐级筛选 · 深度聚焦 · 闭环研判</div>' +
+          '</div>' +
+          '<div class="funnel-rows-col">' + funnelRows + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="sources-stack-lower" style="margin-bottom:4px;padding:6px 10px">' +
+        '<div class="sources-box-header" style="margin-bottom:4px">' +
+          '<div class="sbh-title">⏱️ 推进阶段与输出节奏</div>' +
+          '<div class="sbh-sub">月度跟踪 · 季度简报 · 年度总报</div>' +
+        '</div>' +
+        '<div class="wp-cadence-grid">' + cadenceCards + '</div>' +
+      '</div>' +
+
+      '<div class="sources-stack-lower" style="padding:6px 10px">' +
+        '<div class="sources-box-header" style="margin-bottom:4px">' +
+          '<div class="sbh-title">👥 组织分工与专业协同</div>' +
+          '<div class="sbh-sub">科技规划处总牵头 · 多元专业配置</div>' +
+        '</div>' +
+        '<div class="wp-org-grid">' + orgCards + '</div>' +
+      '</div>' +
+    '</div>';
   }
   function sourcesHTML() {
     var src = DATA.sources || {};
@@ -2587,8 +2733,8 @@
 
   addPage('inside', '', insideCoverHTML());
   addPage('cover', '封面', coverHTML());
-  addPage('title', '扉页 · 成果总览', titlePageHTML());
-  addPage('overview', '成果全景与说明', overviewPageHTML());
+  addPage('title', '前言与阅读指引', titlePageHTML());
+  addPage('overview', '研究规范与机制', overviewPageHTML());
   addPage('toc1', '目录（上）', toc1HTML);
   addPage('toc2', '目录（下）', toc2HTML);
   addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判 · 方法论工具矩阵', '01'));
@@ -2617,19 +2763,20 @@
   /* ==================== 左右双侧技术书签系统 (Dynamic Left/Right Side Tabs) ==================== */
   function getAllBookmarks() {
     var bms = [
-      { id: 'cover', no: '封面', short: '成果总览', name: '封面 · 成果总览', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
-      { id: 'title', no: '扉页', short: '成果总览', name: '扉页 · 成果总览', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 2, color: '#818cf8', tier: '前序' },
-      { id: 'toc1', no: '目录', short: '本书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
-      { id: 'part1', no: '第一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
-      { id: 'workplan', no: '1.1', short: '工作方案', name: '第一章 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
-      { id: 'sources', no: '1.2', short: '信息来源', name: '第一章 · 信息来源评估', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
-      { id: 'methodology_appl', no: '1.3', short: '方法论工具', name: '第一章 · 方法论工具评估', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
-      { id: 'part2', no: '第二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 10, color: '#3b82f6', tier: '第二章' },
-      { id: 'library', no: '2.1', short: '技术储备库', name: '第二章 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 11, color: '#3b82f6', tier: '第二章' },
-      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '第二章 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 12, color: '#3b82f6', tier: '第二章' },
-      { id: 'radar', no: '2.3', short: '影响力雷达', name: '第二章 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 13, color: '#3b82f6', tier: '第二章' },
-      { id: 'graph', no: '2.4', short: '落位图谱', name: '第二章 · 前沿技术在企架十大中心的落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 14, color: '#3b82f6', tier: '第二章' },
-      { id: 'part3', no: '第三章', short: '专题研究', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 15, color: '#a855f7', tier: '第三章' }
+      { id: 'cover', no: '封面', short: '全书封面', name: '全书封面 · 科技发展部前沿技术研究成果集', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
+      { id: 'title', no: '前言', short: '阅读指引', name: '第2页 · 前言与阅读指引', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 2, color: '#818cf8', tier: '前序' },
+      { id: 'overview', no: '机制', short: '研究机制', name: '第3页 · 研究规范与机制', page: pageKeyMap['overview'] != null ? pageKeyMap['overview'] : 3, color: '#818cf8', tier: '前序' },
+      { id: 'toc1', no: '目录', short: '全书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
+      { id: 'part1', no: '一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
+      { id: 'workplan', no: '1.1', short: '工作方案', name: '1.1 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
+      { id: 'sources', no: '1.2', short: '情报来源', name: '1.2 · 信息来源评估', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
+      { id: 'methodology_appl', no: '1.3', short: '方法工具', name: '1.3 · 方法论工具评估', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
+      { id: 'part2', no: '二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 10, color: '#3b82f6', tier: '第二章' },
+      { id: 'library', no: '2.1', short: '技术储备库', name: '2.1 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 11, color: '#3b82f6', tier: '第二章' },
+      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '2.2 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 12, color: '#3b82f6', tier: '第二章' },
+      { id: 'radar', no: '2.3', short: '影响力雷达', name: '2.3 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 13, color: '#3b82f6', tier: '第二章' },
+      { id: 'graph', no: '2.4', short: '落位图谱', name: '2.4 · 企架十大中心落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 14, color: '#3b82f6', tier: '第二章' },
+      { id: 'part3', no: '三章', short: '专题研判', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 15, color: '#a855f7', tier: '第三章' }
     ];
 
     DATA.technologies.forEach(function (t) {
@@ -2647,14 +2794,52 @@
       });
     });
 
-    bms.push({ id: 'partAppendix', no: '附录', short: '附录扉页', name: '附录 · 研究方法论工具与说明', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'appendix_methodology', no: '附录一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 4), color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'appendix', no: '附录二', short: '术语与来源', name: '附录二 · 术语 · 数据来源 · 版本', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'closing', no: '结语', short: '研究结语', name: '结语', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
+    bms.push({ id: 'partAppendix', no: '附录', short: '附录导读', name: '附录 · 研究方法论工具与说明', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix_methodology', no: '附一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 4), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix', no: '附二', short: '术语与来源', name: '附录二 · 术语表 · 数据来源 · 版本说明', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'closing', no: '结语', short: '研判结语', name: '结语 · 全书研判总结与未来展望', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
     if (pageKeyMap['back'] != null) {
-      bms.push({ id: 'back', no: '封底', short: '封底', name: '封底', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
+      bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 感谢阅读', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
     }
     return bms;
+  }
+
+  function syncSideBookmarkLayout() {
+    var leftEl = $('bookSideLeft'), rightEl = $('bookSideRight');
+    if (!leftEl || !rightEl) return;
+
+    var bookEl = $('book');
+    var bookH = bookEl ? (bookEl.clientHeight || bookEl.offsetHeight) : 0;
+    if (!bookH || bookH < 100) {
+      try {
+        var topbarH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h'), 10) || 58;
+        bookH = window.innerHeight - topbarH - 76;
+      } catch (e) {
+        bookH = Math.max(400, window.innerHeight - 134);
+      }
+    }
+
+    var TAB_H = 24;
+    var GAP = 4;
+    var PAD_TOP = 4;
+    var MIN_MARGIN = 10;
+    var maxAvail = bookH - MIN_MARGIN * 2;
+
+    var step = TAB_H + GAP; // 28
+    // Tab K bottom is at: PAD_TOP + K * TAB_H + (K - 1) * GAP = K * 28 with PAD_TOP=4, GAP=4
+    var K = Math.floor((maxAvail - PAD_TOP + GAP) / step);
+    if (K < 1) K = 1;
+
+    var exactH = PAD_TOP + K * TAB_H + (K - 1) * GAP; // exactly K * 28
+    var topOffset = Math.round((bookH - exactH) / 2);
+
+    leftEl.style.top = topOffset + 'px';
+    leftEl.style.height = exactH + 'px';
+    leftEl.style.bottom = 'auto';
+
+    rightEl.style.top = topOffset + 'px';
+    rightEl.style.height = exactH + 'px';
+    rightEl.style.bottom = 'auto';
   }
 
   function renderSideBookmarks() {
@@ -2668,32 +2853,32 @@
     var leftList = all.filter(function (b) { return b.page < curLeftPage; });
     var rightList = all.filter(function (b) { return b.page > curRightPage; });
 
-    function tabHTML(b, isLeft) {
+    function tabHTML(b) {
       return '<div class="edge-tab" data-page="' + b.page + '" style="--tab-color:' + b.color + '" title="' + esc(b.name) + '">' +
         '<span class="et-no" style="color:' + b.color + '">' + esc(b.no) + '</span>' +
         '<span class="et-name">' + esc(b.short) + '</span>' +
       '</div>';
     }
 
-    leftEl.innerHTML = leftList.map(function (b) { return tabHTML(b, true); }).join('');
-    rightEl.innerHTML = rightList.map(function (b) { return tabHTML(b, false); }).join('');
+    leftEl.innerHTML = leftList.map(tabHTML).join('');
+    rightEl.innerHTML = rightList.map(tabHTML).join('');
+    leftEl.scrollTop = 0;
+    rightEl.scrollTop = 0;
 
-    leftEl.querySelectorAll('.edge-tab').forEach(function (el) {
-      el.addEventListener('click', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        var p = parseInt(this.getAttribute('data-page'), 10);
-        jumpToPage(p);
+    syncSideBookmarkLayout();
+
+    function addClicks(el) {
+      el.querySelectorAll('.edge-tab').forEach(function (tab) {
+        tab.addEventListener('click', function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var p = parseInt(this.getAttribute('data-page'), 10);
+          jumpToPage(p);
+        });
       });
-    });
-    rightEl.querySelectorAll('.edge-tab').forEach(function (el) {
-      el.addEventListener('click', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        var p = parseInt(this.getAttribute('data-page'), 10);
-        jumpToPage(p);
-      });
-    });
+    }
+    addClicks(leftEl);
+    addClicks(rightEl);
   }
 
   /* ==================== 翻书引擎 ==================== */
@@ -2725,7 +2910,7 @@
         if (pnoL) pnoL.textContent = '';
         if (pnoR) pnoR.textContent = '';
       } else if (spread === 1) {
-        $('pageNo').textContent = '扉页 · 成果总览与编制说明 · 跨页 2 / ' + (maxSpread + 1);
+        $('pageNo').textContent = '前言与研究机制 · 跨页 2 / ' + (maxSpread + 1);
         if (pnoL) pnoL.textContent = '2';
         if (pnoR) pnoR.textContent = '3';
       } else if (spread === maxSpread) {
@@ -2760,6 +2945,7 @@
     var pad = el.querySelector('.page-pad');
     if (!pad) return null;
     pad.style.transform = '';
+    pad.style.width = '';
     return { el: el, pad: pad };
   }
   // 应用阶段：把多个待处理页面的“读尺寸”和“写transform”分别集中批量执行，
@@ -2772,10 +2958,24 @@
     });
     items.forEach(function (m) {
       if (!m) return;
-      if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) return;
+      if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) {
+        m.pad.style.width = '';
+        m.pad.style.transform = '';
+        return;
+      }
       var s = Math.min(m.aw / m.nw, m.ah / m.nh);
-      if (s >= 1) return;
+      if (s >= 1) {
+        m.pad.style.width = '';
+        m.pad.style.transform = '';
+        return;
+      }
       m.pad.style.transformOrigin = 'top left';
+      // 若仅高度超限而宽度未超限，通过补偿宽度确保页面横向依然 100% 满宽，消除横向被压缩变形感
+      if (m.ah / m.nh < m.aw / m.nw) {
+        m.pad.style.width = (100 / s) + '%';
+      } else {
+        m.pad.style.width = '';
+      }
       m.pad.style.transform = 'scale(' + s + ')';
     });
   }
@@ -2904,6 +3104,7 @@
           else if (action === 'open-methodology') openMethodologyPanel(el.getAttribute('data-sec'));
           else if (action === 'open-tool') openMethodologyPanel(null, parseInt(el.getAttribute('data-tool-idx'), 10));
           else if (action === 'open-sources-report') openSourcesReportPanel();
+          else if (action === 'open-workplan-report') openWorkplanReportPanel();
           else if (action === 'open-tech') openTechPanel(findTech(id), el.getAttribute('data-tab'));
           else if (action === 'lib-prev-page') {
             libPreviewPage = Math.max(0, libPreviewPage - 1);
@@ -3122,9 +3323,9 @@
   function renderWeb() {
     var b = DATA.book;
     var sections = [];
-    sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">' + esc(b.title) + '</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
-    sections.push(webSection('s-overview', '序', '成果全景与说明', overviewPageHTML()));
-    sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML()));
+    sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">前言与阅读指引</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
+    sections.push(webSection('s-overview', '序', '研究规范与机制', overviewPageHTML()));
+    sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-workplan-report">📖 预览工作方案</button>'));
     sections.push(webSection('s-sources', '1.2', '信息来源评估', sourcesHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-sources-report">📖 完整评判大屏</button>'));
     sections.push(webSection('s-methodology-appl', '1.3', '方法论工具评估', methodologyApplHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 完整方法论体系</button>'));
     sections.push(webSection('s-library', '2.1', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
@@ -3140,15 +3341,15 @@
     sections.push(webSection('s-part-appendix', '附录', '附录与研究方法论工具', '<div class="pg-p">收录前沿技术研究方法论工具体系、术语定义与数据来源依据。</div>'));
     sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
     sections.push(webSection('s-appendix', '附录二', '术语表 · 数据来源 · 版本说明', appendixTermsHTML()));
-    sections.push(webSection('s-closing', '结语', '结语', closingHTML()));
+    sections.push(webSection('s-closing', '结语', '结语 · 全书研判总结与未来展望', closingHTML()));
     $('webContent').innerHTML = sections.join('');
     initHypeCycleInteractive($('webHypeCycleWrap'));
     initImpactRadarInteractive($('webRadarWrap'));
 
     // 目录
     var toc = ['<h3>目录</h3>'];
-    toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>扉页 · 成果总览</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>成果全景与说明</div>');
+    toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>前言与阅读指引</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>研究规范与机制</div>');
     toc.push('<div class="web-toc-item part" data-target="s-workplan">第一章 · 工作方案与方法</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>信息来源评估</div>');
@@ -3166,7 +3367,7 @@
     toc.push('<div class="web-toc-item part" data-target="s-part-appendix">附录 · 研究方法论工具与说明</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix-methodology"><span class="wt-no">附录一</span>方法论工具体系</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no">附录二</span>术语表 · 数据来源</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-closing"><span class="wt-no"></span>结语</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-closing">结语 · 全书研判总结与未来展望</div>');
     $('webToc').innerHTML = toc.join('');
 
     // 目录点击定位
@@ -3792,6 +3993,47 @@
     }, true);
   }
 
+  function openWorkplanReportPanel(isNavBack) {
+    if (!isNavBack) {
+      if (!$('panel').classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type !== 'workplan_report') {
+        var snap = capturePanelSnapshot();
+        if (snap) panelNavStack.push(snap);
+      } else {
+        panelNavStack = [];
+      }
+    }
+    currentPanelMeta = { type: 'workplan_report', name: '前沿技术趋势扫描与专题研究工作推进方案' };
+
+    var wp = DATA.workplan || {};
+    var pdfPath = wp.pdfPlan || 'assets/plans/FA000_工作推进方案.pdf';
+    var docxPath = wp.docxPlan || 'sources/plans/FA000_工作推进方案（定稿）_v1.0.docx';
+
+    var toolbar = '<div class="preview-toolbar" style="margin-bottom:8px">' +
+      '<a href="' + esc(docxPath) + '" download>⬇ 下载方案 Word 原件</a>' +
+      (pdfPath ? ('<a href="' + esc(pdfPath) + '" download>⬇ 下载 PDF</a><a href="' + esc(pdfPath) + '" target="_blank">↗ 新窗口打开</a>') : '') +
+      '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button>' +
+    '</div>';
+
+    var stage = '<div class="preview-stage" data-stage="1" style="height:calc(100vh - 165px);min-height:600px;border-radius:8px;overflow:hidden;background:#525659">' +
+      '<iframe src="' + esc(pdfPath) + '" style="width:100%;height:100%;border:none" title="工作推进方案 Word 预览"></iframe>' +
+    '</div>';
+
+    openPanel('前沿技术趋势扫描与专题研究工作推进方案 · 预览', toolbar + stage, function () {
+      var panel = $('panel');
+      var fsBtn = panel.querySelector('[data-fs="1"]');
+      var stageEl = panel.querySelector('[data-stage="1"]');
+      if (fsBtn && stageEl) {
+        fsBtn.onclick = function () {
+          if (!document.fullscreenElement) {
+            (stageEl.requestFullscreen || stageEl.webkitRequestFullscreen || stageEl.msRequestFullscreen).call(stageEl);
+          } else {
+            (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+          }
+        };
+      }
+    }, true);
+  }
+
   /* ==================== 技术专题详情面板 ==================== */
   function techTabs(tech) {
     var tabs = [];
@@ -3979,8 +4221,8 @@
       if (!q) { hide(); return; }
       var ql = q.toLowerCase();
       var hits = [];
-      if ('工作方案 1.1'.toLowerCase().indexOf(ql) >= 0) {
-        hits.push({ id: '_workplan', name: '1.1 工作方案', cat: '第一章 · 工作方案与方法', tier: '工作方案', sum: '敏捷工作机制与组织分工' });
+      if ('工作方案 1.1 漏斗筛选 fa000 推进方案 工作机制'.toLowerCase().indexOf(ql) >= 0) {
+        hits.push({ id: '_workplan', name: '1.1 工作方案', cat: '第一章 · 工作方案与方法', tier: '工作方案', sum: '敏捷工作机制 · 五级漏斗筛选闭环 · 全流程常态研判' });
       }
       if ('信息来源 信息来源评估 情报源 1.2 sources caict gartner'.toLowerCase().indexOf(ql) >= 0) {
         hits.push({ id: '_sources', name: '1.2 信息来源评估', cat: '第一章 · 工作方案与方法', tier: '信息来源', sum: '系统盘点 5 大类别 21 个权威渠道与量化评估' });
@@ -4389,6 +4631,9 @@
         else if (h === 'graph') openGraphPanel();
         else if (h === 'methodology' || h === 'method') openMethodologyPanel();
         else if (h === 'sources') { if (pageKeyMap['sources'] != null) jumpToPage(pageKeyMap['sources']); }
+        else if (h === 'workplan') { if (pageKeyMap['workplan'] != null) jumpToPage(pageKeyMap['workplan']); }
+        else if (h === 'workplan-report' || h === 'workplanReport') openWorkplanReportPanel();
+        else if (h === 'sources-report' || h === 'sourcesReport') openSourcesReportPanel();
         else if (h.indexOf('p-') === 0) jumpToPage(parseInt(h.substring(2), 10));
         else if (h === 'web') setMode('web');
         else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));
