@@ -1117,15 +1117,15 @@
             '</colgroup>'
           ) : (
             '<colgroup>' +
-              '<col style="width:22px">' +
+              '<col style="width:20px">' +
               '<col>' +
-              '<col style="width:64px">' +
-              '<col style="width:42px">' +
-              '<col style="width:42px">' +
-              '<col style="width:42px">' +
-              '<col style="width:42px">' +
-              '<col style="width:42px">' +
-              '<col style="width:42px">' +
+              '<col style="width:52px">' +
+              '<col style="width:30px">' +
+              '<col style="width:30px">' +
+              '<col style="width:30px">' +
+              '<col style="width:30px">' +
+              '<col style="width:30px">' +
+              '<col style="width:30px">' +
             '</colgroup>'
           )) +
           '<thead><tr>' +
@@ -1393,8 +1393,8 @@
     return '<div class="page-pad">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
-          '<div class="page-title">技术成熟度曲线（Gartner Hype Cycle）</div>' +
-          '<div class="page-subtitle">5大生命周期阶段 · 5级六维成熟度评分 · 4大达平稳期跨度 · 36项前沿技术全景研判</div>' +
+          '<div class="page-title">技术成熟度曲线</div>' +
+          '<div class="page-subtitle">Gartner Hype Cycle · 36项前沿技术全景研判</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>' +
       '</div>' +
@@ -1732,8 +1732,8 @@
     return '<div class="page-pad">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
-          '<div class="page-title">技术影响力雷达图（Impact Radar）</div>' +
-          '<div class="page-subtitle">5大企业级架构维度 · 4大影响时间圈层 · 36项前沿技术全景</div>' +
+          '<div class="page-title">技术影响力雷达图</div>' +
+          '<div class="page-subtitle">Impact Radar · 5大架构维度 · 4大影响圈层</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>' +
       '</div>' +
@@ -2480,28 +2480,34 @@
     return '<div class="page-pad">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
-          '<div class="page-title">前沿技术在企架十大中心的落位图谱</div>' +
-          '<div class="page-subtitle">企架建设十大中心 · 36项前沿技术精准落位与跨中心业务协同</div>' +
+          '<div class="page-title">企架十大中心落位图谱</div>' +
+          '<div class="page-subtitle">企架建设十大中心 · 36项前沿技术精准落位与跨中心协同</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-graph">⛶ 全屏落位图谱</button>' +
       '</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-p">基于我行「企架建设十大中心」架构蓝图，将 36 项前沿技术精准映射至对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易及底层管理/数智/技术支撑中心，全景展现技术对各中心业务流转、风控防线与底座算力的驱动链路。点击图谱卡片可进入全屏交互界面，点击技术标签可穿透查看专题档案。</div>' +
-      '<div class="radar-page-card" style="padding:14px 18px;gap:10px;margin-top:6px">' +
-        '<div class="pg-h" style="margin:0 0 2px">企架十大中心前沿技术落位分布</div>' +
-        '<div class="tc-stat-grid">' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c1" title="点击在全屏图谱中聚焦查看 对客服务中心"><span>对客服务中心:</span> <b>4项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c2" title="点击在全屏图谱中聚焦查看 智慧运营中心"><span>智慧运营中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c3" title="点击在全屏图谱中聚焦查看 客户经营中心"><span>客户经营中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c4" title="点击在全屏图谱中聚焦查看 产品合约中心"><span>产品合约中心:</span> <b>1项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c5" title="点击在全屏图谱中聚焦查看 业务处理中心"><span>业务处理中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c6" title="点击在全屏图谱中聚焦查看 风险管理中心"><span>风险管理中心:</span> <b>5项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c7" title="点击在全屏图谱中聚焦查看 账务交易中心"><span>账务交易中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c8" title="点击在全屏图谱中聚焦查看 管理支持中心"><span>管理支持中心:</span> <b>2项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c9" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 数智能力中心"><span>数智能力中心:</span> <b>6项</b></span>' +
-          '<span class="radar-stat-pill tc-stat-pill" data-center="c10" style="grid-column: span 2" title="点击在全屏图谱中聚焦查看 技术服务中心"><span>技术服务中心:</span> <b>10项</b></span>' +
+      '<div class="radar-page-card" style="padding:10px 14px;gap:8px;margin-top:4px">' +
+        '<div class="pg-h" style="margin:0 0 4px">企架十大中心前沿技术落位分布</div>' +
+        '<div class="tc-stat-rows">' +
+          '<div class="tc-stat-row cols-3">' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c1" title="点击在全屏图谱中聚焦查看 对客服务中心"><span>对客服务中心:</span> <b>4项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c2" title="点击在全屏图谱中聚焦查看 智慧运营中心"><span>智慧运营中心:</span> <b>2项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c3" title="点击在全屏图谱中聚焦查看 客户经营中心"><span>客户经营中心:</span> <b>2项</b></span>' +
+          '</div>' +
+          '<div class="tc-stat-row cols-3">' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c4" title="点击在全屏图谱中聚焦查看 产品合约中心"><span>产品合约中心:</span> <b>1项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c5" title="点击在全屏图谱中聚焦查看 业务处理中心"><span>业务处理中心:</span> <b>2项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c6" title="点击在全屏图谱中聚焦查看 风险管理中心"><span>风险管理中心:</span> <b>5项</b></span>' +
+          '</div>' +
+          '<div class="tc-stat-row cols-4">' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c7" title="点击在全屏图谱中聚焦查看 账务交易中心"><span>账务交易中心:</span> <b>2项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c8" title="点击在全屏图谱中聚焦查看 管理支持中心"><span>管理支持中心:</span> <b>2项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c9" title="点击在全屏图谱中聚焦查看 数智能力中心"><span>数智能力中心:</span> <b>6项</b></span>' +
+            '<span class="radar-stat-pill tc-stat-pill" data-center="c10" title="点击在全屏图谱中聚焦查看 技术服务中心"><span>技术服务中心:</span> <b>10项</b></span>' +
+          '</div>' +
         '</div>' +
-        '<div class="blueprint-card blueprint-preview-box" data-action="open-graph" style="margin-top:0" title="点击打开全屏企架十大中心落位交互图谱">' +
+        '<div class="blueprint-card blueprint-preview-box" data-action="open-graph" style="margin-top:4px" title="点击打开全屏企架十大中心落位交互图谱">' +
           renderTenCentersBlueprintSVG() +
         '</div>' +
       '</div>' +
@@ -2517,15 +2523,17 @@
     ].filter(Boolean).join(' ');
 
     return '<div class="page-pad book-tech-pad">' +
-      '<div class="bk-head">' +
-        '<div class="bk-title-row">' +
-          '<span class="bk-no">' + esc(tech.id) + '</span>' +
-          '<span class="bk-name">' + esc(tech.name) + '</span>' +
-          '<button class="btn btn-sm active bk-btn" data-action="open-tech" data-id="' + tech.id + '">📄 专题档案</button>' +
+      '<div class="page-head-row bk-head">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title bk-title-row">' +
+            '<span class="bk-no">' + esc(tech.id) + '</span>' +
+            '<span class="bk-name">' + esc(tech.name) + '</span>' +
+          '</div>' +
+          '<div class="page-subtitle bk-tags-row">' + tags + '</div>' +
         '</div>' +
-        '<div class="bk-tags-row">' + tags + '</div>' +
+        '<button class="btn btn-sm active page-head-btn bk-btn" data-action="open-tech" data-id="' + tech.id + '">📄 专题档案</button>' +
       '</div>' +
-      '<div class="h-rule" style="margin:5px 0 7px"></div>' +
+      '<div class="h-rule"></div>' +
 
       '<div class="bk-middle-row">' +
         '<div class="bk-radar-col">' +
@@ -2681,8 +2689,12 @@
   }
   function appendixTermsHTML() {
     return '<div class="page-pad">' +
-      '<div class="page-title">术语表与数据来源</div>' +
-      '<div class="page-subtitle">附录二 · 术语定义 · 评判口径 · 数据来源 · 系统版本说明</div>' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">术语表与数据来源</div>' +
+          '<div class="page-subtitle">附录二 · 术语定义 · 评判口径 · 数据来源 · 系统版本说明</div>' +
+        '</div>' +
+      '</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-section"><div class="pg-h">术语表</div><table class="tbl">' +
       '<tr><th style="width:24%">术语</th><th>含义与口径</th></tr>' +
@@ -2705,7 +2717,13 @@
   }
   function closingHTML() {
     return '<div class="page-pad">' +
-      '<div class="page-title">结语</div><div class="h-rule"></div>' +
+      '<div class="page-head-row">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">结语</div>' +
+          '<div class="page-subtitle">成果沉淀 · 持续演进 · 创新引领</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="h-rule"></div>' +
       '<div class="pg-p">本电子研究书以「整体研究成果 + 重点技术专题」双层结构汇集科技发展部前沿技术研究的关键结论：长名单识别重点方向与分层，落位图谱展现企架十大中心协同与技术映射，专题报告与评估表支撑逐项研判。</div>' +
       '<div class="pg-p">随着研究工作深入，长名单、评估数据与专题报告将持续滚动更新，本系统与研究工作保持同步。</div>' +
       '<div style="margin-top:26px;text-align:center;color:var(--dim)">— 完 —</div>' +
@@ -2881,11 +2899,28 @@
     addClicks(rightEl);
   }
 
-  /* ==================== 翻书引擎 ==================== */
   var spread = 0;
   var singleIdx = 1;
   var flipping = false;
-  var isSingle = function () { return window.innerWidth < 900; };
+  var isSingle = function () {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    // 1. 普通手机竖屏 / 折叠屏折叠态竖屏（窄屏使用单页）
+    if (w < 560) return true;
+    // 2. 普通手机横屏 / 折叠屏横屏 / 电脑桌面（宽屏使用双页对开）
+    if (w > h) return false;
+    // 3. 折叠屏手机展开态竖屏（接近正方形或 4:3 比例，宽 >= 600 且 宽高比 >= 0.70 显示双页）
+    if (w >= 600 && (w / h) >= 0.70) return false;
+    // 4. 双屏 / 折叠屏原生 CSS Media Query 适配（展开态双页）
+    try {
+      if (window.matchMedia && (
+        window.matchMedia('(horizontal-viewport-segments: 2)').matches ||
+        window.matchMedia('(screen-spanning: single-fold-vertical)').matches
+      )) return false;
+    } catch (e) {}
+    // 5. 其余窄长或竖屏模式使用单页
+    return true;
+  };
 
   function flashPage(el) {
     if (!el || !el.parentElement) return;
@@ -2937,8 +2972,8 @@
       }
     }
   }
-  var BASE_PAGE_W = 690;
-  var BASE_PAGE_H = 946;
+  var BASE_PAGE_W = 593;
+  var BASE_PAGE_H = 960;
 
   // 准备阶段：只做重置写入，不读取任何布局属性
   function prepareFit(el, idx) {
@@ -3173,9 +3208,15 @@
     });
   }
   function jumpToPage(i) {
+    flipping = false;
+    var sheet = $('turnSheet');
+    if (sheet) {
+      sheet.style.display = 'none';
+      sheet.classList.remove('turning', 'turning-back');
+    }
     i = Math.max(0, Math.min(pages.length - 1, i));
     if (isSingle()) {
-      singleIdx = i;
+      singleIdx = Math.max(1, i);
       renderSpread();
       flashPage($('pageRightInner'));
     } else {
@@ -3271,7 +3312,7 @@
   function flipBackward() {
     if (flipping) return;
     if (isSingle()) {
-      if (singleIdx <= 0) { toast('已是第一页'); return; }
+      if (singleIdx <= 1) { toast('已是第一页'); return; }
       singleIdx--; renderSpread(); return;
     }
     if (spread <= 0) { toast('已是第一页'); return; }
@@ -4484,6 +4525,48 @@
     var cur = document.documentElement.getAttribute('data-theme');
     setTheme(cur === 'dark' ? 'light' : 'dark');
   }
+  // 缓存书本尺寸，避免鼠标滑动时调用 getBoundingClientRect() 触发强制同步重排 (Zero Forced Reflow)
+  var cachedBookRect = null;
+  function updateBookRect() {
+    var bookEl = $('book');
+    if (bookEl) cachedBookRect = bookEl.getBoundingClientRect();
+  }
+
+  // 动态根据浏览器可视区域比例自适应：支持单页(手机/折叠屏竖屏)与双页(横屏/折叠屏展开态/电脑)自适应
+  function syncAdaptiveLayout() {
+    var single = isSingle();
+    document.body.classList.toggle('is-single-page', single);
+    document.body.classList.toggle('is-double-page', !single);
+
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var topbarH = (w <= 560) ? 46 : 54;
+    var vertReserve = (w <= 560) ? 16 : 40;
+    var availH = Math.max(160, h - topbarH - vertReserve);
+
+    if (single) {
+      // 单页模式：黄金比例 0.618:1 (长宽比 1:1.618，即宽/高 = 0.618)
+      var aspect = 0.618;
+      var horizMargin = (w <= 480) ? 12 : 24;
+      var availW = Math.max(160, w - horizMargin);
+      var bookH = Math.min(availH, availW / aspect);
+      var bookW = bookH * aspect;
+      document.documentElement.style.setProperty('--book-w', Math.round(bookW) + 'px');
+      document.documentElement.style.setProperty('--book-h', Math.round(bookH) + 'px');
+    } else {
+      // 双页对开模式：经典黄金展开对开长宽比 1.236:1 (单页 0.618:1，不含左右两侧书签区域)
+      var aspect = 1.236;
+      var hasBookmarks = w > 980;
+      // 书签宽 170px，外侧至可视边缘仅留 12px 最小安全间距，两侧合计预留 (170 + 12) * 2 = 364px
+      var sideReserve = hasBookmarks ? 364 : ((w <= 768) ? 16 : 40);
+      var availW = Math.max(200, w - sideReserve);
+      var bookH = Math.min(availH, availW / aspect);
+      var bookW = bookH * aspect;
+      document.documentElement.style.setProperty('--book-w', Math.round(bookW) + 'px');
+      document.documentElement.style.setProperty('--book-h', Math.round(bookH) + 'px');
+    }
+  }
+
   function setMode(m) {
     mode = m;
     $('bookView').classList.toggle('hidden', m !== 'book');
@@ -4491,7 +4574,7 @@
     $('btnBook').classList.toggle('active', m === 'book');
     $('btnWeb').classList.toggle('active', m === 'web');
     if (m === 'book') {
-      if (typeof syncAdaptiveLayout === 'function') syncAdaptiveLayout();
+      syncAdaptiveLayout();
       updateBookRect();
       renderSpread();
     }
@@ -4509,7 +4592,7 @@
     document.body.classList.toggle('fx-disabled', !fxEnabled);
     var btn = $('btnFxToggle');
     if (btn) {
-      btn.innerHTML = fxEnabled ? '✨ 动效: 开' : '✨ 动效: 关';
+      btn.innerHTML = '<span class="btn-icon">✨</span><span class="btn-txt">' + (fxEnabled ? '动效: 开' : '动效: 关') + '</span>';
       btn.classList.toggle('active', fxEnabled);
     }
     if (!quiet) {
@@ -4544,10 +4627,10 @@
     var btn = $('btnFullscreenPlay');
     if (!btn) return;
     if (active) {
-      btn.textContent = '⛶ 退出全屏';
+      btn.innerHTML = '<span class="btn-icon">⛶</span><span class="btn-txt">退出全屏</span>';
       btn.classList.add('active');
     } else {
-      btn.textContent = '⛶ 全屏播放';
+      btn.innerHTML = '<span class="btn-icon">⛶</span><span class="btn-txt">全屏播放</span>';
       btn.classList.remove('active');
     }
   }
@@ -4583,8 +4666,11 @@
   function startAutoPlay() {
     autoPlaying = true;
     if (mode !== 'book') setMode('book');
-    $('btnAutoPlay').textContent = '⏹ 停止放映';
-    $('btnAutoPlay').classList.add('active');
+    var b = $('btnAutoPlay');
+    if (b) {
+      b.innerHTML = '<span class="btn-icon">⏹</span><span class="btn-txt">停止放映</span>';
+      b.classList.add('active');
+    }
     $('presenterBar').classList.remove('hidden');
     runPresenterTick();
   }
@@ -4593,8 +4679,11 @@
     autoPlaying = false;
     if (autoPlayTimer) clearTimeout(autoPlayTimer);
     if (autoProgressTimer) clearInterval(autoProgressTimer);
-    $('btnAutoPlay').textContent = '▶ 自动放映';
-    $('btnAutoPlay').classList.remove('active');
+    var b = $('btnAutoPlay');
+    if (b) {
+      b.innerHTML = '<span class="btn-icon">▶</span><span class="btn-txt">自动放映</span>';
+      b.classList.remove('active');
+    }
     $('presenterBar').classList.add('hidden');
     $('pbFill').style.width = '0%';
   }
@@ -4719,6 +4808,35 @@
     });
   }
 
+  function goToCover(e) {
+    if (e) {
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+    flipping = false;
+    var sheet = $('turnSheet');
+    if (sheet) {
+      sheet.style.display = 'none';
+      sheet.classList.remove('turning', 'turning-back');
+    }
+    if (typeof stopAutoPlay === 'function') stopAutoPlay();
+    if (typeof stopFullscreenPlay === 'function') stopFullscreenPlay();
+    if (typeof closeLightbox === 'function') closeLightbox();
+    if (typeof closeModal === 'function') closeModal();
+    if (typeof closePanel === 'function') closePanel(true);
+    var sr = $('searchResults');
+    if (sr) sr.classList.add('hidden');
+    var sInput = $('searchInput');
+    if (sInput) { sInput.value = ''; sInput.blur(); }
+    setMode('book');
+    var coverIdx = (pageKeyMap && pageKeyMap['cover'] != null) ? pageKeyMap['cover'] : 1;
+    jumpToPage(coverIdx);
+    if (window.location.hash) {
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (err) {}
+    }
+  }
+  window.goToCover = goToCover;
+
   /* ==================== 初始化 ==================== */
   function init() {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
@@ -4726,7 +4844,11 @@
     initSearch();
     initBookTouchGestures();
     validateTechAssetsExistence();
-    $('brandBtn').onclick = function () { setMode('book'); jumpToPage(0); };
+    var bBtn = $('brandBtn');
+    if (bBtn) {
+      bBtn.onclick = goToCover;
+      bBtn.addEventListener('click', goToCover);
+    }
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
     $('btnTheme').onclick = toggleTheme;
@@ -4759,42 +4881,13 @@
       if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
       if (e.key === 'ArrowRight') flipForward();
       else if (e.key === 'ArrowLeft') flipBackward();
-      else if (e.key === 'Home') jumpToPage(0);
+      else if (e.key === 'Home') goToCover();
       else if (e.key === 'Escape') {
         if (isFullscreenPlaying) stopFullscreenPlay();
         else if (autoPlaying) stopAutoPlay();
       }
     });
 
-    // 动态根据浏览器可视区域比例自适应：在书签到边缘留白尽量小(12px)的前提下按比例缩小高度，尽可能撑满可视区
-    function syncAdaptiveLayout() {
-      var w = window.innerWidth;
-      var h = window.innerHeight;
-      if (w < 900) {
-        document.documentElement.style.removeProperty('--book-w');
-        document.documentElement.style.removeProperty('--book-h');
-        return;
-      }
-      var topbarH = 58;
-      var hasBookmarks = w > 980;
-      var aspect = 1.46; // 经典典藏书籍黄金对开长宽比 (单页 0.73)
-      // 书签宽 170px，外侧至可视边缘仅留 12px 最小安全间距，两侧合计预留 (170 + 12) * 2 = 364px
-      var sideReserve = hasBookmarks ? 364 : 40;
-      var vertReserve = 56; // 上下各保留 28px 呼吸边距与悬浮地坪光影
-      var availH = Math.max(200, h - topbarH - vertReserve);
-      var availW = Math.max(200, w - sideReserve);
-      var bookH = Math.min(availH, availW / aspect);
-      var bookW = bookH * aspect;
-      document.documentElement.style.setProperty('--book-w', Math.round(bookW) + 'px');
-      document.documentElement.style.setProperty('--book-h', Math.round(bookH) + 'px');
-    }
-
-    // 缓存书本尺寸，避免鼠标滑动时调用 getBoundingClientRect() 触发强制同步重排 (Zero Forced Reflow)
-    var cachedBookRect = null;
-    function updateBookRect() {
-      var bookEl = $('book');
-      if (bookEl) cachedBookRect = bookEl.getBoundingClientRect();
-    }
     syncAdaptiveLayout();
     updateBookRect();
 
@@ -4846,6 +4939,13 @@
       updateBookRect();
       if (mode === 'book') renderSpread();
     });
+    window.addEventListener('orientationchange', function () {
+      setTimeout(function () {
+        syncAdaptiveLayout();
+        updateBookRect();
+        if (mode === 'book') renderSpread();
+      }, 150);
+    });
     setFxMode(fxEnabled, true);
     renderSpread();
 
@@ -4891,6 +4991,7 @@
     getMaxSpread: function () { return maxSpread; },
     renderSpread: renderSpread,
     jumpToPage: jumpToPage,
+    goToCover: goToCover,
     openHypeCyclePanel: openHypeCyclePanel,
     openPanel: openPanel,
     closePanel: closePanel
