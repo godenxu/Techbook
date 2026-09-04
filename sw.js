@@ -1,5 +1,5 @@
 // Service Worker for Techbook PWA
-const CACHE_NAME = 'techbook-pwa-v20260904-2';
+const CACHE_NAME = 'techbook-pwa-v20260904-4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

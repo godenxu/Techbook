@@ -3011,13 +3011,10 @@
       m.nh = m.pad.scrollHeight;
     });
 
-    // 阶段 3：计算缩放系数并写入 transform
+    // 阶段 3：计算各自的自然缩放系数
     items.forEach(function (m) {
       if (!m) return;
-      m.pad.style.minHeight = '';
-
       if (m.aw > BASE_PAGE_W + 10) {
-        // === 2K / 4K 高分辨率自适应等比放大 ===
         var isFullBleed = (m.pad.matches && m.pad.matches('.cover-full, .back-cover-full, .divider-full')) ||
                           m.pad.classList.contains('cover-full') ||
                           m.pad.classList.contains('back-cover-full') ||
@@ -3025,8 +3022,36 @@
         var sW = m.aw / BASE_PAGE_W;
         var effectiveH = isFullBleed ? BASE_PAGE_H : Math.max(BASE_PAGE_H, m.nh);
         var sH = m.ah / effectiveH;
-        var s = Math.min(sW, sH);
+        m.s = Math.min(sW, sH);
+      } else {
+        if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) {
+          m.s = 1;
+        } else {
+          var s = Math.min(m.aw / m.nw, m.ah / m.nh);
+          m.s = (s >= 1) ? 1 : s;
+        }
+      }
+    });
 
+    // 阶段 4：跨页对开双向协调缩放——如果同属常规技术页或正文页，左右取统一缩放基准，确保左右标题文字大小、按钮规格与排版层次绝对对齐一致
+    if (items.length === 2 && items[0] && items[1] && !isSingle()) {
+      var pad0 = items[0].pad, pad1 = items[1].pad;
+      var isTech0 = pad0.classList.contains('book-tech-pad') || pad0.classList.contains('page-pad');
+      var isTech1 = pad1.classList.contains('book-tech-pad') || pad1.classList.contains('page-pad');
+      if (isTech0 && isTech1) {
+        var sUnified = Math.min(items[0].s, items[1].s);
+        items[0].s = sUnified;
+        items[1].s = sUnified;
+      }
+    }
+
+    // 阶段 5：写入 transform 尺寸与缩放属性
+    items.forEach(function (m) {
+      if (!m) return;
+      m.pad.style.minHeight = '';
+      var s = m.s || 1;
+
+      if (m.aw > BASE_PAGE_W + 10) {
         m.pad.style.transformOrigin = 'top left';
         m.pad.style.width = (m.aw / s) + 'px';
         m.pad.style.height = (m.ah / s) + 'px';
@@ -3040,12 +3065,7 @@
       m.pad.style.width = '';
       m.pad.style.height = '';
       m.pad.style.maxHeight = '';
-      if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) {
-        m.pad.style.transform = '';
-        return;
-      }
-      var s = Math.min(m.aw / m.nw, m.ah / m.nh);
-      if (s >= 1) {
+      if (s >= 0.999) {
         m.pad.style.transform = '';
         return;
       }

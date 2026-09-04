@@ -4306,6 +4306,60 @@ body.is-double-page .book {
   .web-toc { width: 220px; }
   .tech-page-pad { padding: 16px; }
 }
+
+/* 🖥️ 2K/4K 超高分辨率大屏体验增强 (@media min-height: 1050px / min-width: 2500px) */
+@media (min-height: 1050px) {
+  .radar-cockpit-layout {
+    height: calc(100vh - 140px);
+    max-height: none;
+  }
+  .radar-center-chart .radar-svg-container {
+    max-width: min(calc(100vh - 160px), 1700px);
+    max-height: min(calc(100vh - 160px), 1700px);
+  }
+}
+@media (min-width: 2500px) {
+  .radar-cockpit-layout {
+    grid-template-columns: 360px 1fr 360px;
+  }
+  .radar-sector-card {
+    padding: 8px 12px;
+  }
+  .radar-sector-head {
+    font-size: 15px;
+  }
+  .radar-item-row {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+  .assess-dashboard {
+    grid-template-columns: 560px 1fr;
+    gap: 32px;
+  }
+  .assess-radar-card svg {
+    height: 380px;
+  }
+  .assess-tbl th, .assess-tbl td {
+    padding: 16px 22px;
+    font-size: 18px;
+  }
+  .assess-tbl .td-dim b {
+    font-size: 20px;
+  }
+  .assess-tbl .score-num {
+    font-size: 20px;
+  }
+  .assess-info-card .aic-h {
+    font-size: 20px;
+  }
+  .assess-info-card .aic-p {
+    font-size: 18px;
+    line-height: 1.85;
+  }
+  .assess-info-card .aic-p ul.tech-box-list li {
+    font-size: 18px;
+  }
+}
 </style>
 </head>
 <body>
@@ -4420,7 +4474,7 @@ body.is-double-page .book {
 </div>
 
 <div class="toast hidden" id="toast"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609042250">v202609042250</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609050750">v202609050750</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>

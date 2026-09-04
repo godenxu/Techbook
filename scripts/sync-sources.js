@@ -269,6 +269,8 @@ function sync() {
       if (info.slidesPdf) {
         newFields += ` slidesPdf: '${info.slidesPdf}',`;
       }
+    } else if (info.slidesPdf) {
+      newFields += `\n    slidesPdf: '${info.slidesPdf}',`;
     }
     if (info.img) {
       newFields += `\n    image: '${info.img.webPath || info.img.path}', imageName: '${info.img.name}', imageSize: '${info.img.size}',`;
