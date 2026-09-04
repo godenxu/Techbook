@@ -12,6 +12,25 @@
   --font: "Segoe UI", "Microsoft YaHei", "PingFang SC", "Source Han Sans SC", system-ui, sans-serif;
   --mono: "Cascadia Code", "Consolas", "Courier New", monospace;
   --topbar-h: 58px;
+  --book-aspect: 1.46;
+  --side-reserve: 364px;
+  --vert-reserve: 56px;
+  --avail-h: calc(100vh - var(--topbar-h) - var(--vert-reserve));
+  --avail-w: calc(100vw - var(--side-reserve));
+  --book-h: min(var(--avail-h), calc(var(--avail-w) / var(--book-aspect)));
+  --book-w: calc(var(--book-h) * var(--book-aspect));
+}
+@media (max-width: 980px) {
+  :root {
+    --side-reserve: 40px;
+  }
+}
+@media (max-width: 900px) {
+  :root {
+    --book-aspect: 0.73;
+    --side-reserve: 24px;
+    --vert-reserve: 40px;
+  }
 }
 [data-theme="dark"] {
   --bg: #0b111e; --bg2: #0e1524;
@@ -102,7 +121,9 @@ button { font-family: var(--font); cursor: pointer; }
 /* ============================ 书 ============================ */
 .book-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .book {
-  position: relative; width: min(1500px, 80vw); height: calc(100vh - var(--topbar-h) - 76px);
+  position: relative;
+  height: var(--book-h);
+  width: var(--book-w);
 }
 [data-theme="dark"] .book::before {
   content: "";
@@ -119,13 +140,12 @@ button { font-family: var(--font); cursor: pointer; }
     0 55px 90px -14px rgba(79, 140, 255, 0.28),
     0 80px 135px -20px rgba(56, 189, 248, 0.18),
     0 110px 180px -28px rgba(79, 140, 255, 0.10),
-    /* 2. 右侧立体轮廓辉光 */
-    24px 10px 42px -6px rgba(56, 189, 248, 0.38),
-    48px 18px 75px -12px rgba(79, 140, 255, 0.24),
-    72px 26px 115px -18px rgba(56, 189, 248, 0.14),
+    /* 2. 右侧立体轮廓微光 */
+    14px 8px 24px -4px rgba(56, 189, 248, 0.25),
+    26px 14px 44px -8px rgba(79, 140, 255, 0.16),
     /* 3. 左侧自然平衡微光 */
-    -16px 10px 38px -6px rgba(56, 189, 248, 0.22),
-    -32px 18px 65px -12px rgba(79, 140, 255, 0.12);
+    -12px 8px 22px -4px rgba(56, 189, 248, 0.18),
+    -22px 14px 40px -8px rgba(79, 140, 255, 0.10);
   contain: strict;
 }
 
@@ -145,12 +165,11 @@ button { font-family: var(--font); cursor: pointer; }
     0 90px 145px -22px rgba(30, 50, 90, 0.12),
     0 120px 190px -30px rgba(79, 140, 255, 0.07),
     /* 2. 右侧立体雕塑阴影 */
-    26px 12px 48px -8px rgba(30, 50, 90, 0.24),
-    52px 20px 85px -14px rgba(79, 140, 255, 0.15),
-    78px 28px 125px -20px rgba(30, 50, 90, 0.09),
+    14px 8px 24px -5px rgba(30, 50, 90, 0.18),
+    26px 14px 45px -9px rgba(79, 140, 255, 0.10),
     /* 3. 左侧平衡微光 */
-    -18px 12px 42px -8px rgba(30, 50, 90, 0.15),
-    -36px 20px 70px -14px rgba(79, 140, 255, 0.08);
+    -12px 8px 22px -5px rgba(30, 50, 90, 0.14),
+    -22px 14px 40px -9px rgba(79, 140, 255, 0.07);
   contain: strict;
 }
 
@@ -730,8 +749,8 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-radius: 4px;
 }
 .book-edge-left .book-edge-layer {
-  border-radius: 5px 0 0 5px;
-  border-left: 1.5px solid var(--border);
+  border-radius: 4px 0 0 4px;
+  border-left: 1px solid var(--border);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: repeating-linear-gradient(
@@ -742,11 +761,11 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
     var(--panel2) 3px,
     var(--panel2) 4.5px
   );
-  box-shadow: -4px 6px 14px rgba(0,0,0,0.32), inset -2px 0 4px rgba(0,0,0,0.12);
+  box-shadow: -3px 3px 8px rgba(0,0,0,0.22), inset -1px 0 2px rgba(0,0,0,0.10);
 }
 .book-edge-right .book-edge-layer {
-  border-radius: 0 5px 5px 0;
-  border-right: 1.5px solid var(--border);
+  border-radius: 0 4px 4px 0;
+  border-right: 1px solid var(--border);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: repeating-linear-gradient(
@@ -757,7 +776,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
     var(--card) 3px,
     var(--card) 4.5px
   );
-  box-shadow: 4px 6px 14px rgba(0,0,0,0.32), inset 2px 0 4px rgba(0,0,0,0.12);
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.22), inset 1px 0 2px rgba(0,0,0,0.10);
 }
 
 /* 次级层与深层阶梯阴影与明暗递进 */
@@ -768,9 +787,9 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 
 /* 暗色主题下的多层物理厚度发光与阶梯分层线 (明确多页阶梯立体轮廓) */
 [data-theme="dark"] .book-edge-left .book-edge-layer {
-  border-left: 1.5px solid rgba(56, 189, 248, 0.85);
-  border-top: 1px solid rgba(56, 189, 248, 0.4);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.4);
+  border-left: 1px solid rgba(56, 189, 248, 0.55);
+  border-top: 1px solid rgba(56, 189, 248, 0.25);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
   background: repeating-linear-gradient(
     90deg,
     #1e293b 0px,
@@ -779,12 +798,12 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
     #0f172a 2.5px,
     #0f172a 4.5px
   );
-  box-shadow: -5px 0 10px rgba(0,0,0,0.9), -2px 0 6px rgba(56,189,248,0.4);
+  box-shadow: -3px 0 8px rgba(0,0,0,0.7), -1px 0 4px rgba(56,189,248,0.25);
 }
 [data-theme="dark"] .book-edge-right .book-edge-layer {
-  border-right: 1.5px solid rgba(56, 189, 248, 0.85);
-  border-top: 1px solid rgba(56, 189, 248, 0.4);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.4);
+  border-right: 1px solid rgba(56, 189, 248, 0.55);
+  border-top: 1px solid rgba(56, 189, 248, 0.25);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
   background: repeating-linear-gradient(
     90deg,
     #0f172a 0px,
@@ -793,12 +812,12 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
     #1e293b 2.5px,
     #1e293b 4.5px
   );
-  box-shadow: 5px 0 10px rgba(0,0,0,0.9), 2px 0 6px rgba(56,189,248,0.4);
+  box-shadow: 3px 0 8px rgba(0,0,0,0.7), 1px 0 4px rgba(56,189,248,0.25);
 }
-[data-theme="dark"] .edge-tier-1 { border-color: rgba(56, 189, 248, 0.95); }
-[data-theme="dark"] .edge-tier-2 { border-color: rgba(96, 165, 250, 0.85); opacity: 0.95; }
-[data-theme="dark"] .edge-tier-3 { border-color: rgba(129, 140, 248, 0.75); opacity: 0.88; }
-[data-theme="dark"] .edge-tier-4 { border-color: rgba(168, 85, 247, 0.65); opacity: 0.8; }
+[data-theme="dark"] .edge-tier-1 { border-color: rgba(56, 189, 248, 0.75); }
+[data-theme="dark"] .edge-tier-2 { border-color: rgba(96, 165, 250, 0.55); opacity: 0.90; }
+[data-theme="dark"] .edge-tier-3 { border-color: rgba(129, 140, 248, 0.45); opacity: 0.85; }
+[data-theme="dark"] .edge-tier-4 { border-color: rgba(168, 85, 247, 0.40); opacity: 0.75; }
 
 /* 7. 大屏自动巡航放映模式控制栏 (Auto-Presenter Bar) - 主题色系自适应 */
 .presenter-bar {
@@ -844,25 +863,29 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   box-sizing: border-box;
   z-index: 45;
   scrollbar-width: none;
-  pointer-events: auto;
+  pointer-events: none;
   opacity: 0;
   contain: layout style paint;
   isolation: isolate;
-  transition: opacity 0.12s ease-out;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   scroll-snap-type: y proximity;
 }
 .book-side-col::-webkit-scrollbar { display: none; }
 .book-side-left {
   left: -170px;
   align-items: flex-end;
+  transform: translateX(12px);
 }
 .book-side-right {
   right: -170px;
   align-items: flex-start;
+  transform: translateX(-12px);
 }
 .book-side-col.is-revealed,
 .book-side-col:hover {
   opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 .edge-tab {
   position: relative;
@@ -946,7 +969,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   animation: pageFlashAnim 1.2s cubic-bezier(.25,.7,.3,1);
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 980px) {
   .book-side-col { display: none; }
 }
 
@@ -2197,26 +2220,26 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .hc-page-card {
   background: var(--panel2);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 .hc-stat-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
 }
 .hc-stat-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 5px;
+  padding: 2.5px 7px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 5px;
+  font-size: 11.5px;
   color: var(--text);
 }
 .hc-stat-pill b {
@@ -2226,13 +2249,13 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .hc-preview-box {
   position: relative;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--bg2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 6px 8px;
   cursor: pointer;
   transition: all .2s ease;
 }
@@ -2240,11 +2263,51 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   border-color: var(--accent);
   box-shadow: 0 4px 20px rgba(79, 140, 255, 0.15);
 }
+.hc-preview-box svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 .hc-interactive-wrap {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   width: 100%;
+}
+#modalHypeCycleWrap.hc-interactive-wrap {
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+#modalHypeCycleWrap .radar-toolbar {
+  flex: none;
+  padding: 4px 10px;
+}
+#modalHypeCycleWrap .hc-top-chart-box {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4px 8px;
+  box-shadow: none;
+  background: var(--bg2);
+}
+#modalHypeCycleWrap .hc-top-chart-box svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  display: block;
+}
+#modalHypeCycleWrap .radar-footer-note {
+  flex: none;
+  padding: 2px 0;
+  margin: 0;
 }
 .hc-top-chart-box {
   position: relative;
@@ -2252,7 +2315,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
@@ -2463,75 +2526,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   flex: none;
 }
 
-/* ============================ 本地资产关联按钮 ============================ */
-.btn-associate {
-  border-color: #38bdf8 !important;
-  color: #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.09) !important;
-  font-weight: 700 !important;
-  transition: all 0.25s ease !important;
-}
-.btn-associate:hover {
-  background: rgba(56, 189, 248, 0.22) !important;
-  color: #fff !important;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-}
-.btn-associate.btn-associated {
-  border-color: #34d399 !important;
-  color: #34d399 !important;
-  background: rgba(52, 211, 153, 0.14) !important;
-}
-.btn-associate.btn-associated:hover {
-  background: rgba(52, 211, 153, 0.25) !important;
-  color: #fff !important;
-  box-shadow: 0 0 12px rgba(52, 211, 153, 0.35);
-}
 
-/* ============================ 打开本地资产菜单与拖拽遮罩 ============================ */
-.btn-associate-wrap { position: relative; display: inline-flex; align-items: center; }
-.asset-picker-menu {
-  position: absolute; top: calc(100% + 8px); right: 0;
-  width: 320px; background: var(--panel); border: 1px solid var(--border);
-  border-radius: 12px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  padding: 8px; z-index: 200; backdrop-filter: blur(16px);
-  animation: fadeInDown .2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.asset-picker-item {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 12px; border-radius: 8px; cursor: pointer;
-  transition: background .2s, transform .15s;
-}
-.asset-picker-item:hover {
-  background: var(--panel2);
-  transform: translateX(2px);
-}
-.asset-picker-item .item-icon { font-size: 20px; line-height: 1.2; flex-shrink: 0; }
-.asset-picker-item .item-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.asset-picker-item .item-desc { font-size: 11.5px; color: var(--dim); line-height: 1.35; }
-.asset-picker-tip {
-  margin-top: 6px; padding: 8px 10px; border-radius: 6px;
-  background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.3);
-  font-size: 11.5px; color: #38bdf8; line-height: 1.4;
-}
-
-/* 拖拽释放大屏遮罩 */
-.drag-drop-overlay {
-  position: fixed; inset: 0; z-index: 999999;
-  background: rgba(10, 16, 30, 0.85); backdrop-filter: blur(10px);
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none; transition: opacity .2s ease;
-}
-.drag-drop-box {
-  border: 2px dashed #38bdf8; border-radius: 20px; padding: 40px 60px;
-  text-align: center; background: rgba(56, 189, 248, 0.06);
-  box-shadow: 0 0 50px rgba(56, 189, 248, 0.3);
-  transform: scale(0.96); transition: transform .2s ease;
-}
-.drag-drop-overlay.active .drag-drop-box { transform: scale(1); }
-.drag-drop-icon { font-size: 56px; margin-bottom: 12px; animation: bounce 1.2s infinite ease-in-out; }
-.drag-drop-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: 0.5px; }
-.drag-drop-desc { font-size: 13px; color: #94a3b8; }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 
 
@@ -2552,10 +2547,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 9px;
-  padding: 7px 10px;
+  padding: 6px 9px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3.5px;
   transition: all .2s ease;
 }
 .method-stage-card:hover {
@@ -2567,16 +2562,16 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
 }
 .method-stage-badge {
-  font-size: 13.5px;
+  font-size: 12px;
   font-weight: 800;
   color: var(--text);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 .method-stage-badge::before {
   content: "";
@@ -2587,10 +2582,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   flex-shrink: 0;
 }
 .method-stage-focus {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--accent2);
   background: rgba(79, 140, 255, 0.08);
-  padding: 1.5px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -2646,22 +2641,22 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 
 /* ==================== 1.2 信息来源评估 V4 上下结构单页排版 ==================== */
 .page-pad.page-sources-v4 {
-  padding: 26px 44px 16px;
+  padding: 24px 28px 14px;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  gap: 4.5px;
+  gap: 4px;
 }
 .page-sources-v4 .h-rule {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   flex-shrink: 0;
 }
 .sources-kpi-bar {
   display: flex;
-  gap: 6px;
-  margin-bottom: 3px;
+  gap: 5px;
+  margin-bottom: 2px;
   flex-shrink: 0;
 }
 .sources-kpi-card {
@@ -2669,22 +2664,22 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--panel2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 5px 8px 4px;
+  padding: 4px 6px 3px;
   text-align: center;
 }
 .skpi-val {
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 800;
   color: var(--accent);
   line-height: 1.1;
 }
 .skpi-unit {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--dim);
 }
 .skpi-lbl {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--dim);
   margin-top: 0;
 }
@@ -2692,7 +2687,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--panel2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 4px 10px 3px;
+  padding: 3px 8px 2px;
   display: flex;
   flex-direction: column;
 }
@@ -2700,10 +2695,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--panel2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 4px 10px 3px;
+  padding: 3px 8px 2px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2.5px;
 }
 .sources-box-header {
   display: flex;
@@ -2714,43 +2709,47 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   padding-bottom: 1px;
 }
 .sbh-title {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--text);
 }
 .sbh-sub {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--dim);
 }
 .sources-top-tbl {
   width: 100%;
-  font-size: 12px;
+  font-size: 11.8px;
   border-collapse: collapse;
 }
 .sources-top-tbl th {
   background: var(--panel);
-  padding: 2px 6px;
-  font-size: 12px;
+  padding: 1.5px 4px;
+  font-size: 11.5px;
   color: var(--dim);
   text-align: left;
 }
 .sources-top-tbl td {
-  padding: 1.5px 6px;
+  padding: 1px 4px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
-  font-size: 12.5px;
+  font-size: 11.8px;
+  line-height: 1.22;
+}
+.sources-top-tbl td:last-child {
+  white-space: normal;
   line-height: 1.25;
 }
 .rank-badge {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
   text-align: center;
   border-radius: 50%;
   background: var(--border);
   color: var(--text);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
 }
 .rank-badge.r1 { background: #f59e0b; color: #fff; }
@@ -2766,14 +2765,14 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .sources-cat-strip {
   display: flex;
   align-items: center;
-  gap: 5px 8px;
-  font-size: 11.5px;
+  gap: 3px 6px;
+  font-size: 11px;
   color: var(--dim);
 }
 .scs-item {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2.5px;
 }
 .scs-item i {
   width: 5px;
@@ -2794,18 +2793,18 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 2px 8px;
-  gap: 8px;
+  padding: 1.5px 6px;
+  gap: 6px;
 }
 .sdv-domain {
-  font-size: 12.5px;
+  font-size: 11.8px;
   font-weight: 800;
   color: var(--text);
-  width: 110px;
+  width: 92px;
   flex-shrink: 0;
 }
 .sdv-chain {
-  font-size: 12.5px;
+  font-size: 11.8px;
   color: var(--text);
   flex: 1;
   white-space: nowrap;
@@ -2815,7 +2814,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .sdv-chain .arr {
   color: var(--accent);
   font-style: normal;
-  margin: 0 4px;
+  margin: 0 3px;
   font-weight: 700;
 }
 
@@ -2832,10 +2831,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 2px 8px;
+  padding: 2px 6px;
 }
 .ssc-tag {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
   padding: 1px 5px;
   border-radius: 3px;
@@ -2843,11 +2842,12 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   flex-shrink: 0;
 }
 .ssc-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.32;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 /* ==================== 扉页与全景说明（第2、3页）字号全面对齐技术页 ==================== */
@@ -3953,14 +3953,6 @@ body.has-overlay-open .book-side-tab {
 </head>
 <body>
 
-<div id="dragDropOverlay" class="drag-drop-overlay hidden">
-  <div class="drag-drop-box">
-    <div class="drag-drop-icon">📂</div>
-    <div class="drag-drop-title">释放以直接打开本地技术资产</div>
-    <div class="drag-drop-desc">无需点击上传 · 拖入 assets 文件夹或技术子目录即刻无感打开</div>
-  </div>
-</div>
-
 <canvas id="fxCanvas"></canvas>
 
 <header class="topbar">
@@ -3973,28 +3965,6 @@ body.has-overlay-open .book-side-tab {
     <div id="searchResults" class="search-results hidden"></div>
   </div>
   <div class="topbar-actions">
-    <div class="btn-associate-wrap" id="btnAssociateWrap">
-      <button class="btn btn-associate" id="btnAssociateDir" title="打开本地技术文档与多媒体资产（支持直接拖拽文件夹打开）">📂 打开本地资产 ▾</button>
-      <div class="asset-picker-menu hidden" id="assetPickerMenu">
-        <div class="asset-picker-item" id="btnPickFiles">
-          <div class="item-icon">📂</div>
-          <div>
-            <div class="item-title">打开本地文件 (原生“打开”窗口·零弹窗)</div>
-            <div class="item-desc">唤起 Windows 系统“打开”对话框，直接多选文件载入，绝无“上传”提示</div>
-          </div>
-        </div>
-        <div class="asset-picker-item" id="btnPickDir">
-          <div class="item-icon">📁</div>
-          <div>
-            <div class="item-title">打开整包文件夹 (选择 assets 目录)</div>
-            <div class="item-desc">一键选择整个 assets 目录（注：浏览器内核会弹出一次只读访问确认）</div>
-          </div>
-        </div>
-        <div class="asset-picker-tip">💡 <b>极速免弹窗</b>：直接将 assets 文件夹拖入网页，即刻静默打开！</div>
-      </div>
-    </div>
-    <input type="file" id="localFilesPicker" multiple style="display:none">
-    <input type="file" id="localDirPicker" webkitdirectory directory multiple style="display:none">
     <button class="btn" id="btnFullscreenPlay" title="全屏播放整本书">⛶ 全屏播放</button>
     <button class="btn" id="btnAutoPlay" title="开启大屏自动放映巡航">▶ 自动放映</button>
     <button class="btn" id="btnFxToggle" title="切换炫酷动效增强模式">✨ 动效: 开</button>
@@ -4093,7 +4063,7 @@ body.has-overlay-open .book-side-tab {
 </div>
 
 <div class="toast hidden" id="toast"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609041340">v202609041340</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609041946">v202609041946</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>
