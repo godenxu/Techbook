@@ -3965,7 +3965,7 @@
     currentPanelMeta = { type: 'sources_report', name: '前沿科技研究信息来源报告' };
 
     var pdfPath = (DATA.sources && DATA.sources.pdfReport) || 'assets/reports/前沿科技研究信息来源报告.pdf';
-    var docxPath = (DATA.sources && DATA.sources.docxReport) || 'sources/reports/前沿科技研究信息来源报告_V4.docx';
+    var docxPath = (DATA.sources && DATA.sources.docxReport) || 'assets/reports/前沿科技研究信息来源报告_V4.docx';
 
     var toolbar = '<div class="preview-toolbar" style="margin-bottom:8px">' +
       '<a href="' + esc(docxPath) + '" download>⬇ 下载 Word 原报告 (V4)</a>' +
@@ -4006,7 +4006,7 @@
 
     var wp = DATA.workplan || {};
     var pdfPath = wp.pdfPlan || 'assets/plans/FA000_工作推进方案.pdf';
-    var docxPath = wp.docxPlan || 'sources/plans/FA000_工作推进方案（定稿）_v1.0.docx';
+    var docxPath = wp.docxPlan || 'assets/plans/FA000_工作推进方案（定稿）_v1.0.docx';
 
     var toolbar = '<div class="preview-toolbar" style="margin-bottom:8px">' +
       '<a href="' + esc(docxPath) + '" download>⬇ 下载方案 Word 原件</a>' +
@@ -4035,22 +4035,88 @@
   }
 
   /* ==================== 技术专题详情面板 ==================== */
+  window.__handleTechImgError = function (techId, tabKey, imgEl) {
+    var tech = findTech(techId);
+    if (tech) {
+      if (tabKey === 'image') {
+        tech.image = null;
+        tech.imageName = null;
+        tech.imageSize = null;
+      } else if (tabKey === 'hypecycle') {
+        tech.hypeCycle = null;
+      }
+    }
+    var tabBtn = document.querySelector('#panelBody .tab[data-name="' + tabKey + '"]');
+    var tabPane = document.querySelector('#panelBody .tabpane[data-name="' + tabKey + '"]') || (imgEl ? imgEl.closest('.tabpane') : null);
+    var wasActive = (tabBtn && tabBtn.classList.contains('active')) || (tabPane && tabPane.classList.contains('active'));
+
+    if (tabBtn && tabBtn.parentNode) {
+      tabBtn.parentNode.removeChild(tabBtn);
+    }
+    if (tabPane && tabPane.parentNode) {
+      tabPane.parentNode.removeChild(tabPane);
+    }
+
+    if (wasActive) {
+      var assessTab = document.querySelector('#panelBody .tab[data-name="assess"]');
+      var assessPane = document.querySelector('#panelBody .tabpane[data-name="assess"]');
+      if (assessTab) assessTab.classList.add('active');
+      if (assessPane) assessPane.classList.add('active');
+      if (currentPanelMeta && currentPanelMeta.type === 'tech') {
+        currentPanelMeta.activeTab = 'assess';
+      }
+    }
+  };
+
+  function validateTechAssetsExistence() {
+    if (typeof DATA === 'undefined' || !DATA.technologies) return;
+    DATA.technologies.forEach(function (tech) {
+      if (tech.image && typeof tech.image === 'string' && tech.image.indexOf('blob:') !== 0 && tech.image.indexOf('data:') !== 0) {
+        var testImg = new Image();
+        testImg.onerror = function () {
+          tech.image = null;
+          tech.imageName = null;
+          tech.imageSize = null;
+          if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+            window.__handleTechImgError(tech.id, 'image');
+          }
+        };
+        testImg.src = tech.image;
+      }
+      if (tech.hypeCycle && typeof tech.hypeCycle === 'string' && tech.hypeCycle.indexOf('blob:') !== 0 && tech.hypeCycle.indexOf('data:') !== 0) {
+        var testHc = new Image();
+        testHc.onerror = function () {
+          tech.hypeCycle = null;
+          if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+            window.__handleTechImgError(tech.id, 'hypecycle');
+          }
+        };
+        testHc.src = tech.hypeCycle;
+      }
+    });
+  }
+
   function techTabs(tech) {
     var tabs = [];
     tabs.push({ key: 'assess', name: '评估表', html: assessHTML(tech), fill: false });
     if (tech.image) tabs.push({ key: 'image', name: '一张图概述', html: onePageHTML(tech), fill: true });
     if (tech.hypeCycle) tabs.push({ key: 'hypecycle', name: '技术成熟度曲线', html: hypeCycleHTML(tech), fill: true });
-    if (tech.reportPdf || tech.reportDocx) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
-    if (tech.slidesPdf || tech.slidesPptx) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
+    if (tech.reportPdf || tech.reportDocx || tech.reportDocxName) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
+    if (tech.slidesPdf || tech.slidesPptx || tech.slidesPptxName) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
     return tabs;
   }
   function onePageHTML(tech) {
-    var dl = '<div class="preview-toolbar">' +
-      '<a href="' + esc(tech.image) + '" download>⬇ 下载一张图</a>' +
-      '<a href="' + esc(tech.image) + '" target="_blank">↗ 新窗口打开</a>' +
+    var imgName = tech.imageName || (tech.image ? tech.image.split('/').pop() : '');
+    var dl = '<div class="preview-toolbar">';
+    if (tech.image) {
+      dl += '<span class="preview-source-badge" title="指定文件夹母版：' + esc(tech.image) + '">' +
+        '<span class="psb-icon">📁</span> 正在预览指定文件夹母版：<b>' + esc(imgName) + '</b></span>';
+      dl += '<a href="' + esc(tech.image) + '" download="' + esc(imgName) + '">⬇ 下载 一张图 原件</a>';
+    }
+    dl += '<a href="' + esc(tech.image) + '" target="_blank">↗ 新窗口打开</a>' +
       '<button class="btn" data-fs="1" title="全屏查看">⛶ 全屏</button>' +
       '</div>';
-    return dl + '<div class="preview-stage onepage-stage" data-stage="1"><div class="onepage-wrap"><img id="onepageImg" src="' + esc(tech.image) + '" alt="' + esc(tech.name) + ' 一张图概述" title="点击放大查看"></div></div>';
+    return dl + '<div class="preview-stage onepage-stage" data-stage="1"><div class="onepage-wrap"><img id="onepageImg" src="' + esc(tech.image) + '" alt="' + esc(tech.name) + ' 一张图概述" title="点击放大查看" onerror="window.__handleTechImgError&&window.__handleTechImgError(\'' + esc(tech.id) + '\',\'image\',this)"></div></div>';
   }
   function hypeCycleHTML(tech) {
     var dl = '<div class="preview-toolbar">' +
@@ -4058,7 +4124,7 @@
       '<a href="' + esc(tech.hypeCycle) + '" target="_blank">↗ 新窗口打开</a>' +
       '<button class="btn" data-fs="1" title="全屏查看">⛶ 全屏</button>' +
       '</div>';
-    return dl + '<div class="preview-stage onepage-stage" data-stage="1"><div class="onepage-wrap"><img class="hypecycle-img" src="' + esc(tech.hypeCycle) + '" alt="' + esc(tech.name) + ' 技术成熟度曲线" title="点击放大查看"></div></div>';
+    return dl + '<div class="preview-stage onepage-stage" data-stage="1"><div class="onepage-wrap"><img class="hypecycle-img" src="' + esc(tech.hypeCycle) + '" alt="' + esc(tech.name) + ' 技术成熟度曲线" title="点击放大查看" onerror="window.__handleTechImgError&&window.__handleTechImgError(\'' + esc(tech.id) + '\',\'hypecycle\',this)"></div></div>';
   }
   function assessHTML(tech) {
     var dims = tech.assessment.dimensions;
@@ -4117,18 +4183,78 @@
       '</div>' +
     '</div>';
   }
+  function resolveFullPath(relPath) {
+    if (!relPath) return '';
+    if (location.protocol === 'file:') {
+      var pathname = decodeURIComponent(location.pathname);
+      pathname = pathname.replace(/^\/([a-zA-Z]:)/, '$1');
+      var baseDir = pathname.substring(0, pathname.lastIndexOf('/'));
+      var full = baseDir + '/' + relPath;
+      return full.replace(/\//g, '\\');
+    }
+    return relPath;
+  }
+
+  function launchSourceFile(relPath, title) {
+    if (!relPath) return;
+    var full = resolveFullPath(relPath);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).catch(function () {});
+    }
+    var a = document.createElement('a');
+    a.href = relPath;
+    a.download = relPath.split('/').pop();
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    toast('🚀 已启动打开 ' + (title || 'Office') + ' 源文件！本地绝对路径已同步复制到剪贴板');
+  }
+
+  function copySourcePath(relPath, label) {
+    var full = resolveFullPath(relPath);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(function () {
+        toast('📋 已复制 ' + (label || '本地路径') + ' 到剪贴板！');
+      }).catch(function () {
+        prompt('请手动复制本地路径：', full);
+      });
+    } else {
+      prompt('请手动复制本地路径：', full);
+    }
+  }
+
   function wordHTML(tech) {
-    return previewHTML(tech, tech.reportDocx, tech.reportPdf, 'Word 报告');
+    return previewHTML(tech, tech.reportDocx, tech.reportPdf, 'Word 报告', tech.reportDocxName);
   }
+
   function pptHTML(tech) {
-    return previewHTML(tech, tech.slidesPptx, tech.slidesPdf, 'PPT 报告');
+    return previewHTML(tech, tech.slidesPptx, tech.slidesPdf, 'PPT 报告', tech.slidesPptxName);
   }
-  function previewHTML(tech, docx, pdf, label) {
+
+  function previewHTML(tech, sourceDoc, pdf, label, origFileName) {
+    var fileName = origFileName || (sourceDoc ? sourceDoc.split('/').pop() : '');
+    var isWord = label.indexOf('Word') >= 0;
+    var ext = isWord ? '.docx' : '.pptx';
+
     var dl = '<div class="preview-toolbar">';
-    if (docx) dl += '<a href="' + esc(docx) + '" download>⬇ 下载 ' + esc(label) + '</a>';
-    if (pdf) dl += '<a href="' + esc(pdf) + '" download>⬇ 下载 PDF</a><a href="' + esc(pdf) + '" target="_blank">↗ 新窗口打开</a>';
-    dl += '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button></div>';
-    if (!pdf) return dl + '<div class="preview-empty">暂无在线预览，请下载后查看。</div>';
+    if (sourceDoc) {
+      dl += '<span class="preview-source-badge" title="指定文件夹母版：' + esc(sourceDoc) + '">' +
+        '<span class="psb-icon">📁</span> 正在预览指定文件夹母版：<b>' + esc(fileName || (label + ext)) + '</b></span>';
+      dl += '<a href="' + esc(sourceDoc) + '" download="' + esc(fileName) + '">⬇ 下载 ' + esc(label) + ' 原件</a>';
+    }
+    if (pdf) {
+      var pdfDlName = (tech.short || tech.name) + (isWord ? '_专题研究报告.pdf' : '_演示汇报.pdf');
+      dl += '<a href="' + esc(pdf) + '" download="' + esc(pdfDlName) + '">⬇ 下载 PDF</a>';
+      dl += '<a href="' + esc(pdf) + '" target="_blank">↗ 新窗口打开</a>';
+    }
+    dl += '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button>';
+    dl += '</div>';
+
+    if (!pdf) {
+      return dl + '<div class="preview-empty">暂无在线预览，请下载指定文件夹中的原件查看。</div>';
+    }
     return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览"></iframe></div>';
   }
   function techHeadHTML(tech) {
@@ -4198,8 +4324,12 @@
       scrollContentTop();
       requestAnimationFrame(scrollContentTop);
       var img = $('onepageImg');
-      if (img) img.onclick = function () { openLightbox(img.src, tech.name + ' · 一张图概述'); };
+      if (img) {
+        img.onerror = function () { window.__handleTechImgError(tech.id, 'image', img); };
+        img.onclick = function () { openLightbox(img.src, tech.name + ' · 一张图概述'); };
+      }
       document.querySelectorAll('#panelBody .hypecycle-img').forEach(function (hcImg) {
+        hcImg.onerror = function () { window.__handleTechImgError(tech.id, 'hypecycle', hcImg); };
         hcImg.onclick = function () { openLightbox(hcImg.src, tech.name + ' · Gartner技术成熟度曲线'); };
       });
       document.querySelectorAll('#panelBody [data-fs]').forEach(function (b) {
@@ -4208,8 +4338,30 @@
           toggleFullscreen(pane ? pane.querySelector('.preview-stage') : null);
         };
       });
+      document.querySelectorAll('#panelBody [data-launch]').forEach(function (b) {
+        b.onclick = function () {
+          var rel = b.getAttribute('data-launch');
+          var title = b.getAttribute('data-title') || '';
+          launchSourceFile(rel, title);
+        };
+      });
+      document.querySelectorAll('#panelBody [data-copy-path]').forEach(function (b) {
+        b.onclick = function () {
+          var rel = b.getAttribute('data-copy-path');
+          copySourcePath(rel, '文件本地绝对路径');
+        };
+      });
+      document.querySelectorAll('#panelBody [data-copy-folder]').forEach(function (b) {
+        b.onclick = function () {
+          var rel = b.getAttribute('data-copy-folder');
+          copySourcePath(rel, '技术专属文件夹路径');
+        };
+      });
     }, true);
   }
+  window.openTechPanel = openTechPanel;
+  window.findTech = findTech;
+  window.validateTechAssetsExistence = validateTechAssetsExistence;
 
   /* ==================== 全局搜索 ==================== */
   function initSearch() {
@@ -4516,12 +4668,315 @@
     });
   }
 
+  /* ==================== 本地技术资产一键打开机制（支持Windows原生“打开”窗口与直接拖拽） ==================== */
+  function initLocalAssetAssociator() {
+    var btn = $('btnAssociateDir');
+    var wrap = $('btnAssociateWrap');
+    var menu = $('assetPickerMenu');
+    var btnFiles = $('btnPickFiles');
+    var btnDir = $('btnPickDir');
+    var inputFiles = $('localFilesPicker');
+    var inputDir = $('localDirPicker');
+    var overlay = $('dragDropOverlay');
+
+    if (!btn) return;
+
+    btn.onclick = function (e) {
+      e.stopPropagation();
+      if (menu) menu.classList.toggle('hidden');
+    };
+
+    if (btnFiles && inputFiles) {
+      btnFiles.onclick = function () {
+        if (menu) menu.classList.add('hidden');
+        inputFiles.click();
+      };
+    }
+
+    if (btnDir && inputDir) {
+      btnDir.onclick = function () {
+        if (menu) menu.classList.add('hidden');
+        inputDir.click();
+      };
+    }
+
+    document.addEventListener('click', function (e) {
+      if (menu && !menu.classList.contains('hidden')) {
+        if (!wrap || !wrap.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      }
+    });
+
+    function formatFileSize(bytes) {
+      if (!bytes || bytes <= 0) return '0 B';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function formatDateStr(d) {
+      if (!d) return '';
+      var YYYY = d.getFullYear();
+      var MM = String(d.getMonth() + 1).padStart(2, '0');
+      var DD = String(d.getDate()).padStart(2, '0');
+      return YYYY + '-' + MM + '-' + DD;
+    }
+
+    // 通用资产绑定处理核心
+    function bindLocalAssetFiles(files) {
+      if (!files || files.length === 0) return;
+
+      var technologies = (window.DATA && window.DATA.technologies) ? window.DATA.technologies : [];
+      var techMap = {};
+      technologies.forEach(function (t) {
+        techMap[t.id] = { tech: t, files: [] };
+      });
+
+      // 智能路径探测：自适应 fullPath, webkitRelativePath, 或文件名
+      files.forEach(function (f) {
+        if (f.name.startsWith('~$') || f.name === '.DS_Store') return;
+        var rel = f.fullPath || f.webkitRelativePath || f.name;
+        var parts = rel.split('/');
+        
+        var matchedTech = null;
+        for (var i = 0; i < parts.length; i++) {
+          var seg = parts[i];
+          var m = seg.match(/^T0*(\d+)(_|$)/i);
+          if (m) {
+            var num = parseInt(m[1], 10);
+            matchedTech = technologies.find(function (t) {
+              return parseInt(t.no, 10) === num;
+            });
+            if (matchedTech) break;
+          }
+        }
+        if (!matchedTech) {
+          for (var j = 0; j < parts.length; j++) {
+            var s = parts[j];
+            matchedTech = technologies.find(function (t) {
+              return t.short && s.indexOf(t.short) >= 0;
+            });
+            if (matchedTech) break;
+          }
+        }
+
+        if (matchedTech) {
+          techMap[matchedTech.id].files.push(f);
+        }
+      });
+
+      var updatedTechCount = 0;
+      var totalFilesBound = 0;
+
+      Object.keys(techMap).forEach(function (id) {
+        var item = techMap[id];
+        var t = item.tech;
+        var fList = item.files;
+        if (!fList || fList.length === 0) return;
+
+        totalFilesBound += fList.length;
+        var hasUpdatedThisTech = false;
+
+        // 1. Docx
+        var docxFiles = fList.filter(function (f) { return /\.(docx|doc)$/i.test(f.name); });
+        if (docxFiles.length > 0) {
+          docxFiles.sort(function (a, b) { return b.lastModified - a.lastModified; });
+          var docx = docxFiles[0];
+          t.reportDocx = URL.createObjectURL(docx);
+          t.reportDocxName = docx.name;
+          t.reportDocxSize = formatFileSize(docx.size);
+          t.reportDocxDate = formatDateStr(new Date(docx.lastModified));
+          hasUpdatedThisTech = true;
+        }
+
+        // 2. Pptx
+        var pptFiles = fList.filter(function (f) { return /\.(pptx|ppt)$/i.test(f.name); });
+        if (pptFiles.length > 0) {
+          pptFiles.sort(function (a, b) { return b.lastModified - a.lastModified; });
+          var pptx = pptFiles[0];
+          t.slidesPptx = URL.createObjectURL(pptx);
+          t.slidesPptxName = pptx.name;
+          t.slidesPptxSize = formatFileSize(pptx.size);
+          t.slidesPptxDate = formatDateStr(new Date(pptx.lastModified));
+          hasUpdatedThisTech = true;
+        }
+
+        // 3. Image (排除成熟度曲线)
+        var imgFiles = fList.filter(function (f) {
+          return /\.(png|jpg|jpeg|svg|webp)$/i.test(f.name) &&
+                 f.name.indexOf('成熟度') < 0 &&
+                 f.name.indexOf('HypeCycle') < 0;
+        });
+        if (imgFiles.length > 0) {
+          imgFiles.sort(function (a, b) { return b.lastModified - a.lastModified; });
+          var img = imgFiles[0];
+          t.image = URL.createObjectURL(img);
+          t.imageName = img.name;
+          t.imageSize = formatFileSize(img.size);
+          hasUpdatedThisTech = true;
+        } else {
+          // 若本地该技术文件夹内无图片文件，且原先有图片，则重置置空，使页签自动隐藏
+          if (t.image) {
+            t.image = null;
+            t.imageName = null;
+            t.imageSize = null;
+            hasUpdatedThisTech = true;
+          }
+        }
+
+        // 4. PDF (报告 / 汇报)
+        var pdfFiles = fList.filter(function (f) { return /\.pdf$/i.test(f.name); });
+        if (pdfFiles.length > 0) {
+          var rPdf = pdfFiles.find(function (f) { return f.name.indexOf('报告') >= 0 || f.name.indexOf('report') >= 0; });
+          if (rPdf) {
+            t.reportPdf = URL.createObjectURL(rPdf);
+            hasUpdatedThisTech = true;
+          }
+          var sPdf = pdfFiles.find(function (f) { return f.name.indexOf('汇报') >= 0 || f.name.indexOf('演示') >= 0 || f.name.indexOf('ppt') >= 0 || f.name.indexOf('slides') >= 0; });
+          if (sPdf) {
+            t.slidesPdf = URL.createObjectURL(sPdf);
+            hasUpdatedThisTech = true;
+          }
+        }
+
+        if (hasUpdatedThisTech) updatedTechCount++;
+      });
+
+      btn.innerHTML = '✅ 已打开资产 (' + updatedTechCount + '项)';
+      btn.classList.add('btn-associated');
+      btn.title = '已成功打开本地技术资产（绑定 ' + updatedTechCount + ' 项技术的 ' + totalFilesBound + ' 个母版文件），非规范文档均已生效！';
+
+      toast('📂 成功打开本地资产！已自动识别并载入 ' + updatedTechCount + ' 项技术母版，非规范文档即刻生效！');
+
+      // 实时热刷新当前已打开的技术专题面板（若用户正停留在该技术弹窗）
+      if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId) {
+        var curTech = findTech(currentPanelMeta.techId);
+        if (curTech) {
+          openTechPanel(curTech, currentPanelMeta.activeTab || 'assess', true);
+        }
+      }
+    }
+
+    if (inputFiles) {
+      inputFiles.onchange = function (e) {
+        bindLocalAssetFiles(Array.from(e.target.files || []));
+      };
+    }
+
+    if (inputDir) {
+      inputDir.onchange = function (e) {
+        bindLocalAssetFiles(Array.from(e.target.files || []));
+      };
+    }
+
+    // ================= 全局拖拽支持（文件夹或文件直接拖入，零弹窗·零上传） =================
+    var dragTimer = null;
+    window.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('active');
+      }
+      clearTimeout(dragTimer);
+    });
+
+    window.addEventListener('dragleave', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragTimer = setTimeout(function () {
+        if (overlay) {
+          overlay.classList.remove('active');
+          overlay.classList.add('hidden');
+        }
+      }, 100);
+    });
+
+    window.addEventListener('drop', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (overlay) {
+        overlay.classList.remove('active');
+        overlay.classList.add('hidden');
+      }
+
+      var dt = e.dataTransfer;
+      if (!dt) return;
+
+      var items = dt.items;
+      if (items && items.length > 0 && items[0].webkitGetAsEntry) {
+        var collected = [];
+        var pendingCount = 0;
+
+        function checkDone() {
+          if (pendingCount === 0) {
+            bindLocalAssetFiles(collected);
+          }
+        }
+
+        function traverseEntry(entry, currentPath) {
+          if (!entry) return;
+          var path = currentPath ? (currentPath + '/' + entry.name) : entry.name;
+          if (entry.isFile) {
+            pendingCount++;
+            entry.file(function (f) {
+              f.fullPath = path;
+              collected.push(f);
+              pendingCount--;
+              checkDone();
+            }, function () {
+              pendingCount--;
+              checkDone();
+            });
+          } else if (entry.isDirectory) {
+            pendingCount++;
+            var dirReader = entry.createReader();
+            function readAllEntries() {
+              dirReader.readEntries(function (entries) {
+                if (entries.length === 0) {
+                  pendingCount--;
+                  checkDone();
+                } else {
+                  entries.forEach(function (child) {
+                    traverseEntry(child, path);
+                  });
+                  readAllEntries();
+                }
+              }, function () {
+                pendingCount--;
+                checkDone();
+              });
+            }
+            readAllEntries();
+          }
+        }
+
+        for (var i = 0; i < items.length; i++) {
+          var item = items[i];
+          var entry = item.webkitGetAsEntry ? item.webkitGetAsEntry() : null;
+          if (entry) {
+            traverseEntry(entry, '');
+          } else {
+            var f = item.getAsFile ? item.getAsFile() : null;
+            if (f) collected.push(f);
+          }
+        }
+        checkDone();
+      } else {
+        bindLocalAssetFiles(Array.from(dt.files || []));
+      }
+    });
+  }
+
   /* ==================== 初始化 ==================== */
   function init() {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     bindOverlayClose();
     initSearch();
     initBookTouchGestures();
+    initLocalAssetAssociator();
+    validateTechAssetsExistence();
     $('brandBtn').onclick = function () { setMode('book'); jumpToPage(0); };
     $('btnBook').onclick = function () { setMode('book'); };
     $('btnWeb').onclick = function () { setMode('web'); };
@@ -4636,7 +5091,12 @@
         else if (h === 'sources-report' || h === 'sourcesReport') openSourcesReportPanel();
         else if (h.indexOf('p-') === 0) jumpToPage(parseInt(h.substring(2), 10));
         else if (h === 'web') setMode('web');
-        else if (h.indexOf('tech-') === 0) openTechPanel(findTech(h.substring(5)));
+        else if (h.indexOf('tech-') === 0) {
+          var parts = h.substring(5).split('-');
+          var techId = parts[0];
+          var tabName = parts[1] || null;
+          openTechPanel(findTech(techId), tabName);
+        }
       }, 0);
     }
   }

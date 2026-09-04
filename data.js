@@ -24,6 +24,7 @@
     externalSource: '',
     summary: '以大模型为核心，能自主感知环境、分解目标、规划任务、调用工具并执行多步操作、在有限人工干预下闭环完成复杂任务的AI系统；区别于仅生成内容的生成式AI，强调自主决策与行动。',
     hypeCycle: 'assets/technologies/T001_自主型AI智能体/T001_自主型AI智能体_成熟度曲线.png',
+    folder: 'assets/technologies/T001_自主型AI智能体',
     center: '数智能力中心', centerReason: '价值横跨效率、风控、客户体验、新业务四大类，无单一业务中心可完全承载，作为通用能力供给', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:5, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T02', no: 2, name: 'AI原生应用架构（AI-Native）', short: 'AI原生应用架构', nameEn: 'AI-Native',
@@ -41,6 +42,7 @@
     externalSource: '',
     summary: '以AI／大模型为核心构建的应用架构范式，将模型推理、智能编排、数据反馈内生于应用，而非在传统应用上外挂AI能力。',
     hypeCycle: 'assets/technologies/T002_AI原生应用架构/T002_AI原生应用架构_成熟度曲线.png',
+    folder: 'assets/technologies/T002_AI原生应用架构',
     center: '客户经营中心', centerReason: '以个性化服务、重塑客服与营销应用形态为主要价值，与统一商机平台的精准营销、个性化触达能力对应', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T03', no: 3, name: '事件驱动架构（EDA）', short: '事件驱动架构', nameEn: 'EDA',
@@ -90,6 +92,7 @@
     externalSource: '',
     summary: '以主动元数据为核心，通过知识图谱与自动化在分布式数据源上编织统一、智能的数据访问与管理层。',
     hypeCycle: 'assets/technologies/T005_数据织网/T005_数据织网_成熟度曲线.png',
+    folder: 'assets/technologies/T005_数据织网',
     center: '数智能力中心', centerReason: '定位为统一数据视图、支撑AI应用的数据基础设施能力', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T06', no: 6, name: '数据网格（Data Mesh）', short: '数据网格', nameEn: 'Data Mesh',
@@ -107,6 +110,7 @@
     externalSource: '',
     summary: '一种去中心化的数据架构与组织范式，将数据视为产品、由业务域自治拥有，配以自助数据平台与联邦治理。',
     hypeCycle: 'assets/technologies/T006_数据网格/T006_数据网格_成熟度曲线.png',
+    folder: 'assets/technologies/T006_数据网格',
     center: '数智能力中心', centerReason: '定位为数据所有权下沉、数据产品化的数据治理范式', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:2, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T07', no: 7, name: '后量子密码学（PQC）/后量子身份验证（PQA）', short: '后量子密码学', nameEn: 'PQA',
@@ -171,8 +175,10 @@
     source: '· 新华社／央视：东数西算落子成局（2025）\n· 华为与国家信息中心《区域算力网：高速互联篇研究报告》（2025）\n· 工信部数据：八枢纽215.5 EFLOPS、智算占比80.8%（2025 Q1）\n采集时间：2026-07-06。\n·【2026-07-14复核增补】《政府工作报告》算电协同表述及IDC解读（2026.03）\n【2026-08-17深化增补】国家数据局2026年工作部署（2026-01）；"东数西算"四年八大枢纽量化数据（2026-02，215.5EFLOPS/智算占比80.8%/市场规模8351亿元）；工业和信息化部《算力互联互通行动计划》（2025-05印发，2026/2028两阶段目标）；国家发展改革委算力调度问题专家访谈（2026-03）；金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》算力相关条款（2026-06-18）；贵州算力产业发展公开报道（2026-04，Token调用量/成本优势数据）；三大电信运营商2026年算力投资数据（2026-03）；建设银行贵安数据中心、农业银行内蒙古数据中心、交通银行贵安数据中心公开建设信息（2023-2025年）。采集时间：2026-08-17。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
-    reportDocx: 'sources/technologies/T010_算力网络/T010_算力网络_专题研究报告.docx', reportPdf: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.pdf',
-    slidesPptx: 'sources/technologies/T010_算力网络/T010_算力网络_演示汇报.pptx', slidesPdf: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pdf', image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg',
+    folder: 'assets/technologies/T010_算力网络',
+    reportDocx: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.docx', reportDocxName: 'T010_算力网络_专题研究报告.docx', reportDocxSize: '506.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pptx', slidesPptxName: 'T010_算力网络_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pdf',
+    image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg', imageName: 'T010_算力网络_一张图.svg', imageSize: '4.2 KB',
     center: '技术服务中心', centerReason: '定位为弹性调度、算力普惠的算力基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
@@ -301,8 +307,10 @@
     source: '· Gartner《Govern AI Using TRiSM》（2026）及 AI 安全平台市场研究；IBM《What Is AI TRiSM》；Arthur《Best AI Governance Platforms 2026》\n· OWASP《Top 10 for Agentic Applications 2026》；NIST AI RMF\n采集时间：2026-07-07（复核更新）。\n·【2026-07-14复核增补】金融监管总局《关于银行业保险业人工智能安全开发应用的指导意见》（2026.06.18）\n·【2026-08-17深化增补】HiddenLayer/Palo Alto Networks/Cisco/Check Point/F5/SentinelOne官方并购公告；Fortune Business Insights《AI TRiSM Market Size 2026-2034》；Airia《Shadow AI Statistics 2026》；OWASP genai.owasp.org《Top 10 for Agentic Applications 2026》；全国网络安全标准化技术委员会TC260-003《生成式人工智能服务安全基本要求》；新加坡银行公会(ABS)/MAS《Handbook on Generative AI Guardrails in Banking》(2025-05)；DBS Bank《Responsible AI in Banking》；中国银行业大模型应用跟踪报告(2026)。采集时间：2026-08-17。', attention: '高', status: '在库—已深化研究', updateDate: '2026-08-17',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '覆盖AI可信、风险与安全管理的框架与能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台。',
-    reportDocx: 'sources/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
-    slidesPptx: 'sources/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf', image: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_一张图.svg',
+    folder: 'assets/technologies/T018_人工智能安全平台',
+    reportDocx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportDocxName: 'T018_人工智能安全平台_专题研究报告.docx', reportDocxSize: '405.3 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPptxName: 'T018_人工智能安全平台_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf',
+    image: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_一张图.svg', imageName: 'T018_人工智能安全平台_一张图.svg', imageSize: '4.2 KB',
     center: '技术服务中心', centerReason: '是自主型AI智能体、AI原生应用、智能体互操作协议等落地的前置护栏，与后量子密码学、零信任架构、机密计算同属安全工程基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T19', no: 19, name: '小语言模型与端侧AI（SLM·On-device／Edge AI）', short: '小语言模型与端侧AI', nameEn: 'SLM·On-device／Edge AI',
@@ -511,8 +519,10 @@
     source: '· Gartner《Magic Quadrant for Business Orchestration and Automation Technologies》（Saikat Ray等6位分析师合著，2025年10月15日，文档编号G00828060，首版；全文存档于本行内部知识库）\n· Gartner Peer Insights BOAT 市场（2026）\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增，已联网核实）\n·【2026-07-14复核增补】Infosys Finacle《Banking Architecture Trend 2026》（2026）\n·【2026-07-15深化增补】厂商官方发布信息（Pega、Camunda、Appian、Workato、Twoday）及技术解读资料（Camunda、Trisotech），已全文存档\n【2026-08-17深化增补】Camunda官方案例研究(Barclays/Jyske Bank)、ServiceNow官方客户案例(Standard Chartered Bank)、Appian官方新闻稿(Pepper Money)，均已核实并存档；Forrester《The Total Economic Impact of Camunda for Enterprises》(2024)、IDC/Appian《The Business Value of Appian》效益测算参考研究；Gartner《Critical Capabilities for BOAT, Q3 2025》（转引自Pega新闻稿）；《银行保险机构信息科技外包风险监管办法》（银保监办发〔2021〕141号）、《银行保险机构操作风险管理办法》（国家金融监督管理总局令2023年第5号）、《银行保险机构数据安全管理办法》（金规〔2024〕24号）具体条款，均来自政府网官方发布页面，已核实。', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
-    reportDocx: 'sources/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
-    slidesPptx: 'sources/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf', image: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_一张图.svg',
+    folder: 'assets/technologies/T031_业务编排与自动化',
+    reportDocx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportDocxName: 'T031_业务编排与自动化_专题研究报告.docx', reportDocxSize: '580.4 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPptxName: 'T031_业务编排与自动化_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf',
+    image: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_一张图.svg', imageName: 'T031_业务编排与自动化_一张图.svg', imageSize: '4.3 KB',
     center: '业务处理中心', centerReason: '以统一编排支撑授信审批、账户运营等端到端流程自动化，授信审批正是该中心的核心系统职能', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
@@ -529,9 +539,9 @@
     source: '· Gartner新闻稿《Hype Cycle Reveals How AI and Digital Advancements Are Primed to Aid Sales Transformations》（2025-10-30，DToC置于创新萌芽期）\n· Gartner《Hype Cycle for CRM Technologies, 2025》（G00827302，2025-07-09，DToC列"On the Rise"新兴阶段、效益评级高、渗透率1%-5%，经第三方转引页面部分核实）\n· Gartner供应链洞察《A Digital Twin of the Customer Could Transform Your Supply Chain Digitalization Strategy》（Beth Coppinger，2023-06-16，27%对60%试点/规划数据）\n· 中国人民银行等八部门《金融产品网络营销管理办法》（2026-04-24印发/2026-09-30施行）；国家网信办等四部门《互联网信息服务算法推荐管理规定》（2021-12-31公布/2022-03-01施行）；中国人民银行《金融领域科技伦理指引》（JR/T 0258—2022）\n采集截止日期：2026-08-18。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。',
-    reportDocx: 'sources/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.docx', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
-    slidesPptx: 'sources/technologies/T032_客户数字孪生/T032_客户数字孪生_演示汇报.pptx', slidesPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_演示汇报.pdf',
-    image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png',
+    folder: 'assets/technologies/T032_客户数字孪生',
+    reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxSize: '1.09 MB', reportDocxDate: '2026-09-01', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
+    image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png', imageName: 'T032_客户数字孪生_一张图.png', imageSize: '2.07 MB',
     center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
@@ -548,8 +558,9 @@
     source: '· Gartner《Magic Quadrant for Decision Intelligence Platforms》（2026.01.26）《Market Guide for DIP》\n· FICO/SAS 决策智能金融应用；FintechNews《Top DIP of 2026》\n· 采集时间：2026-07-07（Gartner分析师2026-06-12推荐新增；与021因果AI关联，以本条目为主、021为补充）\n·【2026-07-14复核增补】银行业AI趋势报告（2026）\n【2026-07-15深化增补】Gartner《Magic Quadrant for Decision Intelligence Platforms》（G00827619，2026-01-26）全文已获授权订阅、存于本行内部知识库，含17家厂商完整评述与原版象限图，已全文存档\n【2026-08-17专题补充】Gartner分析师2026-08-04现场技术交流纪要与配套技术分析报告（行内知识库留存，非公开信源）；自制3层混合决策智能框架示意图（据交流内容整理）；采集/整理日期：2026-08-17\n【2026-08-17修订增补】FICO官方新闻稿《Nationwide Speeds Up Credit Decisioning by 50% with FICO Platform》（2026-03-11，公开可查）；Forrester Consulting对Quantexa委托研究新闻稿（2024-02-08，公开可查）', attention: '高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
-    reportDocx: 'sources/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.docx', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
-    slidesPptx: 'sources/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf', image: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_一张图.svg',
+    folder: 'assets/technologies/T033_决策智能平台',
+    reportDocx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.docx', reportDocxName: 'T033_决策智能平台_专题研究报告.docx', reportDocxSize: '779.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPptxName: 'T033_决策智能平台_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
     center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T34', no: 34, name: '多智能体系统（Multi-Agent Systems，MAS）', short: '多智能体系统', nameEn: 'Multi-Agent Systems，MAS',
@@ -599,6 +610,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '面向大模型/生成式 AI 应用全生命周期的开发与运维平台能力，覆盖提示工程与版本管理、评测、部署、可观测、护栏与成本归因，将 AI 应用从实验推向可治理的规模化生产。',
     hypeCycle: 'assets/technologies/T036_模型工程与LLMOps/T036_模型工程与LLMOps_成熟度曲线.png',
+    folder: 'assets/technologies/T036_模型工程与LLMOps',
     center: '技术服务中心', centerReason: '与平台工程/IDP协同，形成AI工程化内部平台，同属工程效能平台集群', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   }
   ];
@@ -812,7 +824,7 @@
     title: '工作方案',
     subtitle: '敏捷工作机制 · 五级漏斗筛选闭环 · 全流程常态研判',
     pdfPlan: 'assets/plans/FA000_工作推进方案.pdf',
-    docxPlan: 'sources/plans/FA000_工作推进方案（定稿）_v1.0.docx',
+    docxPlan: 'assets/plans/FA000_工作推进方案（定稿）_v1.0.docx',
     goal: '围绕“十五五”信息科技规划编制与全行重大科技投资决策，构建“多源情报扫描—知识库结构化标引—长名单动态储备—六维深度研判—重点专题攻坚”的五级筛选漏斗与敏捷研究闭环，实现技术洞察从“零散跟踪”向“常态研判”升级、从“信息搬运”向“价值研判”升级。',
     funnel: [
       { step: '01', name: '多源情报动态扫描', desc: '覆盖 6 大类 21 家权威渠道，开展实时感知与月度扫描。' },
@@ -862,9 +874,9 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609031829',
+    version: '202609041340',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
-    docxReport: 'sources/reports/前沿科技研究信息来源报告_V4.docx',
+    docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
       { key: 'govt', name: '政府/科研机构', count: 5, color: '#3b82f6', desc: '权威性高、报告完整、完全免费，国家战略科技力量与产业指导' },
       { key: 'cons', name: '咨询机构', count: 8, color: '#10b981', desc: '行业标准制定者，权威性强、覆盖广，完整报告需付费/企业合作' },

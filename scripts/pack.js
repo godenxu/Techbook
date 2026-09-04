@@ -1,5 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const { sync } = require('./sync-sources');
+
+// 打包前自动全量扫描并同步所有技术专属文件夹内的母版源文件（Word/PPT/图片）
+sync();
 
 const root = path.resolve(__dirname, '..');
 const indexPath = path.join(root, 'index.html');
@@ -30,7 +34,7 @@ fs.writeFileSync(indexPath, indexHtml, 'utf8');
 const appJs = fs.readFileSync(appPath, 'utf8');
 
 // 提取并内联所有引用的图片资源（转换为 Base64 Data URL，确保 index-standalone.html 100% 真正单文件自包含）
-const regex = /["'](assets\/[^"']+\.(png|jpg|jpeg|svg))["']/g;
+const regex = /["']((?:assets|sources)\/[^"']+\.(png|jpg|jpeg|svg|webp))["']/gi;
 let match;
 const imagePaths = new Set();
 while ((match = regex.exec(dataJs)) !== null) {
@@ -59,8 +63,8 @@ imagePaths.forEach(relPath => {
 });
 
 let out = replacedIndexHtml;
-out = out.replace('<script src="data.js"></script>', '<script>\n' + replacedDataJs + '\n</script>');
-out = out.replace('<script src="js/app.js"></script>', '<script>\n' + appJs + '\n</script>');
+out = out.replace('<script src="data.js"></script>', () => '<script>\n' + replacedDataJs + '\n</script>');
+out = out.replace('<script src="js/app.js"></script>', () => '<script>\n' + appJs + '\n</script>');
 
 fs.writeFileSync(destPath, out, 'utf8');
 console.log(`Successfully packed index-standalone.html! Version: ${versionStr}, Inlined Images: ${inlinedCount}, Length: ${(out.length / 1024 / 1024).toFixed(2)} MB`);
