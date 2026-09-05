@@ -3043,6 +3043,15 @@
         items[0].s = sUnified;
         items[1].s = sUnified;
       }
+    } else if (items.length === 3 && items[1] && items[2] && !isSingle()) {
+      var padA = items[1].pad, padB = items[2].pad;
+      var isTechA = padA.classList.contains('book-tech-pad') || padA.classList.contains('page-pad');
+      var isTechB = padB.classList.contains('book-tech-pad') || padB.classList.contains('page-pad');
+      if (isTechA && isTechB) {
+        var sUnified = Math.min(items[1].s, items[2].s);
+        items[1].s = sUnified;
+        items[2].s = sUnified;
+      }
     }
 
     // 阶段 5：写入 transform 尺寸与缩放属性
@@ -3274,6 +3283,10 @@
     $('turnFrontInner').innerHTML = oldRight;
     $('turnBackInner').innerHTML = newLeft;
 
+    $('turnFrontInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
+    $('turnBackInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 2]);
+    $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 3]);
+
     // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageRight').classList.toggle('page-blank', !newRight.trim());
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
@@ -3356,6 +3369,10 @@
     $('pageLeftInner').innerHTML = newLeft;
     $('turnFrontInner').innerHTML = oldLeft;
     $('turnBackInner').innerHTML = newRight;
+
+    $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2 - 2]);
+    $('turnFrontInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
+    $('turnBackInner').classList.toggle('scroll', !!pageScroll[spread * 2 - 1]);
 
     // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
@@ -4468,6 +4485,8 @@
   window.findTech = findTech;
   window.validateTechAssetsExistence = validateTechAssetsExistence;
   window.jumpToPage = jumpToPage;
+  window.flipForward = flipForward;
+  window.flipBackward = flipBackward;
   window.renderSpread = renderSpread;
   window.fitSpread = fitSpread;
 
@@ -4924,8 +4943,8 @@
       var rect = cachedBookRect;
       var cx = e.clientX, cy = e.clientY;
       var inVertical = (cy >= rect.top - 60 && cy <= rect.bottom + 60);
-      var isOutsideLeft = inVertical && (cx < rect.left);
-      var isOutsideRight = inVertical && (cx > rect.right);
+      var isOutsideLeft = inVertical && (cx <= rect.left);
+      var isOutsideRight = inVertical && (cx >= rect.right);
 
       if (prevRevealedL !== isOutsideLeft) {
         prevRevealedL = isOutsideLeft;

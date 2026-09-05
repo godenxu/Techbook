@@ -299,39 +299,44 @@ button { font-family: var(--font); cursor: pointer; }
 #pageLeft  { left: 0; border-radius: 16px 4px 4px 16px; box-shadow: -18px 22px 55px rgba(0,0,0,.45); }
 #pageRight { right: 0; border-radius: 4px 16px 16px 4px; box-shadow: 24px 28px 65px rgba(0,0,0,.5); }
 
-/* 亮色主题深邃立体阴影体系 */
+/* 亮色主题深邃立体阴影体系（方向性外扩投影，杜绝中缝溢色） */
 [data-theme="light"] #pageLeft:not(.page-blank) {
   box-shadow:
-    0 3px 10px rgba(30, 50, 90, 0.14),
+    -3px 4px 10px rgba(30, 50, 90, 0.14),
     -14px 18px 42px rgba(30, 50, 90, 0.26),
     -24px 30px 65px rgba(30, 50, 90, 0.32),
-    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+    -18px 22px 50px rgba(79, 140, 255, 0.2) !important;
+  border-color: var(--border) !important;
 }
 [data-theme="light"] #pageRight:not(.page-blank) {
   box-shadow:
-    0 3px 10px rgba(30, 50, 90, 0.14),
+    3px 4px 10px rgba(30, 50, 90, 0.14),
     14px 18px 42px rgba(30, 50, 90, 0.26),
     24px 30px 65px rgba(30, 50, 90, 0.32),
-    0 18px 50px rgba(79, 140, 255, 0.2) !important;
+    18px 22px 50px rgba(79, 140, 255, 0.2) !important;
+  border-color: var(--border) !important;
 }
 
-/* 暗色主题适度优雅光影体系 */
+/* 暗色主题适度优雅光影体系（方向性外扩投影，杜绝中缝溢色并对齐翻页边框） */
 [data-theme="dark"] #pageLeft:not(.page-blank) {
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.35),
+    -2px 4px 8px rgba(0, 0, 0, 0.35),
     -10px 12px 24px rgba(0, 0, 0, 0.4),
     -12px 14px 32px rgba(56, 189, 248, 0.38),
-    0 18px 45px rgba(79, 140, 255, 0.25),
-    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+    -18px 22px 45px rgba(79, 140, 255, 0.25),
+    -10px 16px 25px rgba(56, 189, 248, 0.32) !important;
   border-color: rgba(56, 189, 248, 0.38) !important;
 }
 [data-theme="dark"] #pageRight:not(.page-blank) {
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.35),
+    2px 4px 8px rgba(0, 0, 0, 0.35),
     10px 12px 24px rgba(0, 0, 0, 0.4),
     12px 14px 32px rgba(56, 189, 248, 0.38),
-    0 18px 45px rgba(79, 140, 255, 0.25),
-    0 10px 25px rgba(56, 189, 248, 0.32) !important;
+    18px 22px 45px rgba(79, 140, 255, 0.25),
+    10px 16px 25px rgba(56, 189, 248, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
+}
+[data-theme="dark"] .turn-face:not(.page-blank) {
   border-color: rgba(56, 189, 248, 0.38) !important;
 }
 
@@ -383,20 +388,20 @@ button { font-family: var(--font); cursor: pointer; }
 
 [data-theme="dark"] .book.is-cover #pageRight {
   box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.4),
+    3px 4px 8px rgba(0, 0, 0, 0.4),
     12px 14px 28px rgba(0, 0, 0, 0.5),
     16px 18px 38px rgba(56, 189, 248, 0.68),
-    0 20px 48px rgba(79, 140, 255, 0.50),
-    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+    20px 22px 48px rgba(79, 140, 255, 0.50),
+    12px 14px 28px rgba(56, 189, 248, 0.55) !important;
   border-color: rgba(56, 189, 248, 0.75) !important;
 }
 [data-theme="dark"] .book.is-back-cover #pageLeft {
   box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.4),
+    -3px 4px 8px rgba(0, 0, 0, 0.4),
     -12px 14px 28px rgba(0, 0, 0, 0.5),
     -16px 18px 38px rgba(56, 189, 248, 0.68),
-    0 20px 48px rgba(79, 140, 255, 0.50),
-    0 12px 28px rgba(56, 189, 248, 0.55) !important;
+    -20px 22px 48px rgba(79, 140, 255, 0.50),
+    -12px 14px 28px rgba(56, 189, 248, 0.55) !important;
   border-color: rgba(56, 189, 248, 0.75) !important;
 }
 
@@ -447,20 +452,20 @@ button { font-family: var(--font); cursor: pointer; }
   border-color: transparent !important;
   background: #090f1c !important;
   box-shadow:
-    0 4px 12px rgba(30, 50, 90, 0.20),
+    4px 6px 12px rgba(30, 50, 90, 0.20),
     18px 22px 52px rgba(30, 50, 90, 0.38),
     32px 38px 82px rgba(30, 50, 90, 0.42),
-    0 22px 60px rgba(79, 140, 255, 0.28) !important;
+    22px 24px 60px rgba(79, 140, 255, 0.28) !important;
 }
 [data-theme="light"] .book.is-back-cover #pageLeft {
   border: none !important;
   border-color: transparent !important;
   background: #090f1c !important;
   box-shadow:
-    0 4px 12px rgba(30, 50, 90, 0.20),
+    -4px 6px 12px rgba(30, 50, 90, 0.20),
     -18px 22px 52px rgba(30, 50, 90, 0.38),
     -32px 38px 82px rgba(30, 50, 90, 0.42),
-    0 22px 60px rgba(79, 140, 255, 0.28) !important;
+    -22px 24px 60px rgba(79, 140, 255, 0.28) !important;
 }
 
 #pageLeft::after, #pageRight::after,
@@ -520,6 +525,7 @@ button { font-family: var(--font); cursor: pointer; }
   position: absolute; inset: 0; background: var(--paper); overflow: hidden;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border: 1px solid var(--border);
+  box-shadow: none !important;
 }
 .turn-front { border-radius: 4px 16px 16px 4px; }
 .turn-back  { border-radius: 16px 4px 4px 16px; transform: rotateY(180deg); }
@@ -982,25 +988,31 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   opacity: 0;
   contain: layout style paint;
   isolation: isolate;
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   scroll-snap-type: y proximity;
 }
 .book-side-col::-webkit-scrollbar { display: none; }
 .book-side-left {
   left: -170px;
   align-items: flex-end;
-  transform: translateX(12px);
+  transform: none;
 }
 .book-side-right {
   right: -170px;
   align-items: flex-start;
-  transform: translateX(-12px);
+  transform: none;
 }
 .book-side-col.is-revealed,
 .book-side-col:hover {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(0);
+  transform: none;
+}
+.book-side-col:not(.is-revealed) {
+  pointer-events: none !important;
+}
+.book-side-col:not(.is-revealed) * {
+  pointer-events: none !important;
 }
 .edge-tab {
   position: relative;
@@ -4474,7 +4486,7 @@ body.is-double-page .book {
 </div>
 
 <div class="toast hidden" id="toast"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609050756">v202609050756</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609050946">v202609050946</div>
 
 <script>
 /* =====================================================================
@@ -5355,7 +5367,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609050756',
+    version: '202609050946',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -9929,6 +9941,15 @@ body.is-double-page .book {
         items[0].s = sUnified;
         items[1].s = sUnified;
       }
+    } else if (items.length === 3 && items[1] && items[2] && !isSingle()) {
+      var padA = items[1].pad, padB = items[2].pad;
+      var isTechA = padA.classList.contains('book-tech-pad') || padA.classList.contains('page-pad');
+      var isTechB = padB.classList.contains('book-tech-pad') || padB.classList.contains('page-pad');
+      if (isTechA && isTechB) {
+        var sUnified = Math.min(items[1].s, items[2].s);
+        items[1].s = sUnified;
+        items[2].s = sUnified;
+      }
     }
 
     // 阶段 5：写入 transform 尺寸与缩放属性
@@ -10160,6 +10181,10 @@ body.is-double-page .book {
     $('turnFrontInner').innerHTML = oldRight;
     $('turnBackInner').innerHTML = newLeft;
 
+    $('turnFrontInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 1]);
+    $('turnBackInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 2]);
+    $('pageRightInner').classList.toggle('scroll', !!pageScroll[spread * 2 + 3]);
+
     // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageRight').classList.toggle('page-blank', !newRight.trim());
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
@@ -10242,6 +10267,10 @@ body.is-double-page .book {
     $('pageLeftInner').innerHTML = newLeft;
     $('turnFrontInner').innerHTML = oldLeft;
     $('turnBackInner').innerHTML = newRight;
+
+    $('pageLeftInner').classList.toggle('scroll', !!pageScroll[spread * 2 - 2]);
+    $('turnFrontInner').classList.toggle('scroll', !!pageScroll[spread * 2]);
+    $('turnBackInner').classList.toggle('scroll', !!pageScroll[spread * 2 - 1]);
 
     // 提前去除目标空白页底板与边框，确保翻页过程中绝对不会露出多余空白边框
     $('pageLeft').classList.toggle('page-blank', !newLeft.trim());
@@ -11354,6 +11383,8 @@ body.is-double-page .book {
   window.findTech = findTech;
   window.validateTechAssetsExistence = validateTechAssetsExistence;
   window.jumpToPage = jumpToPage;
+  window.flipForward = flipForward;
+  window.flipBackward = flipBackward;
   window.renderSpread = renderSpread;
   window.fitSpread = fitSpread;
 
@@ -11810,8 +11841,8 @@ body.is-double-page .book {
       var rect = cachedBookRect;
       var cx = e.clientX, cy = e.clientY;
       var inVertical = (cy >= rect.top - 60 && cy <= rect.bottom + 60);
-      var isOutsideLeft = inVertical && (cx < rect.left);
-      var isOutsideRight = inVertical && (cx > rect.right);
+      var isOutsideLeft = inVertical && (cx <= rect.left);
+      var isOutsideRight = inVertical && (cx >= rect.right);
 
       if (prevRevealedL !== isOutsideLeft) {
         prevRevealedL = isOutsideLeft;
