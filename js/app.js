@@ -197,6 +197,7 @@
     el.classList.remove('is-closing');
     $('panelTitle').innerHTML = title;
     $('panelBody').innerHTML = html;
+    if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('panelBody'));
     $('panelBody').classList.toggle('flex', !!flexBody);
     var navEl = $('panelTechNav');
     if (navEl && (!currentPanelMeta || currentPanelMeta.type !== 'tech')) {
@@ -210,6 +211,7 @@
   }
 
   function closePanel(force) {
+    var pop = $('termModalPopover'); if (pop) pop.classList.add('hidden');
     var el = $('panel');
     if (!el || el.classList.contains('hidden')) return;
     lastOverlayCloseTimestamp = Date.now();
@@ -241,10 +243,12 @@
     el.classList.remove('is-closing');
     $('modalTitle').innerHTML = title;
     $('modalBody').innerHTML = html;
+    if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('modalBody'));
     el.classList.remove('hidden');
     updateOverlayState(1);
   }
   function closeModal() {
+    var pop = $('termModalPopover'); if (pop) pop.classList.add('hidden');
     var el = $('modal');
     if (!el || el.classList.contains('hidden')) return;
     lastOverlayCloseTimestamp = Date.now();
@@ -628,7 +632,7 @@
         '<div class="motto-clean-title">' +
           '<span>看见变化</span>' +
           '<span>判断趋势</span>' +
-          '<span>看清影响</span>' +
+          '<span>洞察影响</span>' +
           '<span>赢得主动</span>' +
         '</div>' +
       '</div>' +
@@ -657,7 +661,7 @@
     });
     add('附录', '研究方法论工具与说明', 'partAppendix', true);
     add('附录一', '前沿技术研究方法论工具体系', 'appendix_methodology', false);
-    add('附录二', '术语表 · 数据来源 · 版本说明', 'appendix', false);
+    add('附录二', '术语表', 'appendix', false);
     add('结语', '全书研判总结与未来展望', 'closing', true);
     return items;
   }
@@ -2872,27 +2876,407 @@
       '</div>' +
     '</div>';
   }
+  /* ==================== 专业术语全书超链接与释义系统 ==================== */
+  var termMap = {};
+  var termMasterRegex = null;
+  var currentActiveLetter = 'ALL';
+  var tooltipHideTimeout = null;
+
+  function initTerms() {
+    if (!DATA || !DATA.terms || !DATA.terms.length) return;
+    DATA.terms.forEach(function (t) {
+      termMap[t.id] = t;
+      termMap[t.term.toLowerCase()] = t;
+      termMap[t.term] = t;
+      termMap[t.term.toLowerCase().replace(/\s+/g, '-')] = t;
+    });
+
+    // 优先匹配更长词汇（例如 OpenTelemetry 优先于 OTel，Zero Trust 优先于 Trust）
+    var sortedKeys = DATA.terms.slice().sort(function (a, b) {
+      return b.term.length - a.term.length;
+    }).map(function (t) {
+      return t.term.replace(/[.*+?^$${}()|[\]\\]/g, '\\$&');
+    });
+
+    termMasterRegex = new RegExp('\\b(' + sortedKeys.join('|') + ')\\b', 'g');
+  }
+
+  function linkTermsInContainer(rootEl) {
+    if (!rootEl || !termMasterRegex) return;
+
+    var textNodes = [];
+    var walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p = node.parentElement;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        var tag = p.tagName.toLowerCase();
+        if (tag === 'script' || tag === 'style' || tag === 'svg' || tag === 'input' || tag === 'textarea' || tag === 'code' || tag === 'pre') {
+          return NodeFilter.FILTER_REJECT;
+        }
+        if (p.closest('.term-ref') || p.closest('.term-tooltip') || p.closest('.term-modal-popover') || 
+            p.closest('.page-pad-toc') || p.closest('.page-pad-appendix') || p.closest('.page-head-row') || 
+            p.closest('.edge-tab') || p.closest('.motto-clean-title') || p.closest('button') || 
+            p.closest('.btn') || p.closest('a') || p.closest('[data-action]')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+
+    while (walker.nextNode()) {
+      textNodes.push(walker.currentNode);
+    }
+
+    textNodes.forEach(function (node) {
+      var text = node.nodeValue;
+      termMasterRegex.lastIndex = 0;
+      if (!termMasterRegex.test(text)) return;
+      termMasterRegex.lastIndex = 0;
+
+      var frag = document.createDocumentFragment();
+      var lastIdx = 0;
+      var match;
+      while ((match = termMasterRegex.exec(text)) !== null) {
+        var matchStr = match[1];
+        var matchIdx = match.index;
+        if (matchIdx > lastIdx) {
+          frag.appendChild(document.createTextNode(text.substring(lastIdx, matchIdx)));
+        }
+        var tObj = termMap[matchStr.toLowerCase()] || termMap[matchStr];
+        var span = document.createElement('span');
+        span.className = 'term-ref';
+        span.setAttribute('data-term', tObj ? tObj.id : matchStr.toLowerCase());
+        span.setAttribute('tabindex', '0');
+        span.setAttribute('role', 'button');
+        span.setAttribute('title', tObj ? (tObj.term + ' (' + tObj.nameCn + ')') : matchStr);
+        span.textContent = matchStr;
+        frag.appendChild(span);
+        lastIdx = matchIdx + matchStr.length;
+      }
+      if (lastIdx < text.length) {
+        frag.appendChild(document.createTextNode(text.substring(lastIdx)));
+      }
+      if (node.parentNode) {
+        node.parentNode.replaceChild(frag, node);
+      }
+    });
+  }
+
+  function showTermTooltip(refEl, termId) {
+    var tip = $('termTooltip');
+    var t = termMap[termId];
+    if (!tip || !t) return;
+    clearTimeout(tooltipHideTimeout);
+
+    tip.innerHTML = '<div class="term-tip-head">' +
+        '<span class="term-tip-code">' + esc(t.term) + '</span>' +
+        '<span class="term-tip-fullname">' + esc(t.fullName) + '</span>' +
+        '<span class="term-tip-badge">' + esc(t.cat) + '</span>' +
+      '</div>' +
+      '<div class="term-tip-body">' +
+        '<div class="term-tip-name-cn">' + esc(t.nameCn) + '</div>' +
+        '<div class="term-tip-def">' + esc(t.def) + '</div>' +
+      '</div>' +
+      '</div>';
+
+    tip.classList.remove('hidden');
+    tip.style.display = 'block';
+
+    var rect = refEl.getBoundingClientRect();
+    var tipRect = tip.getBoundingClientRect();
+    var left = rect.left + (rect.width / 2) - (tipRect.width / 2);
+    var top = rect.top - tipRect.height - 10;
+
+    if (left < 15) left = 15;
+    if (left + tipRect.width > window.innerWidth - 15) {
+      left = window.innerWidth - tipRect.width - 15;
+    }
+    if (top < 15) {
+      top = rect.bottom + 10;
+    }
+
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+    tip.classList.add('is-visible');
+  }
+
+  function hideTermTooltip(immediate) {
+    var tip = $('termTooltip');
+    if (!tip) return;
+    if (immediate) {
+      clearTimeout(tooltipHideTimeout);
+      tip.classList.remove('is-visible');
+      tip.classList.add('hidden');
+      tip.style.display = 'none';
+    } else {
+      clearTimeout(tooltipHideTimeout);
+      tooltipHideTimeout = setTimeout(function () {
+        tip.classList.remove('is-visible');
+        tip.classList.add('hidden');
+        tip.style.display = 'none';
+      }, 180);
+    }
+  }
+
+  function showTermModalPopover(refEl, termId) {
+    var t = termMap[termId];
+    if (!t) return;
+    var pop = $('termModalPopover');
+    if (!pop) return;
+
+    pop.innerHTML = '<div class="term-popover-head">' +
+        '<div class="term-popover-title">' +
+          '<span class="term-popover-code">' + esc(t.term) + '</span>' +
+          '<span class="term-popover-fullname">' + esc(t.fullName) + '</span>' +
+        '</div>' +
+        '<div class="term-popover-meta">' +
+          '<span class="term-popover-badge">' + esc(t.cat) + '</span>' +
+          '<button class="term-popover-close" id="termPopoverClose" title="关闭名片">✕</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="term-popover-body">' +
+        '<div class="term-popover-item">' +
+          '<span class="term-popover-lbl">标准定名</span>' +
+          '<span class="term-popover-val term-val-highlight">' + esc(t.nameCn) + '</span>' +
+        '</div>' +
+        '<div class="term-popover-item">' +
+          '<span class="term-popover-lbl">核心释义</span>' +
+          '<span class="term-popover-val">' + esc(t.def) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="term-popover-foot">' +
+        '<button class="btn-jump-appendix" id="btnJumpAppendixFromModal" data-term-id="' + esc(t.id) + '">前往附录二查看全书术语表 ↗</button>' +
+      '</div>';
+
+    pop.classList.remove('hidden');
+
+    var closeBtn = $('termPopoverClose');
+    if (closeBtn) {
+      closeBtn.onclick = function (e) {
+        if (e) e.stopPropagation();
+        pop.classList.add('hidden');
+      };
+    }
+
+    var jumpBtn = $('btnJumpAppendixFromModal');
+    if (jumpBtn) {
+      jumpBtn.onclick = function (e) {
+        if (e) e.stopPropagation();
+        pop.classList.add('hidden');
+        closePanel(true);
+        closeModal();
+        jumpToTerm(termId);
+      };
+    }
+  }
+
+  function jumpToTerm(termId) {
+    var t = termMap[termId];
+    if (!t) return;
+    hideTermTooltip(true);
+    var pop = $('termModalPopover');
+    if (pop) pop.classList.add('hidden');
+
+    var appendixIdx = pageKeyMap['appendix'];
+    if (appendixIdx == null) appendixIdx = 56;
+
+    jumpToPage(appendixIdx);
+
+    setTimeout(function () {
+      var sInput = $('termSearchInput');
+      if (sInput) sInput.value = '';
+      document.querySelectorAll('.term-alpha-tab').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-letter') === 'ALL');
+      });
+      currentActiveLetter = 'ALL';
+      filterAppendixTerms('', 'ALL');
+
+      var card = $('term-' + termId);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.remove('term-halo-flash');
+        void card.offsetWidth;
+        card.classList.add('term-halo-flash');
+        setTimeout(function () {
+          card.classList.remove('term-halo-flash');
+        }, 3200);
+      }
+    }, 450);
+  }
+
+  function filterAppendixTerms(q, letter) {
+    var grid = $('termCardsGrid');
+    if (!grid) return;
+    var cards = grid.querySelectorAll('.term-card');
+    var visibleCount = 0;
+    cards.forEach(function (card) {
+      var cLetter = card.getAttribute('data-letter');
+      var tid = card.getAttribute('data-term-id');
+      var t = termMap[tid];
+      var matchLetter = (letter === 'ALL' || cLetter === letter);
+      var matchQuery = true;
+      if (q && t) {
+        var fullSearchText = (t.term + ' ' + t.fullName + ' ' + t.nameCn + ' ' + t.cat + ' ' + t.def).toLowerCase();
+        matchQuery = fullSearchText.indexOf(q) !== -1;
+      }
+      if (matchLetter && matchQuery) {
+        card.style.display = 'flex';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    var pill = $('termCountPill');
+    if (pill) {
+      pill.textContent = '展示 ' + visibleCount + ' / ' + (DATA.terms ? DATA.terms.length : 0) + ' 项术语';
+    }
+  }
+
+  function initTermListeners() {
+    document.addEventListener('mouseover', function (e) {
+      var ref = e.target.closest('.term-ref');
+      if (ref) {
+        var tid = ref.getAttribute('data-term');
+        if (tid) showTermTooltip(ref, tid);
+        return;
+      }
+      if (e.target.closest('#termTooltip')) {
+        clearTimeout(tooltipHideTimeout);
+        return;
+      }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+      var ref = e.target.closest('.term-ref');
+      if (ref) {
+        var related = e.relatedTarget;
+        if (related && (related.closest('.term-ref') === ref || related.closest('#termTooltip'))) {
+          return;
+        }
+        hideTermTooltip(false);
+        return;
+      }
+      if (e.target.closest('#termTooltip')) {
+        var rel = e.relatedTarget;
+        if (rel && (rel.closest('#termTooltip') || rel.closest('.term-ref'))) {
+          return;
+        }
+        hideTermTooltip(false);
+        return;
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      var ref = e.target.closest('.term-ref');
+      if (ref) {
+        e.stopPropagation();
+        e.preventDefault();
+        // 浮层已包含完整释义，点击不跳转术语表；触屏/点击时直接唤起/维持 Tooltip
+        var tid = ref.getAttribute('data-term');
+        if (tid) showTermTooltip(ref, tid);
+        return;
+      }
+
+      if (!e.target.closest('#termTooltip')) {
+        hideTermTooltip(true);
+      }
+      var pop = $('termModalPopover');
+      if (pop && !pop.classList.contains('hidden') && !e.target.closest('#termModalPopover')) {
+        pop.classList.add('hidden');
+      }
+    }, true);
+
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'termSearchInput') {
+        var q = e.target.value.trim().toLowerCase();
+        if (q) {
+          currentActiveLetter = 'ALL';
+          document.querySelectorAll('.term-alpha-tab').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-letter') === 'ALL');
+          });
+        }
+        filterAppendixTerms(q, currentActiveLetter);
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      var tab = e.target.closest('.term-alpha-tab');
+      if (tab) {
+        var letter = tab.getAttribute('data-letter');
+        document.querySelectorAll('.term-alpha-tab').forEach(function (b) { b.classList.remove('active'); });
+        tab.classList.add('active');
+        currentActiveLetter = letter;
+        var q = $('termSearchInput') ? $('termSearchInput').value.trim().toLowerCase() : '';
+        filterAppendixTerms(q, letter);
+        return;
+      }
+    });
+  }
+
   function appendixTermsHTML() {
-    return '<div class="page-pad">' +
+    var terms = DATA.terms || [];
+    var letterCounts = {};
+    terms.forEach(function (t) {
+      var c = t.term[0].toUpperCase();
+      letterCounts[c] = (letterCounts[c] || 0) + 1;
+    });
+    var letters = Object.keys(letterCounts).sort();
+
+    var alphaTabsHTML = '<button class="term-alpha-tab active" data-letter="ALL">全部 (' + terms.length + ')</button>';
+    letters.forEach(function (ch) {
+      alphaTabsHTML += '<button class="term-alpha-tab" data-letter="' + ch + '">' + ch + ' (' + letterCounts[ch] + ')</button>';
+    });
+
+    var cardsHTML = terms.map(function (t) {
+      var letter = t.term[0].toUpperCase();
+      return '<div class="term-card" id="term-' + t.id + '" data-term-id="' + t.id + '" data-letter="' + letter + '">' +
+        '<div class="tc-top">' +
+          '<div class="tc-title-wrap">' +
+            '<span class="tc-code">' + esc(t.term) + '</span>' +
+            '<span class="tc-fullname">' + esc(t.fullName) + '</span>' +
+          '</div>' +
+          '<span class="tc-badge">' + esc(t.cat) + '</span>' +
+        '</div>' +
+        '<div class="tc-body">' +
+          '<div class="tc-def"><b class="tc-namecn">' + esc(t.nameCn) + '</b>：' + esc(t.def) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="page-pad page-pad-appendix">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
-          '<div class="page-title">术语表与数据来源</div>' +
-          '<div class="page-subtitle">附录二 · 术语定义 · 评判口径 · 数据来源 · 系统版本说明</div>' +
+          '<div class="page-title">术语表</div>' +
+          '<div class="page-subtitle">附录二 · 全书专业技术术语释义与索引（按 A–Z 字母序）</div>' +
         '</div>' +
       '</div>' +
       '<div class="h-rule"></div>' +
-      '<div class="pg-section"><div class="pg-h">术语表</div><table class="tbl">' +
-      '<tr><th style="width:24%">术语</th><th>含义与口径</th></tr>' +
-      '<tr><td><b>六维评级</b></td><td>技术成熟度、战略匹配度、价值贡献度、引入可行度、战略紧迫度、生态开放度（1–5 分制，越高越有利）。</td></tr>' +
-      '<tr><td><b>储备库分层</b></td><td>布局层（提前布局）、论证层（系统论证）、研究层（深入研究）、观察层（动态观察）四层。</td></tr>' +
-      '<tr><td><b>企架十大中心</b></td><td>对客服务、智慧运营、客户经营、产品合约、业务处理、风险管理、账务交易、管理支持、数智能力、技术服务中心。</td></tr>' +
-      '</table></div>' +
-      '<div class="pg-section"><div class="pg-h">数据来源与研究依据</div><div class="pg-p dim">评估内容来源于国家监管政策与金融标准、国际权威咨询智库（Gartner、IDC等）、国内外金融同业实践案例、前沿学术文献及全球主流开源技术生态，基于客观情报源评分体系与六维研判口径严谨推导。</div></div>' +
-      '<div class="pg-section"><div class="pg-h">系统运行说明</div><div class="pg-p dim">' + esc(DATA.book.org) + ' · ' + esc(DATA.book.date) + ' · 本系统采用纯静态离线单文件架构，免服务端依赖，双击 index.html 即可即时交互体验。</div></div>' +
-      '</div>';
+
+      // 术语搜索与 A-Z 筛选工具栏
+      '<div class="term-glossary-bar">' +
+        '<div class="term-search-wrap">' +
+          '<span class="term-search-icon">🔍</span>' +
+          '<input type="text" class="term-search-input" id="termSearchInput" placeholder="快速检索英文缩写、全称、中文释义或研判关键信息..." />' +
+        '</div>' +
+        '<span class="term-count-pill" id="termCountPill">收录 ' + terms.length + ' 项专业技术术语（按 A–Z 字母排序）</span>' +
+      '</div>' +
+
+      // 字母快捷切换栏
+      '<div class="term-alpha-tabs" id="termAlphaTabs">' +
+        alphaTabsHTML +
+      '</div>' +
+
+      // 垂直滚动卡片区域（仅卡片部分滚动，表头与字母栏绝对固定）
+      '<div class="term-scroll-wrap" id="termScrollWrap">' +
+        '<div class="term-cards-grid" id="termCardsGrid">' +
+          cardsHTML +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }
   var appendixHTML = appendixTermsHTML;
-  function backCoverHTML() {
+    function backCoverHTML() {
     var orbs = [
       '<span class="cover-orb" style="width:220px;height:220px;background:#4f8cff;right:-60px;top:-60px"></span>',
       '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;left:-40px;bottom:-40px"></span>',
@@ -2906,7 +3290,7 @@
           '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
           '<div class="bc-step-node"><span class="bc-step-verb">判断</span><span class="bc-step-noun">趋势</span></div>' +
           '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
-          '<div class="bc-step-node"><span class="bc-step-verb">看清</span><span class="bc-step-noun">影响</span></div>' +
+          '<div class="bc-step-node"><span class="bc-step-verb">洞察</span><span class="bc-step-noun">影响</span></div>' +
           '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
           '<div class="bc-step-node bc-step-highlight"><span class="bc-step-verb">赢得</span><span class="bc-step-noun">主动</span></div>' +
         '</div>' +
@@ -2968,9 +3352,9 @@
   addPage('graph', '第二章 · 企架落位图谱', graphPreviewHTML());
   addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '四大维度全面解构 · 36项重点技术专题研判', '03'));
   DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
-  addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论与来源体系', '前沿技术研究方法论工具 · 术语表 · 数据来源 · 版本说明', '附'));
+  addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论与术语体系', '前沿技术研究方法论工具体系 · 术语表', '附'));
   addPage('appendix_methodology', '附录一 · 方法论体系', appendixMethodologyHTML());
-  addPage('appendix', '附录二 · 术语与来源', appendixTermsHTML());
+  addPage('appendix', '附录二 · 术语表', appendixTermsHTML);
   addPage('closing', '结语', closingHTML());
   // 确保封底位于闭合跨页（总页数为偶数，若为奇数则在封底前插入一空白衬页）
   if (pages.length % 2 !== 0) {
@@ -3015,12 +3399,12 @@
       });
     });
 
-    bms.push({ id: 'partAppendix', no: '附录', short: '附录导读', name: '附录 · 研究方法论工具与说明', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'partAppendix', no: '附录', short: '附录导读', name: '附录 · 研究方法论与术语体系', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
     bms.push({ id: 'appendix_methodology', no: '附一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 4), color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'appendix', no: '附二', short: '术语与来源', name: '附录二 · 术语表 · 数据来源 · 版本说明', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix', no: '附二', short: '术语表', name: '附录二 · 术语表', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
     bms.push({ id: 'closing', no: '结语', short: '研判结语', name: '结语 · 全书研判总结与未来展望', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
     if (pageKeyMap['back'] != null) {
-      bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 看见变化 → 判断趋势 → 看清影响 → 赢得主动', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
+      bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 看见变化 → 判断趋势 → 洞察影响 → 赢得主动', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
     }
     return bms;
   }
@@ -3221,14 +3605,16 @@
                           m.pad.classList.contains('back-cover-full') ||
                           m.pad.classList.contains('divider-full');
         var sW = m.aw / BASE_PAGE_W;
-        var effectiveH = isFullBleed ? BASE_PAGE_H : Math.max(BASE_PAGE_H, m.nh);
+        var isFixedH = isFullBleed || (m.pad.classList && m.pad.classList.contains('page-pad-appendix'));
+        var effectiveH = isFixedH ? BASE_PAGE_H : Math.max(BASE_PAGE_H, m.nh);
         var sH = m.ah / effectiveH;
         m.s = Math.min(sW, sH);
       } else {
         if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) {
           m.s = 1;
         } else {
-          var s = Math.min(m.aw / m.nw, m.ah / m.nh);
+          var effectiveNh = (m.pad.classList && m.pad.classList.contains('page-pad-appendix')) ? BASE_PAGE_H : m.nh;
+          var s = Math.min(m.aw / m.nw, m.ah / effectiveNh);
           m.s = (s >= 1) ? 1 : s;
         }
       }
@@ -3395,6 +3781,7 @@
     var roots = customRoot ? [customRoot] : [$('pageLeftInner'), $('pageRightInner'), $('webContent')];
     roots.forEach(function (root) {
       if (!root) return;
+      if (typeof linkTermsInContainer === 'function') linkTermsInContainer(root);
       root.querySelectorAll('.toc-list li').forEach(function (li) {
         li.onclick = function (e) {
           if (e) e.stopPropagation();
@@ -3665,9 +4052,10 @@
     });
     sections.push(webSection('s-part-appendix', '附录', '附录与研究方法论工具', '<div class="pg-p">收录前沿技术研究方法论工具体系、术语定义与数据来源依据。</div>'));
     sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
-    sections.push(webSection('s-appendix', '附录二', '术语表 · 数据来源 · 版本说明', appendixTermsHTML()));
+    sections.push(webSection('s-appendix', '附录二', '术语表', appendixTermsHTML()));
     sections.push(webSection('s-closing', '结语', '结语 · 全书研判总结与未来展望', closingHTML()));
     $('webContent').innerHTML = sections.join('');
+    if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('webContent'));
     initHypeCycleInteractive($('webHypeCycleWrap'));
     initImpactRadarInteractive($('webRadarWrap'));
 
@@ -3692,7 +4080,7 @@
     });
     toc.push('<div class="web-toc-item part" data-target="s-part-appendix">附录 · 研究方法论工具与说明</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix-methodology"><span class="wt-no">附录一</span>方法论工具体系</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no">附录二</span>术语表 · 数据来源</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no">附录二</span>术语表</div>');
     toc.push('<div class="web-toc-item part" data-target="s-closing">结语 · 全书研判总结与未来展望</div>');
     $('webToc').innerHTML = toc.join('');
 
@@ -5138,6 +5526,8 @@
   /* ==================== 初始化 ==================== */
   function init() {
     try { var t = localStorage.getItem('dsh-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+    initTerms();
+    initTermListeners();
     bindOverlayClose();
     initSearch();
     initBookTouchGestures();
@@ -5242,7 +5632,7 @@
     var book = $('book');
     book.addEventListener('click', function (e) {
       if (flipping || activeOverlayCount > 0 || (Date.now() - lastOverlayCloseTimestamp < 450)) return;
-      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack')) return;
+      if (e.target.closest('button, li, a, iframe, .book-side-col, .edge-tab, .book-nav, .book-page-no, .btn, .corner-peek, .book-edge-stack, .term-ref, .term-tooltip, .term-modal-popover, .term-scroll-wrap, .term-card, .term-alpha-tab, .term-search-input')) return;
       if (!cachedBookRect) updateBookRect();
       var rect = cachedBookRect || book.getBoundingClientRect();
       var x = e.clientX - rect.left;
@@ -5286,6 +5676,8 @@
         else if (h === 'workplan') { if (pageKeyMap['workplan'] != null) jumpToPage(pageKeyMap['workplan']); }
         else if (h === 'workplan-report' || h === 'workplanReport') openWorkplanReportPanel();
         else if (h === 'sources-report' || h === 'sourcesReport') openSourcesReportPanel();
+        else if (h === 'appendix' || h === 'terms') { if (pageKeyMap['appendix'] != null) jumpToPage(pageKeyMap['appendix']); }
+        else if (h.indexOf('term-') === 0) { jumpToTerm(h.substring(5)); }
         else if (h.indexOf('p-') === 0) jumpToPage(parseInt(h.substring(2), 10));
         else if (h === 'web') setMode('web');
         else if (h.indexOf('tech-') === 0) {
@@ -5298,7 +5690,11 @@
     }
   }
 
+  window.jumpToTerm = jumpToTerm;
+  window.linkTermsInContainer = linkTermsInContainer;
   window.__techbook = {
+    jumpToTerm: jumpToTerm,
+    linkTermsInContainer: linkTermsInContainer,
     getPages: function () { return pages; },
     getPageLabels: function () { return pageLabels; },
     getPageKeyMap: function () { return pageKeyMap; },
@@ -5314,4 +5710,4 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
-})();
+})();

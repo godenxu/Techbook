@@ -504,7 +504,33 @@ button { font-family: var(--font); cursor: pointer; }
   position: absolute; inset: 0; overflow: hidden;
   font-size: 16px; line-height: 1.7;
 }
-.page-inner.scroll { overflow-y: auto; }
+.page-inner.scroll {
+  position: absolute;
+  top: 18px;
+  bottom: 38px;
+  left: 12px;
+  right: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79, 140, 255, 0.25) transparent;
+}
+.page-inner.scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.page-inner.scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.page-inner.scroll::-webkit-scrollbar-thumb {
+  background: rgba(79, 140, 255, 0.22);
+  border-radius: 4px;
+}
+.page-inner.scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 140, 255, 0.45);
+}
+[data-theme="light"] .page-inner.scroll::-webkit-scrollbar-thumb {
+  background: rgba(30, 50, 90, 0.2);
+}
 .page-inner.no-scroll { overflow: hidden; }
 .page-pad { padding: 22px 22px 24px; min-height: 100%; box-sizing: border-box; }
 
@@ -5040,6 +5066,480 @@ body.is-double-page .book {
     font-size: 18px;
   }
 }
+
+/* ============================ 专业术语交互与释义系统 ============================ */
+/* 术语内联可点击超链接 */
+.term-ref {
+  color: var(--accent);
+  border-bottom: 1.5px dashed var(--accent);
+  padding: 0 2px;
+  margin: 0 1px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  line-height: 1.25;
+}
+.term-ref:hover, .term-ref:focus-visible {
+  color: #fff;
+  background: var(--accent);
+  border-bottom-style: solid;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(79, 140, 255, 0.35);
+  outline: none;
+}
+[data-theme="light"] .term-ref {
+  color: #1d4ed8;
+  border-bottom-color: #3b82f6;
+}
+[data-theme="light"] .term-ref:hover, [data-theme="light"] .term-ref:focus-visible {
+  color: #ffffff;
+  background: #2563eb;
+  border-bottom-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* 全局浮动术语卡片 Tooltip */
+.term-tooltip {
+  position: fixed;
+  z-index: 99999;
+  max-width: 380px;
+  min-width: 270px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(20, 31, 51, 0.96);
+  border: 1px solid rgba(79, 140, 255, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 0 16px rgba(79, 140, 255, 0.2);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(4px) scale(0.98);
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.term-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+[data-theme="light"] .term-tooltip {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  box-shadow: 0 12px 32px rgba(40, 60, 100, 0.22), 0 0 12px rgba(37, 99, 235, 0.12);
+}
+.term-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.term-tip-code {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--accent);
+  background: rgba(79, 140, 255, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.term-tip-fullname {
+  font-size: 12px;
+  color: var(--dim);
+  font-weight: 500;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.term-tip-badge {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--accent2);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  white-space: nowrap;
+}
+.term-tip-body {
+  margin-bottom: 8px;
+}
+.term-tip-name-cn {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 13.5px;
+  margin-bottom: 4px;
+}
+.term-tip-def {
+  font-size: 12.5px;
+  color: var(--dim);
+  line-height: 1.55;
+}
+.term-tip-foot {
+  font-size: 11.5px;
+  color: var(--accent);
+  background: rgba(79, 140, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(79, 140, 255, 0.15);
+  transition: all 0.15s;
+}
+.term-tip-foot:hover {
+  background: rgba(79, 140, 255, 0.18);
+  color: #fff;
+}
+[data-theme="light"] .term-tip-foot:hover {
+  color: #1d4ed8;
+}
+
+/* 弹窗内术语详尽名片 Popover (方案 A) */
+.term-modal-popover {
+  position: absolute;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 480px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 28px rgba(79, 140, 255, 0.3);
+  padding: 22px;
+  animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes popoverFadeIn {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.term-popover-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.term-popover-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.term-popover-code {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.term-popover-fullname {
+  font-size: 13px;
+  color: var(--dim);
+}
+.term-popover-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.term-popover-badge {
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--accent2);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+.term-popover-close {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: var(--dim);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  border-radius: 4px;
+}
+.term-popover-close:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+}
+.term-popover-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.term-popover-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.term-popover-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.term-popover-val {
+  color: var(--text);
+}
+.term-val-highlight {
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--accent2);
+}
+.term-val-relevance {
+  background: rgba(79, 140, 255, 0.08);
+  border-left: 3px solid var(--accent);
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.term-popover-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.btn-jump-appendix {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-jump-appendix:hover {
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+}
+
+/* 附录二术语表工作台 */
+.page-pad-appendix {
+  padding: 22px 22px 24px;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.sec-body .page-pad-appendix {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+.term-scroll-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  padding-bottom: 24px;
+  margin-top: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79, 140, 255, 0.25) transparent;
+}
+.sec-body .term-scroll-wrap {
+  max-height: 720px;
+  overflow-y: auto;
+}
+.term-scroll-wrap::-webkit-scrollbar {
+  width: 5px;
+}
+.term-scroll-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.term-scroll-wrap::-webkit-scrollbar-thumb {
+  background: rgba(79, 140, 255, 0.22);
+  border-radius: 4px;
+}
+.term-scroll-wrap::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 140, 255, 0.45);
+}
+[data-theme="light"] .term-scroll-wrap::-webkit-scrollbar-thumb {
+  background: rgba(30, 50, 90, 0.2);
+}
+.term-glossary-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.term-search-wrap {
+  flex: 1;
+  min-width: 220px;
+  position: relative;
+}
+.term-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.term-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.18);
+}
+.term-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dim);
+  font-size: 12px;
+  pointer-events: none;
+}
+.term-count-pill {
+  font-size: 11.5px;
+  color: var(--dim);
+  background: rgba(79, 140, 255, 0.08);
+  border: 1px solid rgba(79, 140, 255, 0.18);
+  padding: 5px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.term-alpha-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  background: var(--card);
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.term-alpha-tab {
+  padding: 3px 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: var(--mono);
+}
+.term-alpha-tab:hover {
+  color: var(--text);
+  background: rgba(79, 140, 255, 0.12);
+}
+.term-alpha-tab.active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(79, 140, 255, 0.3);
+}
+.term-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.term-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  scroll-margin-top: 60px;
+}
+.term-card:hover {
+  border-color: rgba(79, 140, 255, 0.4);
+  transform: translateY(-1px);
+}
+.tc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.tc-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.tc-code {
+  font-family: var(--mono);
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.tc-fullname {
+  font-size: 11px;
+  color: var(--faint);
+  line-height: 1.25;
+}
+.tc-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  white-space: nowrap;
+}
+.tc-body {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--dim);
+}
+.tc-namecn {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* 术语聚焦呼吸高亮特效 */
+.term-halo-flash {
+  animation: termHaloFlash 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes termHaloFlash {
+  0% {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.25);
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+  }
+  30% {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    box-shadow: 0 0 22px 5px rgba(56, 189, 248, 0.45);
+  }
+  100% {
+    border-color: var(--border);
+    background: var(--card);
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+  }
+}
 </style>
 </head>
 <body>
@@ -5158,7 +5658,11 @@ body.is-double-page .book {
 </div>
 
 <div class="toast hidden" id="toast"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609071450">v202609071450</div>
+<!-- 全局专业术语悬浮 Tooltip -->
+<div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
+<!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
+<div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609071714">v202609071714</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>

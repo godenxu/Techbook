@@ -876,7 +876,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609071450',
+    version: '202609071714',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -2384,7 +2384,658 @@
   ]
 };
 
+  var TERMS = [
+  {
+    "id": "a2a",
+    "term": "A2A",
+    "fullName": "Agent-to-Agent Protocol",
+    "nameCn": "智能体互操作协议",
+    "cat": "人工智能",
+    "def": "支持不同厂商、异构框架下的自主AI智能体之间进行直接通讯、意图协商与跨系统分布式任务协同的开放协议标准。",
+    "relevance": "未来银行多智能体协同网络（如投研、授信、客服智能体互通）的基础互联协议。"
+  },
+  {
+    "id": "acp",
+    "term": "ACP",
+    "fullName": "Agent Communication Protocol",
+    "nameCn": "智能体通信协议",
+    "cat": "人工智能",
+    "def": "定义智能体间消息格式、对话状态机、权限上下文与交互语义的传输层标准化通信规范。",
+    "relevance": "保障跨系统智能体调用的安全鉴权与可追溯审计。"
+  },
+  {
+    "id": "aiops",
+    "term": "AIOps",
+    "fullName": "Artificial Intelligence for IT Operations",
+    "nameCn": "智能运维平台",
+    "cat": "基础设施与运维",
+    "def": "将机器学习与大数据分析技术应用于 IT 运维场景，实现海量监控日志与遥测数据的异常检测、根因分析与自动化故障自愈。",
+    "relevance": "银行数据中心与关键核心交易系统高可用保障的重要支撑底座。"
+  },
+  {
+    "id": "aisp",
+    "term": "AISP",
+    "fullName": "AI Security Platform",
+    "nameCn": "人工智能安全平台",
+    "cat": "安全与合规",
+    "def": "涵盖大模型提示注入防御、输出越狱拦截、训练数据防泄露与数字资产水印等多维防护的企业级 AI 安全治理平台。",
+    "relevance": "全行大模型规模化商用不可或缺的安全合规守门人与风险隔离墙。"
+  },
+  {
+    "id": "aml",
+    "term": "AML",
+    "fullName": "Anti-Money Laundering",
+    "nameCn": "反洗钱监管与合规",
+    "cat": "金融合规",
+    "def": "金融机构防范、识别洗钱与恐怖融资活动的合规风控体系，当前正深度引入图计算与自主智能体进行穿透式资金流向分析。",
+    "relevance": "银行法定核心合规义务，数字化反洗钱是前沿监管科技的核心突破点。"
+  },
+  {
+    "id": "api",
+    "term": "API",
+    "fullName": "Application Programming Interface",
+    "nameCn": "应用程序编程接口",
+    "cat": "架构与集成",
+    "def": "定义不同软件组件之间交互的标准化规范约定，是现代开放银行架构与微服务体系的基础连接单元。",
+    "relevance": "全行业务能力解耦开放、场景金融生态嵌合与跨系统互通的生命线。"
+  },
+  {
+    "id": "apqc",
+    "term": "APQC",
+    "fullName": "American Productivity & Quality Center",
+    "nameCn": "美国生产力与质量中心",
+    "cat": "方法论工具",
+    "def": "全球通用的流程分类框架（PCF）制定机构，广泛用于企业架构端到端业务流程分级梳理与能力地图映射。",
+    "relevance": "指导本行企业架构十大中心梳理端到端标准化流程的经典分类方法论。"
+  },
+  {
+    "id": "arxiv",
+    "term": "arXiv",
+    "fullName": "arXiv Open-Access Preprint Archive",
+    "nameCn": "arXiv 开放学术预印本平台",
+    "cat": "学术与情报源",
+    "def": "由美国康奈尔大学运营的全球权威开放预印本在线学术文献库，涵盖计算机科学、人工智能、密码学、量子物理等领域前沿论文首发，是跟踪国际顶尖科研动向的核心情报源。"
+  },
+  {
+    "id": "bcg",
+    "term": "BCG",
+    "fullName": "Boston Consulting Group",
+    "nameCn": "波士顿咨询公司",
+    "cat": "智库机构",
+    "def": "全球知名战略咨询智库，其发布的金融数字化转型、金融科技发展态势报告是前沿研判的重要外部情报源。",
+    "relevance": "提供全球金融业前瞻创新案例与科技战略投入的同业对标基准。"
+  },
+  {
+    "id": "bis",
+    "term": "BIS",
+    "fullName": "Bank for International Settlements",
+    "nameCn": "国际清算银行",
+    "cat": "金融监管与标准",
+    "def": "被称为“央行的央行”，牵头推进全球央行数字货币（CBDC）跨境互联试验与金融代币化基础设施探索。",
+    "relevance": "把握未来跨境支付、数字货币与去中心化资产流动性清算规则演进的关键指南针。"
+  },
+  {
+    "id": "boat",
+    "term": "BOAT",
+    "fullName": "Business Orchestration and Automation Technologies",
+    "nameCn": "业务编排与自动化技术",
+    "cat": "业务架构与工程",
+    "def": "Gartner 提出的技术体系，融合 BPM、RPA、低代码与事件驱动编排，驱动端到端复杂业务流程的高度自适应集成。",
+    "relevance": "全行长流程业务端到端重塑与敏捷智能协同落地的关键中枢架构。"
+  },
+  {
+    "id": "bpa",
+    "term": "BPA",
+    "fullName": "Business Process Automation",
+    "nameCn": "业务流程自动化",
+    "cat": "业务架构",
+    "def": "通过技术手段替代传统人工重复性业务操作，提升全行业务流转质效并降低操作风险。",
+    "relevance": "智慧运营中心降本增效与数字化作业的核心技术手段。"
+  },
+  {
+    "id": "bpm",
+    "term": "BPM",
+    "fullName": "Business Process Management",
+    "nameCn": "业务流程管理",
+    "cat": "业务架构",
+    "def": "系统化设计、建模、执行、监控和持续优化企业端到端业务流程的工程化管理方法与软件平台体系。",
+    "relevance": "银行稳态业务处理中心与敏态业务创新的基础流程底座。"
+  },
+  {
+    "id": "cncf",
+    "term": "CNCF",
+    "fullName": "Cloud Native Computing Foundation",
+    "nameCn": "云原生计算基金会",
+    "cat": "开源生态与标准",
+    "def": "Linux 基金会旗下的非营利开源组织，孵化并主导 Kubernetes、OpenTelemetry、Envoy 等全球主流云原生基础设施开源技术。",
+    "relevance": "全行云原生容器底座、微服务治理与可观测性标准化演进的核心开源生态源头。"
+  },
+  {
+    "id": "cra",
+    "term": "CRA",
+    "fullName": "Cyber Resilience Act",
+    "nameCn": "欧盟《网络弹性法案》",
+    "cat": "国际合规与法规",
+    "def": "对具备数字元素的硬件和软件产品提出强制性网络安全与全生命周期漏洞修复要求的开创性数字法规。",
+    "relevance": "软件供应链安全治理与跨境金融软件出口合规的标杆法律参考。"
+  },
+  {
+    "id": "csf",
+    "term": "CSF",
+    "fullName": "Cybersecurity Framework (NIST)",
+    "nameCn": "网络安全框架",
+    "cat": "安全标准与框架",
+    "def": "美国 NIST 提出的网络安全核心框架（识别、防护、侦测、响应、恢复、治理），广泛作为全球金融系统安全体系标杆。",
+    "relevance": "全行网络安全风险防线评估与实战化攻防演练成熟度衡量的权威坐标。"
+  },
+  {
+    "id": "devsecops",
+    "term": "DevSecOps",
+    "fullName": "Development, Security, and Operations",
+    "nameCn": "开发安全运维一体化",
+    "cat": "研发工程",
+    "def": "将安全理念与自动化安全卡点（静态代码审计、开源组件依赖扫描、SBOM验证）深度内置于研发部署全流程的敏捷交付范式。",
+    "relevance": "保障应用“出厂即合规、上线即安全”，提升软件安全交付效能。"
+  },
+  {
+    "id": "did",
+    "term": "DID",
+    "fullName": "Decentralized Identifier",
+    "nameCn": "去中心化数字身份",
+    "cat": "区块链与数字身份",
+    "def": "基于密码学公私钥与分布式账本的可验证、去中心化数字身份标识标准（W3C 规范），实现用户自主掌控数据主权。",
+    "relevance": "跨机构客户身份互认、隐私保护授权与数字资产可信流转的新型信任底座。"
+  },
+  {
+    "id": "dip",
+    "term": "DIP",
+    "fullName": "Decision Intelligence Platform",
+    "nameCn": "决策智能平台",
+    "cat": "人工智能",
+    "def": "融合因果AI、预测模型、业务规则引擎与运筹优化算法，在多约束动态环境下支持银行自动化或辅助业务决策的数智中枢。",
+    "relevance": "零售智能风控、对公差异化定价与资产负债动态模拟的核心决策中枢。"
+  },
+  {
+    "id": "dora",
+    "term": "DORA",
+    "fullName": "Digital Operational Resilience Act",
+    "nameCn": "欧盟《数字运营弹性法案》",
+    "cat": "国际合规与法规",
+    "def": "欧盟针对金融机构及 ICT 关键第三方服务商设立的强制性数字化运营弹性、网络攻击压力测试与灾难恢复监管法案。",
+    "relevance": "指导金融关键基础设施防范单点外包依赖与极端网络韧性建设。"
+  },
+  {
+    "id": "dtoc",
+    "term": "DToC",
+    "fullName": "Digital Twin of a Customer",
+    "nameCn": "客户数字孪生",
+    "cat": "数据要素与AI",
+    "def": "基于全维度交易轨迹、偏好意图与因果行为模型实时构建的动态虚拟客户映射实体，赋能超个性化金融推荐与信用推演。",
+    "relevance": "客户经营中心实施精准营销、财富顾问服务与动态生命周期价值挖掘的突破口。"
+  },
+  {
+    "id": "ecc",
+    "term": "ECC",
+    "fullName": "Elliptic Curve Cryptography",
+    "nameCn": "椭圆曲线密码学",
+    "cat": "密码与信息安全",
+    "def": "基于椭圆曲线离散对数数学难题的高效公钥加密算法（如国密 SM2、ECDSA），是后量子密码体系攻防对比的核心基准。",
+    "relevance": "当前网银加密、手机银行证书的核心基础，属于后量子迁移重点改造对象。"
+  },
+  {
+    "id": "eda",
+    "term": "EDA",
+    "fullName": "Event-Driven Architecture",
+    "nameCn": "事件驱动架构",
+    "cat": "企业架构与系统",
+    "def": "以业务事件的产生、捕获、路由与异步反应为核心的高解耦、高扩展系统架构体系，提升现代核心银行系统实时响应能力。",
+    "relevance": "支撑千万级实时交易峰值解耦与多渠道事件秒级联动的架构骨架。"
+  },
+  {
+    "id": "eidas",
+    "term": "eIDAS",
+    "fullName": "Electronic Identification, Authentication and Trust Services",
+    "nameCn": "欧盟电子身份认证与信托服务条例",
+    "cat": "国际合规与标准",
+    "def": "确立跨境电子身份认证与可信服务的欧盟法规，其 2.0 版本规定了主权数字身份钱包（EUDI Wallet）及凭证签发标准。",
+    "relevance": "国际数字身份与跨境合规互认的最高法定标准参考。"
+  },
+  {
+    "id": "eudi",
+    "term": "EUDI",
+    "fullName": "EU Digital Identity Wallet",
+    "nameCn": "欧盟数字身份钱包",
+    "cat": "数字身份与隐私",
+    "def": "由欧盟官方推进的标准化通用数字钱包架构，允许用户在高度隐私保护下向第三方安全出示经过认证的资质凭证。",
+    "relevance": "下一代移动金融终端与跨境账户实名核验形态演进的重要风向标。"
+  },
+  {
+    "id": "fair",
+    "term": "FAIR",
+    "fullName": "Factor Analysis of Information Risk",
+    "nameCn": "信息风险因素分析模型",
+    "cat": "风险量化方法论",
+    "def": "国际公认的定量信息与操作风险分析方法论，将传统定性风险矩阵转化为基于概率分布的货币化财务损失区间推导。",
+    "relevance": "为全行重大技术选型与网络安全投资决策提供精准量化投入产出测算。"
+  },
+  {
+    "id": "fate",
+    "term": "FATE",
+    "fullName": "Federated AI Technology Enabler",
+    "nameCn": "联邦学习工业级开源框架",
+    "cat": "隐私计算与安全",
+    "def": "微众银行开源并在 Linux 基金会托管的工业级联邦学习框架，支持金融机构在保护多方数据主权与合规隐私的前提下联合建模。",
+    "relevance": "政务数据要素联合反欺诈与跨行信贷风控联合建模的实战验证标杆。"
+  },
+  {
+    "id": "fhe",
+    "term": "FHE",
+    "fullName": "Fully Homomorphic Encryption",
+    "nameCn": "全同态加密",
+    "cat": "密码学与隐私计算",
+    "def": "允许直接对密文进行任意代数运算且解密结果与明文计算完全一致的密码学算法，被誉为隐私保护计算的“圣杯”。",
+    "relevance": "金融高敏数据云端密文托管与不可信第三方算力安全利用的终极密码防线。"
+  },
+  {
+    "id": "finops",
+    "term": "FinOps",
+    "fullName": "Financial Operations",
+    "nameCn": "云财务运营与成本治理",
+    "cat": "算力与基础设施",
+    "def": "将财务责任制与工程敏捷度结合，通过全生命周期的用量可见性、智能分摊与资源优化，最大化混合多云与智算投资回报率。",
+    "relevance": "智算集群算力利用率提升与云上成本精细化管控的治理框架。"
+  },
+  {
+    "id": "fmea",
+    "term": "FMEA",
+    "fullName": "Failure Mode and Effects Analysis",
+    "nameCn": "潜在失效模式与后果分析",
+    "cat": "工程与风险工具",
+    "def": "系统化工程风险推演方法，通过对各组件严重度(S)、发生度(O)、探测度(D)打分计算 RPN，指导前沿技术引入的灰度防线设计。",
+    "relevance": "新技术原型向生产环境演进时的架构健壮性与单点故障压力测试工具。"
+  },
+  {
+    "id": "gdpr",
+    "term": "GDPR",
+    "fullName": "General Data Protection Regulation",
+    "nameCn": "欧盟《通用数据保护条例》",
+    "cat": "国际合规与法规",
+    "def": "全球公认最严格的数据保护法规，确立被遗忘权、数据便携权与“设计即隐私”原则，深刻重塑金融数据跨境流通范式。",
+    "relevance": "境外机构业务合规与全行个人客户隐私保护体系建设的法律基准。"
+  },
+  {
+    "id": "graphrag",
+    "term": "GraphRAG",
+    "fullName": "Graph Retrieval-Augmented Generation",
+    "nameCn": "知识图谱增强检索生成",
+    "cat": "人工智能与数据要素",
+    "def": "将知识图谱的关系拓扑结构与大模型语义检索深度结合的增强技术，显著抑制复杂金融规章研判中的事实幻觉。",
+    "relevance": "对公授信集团派系穿透、信贷调查长报告结构化分析与监管规章问答的利器。"
+  },
+  {
+    "id": "idc",
+    "term": "IDC",
+    "fullName": "International Data Corporation",
+    "nameCn": "国际数据公司",
+    "cat": "智库机构",
+    "def": "全球权威的信息技术市场情报与咨询机构，其关于中国金融云、AI 平台与大数据技术市场份额研究是研判的关键引用基准。",
+    "relevance": "提供各技术领域厂商集中度、发展成熟度与行业落地格局的客观研判数据。"
+  },
+  {
+    "id": "idp",
+    "term": "IDP",
+    "fullName": "Internal Developer Platform",
+    "nameCn": "内部开发者平台 / 平台工程",
+    "cat": "平台工程与研发",
+    "def": "通过自助式工作流、基础设施编排与“黄金路径”，减轻一线研发认知负荷并保障全行企业架构规范落地。",
+    "relevance": "软件工程生产力革命与数字化研发团队提效的核心平台基础设施。"
+  },
+  {
+    "id": "ieee",
+    "term": "IEEE",
+    "fullName": "Institute of Electrical and Electronics Engineers",
+    "nameCn": "电气与电子工程师协会",
+    "cat": "国际标准组织",
+    "def": "全球最大的专业技术协会，制定了包括网络通信、量子信道度量、可信 AI 等众多权威国际标准。",
+    "relevance": "前沿软硬件协议底层技术规格与测评规范的重要溯源组织。"
+  },
+  {
+    "id": "iso",
+    "term": "ISO",
+    "fullName": "International Organization for Standardization",
+    "nameCn": "国际标准化组织",
+    "cat": "国际标准组织",
+    "def": "制定跨国通用技术与管理标准的权威机构（如 ISO 27001 信息安全管理、ISO 20022 金融金融信息报文等）。",
+    "relevance": "银行核心架构合规认证与跨境清算报文标准化的法定遵循基石。"
+  },
+  {
+    "id": "jtbd",
+    "term": "JTBD",
+    "fullName": "Jobs-to-be-Done Theory",
+    "nameCn": "待办任务理论",
+    "cat": "需求分析方法论",
+    "def": "关注客户在特定场景下“雇用”某产品想要达成的根本目标，指导金融科技创新场景的精准痛点锚定。",
+    "relevance": "前沿技术在对客服务与客户经营中心商业化变现场景挖掘的需求分析工具。"
+  },
+  {
+    "id": "kyc",
+    "term": "KYC",
+    "fullName": "Know Your Customer",
+    "nameCn": "了解你的客户（客户尽职调查）",
+    "cat": "银行业务与合规",
+    "def": "银行对客开户、交易监控及反洗钱合规的关键防线，当前加速融合多模态生物识别与去中心凭证实现秒级核验。",
+    "relevance": "银行对客风控第一道防线，数智化改造直接关联客户转化率与欺诈防御力。"
+  },
+  {
+    "id": "lcap",
+    "term": "LCAP",
+    "fullName": "Low-Code Application Platform",
+    "nameCn": "低代码应用开发平台",
+    "cat": "企业级研发架构",
+    "def": "基于模型驱动设计与可视化拖拽，快速构建企业级业务系统的敏捷技术平台，驱动业务敏态敏捷交付。",
+    "relevance": "非核心管理支持流程与分支行业务创新的敏捷交付引擎。"
+  },
+  {
+    "id": "llm",
+    "term": "LLM",
+    "fullName": "Large Language Model",
+    "nameCn": "大语言模型",
+    "cat": "人工智能",
+    "def": "基于海量无标注语料预训练的百亿至万亿级参数深度学习模型（如 GPT、Claude、DeepSeek），具备强大的语言理解与泛化推理能力。",
+    "relevance": "全行数智化转型的核心认知底座与生产力重构引擎。"
+  },
+  {
+    "id": "llmops",
+    "term": "LLMOps",
+    "fullName": "Large Language Model Operations",
+    "nameCn": "大语言模型运营工程",
+    "cat": "人工智能工程",
+    "def": "大模型全生命周期运营工程体系，涵盖模型提示词工程、微调训练、评测对齐、推理加速与实时安全护栏。",
+    "relevance": "将基础大模型工程化转化为企业级可靠生产力工具的工业化流水线。"
+  },
+  {
+    "id": "mas",
+    "term": "MAS",
+    "fullName": "Multi-Agent Systems",
+    "nameCn": "多智能体系统",
+    "cat": "人工智能",
+    "def": "由多个具备独立角色定位、规划能力与工具调用权限的 AI Agent 组成，通过分工协同完成复杂端到端金融任务的系统。",
+    "relevance": "突破单一模型推理瓶颈、实现自主复杂业务流自动流转的关键架构。"
+  },
+  {
+    "id": "mcp",
+    "term": "MCP",
+    "fullName": "Model Context Protocol",
+    "nameCn": "模型上下文协议",
+    "cat": "人工智能生态",
+    "def": "Anthropic 发起制定的开放标准协议，为大语言模型安全、标准化连接本地/云端数据源、业务工具和企业系统提供通用桥梁。",
+    "relevance": "解决银行内部知识孤岛与业务系统向大模型开放标准化的未来关键连接技术。"
+  },
+  {
+    "id": "mpc",
+    "term": "MPC",
+    "fullName": "Secure Multi-Party Computation",
+    "nameCn": "安全多方计算",
+    "cat": "密码学与隐私计算",
+    "def": "允许多个互不信任的参与方在不泄露各自私有输入明文的前提下，协同计算关于其输入的公共函数输出结果的密码学技术。",
+    "relevance": "跨金融机构联合黑名单核验、政银数据要素联合建模的核心隐私底座。"
+  },
+  {
+    "id": "nist",
+    "term": "NIST",
+    "fullName": "National Institute of Standards and Technology",
+    "nameCn": "美国国家标准与技术研究院",
+    "cat": "标准组织与国家机构",
+    "def": "主导制定全球网络安全框架（CSF）、密码评估标准（FIPS）及后量子密码学（PQC）标准算法的权威机构。",
+    "relevance": "其公布的 PQC 算法标准（ML-KEM/ML-DSA）是全行后量子密码迁移的业界基准。"
+  },
+  {
+    "id": "opentelemetry",
+    "term": "OpenTelemetry",
+    "fullName": "OpenTelemetry Observability Framework",
+    "nameCn": "云原生统一可观测性框架",
+    "cat": "云原生与运维工程",
+    "def": "CNCF 顶级开源标准项目，提供跨语言、厂商中立的分布式链路追踪（Traces）、指标（Metrics）与日志（Logs）统一采集规范。",
+    "relevance": "彻底终结监控工具割裂、实现全链路端到端透明监控与故障秒级定位的标准框架。"
+  },
+  {
+    "id": "owasp",
+    "term": "OWASP",
+    "fullName": "Open Worldwide Application Security Project",
+    "nameCn": "开放式全球应用程序安全项目",
+    "cat": "应用安全标准",
+    "def": "致力于提高软件安全性的全球非营利组织，其发布的 Web Top 10 与 LLM Top 10 安全风险是安全防御基线。",
+    "relevance": "开发安全生命周期规范制定与大模型应用上线安全测试的标准指南。"
+  },
+  {
+    "id": "pestel",
+    "term": "PESTEL",
+    "fullName": "PESTEL Macro-Environmental Analysis",
+    "nameCn": "宏观环境六维研判模型",
+    "cat": "战略研判工具",
+    "def": "从政治(P)、经济(E)、社会(S)、技术(T)、环境(E)、法律(L)六大宏观维度全面研判外部环境对金融科技演进的深远影响。",
+    "relevance": "全行金融科技中长期战略规划与前沿研判宏观定调的基础工具。"
+  },
+  {
+    "id": "pets",
+    "term": "PETs",
+    "fullName": "Privacy-Enhancing Technologies",
+    "nameCn": "隐私增强计算技术体系",
+    "cat": "数据安全与要素",
+    "def": "统指保护数据要素全生命周期隐私与安全的技术集群，涵盖多方安全计算、联邦学习、全同态加密与机密计算等。",
+    "relevance": "数据要素市场化流通与安全合规释放数据资产乘数效应的核心技术底座。"
+  },
+  {
+    "id": "poc",
+    "term": "PoC",
+    "fullName": "Proof of Concept",
+    "nameCn": "概念验证 / 技术原型验证",
+    "cat": "研发与创新管理",
+    "def": "在引入全新技术前，针对关键性能指标与核心工程假设在沙盒受控环境开展的小规模可行性实测验证。",
+    "relevance": "论证层前沿技术由理论研究走向生产级选型的必经关键门禁。"
+  },
+  {
+    "id": "pqa",
+    "term": "PQA",
+    "fullName": "Post-Quantum Authentication",
+    "nameCn": "后量子身份认证",
+    "cat": "前沿安全与密码",
+    "def": "基于抗量子计算破解的非对称数字签名算法体系，确保量子计算时代网银交易凭证与数字签名的不可伪造。",
+    "relevance": "未来手机银行移动证书、智能合约与网银认证体系抗量子升级的核心防线。"
+  },
+  {
+    "id": "pqc",
+    "term": "PQC",
+    "fullName": "Post-Quantum Cryptography",
+    "nameCn": "后量子密码学",
+    "cat": "前沿安全与密码",
+    "def": "能够抵抗未来通用量子计算机（Shor 算法）攻击的新型数学密码算法（如格密码、基于哈希签名等）。",
+    "relevance": "金融核心交易数据“先窃听后解密”威胁下的战略级升级方向。"
+  },
+  {
+    "id": "qkd",
+    "term": "QKD",
+    "fullName": "Quantum Key Distribution",
+    "nameCn": "量子密钥分发 / 量子保密通信",
+    "cat": "前沿安全与物理",
+    "def": "利用量子力学海森堡测不准原理与不可克隆定理实现的物理层无条件安全密钥协商机制，具备窃听必被发现特性。",
+    "relevance": "同城双活与异地灾备数据中心骨干网络跨机房高等级数据同步的终极安全通道。"
+  },
+  {
+    "id": "rag",
+    "term": "RAG",
+    "fullName": "Retrieval-Augmented Generation",
+    "nameCn": "检索增强生成",
+    "cat": "人工智能",
+    "def": "在模型推理时从外部经过验证的私域知识库动态检索相关上下文并注入 Prompt，有效抑制大模型事实幻觉。",
+    "relevance": "信贷制度智能问答、财报研报结构化知识检索的标准化主流架构。"
+  },
+  {
+    "id": "regtech",
+    "term": "RegTech",
+    "fullName": "Regulatory Technology",
+    "nameCn": "监管科技",
+    "cat": "金融科技与合规",
+    "def": "金融机构利用云计算、大数据与人工智能等现代技术，实现监管合规要求自动化、报送标准化与跨期合规风险前置管控。",
+    "relevance": "大幅压降监管报送差错率与多头报送人工成本的合规科技利器。"
+  },
+  {
+    "id": "rpa",
+    "term": "RPA",
+    "fullName": "Robotic Process Automation",
+    "nameCn": "机器人流程自动化",
+    "cat": "业务自动化技术",
+    "def": "通过软件机器人模拟人类在计算机界面上的规则操作，低侵入式打通传统跨系统“数据孤岛”而无需重构底层代码。",
+    "relevance": "运营清算、财务对账与批量数据搬运的核心提效工具。"
+  },
+  {
+    "id": "rsa",
+    "term": "RSA",
+    "fullName": "Rivest-Shamir-Adleman Cryptosystem",
+    "nameCn": "传统 RSA 公钥密码体系",
+    "cat": "经典密码体系",
+    "def": "基于大整数质因数分解难题的经典公钥加密算法，广泛用于网银 SSL/TLS 证书，当前面临量子计算破译威胁。",
+    "relevance": "当前金融基础设施的加密基石，需逐步启动向后量子密码算法的平滑迁移。"
+  },
+  {
+    "id": "rwa",
+    "term": "RWA",
+    "fullName": "Real World Assets",
+    "nameCn": "真实世界资产代币化",
+    "cat": "Web3与数字资产",
+    "def": "将国债、票据、供应链应收账款等实体资产转化为区块链上的可编程数字代币凭证，提升结算自动化与流动性。",
+    "relevance": "跨境贸易金融结算、数字债券发行与新型资产流动性池建设的前沿探索。"
+  },
+  {
+    "id": "sbom",
+    "term": "SBOM",
+    "fullName": "Software Bill of Materials",
+    "nameCn": "软件物料清单",
+    "cat": "软件供应链安全",
+    "def": "软件制品中所有第三方开源组件、依赖拓扑与许可证形式化元数据清册（如 SPDX、CycloneDX 标准）。",
+    "relevance": "实现开源组件漏洞（如 Log4j 级别漏洞）分钟级精准定损与合规追溯的核心工具。"
+  },
+  {
+    "id": "slm",
+    "term": "SLM",
+    "fullName": "Small Language Model",
+    "nameCn": "轻量小语言模型 / 端侧模型",
+    "cat": "人工智能",
+    "def": "参数量在 1B～7B 的高能效语言模型，经知识蒸馏后可离线部署于手机终端或边缘节点，具备超低延迟与数据不出域优势。",
+    "relevance": "手机银行端侧反欺诈、离线合规巡检与端侧隐私计算的高效载体。"
+  },
+  {
+    "id": "spdx",
+    "term": "SPDX",
+    "fullName": "Software Package Data Exchange",
+    "nameCn": "软件包数据交换标准",
+    "cat": "供应链安全",
+    "def": "Linux 基金会制定并成为 ISO/IEC 5962 的软件物料清单国际规范，用于以机器可读格式准确传递依赖与许可证信息。",
+    "relevance": "与国际接轨的软件供应链安全标准化审计格式。"
+  },
+  {
+    "id": "suptech",
+    "term": "SupTech",
+    "fullName": "Supervisory Technology",
+    "nameCn": "监管机构科技",
+    "cat": "金融监管与合规",
+    "def": "金融监管当局用于监测系统性金融风险、自动化核查机构报送数据质量及市场异常交易模式的数字化前沿技术体系。",
+    "relevance": "推动银行风控指标与监管穿透式监测直接机器对齐的前沿演进方向。"
+  },
+  {
+    "id": "swift",
+    "term": "SWIFT",
+    "fullName": "Society for Worldwide Interbank Financial Telecommunication",
+    "nameCn": "环球银行金融电信协会",
+    "cat": "金融基础设施",
+    "def": "全球最重要的金融报文通信系统网络，当前正积极推进 ISO 20022 统一数据标准及央行数字货币跨链互联试点。",
+    "relevance": "银行国际结算业务命脉，其代币化与跨链沙盒试验直接影响跨境业务演进。"
+  },
+  {
+    "id": "swot",
+    "term": "SWOT",
+    "fullName": "Strengths, Weaknesses, Opportunities, Threats",
+    "nameCn": "态势分析法",
+    "cat": "战略研判工具",
+    "def": "综合评估技术自身优势(S)、劣势(W)与外部机会(O)、威胁(T)的经典战略分析模型，指导资源配置。",
+    "relevance": "全行 36 项重点前沿技术梯队归类与取舍决策的标准评估工具。"
+  },
+  {
+    "id": "tee",
+    "term": "TEE",
+    "fullName": "Trusted Execution Environment",
+    "nameCn": "可信执行环境 / 机密计算",
+    "cat": "前沿安全与计算",
+    "def": "CPU 硬件层开辟的独立安全隔离飞地（如 Intel SGX、ARM TrustZone），保障高敏数据在内存计算态免遭未授权窃取。",
+    "relevance": "联合风控建模、大模型私有数据推理与生物识别核身的高等级硬件防护屏障。"
+  },
+  {
+    "id": "togaf",
+    "term": "TOGAF",
+    "fullName": "The Open Group Architecture Framework",
+    "nameCn": "开放组体系架构框架",
+    "cat": "企业架构方法论",
+    "def": "全球通用的企业架构框架，提供业务架构、数据架构、应用架构与技术架构（BDAT）的端到端演进方法论。",
+    "relevance": "指导全行企架十大中心规划与前沿技术落位图谱绘制的方法论基石。"
+  },
+  {
+    "id": "trl",
+    "term": "TRL",
+    "fullName": "Technology Readiness Level",
+    "nameCn": "技术成熟度等级（1-9级）",
+    "cat": "成熟度评估工具",
+    "def": "起源于 NASA、被国家部委广泛采纳的技术成熟度分级标尺，客观界定技术从基础机理探索到规模化工程落地的成熟阶段。",
+    "relevance": "前沿技术储备库六维评级中“技术成熟度”打分的量化锚点。"
+  },
+  {
+    "id": "vc",
+    "term": "VC",
+    "fullName": "Verifiable Credentials",
+    "nameCn": "可验证凭证标准",
+    "cat": "区块链与数字身份",
+    "def": "W3C 制定的密码学数字证明标准，支持发行方数字签名与持有方零知识证明（ZKP）最小化披露。",
+    "relevance": "企业数字化供应链资质核验、个人征信脱敏共享的标准化信任载体。"
+  },
+  {
+    "id": "vector-db",
+    "term": "Vector DB",
+    "fullName": "Vector Database",
+    "nameCn": "向量数据库",
+    "cat": "数据架构与AI",
+    "def": "专用于对高维稠密嵌入向量实施高性能近似最近邻（ANN）相似度检索的新型数据库，是大模型外挂知识库核心组件。",
+    "relevance": "支撑企业级海量非结构化文档毫秒级语义检索与私域 RAG 构建的关键底座。"
+  },
+  {
+    "id": "wasi",
+    "term": "WASI",
+    "fullName": "WebAssembly System Interface",
+    "nameCn": "WebAssembly 系统接口标准",
+    "cat": "底层运行时与跨平台",
+    "def": "为 WebAssembly 在浏览器外部运行制定的安全系统接口规范，提供模块化文件访问、网络与系统调用的安全沙箱。",
+    "relevance": "金融插件化敏捷扩展、轻量化无服务器 Serverless 计算的安全隔离基础。"
+  },
+  {
+    "id": "wasm",
+    "term": "WASM",
+    "fullName": "WebAssembly",
+    "nameCn": "WebAssembly 二进制格式",
+    "cat": "底层运行时与计算",
+    "def": "W3C 推荐的跨平台便携式低级二进制指令集，具备接近原生 C/Rust 的执行性能与强安全内存隔离沙箱环境。",
+    "relevance": "跨平台高频计算模块加密运行与微前端核心算法极速执行的底座。"
+  },
+  {
+    "id": "zero-trust",
+    "term": "Zero Trust",
+    "fullName": "Zero Trust Architecture",
+    "nameCn": "零信任安全架构",
+    "cat": "网络与信息安全",
+    "def": "以“持续验证、永不信任”为原则的安全架构，打破传统网络内外边界假设，对所有访问主体、设备与会话实施动态细粒度鉴权。",
+    "relevance": "全行远程安全办公、多云混合环境与开放银行 API 边界防御的战略架构。"
+  }
+];
+
   window.DATA = {
+    terms: TERMS,
     book: {
       title: '科技发展部前沿技术研究成果集',
       subtitle: '前沿技术研究与战略布局全景报告',
