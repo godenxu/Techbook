@@ -95,13 +95,23 @@
   /* ==================== 覆盖层动效性能智能冻结机制 ==================== */
   var activeOverlayCount = 0;
   var lastOverlayCloseTimestamp = 0;
-  function updateOverlayState(delta) {
-    activeOverlayCount = Math.max(0, activeOverlayCount + delta);
+  function syncOverlayCount() {
+    var count = 0;
+    ['panel', 'modal', 'lightbox'].forEach(function (id) {
+      var el = $(id);
+      if (el && !el.classList.contains('hidden') && !el.classList.contains('is-closing')) {
+        count++;
+      }
+    });
+    activeOverlayCount = count;
     if (activeOverlayCount > 0) {
       document.body.classList.add('has-overlay-open');
     } else {
       document.body.classList.remove('has-overlay-open');
     }
+  }
+  function updateOverlayState(delta) {
+    syncOverlayCount();
   }
 
   /* ==================== 面板导航历史栈 (NavStack) ==================== */
@@ -188,6 +198,10 @@
     $('panelTitle').innerHTML = title;
     $('panelBody').innerHTML = html;
     $('panelBody').classList.toggle('flex', !!flexBody);
+    var navEl = $('panelTechNav');
+    if (navEl && (!currentPanelMeta || currentPanelMeta.type !== 'tech')) {
+      navEl.classList.add('hidden');
+    }
     el.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     updateOverlayState(1);
@@ -207,6 +221,8 @@
     setTimeout(function () {
       el.classList.add('hidden');
       el.classList.remove('is-closing');
+      var navEl = $('panelTechNav');
+      if (navEl) navEl.classList.add('hidden');
       var iframes = el.querySelectorAll('iframe');
       iframes.forEach(function (f) {
         try { f.src = 'about:blank'; } catch (e) {}
@@ -569,102 +585,52 @@
       '</div>';
   }
   function titlePageHTML() {
-    var b = DATA.book;
-    var lib = DATA.library.items.length;
-    var cats = DATA.categories.length;
-    var srcs = 21;
-    var methods = 25;
-    var deepTechs = 5;
+    return '<div class="page-pad page-pad-flyleaf">' +
+      '<div class="flyleaf-header">' +
+        '<div class="flyleaf-kicker">PROLOGUE · 序章</div>' +
+        '<div class="flyleaf-title">看见未来，还是等待未来发生？</div>' +
+        '<div class="flyleaf-subtitle">当技术加速演进，我们需要的，不只是“知道”，更是看见、判断与行动。</div>' +
+        '<div class="flyleaf-divider"></div>' +
+      '</div>' +
 
-    return '<div class="page-pad page-pad-title">' +
-      '<div class="page-head-row" style="margin-bottom:2px">' +
-        '<div class="page-head-main">' +
-          '<div class="page-title">前言与阅读指引</div>' +
-          '<div class="page-subtitle">前瞻技术研判 · 决策赋能定位 · 全书架构导航</div>' +
+      '<div class="flyleaf-questions">' +
+        '<div class="fl-q-item">' +
+          '<div class="fl-q-num">01</div>' +
+          '<div class="fl-q-text">我们能否看见尚未成为共识、却可能改变未来的变化？</div>' +
+        '</div>' +
+        '<div class="fl-q-item">' +
+          '<div class="fl-q-num">02</div>' +
+          '<div class="fl-q-text">我们能否判断一项前沿技术，究竟是短暂热点，还是长期趋势？</div>' +
+        '</div>' +
+        '<div class="fl-q-item">' +
+          '<div class="fl-q-num">03</div>' +
+          '<div class="fl-q-text">我们能否看清技术演进，将如何重塑银行的业务、客户与竞争边界？</div>' +
+        '</div>' +
+        '<div class="fl-q-item">' +
+          '<div class="fl-q-num">04</div>' +
+          '<div class="fl-q-text">我们能否在未来真正到来之前，为选择与行动赢得时间？</div>' +
         '</div>' +
       '</div>' +
-      '<div class="h-rule" style="margin-bottom:12px"></div>' +
 
-      '<div class="title-purpose-card">' +
-        '<div class="tpc-label">🎯 编制背景与战略定位</div>' +
-        '<div class="tpc-text">为深入贯彻全行数字化转型战略，有力支撑<b>“十五五”信息科技规划编制、全行重大科技投资决策与新技术验证立项</b>，科技规划处牵头建立前瞻性、体系化、决策导向的前沿技术常态化研判能力。本书系统汇聚外部多源情报与自主研究成果，构建<b>“前沿技术雷达”</b>与<b>“分层储备库”</b>，推动前沿洞察从“零散跟踪”向“常态研判”升级、从“信息搬运”向“价值研判”升级，为全行科技创新提供坚实的技术选型与路线指引。</div>' +
-      '</div>' +
-
-      '<div class="title-tags-row">' +
-        '<span class="title-res-tag tag-blue"><b class="trt-num">' + lib + '</b> 项长名单技术</span>' +
-        '<span class="title-res-tag tag-cyan"><b class="trt-num">' + cats + '</b> 大战略前沿领域</span>' +
-        '<span class="title-res-tag tag-emerald"><b class="trt-num">' + srcs + '</b> 家情报源盘点</span>' +
-        '<span class="title-res-tag tag-amber"><b class="trt-num">' + methods + '</b> 项方法论工具</span>' +
-        '<span class="title-res-tag tag-purple"><b class="trt-num">' + deepTechs + '</b> 项深度专题包</span>' +
-      '</div>' +
-
-      '<div class="pg-section" style="margin-bottom:0">' +
-        '<div class="pg-h" style="font-size:15px;margin-bottom:8px">成果体系架构与交付形态</div>' +
-        '<div class="title-chap-grid">' +
-          '<div class="title-chap-card">' +
-            '<div class="tcc-head"><span class="tcc-tag tag-p1">第一章</span><span class="tcc-title">工作方案与方法</span></div>' +
-            '<div class="tcc-desc">确立常态化前沿技术研究机制与科学评价方法论。</div>' +
-            '<div class="tcc-badges">' +
-              '<span class="badge">五级漏斗机制</span><span class="badge">21家情报源评估</span><span class="badge">25项方法论矩阵</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="title-chap-card">' +
-            '<div class="tcc-head"><span class="tcc-tag tag-p2">第二章</span><span class="tcc-title">整体研究成果</span></div>' +
-            '<div class="tcc-desc">宏观研判全行技术储备与布局全景，支撑全行顶层选型。</div>' +
-            '<div class="tcc-badges">' +
-              '<span class="badge">36项技术储备库</span><span class="badge">Hype Cycle 曲线</span><span class="badge">影响力雷达</span><span class="badge">企架十大中心落位</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="title-chap-card">' +
-            '<div class="tcc-head"><span class="tcc-tag tag-p3">第三章</span><span class="tcc-title">各项前沿技术研究</span></div>' +
-            '<div class="tcc-desc">逐项深研技术机理、银行应用场景、落地成效与合规约束。</div>' +
-            '<div class="tcc-badges">' +
-              '<span class="badge">36项六维评估表</span><span class="badge">万字专题报告</span><span class="badge">演示PPT</span><span class="badge">架构一张图</span>' +
-            '</div>' +
-          '</div>' +
+      '<div class="flyleaf-footer">' +
+        '<div class="fl-f-quote">' +
+          '<p>前沿技术研究，不是预测每一个未来，</p>' +
+          '<p>而是更早发现变化，更深理解趋势，更准确判断影响，</p>' +
+          '<p>并将不确定的技术变化，转化为可认知、可研判、可行动的研究成果。</p>' +
         '</div>' +
       '</div>' +
     '</div>';
   }
 
-  function overviewPageHTML() {
-    var b = DATA.book;
-    return '<div class="page-pad page-pad-overview">' +
-      '<div class="page-head-row" style="margin-bottom:2px">' +
-        '<div class="page-head-main">' +
-          '<div class="page-title">研究规范与机制</div>' +
-          '<div class="page-subtitle">核心准则 · 储备库分层规则 · 数字化系统说明</div>' +
+  function frontMottoHTML() {
+    return '<div class="page-pad page-pad-motto">' +
+      '<div class="motto-center-wrap">' +
+        '<div class="motto-clean-title">' +
+          '<span>看见变化</span>' +
+          '<span>判断趋势</span>' +
+          '<span>看清影响</span>' +
+          '<span>赢得主动</span>' +
         '</div>' +
-      '</div>' +
-      '<div class="h-rule" style="margin-bottom:8px"></div>' +
-
-      '<div class="pg-section" style="margin-bottom:8px">' +
-        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">编制准则与核心原则</div>' +
-        '<div class="overview-principle-grid">' +
-          '<div class="op-card"><span class="op-tag">战略导向</span>聚焦人工智能、数据要素、算力网络三大核心方向，紧扣全行战略与科技规划布局。</div>' +
-          '<div class="op-card"><span class="op-tag">金融适配</span>以“战略匹配度”为核心标尺，突出银行具体业务场景赋能、风险可控与监管合规边界。</div>' +
-          '<div class="op-card"><span class="op-tag">客观真源</span>多源情报交叉核验，五维加权量化评分，确保研判依据客观可溯、结论可靠闭环。</div>' +
-          '<div class="op-card"><span class="op-tag">分层滚动</span>储备库四层动态调入调出，设定可行度与紧迫度阈值约束，实现研判资产常态演进。</div>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="pg-section" style="margin-bottom:8px">' +
-        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">前沿技术储备库动态分层管理机制</div>' +
-        '<div class="overview-tiers-grid">' +
-          '<div class="ot-card t-layout"><div class="ot-tier">布局层 (6项)</div><div class="ot-desc">战略匹配与价值双高，资源前置、提前布局试验（如自主型AI智能体、AI原生应用架构）</div></div>' +
-          '<div class="ot-card t-prove"><div class="ot-tier">论证层 (10项)</div><div class="ot-desc">应用前景明确、紧迫度高，开展系统性技术可行性与工程论证（如算力网络、AI安全平台）</div></div>' +
-          '<div class="ot-card t-study"><div class="ot-tier">研究层 (10项)</div><div class="ot-desc">技术演进趋势明确，与我行具潜在关联，保持技术机理深入跟踪与原型预研（如因果AI、去中心化身份）</div></div>' +
-          '<div class="ot-card t-watch"><div class="ot-tier">观察层 (10项)</div><div class="ot-desc">新兴萌芽或当前约束较高，纳入雷达常态观测，跟踪技术成熟度演进拐点（如量子计算、神经形态）</div></div>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="pg-section" style="margin-bottom:0">' +
-        '<div class="pg-h" style="font-size:15px;margin-bottom:5px">编制与发布信息</div>' +
-        '<table class="tbl" style="font-size:13px">' +
-          '<tr><th style="width:85px;padding:3.5px 8px">编制单位</th><td style="padding:3.5px 8px">' + esc(b.org) + '</td><th style="width:85px;padding:3.5px 8px">发布周期</th><td style="padding:3.5px 8px">' + esc(b.date) + '（年度总体研判 + 季度动态跟踪）</td></tr>' +
-          '<tr><th style="padding:3.5px 8px">研究范围</th><td style="padding:3.5px 8px">前沿技术长名单 36 项，全面映射企架十大中心落位</td><th style="padding:3.5px 8px">滚动机制</th><td style="padding:3.5px 8px">月度例会动态调档 · 季度动态简报呈报 · 年度趋势总报告定稿</td></tr>' +
-          '<tr><th style="padding:3.5px 8px">系统架构</th><td colspan="3" style="padding:3.5px 8px">纯静态离线单文件架构，免外部服务依赖；支持「双页对开书籍模式」与「网页大屏模式」即开即用。</td></tr>' +
-        '</table>' +
       '</div>' +
     '</div>';
   }
@@ -672,18 +638,19 @@
   function getTocItems() {
     var items = [];
     function add(no, label, key, part) { items.push({ no: no, label: label, key: key, part: part }); }
-    add('', '前言与阅读指引', 'title', false);
-    add('', '研究规范与机制', 'overview', false);
+    add('序章', '看见未来，还是等待未来发生？', 'title', true);
     add('', '目录 · 双页对开', 'toc1', false);
     add('第一章', '工作方案与方法', 'part1', true);
     add('1.1', '工作方案', 'workplan', false);
     add('1.2', '信息来源评估', 'sources', false);
     add('1.3', '方法论工具评估', 'methodology_appl', false);
+    add('', '研判方法与分层机制', 'methodology_mechanism', false);
     add('第二章', '整体研究成果', 'part2', true);
-    add('2.1', '前沿技术储备库（长名单）', 'library', false);
-    add('2.2', '技术成熟度曲线（Gartner Hype Cycle）', 'hypeCycle', false);
-    add('2.3', '技术影响力雷达图', 'radar', false);
-    add('2.4', '前沿技术在企架十大中心的落位图谱', 'graph', false);
+    add('', '整体研究成果概述', 'research_overview', false);
+    add('2.2', '前沿技术储备库（长名单）', 'library', false);
+    add('2.3', '技术成熟度曲线（Gartner Hype Cycle）', 'hypeCycle', false);
+    add('2.4', '技术影响力雷达图', 'radar', false);
+    add('2.5', '前沿技术在企架十大中心的落位图谱', 'graph', false);
     add('第三章', '各项前沿技术研究', 'part3', true);
     DATA.technologies.forEach(function (t, i) {
       add('3.' + (i + 1), t.name, 'tech-' + t.id, false);
@@ -700,18 +667,19 @@
       var pIdx = pageKeyMap[it.key];
       if (pIdx == null) pIdx = 1;
       var cls = it.part ? 'toc-part' : ((it.key === 'title' || it.key === 'overview') ? '' : 'toc-indent');
+      var pageNum = pIdx;
       return '<li data-jump="' + pIdx + '" class="' + cls + '">' +
         '<span class="toc-no">' + esc(it.no) + '</span>' +
         '<span class="toc-label" title="' + esc(it.label) + '">' + esc(it.label) + '</span>' +
         '<span class="toc-dots"></span>' +
-        '<span class="toc-page-num">P.' + (pIdx + 1) + '</span>' +
+        '<span class="toc-page-num">P.' + pageNum + '</span>' +
       '</li>';
     }).join('');
     return '<div class="page-pad page-pad-toc">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
           '<div class="page-title">' + title + '</div>' +
-          '<div class="page-subtitle">' + sub + '</div>' +
+          (sub ? ('<div class="page-subtitle">' + sub + '</div>') : '') +
         '</div>' +
       '</div>' +
       '<div class="h-rule"></div>' +
@@ -724,7 +692,7 @@
     all = all.filter(function(it) { return it.key !== 'toc1'; });
     var mid = Math.ceil(all.length / 2);
     var items = all.slice(0, mid);
-    return renderTocPage('目 录（上）', '前序导读 · 第一章 工作方案与方法 · 第二章 整体研究成果 · 第三章 专题技术研判', items);
+    return renderTocPage('目 录（上）', '', items);
   }
 
   function toc2HTML() {
@@ -732,7 +700,7 @@
     all = all.filter(function(it) { return it.key !== 'toc1'; });
     var mid = Math.ceil(all.length / 2);
     var items = all.slice(mid);
-    return renderTocPage('目 录（下）', '第三章 专题技术研判（续）· 附录与方法论工具体系 · 结语与版权', items);
+    return renderTocPage('目 录（下）', '', items);
   }
   function dividerHTML(part, title, desc, num) {
     return '<div class="divider-full"><div class="dv-num">' + num + '</div>' +
@@ -1052,6 +1020,223 @@
       '</div>' +
     '</div>';
   }
+
+  function methodologyMechanismHTML() {
+    // 绘制 6 维蜘蛛网图 SVG
+    var dims = [
+      { name: '技术成熟度', score: 4.2 },
+      { name: '战略匹配度', score: 4.6 },
+      { name: '价值贡献度', score: 4.5 },
+      { name: '引入可行度', score: 3.8 },
+      { name: '战略紧迫度', score: 4.4 },
+      { name: '生态开放度', score: 4.0 }
+    ];
+    var W = 320, H = 210, cx = W / 2, cy = H / 2, R = 62;
+    var n = 6;
+    var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
+    var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="mech-spider-svg" role="img">';
+    // 背景网格 5 层
+    for (var ring = 1; ring <= 5; ring++) {
+      var rr = R * ring / 5, pts = [];
+      for (var k = 0; k < n; k++) { var p = pt(k, rr); pts.push(p[0].toFixed(1) + ',' + p[1].toFixed(1)); }
+      svg += '<polygon points="' + pts.join(' ') + '" fill="none" stroke="var(--border)" stroke-width="1"' + (ring === 5 ? '' : ' stroke-dasharray="2,2"') + '/>';
+    }
+    // 轴线
+    for (var k = 0; k < n; k++) {
+      var p2 = pt(k, R);
+      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p2[0].toFixed(1) + '" y2="' + p2[1].toFixed(1) + '" stroke="var(--border)" stroke-width="1"/>';
+    }
+    // 示例多边形
+    var polyPts = [];
+    for (var k = 0; k < n; k++) {
+      var pp = pt(k, (dims[k].score / 5) * R);
+      polyPts.push(pp[0].toFixed(1) + ',' + pp[1].toFixed(1));
+    }
+    svg += '<polygon points="' + polyPts.join(' ') + '" fill="rgba(79, 140, 255, 0.28)" stroke="#4f8cff" stroke-width="2"/>';
+    for (var k = 0; k < n; k++) {
+      var pp = pt(k, (dims[k].score / 5) * R);
+      svg += '<circle cx="' + pp[0].toFixed(1) + '" cy="' + pp[1].toFixed(1) + '" r="3.5" fill="#38bdf8"/>';
+    }
+    // 维度标签
+    for (var k = 0; k < n; k++) {
+      var a = angle(k);
+      var isTopBottom = Math.abs(Math.cos(a)) < 0.25;
+      var dist = isTopBottom ? (R + 15) : (R + 10);
+      var lp = pt(k, dist);
+      var anchor = isTopBottom ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
+      svg += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + 4).toFixed(1) + '" font-size="11" text-anchor="' + anchor + '" fill="var(--text)" font-weight="700">' + dims[k].name + '</text>';
+    }
+    svg += '</svg>';
+
+    return '<div class="page-pad page-pad-mechanism">' +
+      '<div class="page-head-row" style="margin-bottom:2px">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">研判方法与分层机制</div>' +
+          '<div class="page-subtitle">六维蜘蛛雷达评判模型 · 前沿技术储备库四类层级研判方法</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="h-rule" style="margin-bottom:8px"></div>' +
+
+      // 上半区：6维蜘蛛雷达评判模型
+      '<div class="pg-section" style="margin-bottom:8px">' +
+        '<div class="pg-h" style="font-size:14px;margin-bottom:5px">一、六维蜘蛛雷达量化评判模型</div>' +
+        '<div class="mech-upper-grid">' +
+          '<div class="mech-spider-box">' + svg + '</div>' +
+          '<div class="mech-dims-grid">' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">技术成熟度</span></div><div class="mech-dim-desc">技术所处发展阶段，判断技术本身是否可用</div></div>' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">战略匹配度</span></div><div class="mech-dim-desc">与本行战略方向的命中契合程度</div></div>' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">价值贡献度</span></div><div class="mech-dim-desc">对效率、风控、客户体验与新业务的预期价值贡献</div></div>' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">引入可行度</span></div><div class="mech-dim-desc">改造成本叠加合规、安全、人才约束，判断引入难易</div></div>' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">战略紧迫度</span></div><div class="mech-dim-desc">同业布局节奏与监管时限对推进窗口的压缩程度</div></div>' +
+            '<div class="mech-dim-card"><div class="mech-dim-head"><span class="mech-dim-name">生态开放度</span></div><div class="mech-dim-desc">技术生态厂商集中度与可替代路径，判断有无单点依赖</div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 下半区：4类层级研判方法
+      '<div class="pg-section" style="margin-bottom:0">' +
+        '<div class="pg-h" style="font-size:14px;margin-bottom:5px">二、前沿技术储备库四类层级研判方法与管理策略</div>' +
+        '<div class="mech-tiers-grid">' +
+          '<div class="mech-tier-card" style="--tier-accent:#34d399">' +
+            '<div class="mech-tier-head"><span class="mech-tier-title"><span style="width:8px;height:8px;border-radius:50%;background:#34d399"></span>布局层</span><span class="mech-tier-badge">提前布局 · 试点攻坚</span></div>' +
+            '<div class="mech-tier-rule"><b>判定标准：</b>战略匹配度与价值贡献度双高（≥4分），紧迫度高，方向明确但尚未完全成熟。</div>' +
+            '<div class="mech-tier-strategy"><b>研判策略：</b>资源前置、治理先行，在低风险可控业务场景率先开展沙盒试点，打造标杆架构示范。</div>' +
+          '</div>' +
+          '<div class="mech-tier-card" style="--tier-accent:#38bdf8">' +
+            '<div class="mech-tier-head"><span class="mech-tier-title"><span style="width:8px;height:8px;border-radius:50%;background:#38bdf8"></span>论证层</span><span class="mech-tier-badge">系统论证 · 架构融合</span></div>' +
+            '<div class="mech-tier-rule"><b>判定标准：</b>商业前景明确，技术成熟度达3~4分，与我行业务直接关联且具备引入可行性。</div>' +
+            '<div class="mech-tier-strategy"><b>研判策略：</b>开展全面技术可行性与工程论证，启动系统性 PoC 原型验证，攻坚安全合规与系统集成。</div>' +
+          '</div>' +
+          '<div class="mech-tier-card" style="--tier-accent:#fbbf24">' +
+            '<div class="mech-tier-head"><span class="mech-tier-title"><span style="width:8px;height:8px;border-radius:50%;background:#fbbf24"></span>研究层</span><span class="mech-tier-badge">机理跟踪 · 原型预研</span></div>' +
+            '<div class="mech-tier-rule"><b>判定标准：</b>演进趋势明确，具潜在金融变革价值，但在工程实现或架构适配上仍有不确定性。</div>' +
+            '<div class="mech-tier-strategy"><b>研判策略：</b>保持技术机理深入跟踪，开展前瞻实验室原型试制，跟踪全球顶级论文与专利态势。</div>' +
+          '</div>' +
+          '<div class="mech-tier-card" style="--tier-accent:#fb7185">' +
+            '<div class="mech-tier-head"><span class="mech-tier-title"><span style="width:8px;height:8px;border-radius:50%;background:#fb7185"></span>观察层</span><span class="mech-tier-badge">常态观察 · 拐点捕捉</span></div>' +
+            '<div class="mech-tier-rule"><b>判定标准：</b>新兴萌芽探索或当前在算力、算法、安全或监管合规上受强约束，短期难落地。</div>' +
+            '<div class="mech-tier-strategy"><b>研判策略：</b>纳入技术雷达常态化观测，设置量化触发指标，动态跟踪同业实践与底层技术突破拐点。</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mech-footer-note">' +
+        '<span style="font-weight:800;color:var(--accent)">动态流转机制：</span>' +
+        '<span>储备库实行“季度常态扫描 + 半年度动态调级 + 年度总报告定稿”，六维量化评分达标即触发升降级流转，确保前沿研判资产常态演进、精准闭环。</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function researchOverviewDataHTML() {
+    return '<div class="page-pad page-pad-research-overview">' +
+      '<div class="page-head-row" style="margin-bottom:2px">' +
+        '<div class="page-head-main">' +
+          '<div class="page-title">整体研究成果概述</div>' +
+          '<div class="page-subtitle">前沿技术全景画像 · 四级梯队分布 · 核心研判指标数据</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="h-rule" style="margin-bottom:10px"></div>' +
+
+      // 6大核心研究成果数据卡片
+      '<div class="res-kpi-bar res-kpi-grid-6">' +
+        '<div class="res-kpi-card" style="--kpi-col:#6366f1">' +
+          '<div class="res-kpi-val">1<span>套</span></div>' +
+          '<div class="res-kpi-lbl">工作方法</div>' +
+          '<div class="res-kpi-sub" title="1套工作方法">1套工作方法</div>' +
+        '</div>' +
+        '<div class="res-kpi-card" style="--kpi-col:#0ea5e9">' +
+          '<div class="res-kpi-val">21<span>个</span></div>' +
+          '<div class="res-kpi-lbl">信息渠道评估</div>' +
+          '<div class="res-kpi-sub" title="21个信息渠道评估">21个信息渠道评估</div>' +
+        '</div>' +
+        '<div class="res-kpi-card" style="--kpi-col:#10b981">' +
+          '<div class="res-kpi-val">25<span>项</span></div>' +
+          '<div class="res-kpi-lbl">方法论工具评估</div>' +
+          '<div class="res-kpi-sub" title="25项方法论工具评估">25项方法论工具评估</div>' +
+        '</div>' +
+        '<div class="res-kpi-card" style="--kpi-col:#f59e0b">' +
+          '<div class="res-kpi-val">100<span>+</span></div>' +
+          '<div class="res-kpi-lbl">知识库报告归集</div>' +
+          '<div class="res-kpi-sub" title="100+知识库报告归集">100+知识库报告归集</div>' +
+        '</div>' +
+        '<div class="res-kpi-card" style="--kpi-col:#3b82f6">' +
+          '<div class="res-kpi-val">36<span>项</span></div>' +
+          '<div class="res-kpi-lbl">储备库初步研判</div>' +
+          '<div class="res-kpi-sub" title="36项前沿技术储备库(长名单)初步研判">36项储备库(长名单)初步研判</div>' +
+        '</div>' +
+        '<div class="res-kpi-card" style="--kpi-col:#a855f7">' +
+          '<div class="res-kpi-val">3<span>项</span></div>' +
+          '<div class="res-kpi-lbl">深度研判资产</div>' +
+          '<div class="res-kpi-sub" title="3项关键技术深度研判资产">3项关键技术深度研判资产</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 梯队分布条与核心技术明细
+      '<div class="res-progress-wrap">' +
+        '<div class="res-progress-head">' +
+          '<span class="res-prog-title">一、36 项前沿技术储备库（长名单）4 大梯队分布与代表技术</span>' +
+          '<span style="font-size:11.5px;color:var(--dim)">总计 36 项 · 梯次衔接 · 动态管理</span>' +
+        '</div>' +
+        '<div class="res-progress-bar">' +
+          '<div class="res-progress-seg" style="width:16.7%;background:#34d399">布局 16.7%</div>' +
+          '<div class="res-progress-seg" style="width:27.8%;background:#38bdf8">论证 27.8%</div>' +
+          '<div class="res-progress-seg" style="width:27.8%;background:#fbbf24">研究 27.8%</div>' +
+          '<div class="res-progress-seg" style="width:27.7%;background:#fb7185">观察 27.8%</div>' +
+        '</div>' +
+        '<div class="res-tier-subcards">' +
+          '<div class="res-tier-subcard">' +
+            '<div class="res-tier-subhead" style="color:#34d399"><span>布局层 (6项)</span><span>16.7%</span></div>' +
+            '<div class="res-tier-subtechs">自主型AI智能体、AI原生架构、数据编织、具身智能、时空图计算、端侧模型与边缘智能</div>' +
+          '</div>' +
+          '<div class="res-tier-subcard">' +
+            '<div class="res-tier-subhead" style="color:#38bdf8"><span>论证层 (10项)</span><span>27.8%</span></div>' +
+            '<div class="res-tier-subtechs">算力网络、AI安全平台、多模态大模型、合成数据、隐私计算、云原生AI底座、知识图谱...</div>' +
+          '</div>' +
+          '<div class="res-tier-subcard">' +
+            '<div class="res-tier-subhead" style="color:#fbbf24"><span>研究层 (10项)</span><span>27.8%</span></div>' +
+            '<div class="res-tier-subtechs">因果AI、去中心化身份(DID)、Web3金融、神经形态计算、存算一体、脑机接口、可解释AI...</div>' +
+          '</div>' +
+          '<div class="res-tier-subcard">' +
+            '<div class="res-tier-subhead" style="color:#fb7185"><span>观察层 (10项)</span><span>27.8%</span></div>' +
+            '<div class="res-tier-subtechs">量子计算、量子加密、DNA存储、光子计算、微电网与绿色算力、WebAssembly沙箱、6G...</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 三大战略领域
+      '<div class="pg-section" style="margin-bottom:0">' +
+        '<div class="pg-h" style="font-size:13.5px;margin-bottom:6px">二、三大战略主轴领域分布与关键技术深度研判</div>' +
+        '<div class="res-domains-grid">' +
+          '<div class="res-domain-card">' +
+            '<div class="res-domain-head"><span class="res-domain-name">🤖 人工智能领域</span><span class="res-domain-count">15 项 (41.7%)</span></div>' +
+            '<div class="res-domain-desc">聚焦自主智能体、多模态与生成式AI工程化，打造数智内核（含自主型AI智能体、AI原生架构 2 项关键技术深度研判）。</div>' +
+          '</div>' +
+          '<div class="res-domain-card">' +
+            '<div class="res-domain-head"><span class="res-domain-name">📊 数据要素领域</span><span class="res-domain-count">11 项 (30.6%)</span></div>' +
+            '<div class="res-domain-desc">攻坚数据要素流通、数据编织、隐私计算与图计算，释放高价值数据资产乘数效应与安全合规流通价值。</div>' +
+          '</div>' +
+          '<div class="res-domain-card">' +
+            '<div class="res-domain-head"><span class="res-domain-name">⚡ 算力与基础设施</span><span class="res-domain-count">10 项 (27.8%)</span></div>' +
+            '<div class="res-domain-desc">前瞻算力网络调度、绿色低碳算力、量子科技与新兴安全，构筑弹性基石（含算力网络 1 项关键技术深度研判）。</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 底部工作方法/知识库与研究产出总结（对应顶部6大核心指标）
+      '<div class="res-bottom-grid">' +
+        '<div class="res-bottom-card">' +
+          '<div class="res-bottom-title">🛠️ 研判工作方法体系与知识资产储备</div>' +
+          '<div class="res-bottom-desc">形成 1 套全流程工作方法，完成 21 个权威信息渠道多维评估与 25 项方法论工具实操适配，持续归集 100+ 篇权威行业研报沉淀至前沿知识库。</div>' +
+        '</div>' +
+        '<div class="res-bottom-card">' +
+          '<div class="res-bottom-title">📦 重点技术深度研判与资产交付</div>' +
+          '<div class="res-bottom-desc">全面完成 36 项技术长名单多维画像与初步研判，并对 3 项关键技术交付高标准全套深度研判资产（Word详析报告+演讲PPT+一张图架构）。</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   var libPreviewPage = 0;
   function libraryPreviewHTML(pageIdx, isWeb) {
     if (pageIdx !== undefined && typeof pageIdx === 'number') libPreviewPage = pageIdx;
@@ -2708,11 +2893,26 @@
   }
   var appendixHTML = appendixTermsHTML;
   function backCoverHTML() {
-    return '<div class="cover-full">' +
-      '<div class="cov-kicker">THANK YOU</div>' +
-      '<div class="cov-title" style="font-size:24px">金融科技 · 前瞻研判</div>' +
-      '<div class="cov-rule"></div>' +
-      '<div class="cov-meta">' + esc(DATA.book.org) + '<br>' + esc(DATA.book.date) + '</div>' +
+    var orbs = [
+      '<span class="cover-orb" style="width:220px;height:220px;background:#4f8cff;right:-60px;top:-60px"></span>',
+      '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;left:-40px;bottom:-40px"></span>',
+      '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;left:20%;top:8%"></span>'
+    ].join('');
+    return '<div class="cover-full back-cover-full">' + orbs +
+      '<div class="cov-kicker" style="letter-spacing:6px;margin-bottom:32px;opacity:0.85">VALUATION & STRATEGY</div>' +
+      '<div class="back-cover-core">' +
+        '<div class="bc-step-chain">' +
+          '<div class="bc-step-node"><span class="bc-step-verb">看见</span><span class="bc-step-noun">变化</span></div>' +
+          '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
+          '<div class="bc-step-node"><span class="bc-step-verb">判断</span><span class="bc-step-noun">趋势</span></div>' +
+          '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
+          '<div class="bc-step-node"><span class="bc-step-verb">看清</span><span class="bc-step-noun">影响</span></div>' +
+          '<div class="bc-step-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
+          '<div class="bc-step-node bc-step-highlight"><span class="bc-step-verb">赢得</span><span class="bc-step-noun">主动</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="cov-rule" style="margin:36px 0 24px"></div>' +
+      '<div class="cov-meta" style="font-size:12px;opacity:0.75;line-height:1.8">' + esc(DATA.book.org) + '<br>' + esc(DATA.book.date) + '</div>' +
       '</div>';
   }
   function closingHTML() {
@@ -2751,26 +2951,28 @@
 
   addPage('inside', '', insideCoverHTML());
   addPage('cover', '封面', coverHTML());
-  addPage('title', '前言与阅读指引', titlePageHTML());
-  addPage('overview', '研究规范与机制', overviewPageHTML());
+  addPage('motto', '', frontMottoHTML());
+  addPage('title', '序章', titlePageHTML());
   addPage('toc1', '目录（上）', toc1HTML);
   addPage('toc2', '目录（下）', toc2HTML);
-  addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '敏捷工作机制 · 情报源分类分级加权评判 · 方法论工具矩阵', '01'));
+  addPage('part1', '第一章', dividerHTML('第一章', '工作方案与方法', '顶层规划 · 情报源评估 · 研判工具与多维坐标', '01'));
   addPage('workplan', '第一章 · 工作方案', workplanHTML());
   addPage('sources', '第一章 · 信息来源评估', sourcesHTML());
-  addPage('methodology_appl', '第一章 · 方法论工具评估', methodologyApplHTML());
-  addPage('part2', '第二章', dividerHTML('第二章', '整体研究成果', '前沿技术储备库 · 技术成熟度曲线 · 技术影响力雷达 · 企架十大中心落位图谱', '02'));
+  addPage('methodology_appl', '第一章 · 研判工具应用', methodologyApplHTML());
+  addPage('methodology_mechanism', '第一章 · 研判方法与分层机制', methodologyMechanismHTML());
+  addPage('part2', '第二章', dividerHTML('第二章', '整体研究成果', '前沿技术全景 · 成熟度研判 · 影响力雷达 · 企架落位', '02'));
+  addPage('research_overview', '第二章 · 整体研究成果概述', researchOverviewDataHTML());
   addPage('library', '第二章 · 前沿技术储备库', libraryPreviewHTML());
-  addPage('hypeCycle', '第二章 · 技术成熟度曲线', hypeCyclePreviewHTML);
-  addPage('radar', '第二章 · 技术影响力雷达图', radarPreviewHTML);
-  addPage('graph', '第二章 · 落位图谱', graphPreviewHTML());
-  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '六维评估表 · 专题研究报告（Word / PPT）· 一张图概述', '03'));
+  addPage('hypeCycle', '第二章 · 成熟度曲线', hypeCyclePreviewHTML);
+  addPage('radar', '第二章 · 影响力雷达图', radarPreviewHTML);
+  addPage('graph', '第二章 · 企架落位图谱', graphPreviewHTML());
+  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '四大维度全面解构 · 36项重点技术专题研判', '03'));
   DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
-  addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论工具与说明', '前沿技术研究方法论工具体系 · 术语表与数据来源', '附'));
-  addPage('appendix_methodology', '附录一 · 方法论工具体系', appendixMethodologyHTML());
-  addPage('appendix', '附录二 · 术语与数据来源', appendixTermsHTML());
+  addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论与来源体系', '前沿技术研究方法论工具 · 术语表 · 数据来源 · 版本说明', '附'));
+  addPage('appendix_methodology', '附录一 · 方法论体系', appendixMethodologyHTML());
+  addPage('appendix', '附录二 · 术语与来源', appendixTermsHTML());
   addPage('closing', '结语', closingHTML());
-  // 确保封底始终位于最终闭合跨页的左侧页（偶数索引）：如果正文结束于奇数总页数，在封底前补充一页优雅衬页
+  // 确保封底位于闭合跨页（总页数为偶数，若为奇数则在封底前插入一空白衬页）
   if (pages.length % 2 !== 0) {
     addPage('blankPreBack', '', '<div class="page-pad"></div>');
   }
@@ -2782,19 +2984,20 @@
   function getAllBookmarks() {
     var bms = [
       { id: 'cover', no: '封面', short: '全书封面', name: '全书封面 · 科技发展部前沿技术研究成果集', page: pageKeyMap['cover'] != null ? pageKeyMap['cover'] : 1, color: '#818cf8', tier: '前序' },
-      { id: 'title', no: '前言', short: '阅读指引', name: '第2页 · 前言与阅读指引', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 2, color: '#818cf8', tier: '前序' },
-      { id: 'overview', no: '机制', short: '研究机制', name: '第3页 · 研究规范与机制', page: pageKeyMap['overview'] != null ? pageKeyMap['overview'] : 3, color: '#818cf8', tier: '前序' },
+      { id: 'title', no: '序章', short: '序章', name: '第3页 · 序章：看见未来，还是等待未来发生？', page: pageKeyMap['title'] != null ? pageKeyMap['title'] : 3, color: '#818cf8', tier: '前序' },
       { id: 'toc1', no: '目录', short: '全书目录', name: '全书目录 · 双页对开', page: pageKeyMap['toc1'] != null ? pageKeyMap['toc1'] : 4, color: '#818cf8', tier: '前序' },
       { id: 'part1', no: '一章', short: '方案方法', name: '第一章 · 工作方案与方法', page: pageKeyMap['part1'] != null ? pageKeyMap['part1'] : 6, color: '#6366f1', tier: '第一章' },
       { id: 'workplan', no: '1.1', short: '工作方案', name: '1.1 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
       { id: 'sources', no: '1.2', short: '情报来源', name: '1.2 · 信息来源评估', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
       { id: 'methodology_appl', no: '1.3', short: '方法工具', name: '1.3 · 方法论工具评估', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
-      { id: 'part2', no: '二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 10, color: '#3b82f6', tier: '第二章' },
-      { id: 'library', no: '2.1', short: '技术储备库', name: '2.1 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 11, color: '#3b82f6', tier: '第二章' },
-      { id: 'hypeCycle', no: '2.2', short: '成熟度曲线', name: '2.2 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 12, color: '#3b82f6', tier: '第二章' },
-      { id: 'radar', no: '2.3', short: '影响力雷达', name: '2.3 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 13, color: '#3b82f6', tier: '第二章' },
-      { id: 'graph', no: '2.4', short: '落位图谱', name: '2.4 · 企架十大中心落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 14, color: '#3b82f6', tier: '第二章' },
-      { id: 'part3', no: '三章', short: '专题研判', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 15, color: '#a855f7', tier: '第三章' }
+      { id: 'methodology_mechanism', no: '研判', short: '研判机制', name: '研判方法与分层机制', page: pageKeyMap['methodology_mechanism'] != null ? pageKeyMap['methodology_mechanism'] : 10, color: '#6366f1', tier: '第一章' },
+      { id: 'part2', no: '二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 11, color: '#3b82f6', tier: '第二章' },
+      { id: 'research_overview', no: '成果', short: '成果概述', name: '整体研究成果概述', page: pageKeyMap['research_overview'] != null ? pageKeyMap['research_overview'] : 12, color: '#3b82f6', tier: '第二章' },
+      { id: 'library', no: '2.2', short: '技术储备库', name: '2.2 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 13, color: '#3b82f6', tier: '第二章' },
+      { id: 'hypeCycle', no: '2.3', short: '成熟度曲线', name: '2.3 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 14, color: '#3b82f6', tier: '第二章' },
+      { id: 'radar', no: '2.4', short: '影响力雷达', name: '2.4 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 15, color: '#3b82f6', tier: '第二章' },
+      { id: 'graph', no: '2.5', short: '落位图谱', name: '2.5 · 企架十大中心落位图谱', page: pageKeyMap['graph'] != null ? pageKeyMap['graph'] : 16, color: '#3b82f6', tier: '第二章' },
+      { id: 'part3', no: '三章', short: '专题研判', name: '第三章 · 各项前沿技术研究', page: pageKeyMap['part3'] != null ? pageKeyMap['part3'] : 17, color: '#a855f7', tier: '第三章' }
     ];
 
     DATA.technologies.forEach(function (t) {
@@ -2817,7 +3020,7 @@
     bms.push({ id: 'appendix', no: '附二', short: '术语与来源', name: '附录二 · 术语表 · 数据来源 · 版本说明', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
     bms.push({ id: 'closing', no: '结语', short: '研判结语', name: '结语 · 全书研判总结与未来展望', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '结语' });
     if (pageKeyMap['back'] != null) {
-      bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 感谢阅读', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
+      bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 看见变化 → 判断趋势 → 看清影响 → 赢得主动', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
     }
     return bms;
   }
@@ -2935,26 +3138,24 @@
     var pnoL = $('cornerPageNoL'), pnoR = $('cornerPageNoR');
     if (isSingle()) {
       var label = pageLabels[singleIdx] || '';
-      $('pageNo').textContent = label ? (label + ' · ' + (singleIdx + 1) + ' / ' + pages.length) : '';
+      var dispNo = (singleIdx >= 2 && singleIdx < pages.length - 2) ? singleIdx : (singleIdx + 1);
+      $('pageNo').textContent = label ? (label + ' · ' + dispNo + ' / ' + pages.length) : '';
       if (pnoL) pnoL.textContent = '';
-      if (pnoR) pnoR.textContent = (singleIdx > 0 && singleIdx < pages.length - 1) ? (singleIdx + 1) : '';
+      if (pnoR) pnoR.textContent = (singleIdx >= 2 && singleIdx < pages.length - 2) ? singleIdx : '';
     } else {
       var l = pageLabels[spread * 2] || '', r = pageLabels[spread * 2 + 1] || '';
       if (spread === 0) {
         $('pageNo').textContent = '封面 · 科技发展部前沿技术研究成果集';
         if (pnoL) pnoL.textContent = '';
         if (pnoR) pnoR.textContent = '';
-      } else if (spread === 1) {
-        $('pageNo').textContent = '前言与研究机制 · 跨页 2 / ' + (maxSpread + 1);
-        if (pnoL) pnoL.textContent = '2';
-        if (pnoR) pnoR.textContent = '3';
       } else if (spread === maxSpread) {
         $('pageNo').textContent = (l || '封底') + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
-        var leftIdx = spread * 2;
-        if (pnoL) pnoL.textContent = (leftIdx < pages.length - 1) ? (leftIdx + 1) : '';
+        if (pnoL) pnoL.textContent = '';
         if (pnoR) pnoR.textContent = '';
       } else {
-        if (spread === 2) {
+        if (spread === 1) {
+          $('pageNo').textContent = '序章 · 跨页 2 / ' + (maxSpread + 1);
+        } else if (spread === 2) {
           $('pageNo').textContent = '全书目录 · 双页对开 · 跨页 3 / ' + (maxSpread + 1);
         } else if (l && r) {
           $('pageNo').textContent = l + '　·　' + r + ' · 跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
@@ -2965,10 +3166,10 @@
         } else {
           $('pageNo').textContent = '跨页 ' + (spread + 1) + ' / ' + (maxSpread + 1);
         }
-        var pLeft = spread * 2 + 1;
-        var pRight = spread * 2 + 2;
-        if (pnoL) pnoL.textContent = (pLeft < pages.length) ? pLeft : '';
-        if (pnoR) pnoR.textContent = (pRight < pages.length) ? pRight : '';
+        var pLeft = spread * 2;
+        var pRight = spread * 2 + 1;
+        if (pnoL) pnoL.textContent = (pLeft >= 2 && pLeft < pages.length - 2) ? pLeft : '';
+        if (pnoR) pnoR.textContent = (pRight >= 2 && pRight < pages.length - 2) ? pRight : '';
       }
     }
   }
@@ -3445,15 +3646,17 @@
   function renderWeb() {
     var b = DATA.book;
     var sections = [];
-    sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">前言与阅读指引</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
-    sections.push(webSection('s-overview', '序', '研究规范与机制', overviewPageHTML()));
+    sections.push('<div class="sec" id="s-motto"><div class="sec-body">' + frontMottoHTML() + '</div></div>');
+    sections.push('<div class="sec" id="s-title"><div class="sec-head"><span class="sec-title">序章</span></div><div class="sec-body">' + titlePageHTML() + '</div></div>');
     sections.push(webSection('s-workplan', '1.1', '工作方案', workplanHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-workplan-report">📖 预览工作方案</button>'));
     sections.push(webSection('s-sources', '1.2', '信息来源评估', sourcesHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-sources-report">📖 完整评判大屏</button>'));
     sections.push(webSection('s-methodology-appl', '1.3', '方法论工具评估', methodologyApplHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 完整方法论体系</button>'));
-    sections.push(webSection('s-library', '2.1', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
-    sections.push(webSection('s-hype-cycle', '2.2', '技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('webHypeCycleWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>'));
-    sections.push(webSection('s-radar', '2.3', '技术影响力雷达图（Impact Radar）', radarInteractiveHTML('webRadarWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>'));
-    sections.push(webSection('s-graph', '2.4', '前沿技术在企架十大中心的落位图谱', graphPreviewHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-graph">⛶ 交互图谱</button>'));
+    sections.push(webSection('s-methodology-mechanism', '1.4', '研判方法与分层机制', methodologyMechanismHTML()));
+    sections.push(webSection('s-research-overview', '2.1', '整体研究成果概述', researchOverviewDataHTML()));
+    sections.push(webSection('s-library', '2.2', '前沿技术储备库（长名单）', libraryPreviewHTML(0, true), '<button class="btn btn-sm active sec-head-btn" data-action="open-library">⛶ 完整长名单</button>'));
+    sections.push(webSection('s-hype-cycle', '2.3', '技术成熟度曲线（Gartner Hype Cycle）', hypeCycleInteractiveHTML('webHypeCycleWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-hype-cycle">⛶ 全屏成熟度曲线</button>'));
+    sections.push(webSection('s-radar', '2.4', '技术影响力雷达图（Impact Radar）', radarInteractiveHTML('webRadarWrap', false), '<button class="btn btn-sm active sec-head-btn" data-action="open-radar">⛶ 全屏雷达图</button>'));
+    sections.push(webSection('s-graph', '2.5', '前沿技术在企架十大中心的落位图谱', graphPreviewHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-graph">⛶ 交互图谱</button>'));
     DATA.technologies.forEach(function (t, i) {
       var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
       var enName = t.nameEn || '';
@@ -3470,17 +3673,18 @@
 
     // 目录
     var toc = ['<h3>目录</h3>'];
-    toc.push('<div class="web-toc-item" data-target="s-title"><span class="wt-no"></span>前言与阅读指引</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-overview"><span class="wt-no">序</span>研究规范与机制</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-title"><span class="wt-no">序章</span>看见未来，还是等待未来发生？</div>');
     toc.push('<div class="web-toc-item part" data-target="s-workplan">第一章 · 工作方案与方法</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-workplan"><span class="wt-no">1.1</span>工作方案</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-sources"><span class="wt-no">1.2</span>信息来源评估</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-methodology-appl"><span class="wt-no">1.3</span>方法论工具评估</div>');
-    toc.push('<div class="web-toc-item part" data-target="s-library">第二章 · 整体研究成果</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">2.1</span>前沿技术储备库</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-hype-cycle"><span class="wt-no">2.2</span>技术成熟度曲线</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-radar"><span class="wt-no">2.3</span>技术影响力雷达</div>');
-    toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">2.4</span>企架十大中心落位图谱</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-methodology-mechanism"><span class="wt-no">1.4</span>研判方法与分层机制</div>');
+    toc.push('<div class="web-toc-item part" data-target="s-research-overview">第二章 · 整体研究成果</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-research-overview"><span class="wt-no">2.1</span>整体研究成果概述</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-library"><span class="wt-no">2.2</span>前沿技术储备库</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-hype-cycle"><span class="wt-no">2.3</span>技术成熟度曲线</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-radar"><span class="wt-no">2.4</span>技术影响力雷达</div>');
+    toc.push('<div class="web-toc-item sub" data-target="s-graph"><span class="wt-no">2.5</span>企架十大中心落位图谱</div>');
     toc.push('<div class="web-toc-item part" data-target="s-tech-' + DATA.technologies[0].id + '">第三章 · 各项前沿技术研究</div>');
     DATA.technologies.forEach(function (t, i) {
       var pureName = t.short || t.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim() || t.name;
@@ -4397,6 +4601,58 @@
     }).join('');
     return '<div class="tech-detail"><div class="tabs">' + tabBtns + '</div><div class="tech-detail-body">' + panes + '</div></div>';
   }
+  function updateTechNav(tech) {
+    var navEl = $('panelTechNav');
+    var prevBtn = $('btnTechPrev');
+    var nextBtn = $('btnTechNext');
+    if (!navEl || !prevBtn || !nextBtn) return;
+    if (!tech || !tech.id) {
+      navEl.classList.add('hidden');
+      return;
+    }
+    var idx = -1;
+    for (var i = 0; i < DATA.technologies.length; i++) {
+      if (DATA.technologies[i].id === tech.id) {
+        idx = i;
+        break;
+      }
+    }
+    if (idx === -1) {
+      navEl.classList.add('hidden');
+      return;
+    }
+    navEl.classList.remove('hidden');
+    var prevTech = idx > 0 ? DATA.technologies[idx - 1] : null;
+    var nextTech = idx < DATA.technologies.length - 1 ? DATA.technologies[idx + 1] : null;
+
+    if (prevTech) {
+      prevBtn.disabled = false;
+      prevBtn.title = '向前浏览上一项技术：' + prevTech.id + ' ' + (prevTech.short || prevTech.name);
+      prevBtn.onclick = function (e) {
+        e.stopPropagation();
+        var curTab = (currentPanelMeta && currentPanelMeta.type === 'tech') ? currentPanelMeta.activeTab : 'assess';
+        openTechPanel(prevTech, curTab, true);
+      };
+    } else {
+      prevBtn.disabled = true;
+      prevBtn.title = '已是第一项技术（' + tech.id + '）';
+      prevBtn.onclick = null;
+    }
+
+    if (nextTech) {
+      nextBtn.disabled = false;
+      nextBtn.title = '向后浏览下一项技术：' + nextTech.id + ' ' + (nextTech.short || nextTech.name);
+      nextBtn.onclick = function (e) {
+        e.stopPropagation();
+        var curTab = (currentPanelMeta && currentPanelMeta.type === 'tech') ? currentPanelMeta.activeTab : 'assess';
+        openTechPanel(nextTech, curTab, true);
+      };
+    } else {
+      nextBtn.disabled = true;
+      nextBtn.title = '已是最后一项技术（' + tech.id + '）';
+      nextBtn.onclick = null;
+    }
+  }
   function openTechPanel(tech, tab, isNavBack) {
     if (!tech) return;
     if (!isNavBack) {
@@ -4409,6 +4665,7 @@
     }
     currentPanelMeta = { type: 'tech', name: tech.short || tech.name, techId: tech.id, activeTab: tab || 'assess' };
     openPanel(techHeadHTML(tech), techDetailHTML(tech), function () {
+      updateTechNav(tech);
       var tabs = document.querySelectorAll('#panelBody .tab');
       var panes = document.querySelectorAll('#panelBody .tabpane');
       var body = document.querySelector('#panelBody .tech-detail-body');
@@ -4482,6 +4739,8 @@
     }, true);
   }
   window.openTechPanel = openTechPanel;
+  window.closePanel = closePanel;
+  window.closeModal = closeModal;
   window.findTech = findTech;
   window.validateTechAssetsExistence = validateTechAssetsExistence;
   window.jumpToPage = jumpToPage;
@@ -4918,6 +5177,23 @@
 
     document.addEventListener('keydown', function (e) {
       if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+      var panelEl = $('panel');
+      if (panelEl && !panelEl.classList.contains('hidden') && currentPanelMeta && currentPanelMeta.type === 'tech') {
+        var prevBtn = $('btnTechPrev');
+        var nextBtn = $('btnTechNext');
+        if (e.key === 'ArrowLeft' && prevBtn && !prevBtn.disabled) {
+          prevBtn.click();
+          return;
+        }
+        if (e.key === 'ArrowRight' && nextBtn && !nextBtn.disabled) {
+          nextBtn.click();
+          return;
+        }
+        if (e.key === 'Escape') {
+          closePanel();
+          return;
+        }
+      }
       if (e.key === 'ArrowRight') flipForward();
       else if (e.key === 'ArrowLeft') flipBackward();
       else if (e.key === 'Home') goToCover();
