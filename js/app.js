@@ -516,8 +516,8 @@
   /* ==================== 图表（雷达/柱状） ==================== */
   function radarSVG(tech, compact) {
     var dims = tech.assessment.dimensions, n = dims.length;
-    var W = compact ? 340 : 380, H = compact ? 230 : 280;
-    var cx = W / 2, cy = H / 2, R = compact ? 74 : 100;
+    var W = compact ? 380 : 380, H = compact ? 380 : 280;
+    var cx = W / 2, cy = H / 2, R = compact ? 88 : 100;
     var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
     var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
@@ -537,15 +537,15 @@
       s += '<polygon class="radar-poly" points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2.5"/>';
       for (k = 0; k < n; k++) {
         var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
-        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '3.5' : '4.5') + '" fill="' + col + '"/>';
+        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '4.8' : '4.5') + '" fill="' + col + '"/>';
       }
     });
     for (k = 0; k < n; k++) {
-      var offset = compact ? 16 : 22;
+      var offset = compact ? 8 : 22;
       var lp = pt(k, R + offset), a = angle(k);
       var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
       var scoreVal = dims[k].score;
-      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 4 : 5)).toFixed(1) + '" font-size="' + (compact ? '13' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="normal">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="normal">' + scoreVal + '</tspan>') : '') + '</text>';
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 5 : 5)).toFixed(1) + '" font-size="' + (compact ? '15.5' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="900">' + scoreVal + '</tspan>') : '') + '</text>';
     }
     s += '</svg>';
     var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
@@ -2736,24 +2736,36 @@
         '</div>' +
       '</div>' +
 
-      '<div class="bk-section bk-def">' +
-        '<div class="bk-sec-title"><span class="icon">💡</span> 技术定义与机理</div>' +
-        '<div class="bk-sec-body">' + formatBullets(tech.definition || tech.summary) + '</div>' +
-      '</div>' +
+      '<div class="bk-sections-grid">' +
+        '<div class="bk-section bk-bg">' +
+          '<div class="bk-sec-title"><span class="icon">🧭</span> 演进背景与动因</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.background) + '</div>' +
+        '</div>' +
 
-      '<div class="bk-section bk-trend">' +
-        '<div class="bk-sec-title"><span class="icon">🚀</span> 颠覆性趋势演进</div>' +
-        '<div class="bk-sec-body">' + formatBullets(tech.trend) + '</div>' +
-      '</div>' +
+        '<div class="bk-section bk-def">' +
+          '<div class="bk-sec-title"><span class="icon">💡</span> 技术定义与机理</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.definition || tech.summary) + '</div>' +
+        '</div>' +
 
-      '<div class="bk-section bk-value">' +
-        '<div class="bk-sec-title"><span class="icon">🏦</span> 对银行的价值贡献</div>' +
-        '<div class="bk-sec-body">' + formatBullets(tech.bankValue) + '</div>' +
-      '</div>' +
+        '<div class="bk-section bk-status">' +
+          '<div class="bk-sec-title"><span class="icon">📍</span> 产业现状与同业实践</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.currentStatus) + '</div>' +
+        '</div>' +
 
-      '<div class="bk-section bk-limit">' +
-        '<div class="bk-sec-title"><span class="icon">⚠️</span> 当前局限性与合规风险</div>' +
-        '<div class="bk-sec-body">' + formatBullets(tech.limitation) + '</div>' +
+        '<div class="bk-section bk-trend">' +
+          '<div class="bk-sec-title"><span class="icon">🚀</span> 颠覆性趋势演进</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.trend) + '</div>' +
+        '</div>' +
+
+        '<div class="bk-section bk-value">' +
+          '<div class="bk-sec-title"><span class="icon">🏦</span> 对银行的价值贡献</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.bankValue) + '</div>' +
+        '</div>' +
+
+        '<div class="bk-section bk-limit">' +
+          '<div class="bk-sec-title"><span class="icon">⚠️</span> 当前局限性与合规风险</div>' +
+          '<div class="bk-sec-body">' + formatBullets(tech.limitation) + '</div>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }
@@ -2790,10 +2802,18 @@
             '<div class="conclusion-text">' + esc(tech.conclusion) + '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="web-col-content">' +
+        '<div class="web-col-content web-bento-grid">' +
+          '<div class="bento-card bg-card">' +
+            '<div class="bento-card-title"><span class="icon">🧭</span> 演进背景与动因</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.background) + '</div>' +
+          '</div>' +
           '<div class="bento-card def-card">' +
             '<div class="bento-card-title"><span class="icon">💡</span> 技术定义与机理</div>' +
             '<div class="bento-card-body">' + formatBullets(tech.definition || tech.summary) + '</div>' +
+          '</div>' +
+          '<div class="bento-card status-card">' +
+            '<div class="bento-card-title"><span class="icon">📍</span> 产业现状与同业实践</div>' +
+            '<div class="bento-card-body">' + formatBullets(tech.currentStatus) + '</div>' +
           '</div>' +
           '<div class="bento-card trend-card">' +
             '<div class="bento-card-title"><span class="icon">🚀</span> 颠覆性趋势演进</div>' +
@@ -3492,12 +3512,13 @@
   var isSingle = function () {
     var w = window.innerWidth;
     var h = window.innerHeight;
-    // 1. 普通手机竖屏 / 折叠屏折叠态竖屏（窄屏使用单页）
-    if (w < 560) return true;
-    // 2. 普通手机横屏 / 折叠屏横屏 / 电脑桌面（宽屏使用双页对开）
-    if (w > h) return false;
-    // 3. 折叠屏手机展开态竖屏（接近正方形或 4:3 比例，宽 >= 600 且 宽高比 >= 0.70 显示双页）
-    if (w >= 600 && (w / h) >= 0.70) return false;
+    // 1. 普通手机竖屏 / 折叠屏折叠态竖屏（< 600px 统一使用单页）
+    if (w < 600) return true;
+    // 2. 宽屏 / 横屏场景（w > h）：宽度 >= 768px 使用双页对开，体验犹如案头翻阅大书
+    if (w > h && w >= 768) return false;
+    // 3. 折叠屏手机展开态竖屏与常规平板竖屏（600px <= w < 900px 且 w <= h）：
+    //    竖屏状态下左右对开会导致单页过窄（<350px），自适应为全幅大单页，排版舒适舒展犹如 iPad/Kindle
+    if (w < 900 && w <= h) return true;
     // 4. 双屏 / 折叠屏原生 CSS Media Query 适配（展开态双页）
     try {
       if (window.matchMedia && (
@@ -3505,7 +3526,8 @@
         window.matchMedia('(screen-spanning: single-fold-vertical)').matches
       )) return false;
     } catch (e) {}
-    // 5. 其余窄长或竖屏模式使用单页
+    // 5. 大屏桌面电脑（w >= 980）默认呈现双页，其余场景使用单页
+    if (w >= 980) return false;
     return true;
   };
 
@@ -3583,9 +3605,11 @@
       m.ah = m.el.clientHeight;
       if (m.aw > BASE_PAGE_W + 10) {
         // 在 2K/4K 高分屏下，先以基准宽度排版并解除 minHeight 100%，以测量内容真实高度
-        m.pad.style.width = BASE_PAGE_W + 'px';
-        m.pad.style.height = 'auto';
-        m.pad.style.minHeight = '0px';
+        if (!m.pad.classList.contains('book-tech-pad')) {
+          m.pad.style.width = BASE_PAGE_W + 'px';
+          m.pad.style.height = 'auto';
+          m.pad.style.minHeight = '0px';
+        }
       }
     });
 
@@ -3599,6 +3623,14 @@
     // 阶段 3：计算各自的自然缩放系数
     items.forEach(function (m) {
       if (!m) return;
+      if (m.pad.classList && m.pad.classList.contains('book-tech-pad')) {
+        if (m.aw > BASE_PAGE_W + 10) {
+          m.s = Math.min(m.aw / BASE_PAGE_W, m.ah / BASE_PAGE_H);
+        } else {
+          m.s = 1;
+        }
+        return;
+      }
       if (m.aw > BASE_PAGE_W + 10) {
         var isFullBleed = (m.pad.matches && m.pad.matches('.cover-full, .back-cover-full, .divider-full')) ||
                           m.pad.classList.contains('cover-full') ||
@@ -4090,8 +4122,31 @@
       it.onclick = function () {
         var el = $(it.getAttribute('data-target'));
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (window.innerWidth <= 768) {
+          $('webToc').classList.remove('open');
+          var mask = $('webTocMask');
+          if (mask) mask.classList.remove('open');
+        }
       };
     });
+
+    // 移动端目录浮动按钮与遮罩绑定
+    var btnToggle = $('btnWebTocToggle');
+    var tocMask = $('webTocMask');
+    if (btnToggle && !btnToggle._bound) {
+      btnToggle._bound = true;
+      btnToggle.onclick = function () {
+        var isOpen = $('webToc').classList.toggle('open');
+        if (tocMask) tocMask.classList.toggle('open', isOpen);
+      };
+    }
+    if (tocMask && !tocMask._bound) {
+      tocMask._bound = true;
+      tocMask.onclick = function () {
+        $('webToc').classList.remove('open');
+        tocMask.classList.remove('open');
+      };
+    }
 
     // 滚动高亮
     if (window._webObserver) window._webObserver.disconnect();
@@ -4165,7 +4220,7 @@
         if (libState.cat && it.category !== libState.cat) return false;
         if (libState.tier && it.tier !== libState.tier) return false;
         if (libState.q) {
-          var hay = (it.name + it.nameEn + (it.short || '') + it.summary + it.definition + it.bankValue + it.source + it.category + it.tier).toLowerCase();
+          var hay = (it.name + it.nameEn + (it.short || '') + it.summary + it.definition + (it.background || '') + (it.currentStatus || '') + it.bankValue + (it.trend || '') + (it.limitation || '') + it.source + it.category + it.tier).toLowerCase();
           if (hay.indexOf(libState.q.toLowerCase()) < 0) return false;
         }
         return true;
@@ -4269,7 +4324,7 @@
     });
   }
 
-  var LONG_FIELDS = ['source', 'externalSource', 'definition', 'trend', 'bankValue', 'limitation', 'maturityBasis', 'strategicFitBasis', 'valueBasis', 'feasibilityBasis', 'urgencyBasis', 'opennessBasis', 'conclusion', 'remark', 'summary'];
+  var LONG_FIELDS = ['source', 'externalSource', 'background', 'definition', 'currentStatus', 'trend', 'bankValue', 'limitation', 'maturityBasis', 'strategicFitBasis', 'valueBasis', 'feasibilityBasis', 'urgencyBasis', 'opennessBasis', 'conclusion', 'remark', 'summary'];
   function openLibraryItemModal(id) {
     var it = findLib(id); if (!it) return;
     var rows = DATA.library.fields.map(function (f) {
@@ -4860,14 +4915,20 @@
     }).join('');
 
     var infoCards = [];
+    if (tech.background) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🧭</span>演进背景与动因</div><div class="aic-p">' + formatBullets(tech.background) + '</div></div>');
+    }
     if (tech.definition) {
-      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">📌</span>技术定义</div><div class="aic-p">' + esc(tech.definition) + '</div></div>');
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">💡</span>技术定义与机理</div><div class="aic-p">' + formatBullets(tech.definition) + '</div></div>');
+    }
+    if (tech.currentStatus) {
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">📍</span>产业现状与同业实践</div><div class="aic-p">' + formatBullets(tech.currentStatus) + '</div></div>');
     }
     if (tech.trend) {
-      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🚀</span>颠覆性趋势</div><div class="aic-p">' + formatBullets(tech.trend) + '</div></div>');
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🚀</span>颠覆性趋势演进</div><div class="aic-p">' + formatBullets(tech.trend) + '</div></div>');
     }
     if (tech.bankValue) {
-      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🏦</span>对银行的价值</div><div class="aic-p">' + formatBullets(tech.bankValue) + '</div></div>');
+      infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">🏦</span>对银行的价值贡献</div><div class="aic-p">' + formatBullets(tech.bankValue) + '</div></div>');
     }
     if (tech.limitation) {
       infoCards.push('<div class="assess-info-card"><div class="aic-h"><span class="aic-icon">⚠️</span>当前局限与合规风险</div><div class="aic-p">' + formatBullets(tech.limitation) + '</div></div>');
@@ -5169,7 +5230,7 @@
         hits.push({ id: '_graph', name: '2.4 前沿技术在企架十大中心的落位图谱', cat: '第二章 · 整体成果', tier: '落位图谱', sum: '36项前沿技术在企架十大中心的精准落位与业务流转' });
       }
       lib.forEach(function (it) {
-        var hay = (it.name + ' ' + it.nameEn + ' ' + it.summary + ' ' + it.definition + ' ' + it.bankValue + ' ' + it.category + ' ' + it.tier).toLowerCase();
+        var hay = (it.name + ' ' + it.nameEn + ' ' + it.summary + ' ' + (it.background || '') + ' ' + it.definition + ' ' + (it.currentStatus || '') + ' ' + it.bankValue + ' ' + (it.trend || '') + ' ' + (it.limitation || '') + ' ' + it.category + ' ' + it.tier).toLowerCase();
         if (hay.indexOf(ql) >= 0) hits.push({ id: it.id, name: it.name, cat: it.category, tier: it.tier, sum: it.summary });
       });
       hits = hits.slice(0, 8);
