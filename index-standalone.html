@@ -2759,13 +2759,12 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .tabpane.active.fill { display: flex; flex-direction: column; flex: 1; min-height: 0; height: 100%; }
 
 /* 评估表桌面端饱满自适应排布 (Assess Dashboard - Enlarge & Unified Font Size) */
-.assess-dashboard { display: grid; grid-template-columns: 380px 1fr; gap: 16px; align-items: start; }
+.assess-dashboard { display: grid; grid-template-columns: 410px 1fr; gap: 16px; align-items: start; }
 @media (max-width: 1100px) { .assess-dashboard { grid-template-columns: 1fr; } }
 .assess-side { display: flex; flex-direction: column; gap: 14px; }
 .assess-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.assess-radar-card { padding: 14px 18px 10px; text-align: center; }
-.assess-radar-card h4 { margin-bottom: 8px; font-size: 16.5px; color: var(--dim); font-weight: 750; }
-.assess-radar-card svg { width: 100%; height: 240px; }
+.assess-radar-card { padding: 8px 12px; text-align: center; display: flex; align-items: center; justify-content: center; }
+.assess-radar-card svg { width: 100%; height: auto; max-height: 270px; }
 .assess-conclusion-card { padding: 14px 18px; border-left: 4px solid var(--accent); }
 .assess-conclusion-card .acc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .assess-conclusion-card .acc-head h4 { font-size: 17px; font-weight: 750; color: var(--text); margin: 0; }
@@ -5894,7 +5893,7 @@ body.is-double-page .book {
 <div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
 <!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
 <div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609072212">v202609072212</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609072230">v202609072230</div>
 
 <script>
 /* =====================================================================
@@ -6847,7 +6846,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609072212',
+    version: '202609072230',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -9545,8 +9544,8 @@ body.is-double-page .book {
   /* ==================== 图表（雷达/柱状） ==================== */
   function radarSVG(tech, compact) {
     var dims = tech.assessment.dimensions, n = dims.length;
-    var W = compact ? 380 : 380, H = compact ? 380 : 280;
-    var cx = W / 2, cy = H / 2, R = compact ? 88 : 100;
+    var W = compact ? 410 : 480, H = compact ? 340 : 310;
+    var cx = W / 2, cy = H / 2, R = compact ? 92 : 102;
     var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
     var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
@@ -9566,15 +9565,20 @@ body.is-double-page .book {
       s += '<polygon class="radar-poly" points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2.5"/>';
       for (k = 0; k < n; k++) {
         var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
-        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '4.8' : '4.5') + '" fill="' + col + '"/>';
+        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="4.8" fill="' + col + '"/>';
       }
     });
     for (k = 0; k < n; k++) {
-      var offset = compact ? 8 : 22;
+      var offset = compact ? 8 : 9;
       var lp = pt(k, R + offset), a = angle(k);
       var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
       var scoreVal = dims[k].score;
-      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 5 : 5)).toFixed(1) + '" font-size="' + (compact ? '15.5' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="900">' + scoreVal + '</tspan>') : '') + '</text>';
+      var fSize = compact ? '23' : '21';
+      var labelContent = esc(dims[k].label);
+      if (!compact) {
+        labelContent += ' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="900">' + scoreVal + '</tspan>';
+      }
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 7 : 6)).toFixed(1) + '" font-size="' + fSize + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + labelContent + '</text>';
     }
     s += '</svg>';
     var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
@@ -12399,7 +12403,7 @@ body.is-double-page .book {
   addPage('hypeCycle', '第二章 · 成熟度曲线', hypeCyclePreviewHTML);
   addPage('radar', '第二章 · 影响力雷达图', radarPreviewHTML);
   addPage('graph', '第二章 · 企架落位图谱', graphPreviewHTML());
-  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '四大维度全面解构 · 36项重点技术专题研判', '03'));
+  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '六大维度全面解构 · 36项重点技术专题研判', '03'));
   DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
   addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论与术语体系', '前沿技术研究方法论工具体系 · 术语表', '附'));
   addPage('appendix_methodology', '附录一 · 方法论体系', appendixMethodologyHTML());
@@ -13967,7 +13971,7 @@ body.is-double-page .book {
 
     return '<div class="assess-dashboard">' +
       '<div class="assess-side">' +
-        '<div class="chart-card assess-radar-card"><h4>多轮评估雷达</h4>' + radarSVG(tech, false) + '</div>' +
+        '<div class="chart-card assess-radar-card">' + radarSVG(tech, false) + '</div>' +
         '<div class="chart-card assess-conclusion-card">' +
           '<div class="acc-head"><h4>研判结论与处置建议</h4><div class="acc-tags">' + tierPill(tech.tier) + '<span class="badge acc">' + esc(tech.disposal || '') + '</span></div></div>' +
           '<div class="acc-body">' + esc(tech.conclusion) + '</div>' +
@@ -14226,6 +14230,9 @@ body.is-double-page .book {
   window.flipBackward = flipBackward;
   window.renderSpread = renderSpread;
   window.fitSpread = fitSpread;
+  window.pages = pages;
+  window.pageLabels = pageLabels;
+  window.getPageHTML = getPageHTML;
 
   /* ==================== 全局搜索 ==================== */
   function initSearch() {

@@ -516,8 +516,8 @@
   /* ==================== 图表（雷达/柱状） ==================== */
   function radarSVG(tech, compact) {
     var dims = tech.assessment.dimensions, n = dims.length;
-    var W = compact ? 380 : 380, H = compact ? 380 : 280;
-    var cx = W / 2, cy = H / 2, R = compact ? 88 : 100;
+    var W = compact ? 410 : 480, H = compact ? 340 : 310;
+    var cx = W / 2, cy = H / 2, R = compact ? 92 : 102;
     var angle = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
     var pt = function (i, r) { return [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r]; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" class="radar-svg' + (compact ? ' compact' : '') + '">';
@@ -537,15 +537,20 @@
       s += '<polygon class="radar-poly" points="' + pts2.join(' ') + '" fill="' + col + '" fill-opacity="' + (ri === 0 ? 0.32 : 0.16) + '" stroke="' + col + '" stroke-width="2.5"/>';
       for (k = 0; k < n; k++) {
         var pp2 = pt(k, rd.scores[k] / (dims[k].max || 5) * R);
-        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="' + (compact ? '4.8' : '4.5') + '" fill="' + col + '"/>';
+        s += '<circle class="radar-node" style="animation-delay:' + (0.1 + k * 0.08) + 's" cx="' + pp2[0].toFixed(1) + '" cy="' + pp2[1].toFixed(1) + '" r="4.8" fill="' + col + '"/>';
       }
     });
     for (k = 0; k < n; k++) {
-      var offset = compact ? 8 : 22;
+      var offset = compact ? 8 : 9;
       var lp = pt(k, R + offset), a = angle(k);
       var anchor = Math.abs(Math.cos(a)) < 0.25 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
       var scoreVal = dims[k].score;
-      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 5 : 5)).toFixed(1) + '" font-size="' + (compact ? '15.5' : '14') + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + esc(dims[k].label) + (compact ? (' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="900">' + scoreVal + '</tspan>') : '') + '</text>';
+      var fSize = compact ? '23' : '21';
+      var labelContent = esc(dims[k].label);
+      if (!compact) {
+        labelContent += ' <tspan style="fill:' + dimColor(dims[k]) + '" font-weight="900">' + scoreVal + '</tspan>';
+      }
+      s += '<text x="' + lp[0].toFixed(1) + '" y="' + (lp[1] + (compact ? 7 : 6)).toFixed(1) + '" font-size="' + fSize + '" text-anchor="' + anchor + '" style="fill:var(--text)" font-weight="700">' + labelContent + '</text>';
     }
     s += '</svg>';
     var legend = (!compact && rounds.length > 1) ? '<div style="text-align:center;font-size:14px;color:var(--dim);margin-top:6px">' +
@@ -3370,7 +3375,7 @@
   addPage('hypeCycle', '第二章 · 成熟度曲线', hypeCyclePreviewHTML);
   addPage('radar', '第二章 · 影响力雷达图', radarPreviewHTML);
   addPage('graph', '第二章 · 企架落位图谱', graphPreviewHTML());
-  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '四大维度全面解构 · 36项重点技术专题研判', '03'));
+  addPage('part3', '第三章', dividerHTML('第三章', '各项前沿技术研究', '六大维度全面解构 · 36项重点技术专题研判', '03'));
   DATA.technologies.forEach(function (t) { addPage('tech-' + t.id, '第三章 · ' + t.name, techBookHTML(t)); });
   addPage('partAppendix', '附录', dividerHTML('附录', '研究方法论与术语体系', '前沿技术研究方法论工具体系 · 术语表', '附'));
   addPage('appendix_methodology', '附录一 · 方法论体系', appendixMethodologyHTML());
@@ -4938,7 +4943,7 @@
 
     return '<div class="assess-dashboard">' +
       '<div class="assess-side">' +
-        '<div class="chart-card assess-radar-card"><h4>多轮评估雷达</h4>' + radarSVG(tech, false) + '</div>' +
+        '<div class="chart-card assess-radar-card">' + radarSVG(tech, false) + '</div>' +
         '<div class="chart-card assess-conclusion-card">' +
           '<div class="acc-head"><h4>研判结论与处置建议</h4><div class="acc-tags">' + tierPill(tech.tier) + '<span class="badge acc">' + esc(tech.disposal || '') + '</span></div></div>' +
           '<div class="acc-body">' + esc(tech.conclusion) + '</div>' +
@@ -5197,6 +5202,9 @@
   window.flipBackward = flipBackward;
   window.renderSpread = renderSpread;
   window.fitSpread = fitSpread;
+  window.pages = pages;
+  window.pageLabels = pageLabels;
+  window.getPageHTML = getPageHTML;
 
   /* ==================== 全局搜索 ==================== */
   function initSearch() {
