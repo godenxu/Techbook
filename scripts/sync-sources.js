@@ -263,6 +263,8 @@ function sync() {
       if (info.reportPdf) {
         newFields += ` reportPdf: '${info.reportPdf}',`;
       }
+    } else if (info.reportPdf) {
+      newFields += `\n    reportPdf: '${info.reportPdf}',`;
     }
     if (info.pptx) {
       newFields += `\n    slidesPptx: '${info.pptx.path}', slidesPptxName: '${info.pptx.name}', slidesPptxSize: '${info.pptx.size}', slidesPptxDate: '${info.pptx.date}',`;

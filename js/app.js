@@ -4785,7 +4785,79 @@
   }
 
   /* ==================== 技术专题详情面板 ==================== */
-  window.__handleTechImgError = function (techId, tabKey, imgEl) {
+  var techAssetCache = {};
+
+  function probeAssetExistence(url, type, cb) {
+    if (!url) { if (cb) cb(false); return; }
+    if (techAssetCache[url] !== undefined) {
+      if (cb) cb(techAssetCache[url]);
+      return;
+    }
+    // HTTP / HTTPS 协议环境：使用 HEAD 请求快速探测状态
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+      fetch(url, { method: 'HEAD' })
+        .then(function (res) {
+          var ok = res.ok;
+          techAssetCache[url] = ok;
+          if (cb) cb(ok);
+        })
+        .catch(function () {
+          fetch(url)
+            .then(function (res) {
+              var ok = res.ok;
+              techAssetCache[url] = ok;
+              if (cb) cb(ok);
+            })
+            .catch(function () {
+              techAssetCache[url] = false;
+              if (cb) cb(false);
+            });
+        });
+      return;
+    }
+
+    // 本地 file: 协议环境
+    if (type === 'image') {
+      var img = new Image();
+      img.onload = function () {
+        techAssetCache[url] = true;
+        if (cb) cb(true);
+      };
+      img.onerror = function () {
+        techAssetCache[url] = false;
+        if (cb) cb(false);
+      };
+      img.src = url;
+      return;
+    }
+
+    // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload
+    var obj = document.createElement('object');
+    obj.data = url;
+    obj.type = 'application/pdf';
+    obj.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none;';
+    var settled = false;
+    var timer = null;
+
+    function done(result) {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      techAssetCache[url] = result;
+      if (obj.parentNode) obj.parentNode.removeChild(obj);
+      if (cb) cb(result);
+    }
+
+    obj.onerror = function () { done(false); };
+    obj.onload = function () { done(true); };
+    timer = setTimeout(function () {
+      done(false);
+    }, 2500);
+
+    (document.body || document.documentElement).appendChild(obj);
+  }
+
+  window.__handleTechAssetError = function (techId, tabKey, el) {
     var tech = findTech(techId);
     if (tech) {
       if (tabKey === 'image') {
@@ -4794,10 +4866,22 @@
         tech.imageSize = null;
       } else if (tabKey === 'hypecycle') {
         tech.hypeCycle = null;
+      } else if (tabKey === 'ppt') {
+        tech.slidesPdf = null;
+        tech.slidesPptx = null;
+        tech.slidesPptxName = null;
+        tech.slidesPptxSize = null;
+        tech.slidesPptxDate = null;
+      } else if (tabKey === 'word') {
+        tech.reportPdf = null;
+        tech.reportDocx = null;
+        tech.reportDocxName = null;
+        tech.reportDocxSize = null;
+        tech.reportDocxDate = null;
       }
     }
     var tabBtn = document.querySelector('#panelBody .tab[data-name="' + tabKey + '"]');
-    var tabPane = document.querySelector('#panelBody .tabpane[data-name="' + tabKey + '"]') || (imgEl ? imgEl.closest('.tabpane') : null);
+    var tabPane = document.querySelector('#panelBody .tabpane[data-name="' + tabKey + '"]') || (el ? el.closest('.tabpane') : null);
     var wasActive = (tabBtn && tabBtn.classList.contains('active')) || (tabPane && tabPane.classList.contains('active'));
 
     if (tabBtn && tabBtn.parentNode) {
@@ -4817,31 +4901,60 @@
       }
     }
   };
+  window.__handleTechImgError = window.__handleTechAssetError;
 
   function validateTechAssetsExistence() {
     if (typeof DATA === 'undefined' || !DATA.technologies) return;
     DATA.technologies.forEach(function (tech) {
       if (tech.image && typeof tech.image === 'string' && tech.image.indexOf('blob:') !== 0 && tech.image.indexOf('data:') !== 0) {
-        var testImg = new Image();
-        testImg.onerror = function () {
-          tech.image = null;
-          tech.imageName = null;
-          tech.imageSize = null;
-          if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-            window.__handleTechImgError(tech.id, 'image');
+        probeAssetExistence(tech.image, 'image', function (exists) {
+          if (!exists) {
+            tech.image = null;
+            tech.imageName = null;
+            tech.imageSize = null;
+            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+              window.__handleTechAssetError(tech.id, 'image');
+            }
           }
-        };
-        testImg.src = tech.image;
+        });
       }
       if (tech.hypeCycle && typeof tech.hypeCycle === 'string' && tech.hypeCycle.indexOf('blob:') !== 0 && tech.hypeCycle.indexOf('data:') !== 0) {
-        var testHc = new Image();
-        testHc.onerror = function () {
-          tech.hypeCycle = null;
-          if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-            window.__handleTechImgError(tech.id, 'hypecycle');
+        probeAssetExistence(tech.hypeCycle, 'image', function (exists) {
+          if (!exists) {
+            tech.hypeCycle = null;
+            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+              window.__handleTechAssetError(tech.id, 'hypecycle');
+            }
           }
-        };
-        testHc.src = tech.hypeCycle;
+        });
+      }
+      if (tech.slidesPdf && typeof tech.slidesPdf === 'string') {
+        probeAssetExistence(tech.slidesPdf, 'pdf', function (exists) {
+          if (!exists) {
+            tech.slidesPdf = null;
+            tech.slidesPptx = null;
+            tech.slidesPptxName = null;
+            tech.slidesPptxSize = null;
+            tech.slidesPptxDate = null;
+            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+              window.__handleTechAssetError(tech.id, 'ppt');
+            }
+          }
+        });
+      }
+      if (tech.reportPdf && typeof tech.reportPdf === 'string') {
+        probeAssetExistence(tech.reportPdf, 'pdf', function (exists) {
+          if (!exists) {
+            tech.reportPdf = null;
+            tech.reportDocx = null;
+            tech.reportDocxName = null;
+            tech.reportDocxSize = null;
+            tech.reportDocxDate = null;
+            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+              window.__handleTechAssetError(tech.id, 'word');
+            }
+          }
+        });
       }
     });
   }
@@ -4851,8 +4964,8 @@
     tabs.push({ key: 'assess', name: '评估表', html: assessHTML(tech), fill: false });
     if (tech.image) tabs.push({ key: 'image', name: '一张图概述', html: onePageHTML(tech), fill: true });
     if (tech.hypeCycle) tabs.push({ key: 'hypecycle', name: '技术成熟度曲线', html: hypeCycleHTML(tech), fill: true });
-    if (tech.reportPdf || tech.reportDocx || tech.reportDocxName) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
-    if (tech.slidesPdf || tech.slidesPptx || tech.slidesPptxName) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
+    if (tech.reportPdf || tech.reportDocx) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
+    if (tech.slidesPdf || tech.slidesPptx) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
     return tabs;
   }
   function onePageHTML(tech) {
@@ -5011,7 +5124,7 @@
     if (!pdf) {
       return dl + '<div class="preview-empty">暂无在线预览，请下载指定文件夹中的原件查看。</div>';
     }
-    return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览"></iframe></div>';
+    return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览" onerror="window.__handleTechAssetError&&window.__handleTechAssetError(\'' + esc(tech.id) + '\',\'' + (isWord ? 'word' : 'ppt') + '\',this)"></iframe></div>';
   }
   function techHeadHTML(tech) {
     return '<div class="panel-tech-head">' +
@@ -5085,6 +5198,23 @@
   }
   function openTechPanel(tech, tab, isNavBack) {
     if (!tech) return;
+    if (tech.slidesPdf && techAssetCache[tech.slidesPdf] === false) {
+      tech.slidesPdf = null;
+      tech.slidesPptx = null;
+      tech.slidesPptxName = null;
+      tech.slidesPptxSize = null;
+      tech.slidesPptxDate = null;
+    }
+    if (tech.reportPdf && techAssetCache[tech.reportPdf] === false) {
+      tech.reportPdf = null;
+      tech.reportDocx = null;
+      tech.reportDocxName = null;
+      tech.reportDocxSize = null;
+      tech.reportDocxDate = null;
+    }
+    if (tab === 'ppt' && !tech.slidesPdf && !tech.slidesPptx) tab = 'assess';
+    if (tab === 'word' && !tech.reportPdf && !tech.reportDocx) tab = 'assess';
+
     if (!isNavBack) {
       if (!$('panel').classList.contains('hidden') && currentPanelMeta) {
         var snap = capturePanelSnapshot();
@@ -5108,11 +5238,33 @@
         if (ap && ap.scrollIntoView) { try { ap.scrollIntoView(true); } catch (e) { ap.scrollIntoView(); } }
       }
       function loadPane(p) {
+        var paneName = p.getAttribute('data-name');
+        if (paneName === 'ppt' && tech.slidesPdf) {
+          probeAssetExistence(tech.slidesPdf, 'pdf', function (exists) {
+            if (!exists) {
+              window.__handleTechAssetError(tech.id, 'ppt', p);
+            }
+          });
+        } else if (paneName === 'word' && tech.reportPdf) {
+          probeAssetExistence(tech.reportPdf, 'pdf', function (exists) {
+            if (!exists) {
+              window.__handleTechAssetError(tech.id, 'word', p);
+            }
+          });
+        }
         p.querySelectorAll('iframe[data-src]').forEach(function (f) {
+          var src = f.getAttribute('data-src');
+          if (techAssetCache[src] === false) {
+            window.__handleTechAssetError(tech.id, paneName, p);
+            return;
+          }
           if (!f.getAttribute('src')) {
-            f.setAttribute('src', f.getAttribute('data-src'));
+            f.setAttribute('src', src);
             // PDF 加载完成后内容高度变化，再滚一次确保停在顶部
             f.onload = function () { scrollContentTop(); };
+            f.onerror = function () {
+              window.__handleTechAssetError(tech.id, paneName, p);
+            };
           }
         });
       }
