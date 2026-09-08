@@ -1360,23 +1360,30 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .tbl-library-preview th,
 .tbl-library-preview td {
   padding: 0 4px !important;
-  font-size: 12.5px;
-  line-height: 1.25;
+  font-size: 12px;
+  line-height: 28px;
+  height: 28px;
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   vertical-align: middle;
   white-space: nowrap !important;
   word-break: keep-all !important;
+  box-sizing: border-box;
+}
+.tbl-library-preview tbody tr {
+  height: 28px !important;
+  max-height: 28px !important;
 }
 .tbl-library-preview th:last-child,
 .tbl-library-preview td:last-child {
   border-right: none;
 }
 .tbl-library-preview th {
-  height: 30px;
+  height: 30px !important;
+  line-height: 30px !important;
   background: var(--panel);
   color: var(--dim);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 750;
   white-space: nowrap !important;
   position: sticky;
@@ -1392,9 +1399,9 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   white-space: nowrap !important;
 }
 .tbl-library-preview td.tname {
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   padding-left: 8px !important;
 }
 .tbl-library-preview td.col-score,
@@ -1402,17 +1409,17 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   text-align: center !important;
   white-space: nowrap !important;
   word-break: keep-all !important;
-  padding: 0 1px !important;
-  font-size: 11px !important;
-  letter-spacing: -0.2px;
-  width: 30px;
+  padding: 0 2px !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0 !important;
+  width: 40px;
 }
 .tbl-library-preview .pill {
   white-space: nowrap !important;
   display: inline-block;
-  padding: 1px 2px !important;
+  padding: 1px 3px !important;
   font-size: 10.5px !important;
-  min-width: 22px;
+  min-width: 24px;
 }
 .tbl-library-preview .pill-tier {
   padding: 1px 4px !important;
@@ -5965,7 +5972,7 @@ body.is-double-page .book {
 <div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
 <!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
 <div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609081746">v202609081746</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609082108">v202609082108</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>

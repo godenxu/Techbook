@@ -1,6 +1,6 @@
 /* =====================================================================
- * 银行金融科技前沿技术研究成果 —— 数据文件（金融科技版 v1.31）
- * 技术名称/分层/六维评级/研判结论等基础信息以《前沿技术储备库分层台账 v1.31》为准
+ * 银行金融科技前沿技术研究成果 —— 数据文件（金融科技版 v1.33）
+ * 技术名称/分层/六维评级/研判结论等基础信息以《前沿技术储备库分层台账 v1.33》为准
  * ===================================================================== */
 (function () {
   'use strict';
@@ -196,8 +196,7 @@
     externalSource: '',
     summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
     folder: 'assets/technologies/T010_算力网络',
-    reportDocx: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.docx', reportDocxName: 'T010_算力网络_专题研究报告.docx', reportDocxSize: '506.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.pdf',
-    image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg', imageName: 'T010_算力网络_一张图.svg', imageSize: '4.2 KB',
+    image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg', imageName: 'T010_算力网络_一张图.svg', imageSize: '4.3 KB',
     center: '技术服务中心', centerReason: '定位为弹性调度、算力普惠的算力基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
@@ -343,8 +342,8 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '覆盖AI可信、风险与安全管理的框架与工程能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台；思想源头为Gartner AI TRiSM框架，核心主张是把AI安全从"上线后补救"前移为"开发即内嵌、运行时强制"。',
     folder: 'assets/technologies/T018_人工智能安全平台',
-    reportDocx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportDocxName: 'T018_人工智能安全平台_专题研究报告.docx', reportDocxSize: '405.3 KB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPptxName: 'T018_人工智能安全平台_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-09-08', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportDocxName: 'T018_人工智能安全平台_专题研究报告.docx', reportDocxSize: '405.3 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPptxName: 'T018_人工智能安全平台_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf',
     image: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_一张图.svg', imageName: 'T018_人工智能安全平台_一张图.svg', imageSize: '4.3 KB',
     center: '技术服务中心', centerReason: '是自主型AI智能体、AI原生应用、智能体互操作协议等落地的前置护栏，与后量子密码学、零信任架构、机密计算同属安全工程基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
@@ -369,20 +368,24 @@
   { id: 'T20', no: 20, name: '合成数据（Synthetic Data）', short: '合成数据', nameEn: 'Synthetic Data',
     category: '数据要素／人工智能', categoryKey: '数据要素', archDim: '数据', attr: '新兴',
     tier: '研究层', disposal: '深入研究',
-    maturity: 3, strategicFit: 5, value: 3, feasibility: 3, urgency: 3, openness: 4,
-    conclusion: '战略匹配度5分（数据要素／人工智能双战略方向，缓解数据获取瓶颈），技术成熟度3分处早期采用阶段，与隐私增强计算（013）互补，宜深入研究：在反欺诈样本增强与测试数据场景评估"合成+差分隐私"的质量、隐私与合规边界，与013统筹密态与合成数据能力。',
+    maturity: 3, strategicFit: 3, value: 3, feasibility: 3, urgency: 3, openness: 4,
+    conclusion: '战略匹配度3分（合成数据定位为数据要素战略方向下的路径之一，人工智能为实现手段），技术成熟度3分处早期采用阶段，与隐私增强计算互补，宜深入研究：在反欺诈样本增强与测试数据场景评估"合成+差分隐私"的质量、隐私与合规边界，统筹密态与合成数据能力。',
     background: '反欺诈/风控等场景对多样化训练样本需求持续增长，但真实客户数据的获取与共享受隐私保护要求日益严格限制，合成数据提供了兼顾数据可用性与隐私安全的中间路径。',
     definition: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
     currentStatus: '· "合成数据非天然隐私"认知已趋清晰，"合成数据+差分隐私"组合正成为行业公认黄金标准\n· SDV等开源合成数据工具提供标准化生成与评估流程，国际金融机构已用于反欺诈样本增强与测试数据场景\n· 国内金融科技领域关注度随生成式AI普及快速上升，但规模化生产应用案例仍相对有限，处于概念验证向小范围试点过渡阶段\n· 与隐私增强计算互补：合成数据用于模型训练测试阶段，隐私增强计算用于生产环境多方协作计算阶段',
     trend: '· 从依赖真实敏感数据，到合成数据+差分隐私训练\n· 从数据孤岛，到共享"犯罪模式"而非客户明细',
     bankValue: '· 反欺诈/风控样本增强与类别均衡，覆盖长尾场景\n· 隐私安全的测试与共享，缓解数据获取瓶颈\n· 与隐私增强计算共同覆盖数据全生命周期隐私保护需求',
     limitation: '· 合成数据非天然隐私，模型可能"记忆"并泄露原始数据统计特征甚至个体信息\n· 质量与偏差控制需专项投入，监管认可度待明确\n· 国内规模化生产应用案例有限，多处于概念验证阶段',
-    maturityBasis: 'Gartner估2026年四分之三企业将用生成式AI产合成客户数据，"合成+差分隐私"渐成黄金标准，属早期采用阶段。', strategicFitBasis: '命中数据要素／人工智能双战略方向，缓解数据获取瓶颈与隐私合规诉求。', valueBasis: '反欺诈样本增强、类别均衡与隐私安全测试价值明确，单一维度价值为主。',
+    maturityBasis: 'Gartner估2026年四分之三企业将用生成式AI产合成客户数据，"合成+差分隐私"渐成黄金标准，属早期采用阶段。', strategicFitBasis: '合成数据以生成式方法产出仿真训练/测试数据，核心定位服务数据要素战略方向下的数据获取与隐私合规诉求，人工智能属实现手段而非独立命中的战略方向，按评分标准为单一方向下的路径之一，评定战略匹配度3分。', valueBasis: '反欺诈样本增强、类别均衡与隐私安全测试价值明确，单一维度价值为主。',
     feasibilityBasis: '合成数据非天然隐私（模型可能记忆泄露）、质量偏差与监管认可度待明确，需专项投入治理。', urgencyBasis: '金融业已用于反欺诈样本与测试，属3—5年关键窗口，尚无强制监管时限。', opennessBasis: 'SDV等合成数据工具多为开源，多厂商可选。',
     source: 'NayaOne《Synthetic Data\'s Moment》；geekfence 2026合成数据产品；arXiv 2602.09288 金融合成数据隐私风险。\n·【2026-07-14复核增补】2026年中国AI发展趋势前瞻（2026.01）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: '用生成模型产出统计特征相近但不含真实个体的仿真数据，用于模型训练、测试与数据共享。',
-    center: '数智能力中心', centerReason: '定位为企业级数据要素供给与AI训练底座，横跨AI模型训练、风控长尾样本增强、跨域合规流通及研发仿真测试，属全行通用数智基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    folder: 'assets/technologies/T020_合成数据',
+    reportDocx: 'assets/technologies/T020_合成数据/前沿技术专题研究报告_合成数据（Synthetic Data）_V4.3.docx', reportDocxName: '前沿技术专题研究报告_合成数据（Synthetic Data）_V4.3.docx', reportDocxSize: '751.9 KB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T020_合成数据/T020_合成数据_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T020_合成数据/前沿技术专题研究报告_合成数据_汇报版.pptx', slidesPptxName: '前沿技术专题研究报告_合成数据_汇报版.pptx', slidesPptxSize: '1.21 MB', slidesPptxDate: '2026-09-08', slidesPdf: 'assets/technologies/T020_合成数据/T020_合成数据_演示汇报.pdf',
+    image: 'assets/technologies/T020_合成数据/T020_合成数据_一张图.png', imageName: 'T020_合成数据_一张图.png', imageSize: '1.74 MB',
+    center: '数智能力中心', centerReason: '定位为企业级数据要素供给与AI训练底座，横跨AI模型训练、风控长尾样本增强、跨域合规流通及研发仿真测试，属全行通用数智基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T21', no: 21, name: '因果AI（Causal AI）', short: '因果AI', nameEn: 'Causal AI',
     category: '人工智能', categoryKey: '人工智能', archDim: '应用', attr: '未来',
@@ -441,7 +444,7 @@
   { id: 'T24', no: 24, name: '去中心化身份与可验证凭证（DID·VC·eIDAS 2.0数字钱包）', short: '去中心化身份与可验证凭证', nameEn: 'DID·VC·eIDAS 2.0数字钱包',
     category: '安全／数据要素', categoryKey: '安全', archDim: '安全·业务', attr: '新兴',
     tier: '研究层', disposal: '深入研究',
-    maturity: 3, strategicFit: 5, value: 3, feasibility: 3, urgency: 3, openness: 4,
+    maturity: 3, strategicFit: 3, value: 3, feasibility: 3, urgency: 3, openness: 4,
     conclusion: '战略匹配度5分（安全／数据要素双战略方向，契合KYC复用与隐私合规诉求），技术成熟度3分（标准体系仍在成型），宜深入研究：跟踪W3C VC/eIDAS进展与国内数字身份政策，评估KYC凭证复用与选择性披露在开户/授权的适用性，与深度伪造检测（023）、隐私增强计算（013）协同。',
     background: '传统身份核验依赖提交完整证件影印件、验证方回源查询，去中心化身份以DID+VC让用户在本地钱包"选择性披露"最小属性集合，验证方通过密码学方式核验而无需回源，是应对隐私与效率双重诉求的架构路径。',
     definition: '以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。',
@@ -454,7 +457,7 @@
     source: 'Ping Identity《Decentralized Identity in EU Finance》；《Enterprise Playbook 2026》；eIDAS 2.0 EUDI Wallet KYC指南2026。\n·【2026-07-14复核增补】行业综述（2026）', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: '',
     summary: '以去中心化标识（DID）与可验证凭证（VC）让用户在本地钱包自主持有并选择性披露身份属性。',
-    center: '对客服务中心', centerReason: '有助于改善开户与授权体验，直接服务手机银行、网银等渠道的开户与身份核验环节', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
+    center: '对客服务中心', centerReason: '有助于改善开户与授权体验，直接服务手机银行、网银等渠道的开户与身份核验环节', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T25', no: 25, name: '量子保密通信／量子密钥分发（QKD·量子保密通信）', short: '量子保密通信', nameEn: 'QKD·量子保密通信',
     category: '量子科技／安全', categoryKey: '量子科技', archDim: '安全', attr: '未来',
@@ -581,32 +584,31 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
     folder: 'assets/technologies/T031_业务编排与自动化',
-    reportDocx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportDocxName: 'T031_业务编排与自动化_专题研究报告.docx', reportDocxSize: '580.4 KB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPptxName: 'T031_业务编排与自动化_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-09-08', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportDocxName: 'T031_业务编排与自动化_专题研究报告.docx', reportDocxSize: '580.4 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPptxName: 'T031_业务编排与自动化_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf',
     image: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_一张图.svg', imageName: 'T031_业务编排与自动化_一张图.svg', imageSize: '4.4 KB',
     center: '业务处理中心', centerReason: '以统一编排支撑授信审批、账户运营等端到端流程自动化，授信审批正是该中心的核心系统职能', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
     category: '数据要素（仿真与决策）', categoryKey: '数据要素', archDim: '业务', attr: '未来',
     tier: '观察层', disposal: '动态观察',
-    maturity: 1, strategicFit: 3, value: 2, feasibility: 2, urgency: 1, openness: 3,
-    conclusion: '技术成熟度1分、战略紧迫度1分（创新萌芽期，市场渗透率仅1%-5%，未检索到银行业生产级案例），引入可行度2分（个人信息保护与算法推荐合规红线密集），维持观察层／动态观察：季度跟踪《金融产品网络营销管理办法》细则与同业动态，可在严格合规限定下探索流失预测、经营仿真等非个性化营销场景小范围PoC。',
+    maturity: 2, strategicFit: 3, value: 4, feasibility: 2, urgency: 3, openness: 3,
+    conclusion: '技术成熟度由1分上调至2分（Uplift建模／因果推断等底层组件已具备较高成熟度）、价值贡献度由2分上调至4分（精准营销／财富顾问／流失预警等场景效率体验风控价值明确、可初步量化）、战略紧迫度由1分上调至3分（互联网行业已验证推演能力、银行业存在3—5年关键跟踪窗口）；战略匹配度3分、生态开放度3分维持不变；引入可行度维持2分（个人信息保护与算法推荐合规红线密集，触及六维组合判据单列否决线），本次复核处置档位维持观察层／动态观察不变：季度扫描Gartner曲线位移与同业案例披露情况，重点跟踪《金融产品网络营销管理办法》执行细则，可在严格合规限定下探索客户流失预测、经营仿真等非个性化营销场景的小范围概念验证；原技术编号032所含的组织数字孪生（DTO）概念已移除，如需研究组织/流程仿真类数字孪生，应作为独立技术另行建档评估，不再与客户数字孪生合并研判。',
     background: '传统客户理解依赖群体分群与事后归因分析，存在"群体画像失真＋事后分析滞后＋无法前瞻推演"的组合失效场景；客户数字孪生以计算模型（而非数据记录）模拟、预测客户行为，试图解决这一失效。',
     definition: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。Gartner将其列为客户体验与销售转型的战略性新兴技术，2025年多份Hype Cycle报告将其定位于"创新萌芽期／新兴阶段"。',
     currentStatus: '· 国际研究机构2025年多份报告持续将其列为客户体验与销售转型领域战略性新兴技术，但仍处早期采纳阶段，市场渗透率约1%—5%\n· 《金融产品网络营销管理办法》2026年9月30日起施行，明确将算法推荐纳入监管、要求提供非个性化选项；个人信息保护法第24条对自动化决策透明度与公平性提出强制性要求\n· 可口可乐与NVIDIA、WPP合作案例（跨100余个市场素材超本地化生成）是目前检索到投入规模与合作方披露最完整的实名案例，但更接近"内容生产自动化"而非严格定义的客户行为预测\n· 现有实名证据集中在零售/快消行业营销内容生产场景，尚未出现银行业客户行为预测类应用的公开生产案例',
     trend: '· 从群体客户画像，到单客户级实时行为孪生与情景推演\n· 从事后归因分析，到"假设-推演"式前瞻模拟\n· 从人工经验驱动的营销决策，到孪生驱动的自动化触达与响应预测',
     bankValue: '· 支撑精准营销触达、财富顾问服务、客户流失预测与风险预警\n· 与决策智能平台（决策推荐）、多智能体系统（任务执行）、数字人（交互呈现）构成技术链条，为其提供前瞻性预测输入\n· 提升客户旅程模拟与运营仿真能力，辅助产品与渠道策略验证',
     limitation: '· 技术仍处创新萌芽期／新兴阶段，市场渗透率约1%-5%，可用平台与方法论未定型\n· 客户级行为建模高度依赖个人信息保护、算法推荐与差异化定价合规红线，2026年9月30日起施行的《金融产品网络营销管理办法》进一步收紧适用边界\n· 统一数据基础、聚焦型机器学习模型、实时同步与激活路径四项前提对多数机构均非现成能力，建设与运维投入大\n· 截至本轮复核，未检索到可公开核实的银行业生产级落地案例，行业整体仍以零售、消费品等非金融场景先行',
-    maturityBasis: 'Gartner多期Hype Cycle一致将DToC置于创新萌芽期，市场渗透率仅1%-5%，未检索到银行业生产级案例，处萌芽阶段。', strategicFitBasis: '命中数据要素（仿真与决策）方向下的技术路径之一，非核心旗舰应用。', valueBasis: '精准营销、财富顾问、流失预警存在价值锚点，但金融场景数据基础与合规约束显著高于零售业，价值难以量化。',
-    feasibilityBasis: '《金融产品网络营销管理办法》《个人信息保护法》自动化决策公平性等构成客户级建模的多重合规红线，需专项立项治理。', urgencyBasis: '技术处于创新萌芽期，不宜投入研究资源或开展本行落地探索，属5年以上长期赛道。', opennessBasis: '可用平台与方法论尚未定型，市场早期，专有与潜在开放路径并存。',
+    maturityBasis: 'Gartner多期Hype Cycle报告将DToC置于创新触发期，对应TRL约3—4级，个别实验性验证，尚缺乏成熟产品与标准化方法论；但支撑其预测能力的Uplift建模／因果推断等底层组件技术已具备较高成熟度，综合评定2分。', strategicFitBasis: '命中数据要素（仿真与决策）战略方向下的具体路径之一；本行人工智能领域的旗舰路径为垂类大模型与智能体，DToC非被点名的旗舰技术，评定3分。', valueBasis: '对精准营销、财富顾问服务、流失预警等场景的效率、体验、风控多维价值均有明确指向，且已具备可初步量化的测算路径，价值贡献度评4分；但当前区间测算仍属示意性估算，正式落地前须结合本行实际数据实测校准。',
+    feasibilityBasis: '客户级行为建模涉及个人信息保护、算法推荐合规与差异化定价红线，《金融产品网络营销管理办法》即将施行进一步收紧适用边界，合规风险与专业人才门槛均较高；但技术路径以传统机器学习为主、不受生成式AI相关监管限制，且可通过隐私增强计算等前置管控手段部分缓释风险，评定2分。', urgencyBasis: '客户行为推演能力已在互联网行业得到验证、银行业目前仍是空白，存在3—5年的关键跟踪窗口；但监管尚未设定强制采用的时间表，紧迫程度弱于受明确监管时限驱动的技术，评定3分。', opennessBasis: '底层技术栈以开源组件为主，多家厂商可选，迁移替代成本中等，国产化路径亦较为清晰，评定3分。',
     source: '· Gartner新闻稿《Hype Cycle Reveals How AI and Digital Advancements Are Primed to Aid Sales Transformations》（2025-10-30，DToC置于创新萌芽期）\n· Gartner《Hype Cycle for CRM Technologies, 2025》（G00827302，2025-07-09，DToC列"On the Rise"新兴阶段、效益评级高、渗透率1%-5%，经第三方转引页面部分核实）\n· Gartner供应链洞察《A Digital Twin of the Customer Could Transform Your Supply Chain Digitalization Strategy》（Beth Coppinger，2023-06-16，27%对60%试点/规划数据）\n· 中国人民银行等八部门《金融产品网络营销管理办法》（2026-04-24印发/2026-09-30施行）；国家网信办等四部门《互联网信息服务算法推荐管理规定》（2021-12-31公布/2022-03-01施行）；中国人民银行《金融领域科技伦理指引》（JR/T 0258—2022）\n采集截止日期：2026-08-18。', attention: '中—高', status: '在库—已深化研究', updateDate: '2026-07-14',
     externalSource: 'Gartner分析师20260612推荐',
     summary: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。Gartner将其列为客户体验与销售转型的战略性新兴技术，2025年多份Hype Cycle报告将其定位于"创新萌芽期／新兴阶段"。',
     folder: 'assets/technologies/T032_客户数字孪生',
-    reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxSize: '1.09 MB', reportDocxDate: '2026-09-01', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
-    slidesPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.36.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.36.docx', reportDocxSize: '1.13 MB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
     image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png', imageName: 'T032_客户数字孪生_一张图.png', imageSize: '2.07 MB',
-    center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
+    center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
     category: '数据要素（决策智能）', categoryKey: '数据要素', archDim: '数据', attr: '关键',
@@ -625,8 +627,8 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     folder: 'assets/technologies/T033_决策智能平台',
-    reportDocx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.docx', reportDocxName: 'T033_决策智能平台_专题研究报告.docx', reportDocxSize: '779.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPptxName: 'T033_决策智能平台_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T033_决策智能平台/DIP_Research_Report_ZT000_v16.docx', reportDocxName: 'DIP_Research_Report_ZT000_v16.docx', reportDocxSize: '1.57 MB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPptxName: 'T033_决策智能平台_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
     image: 'assets/technologies/T033_决策智能平台/T33-DIP一页纸.png', imageName: 'T33-DIP一页纸.png', imageSize: '1.95 MB',
     center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
@@ -947,7 +949,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609081746',
+    version: '202609082108',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -1008,7 +1010,7 @@
       { id: 'T31', no: '31', name: '业务编排与自动化技术', sector: '业务', ring: '3-6年', tier: '布局层', value: 4, r: 202, angle: 29 },
       { id: 'T01', no: '01', name: '自主型AI智能体', sector: '业务', ring: '3-6年', tier: '布局层', value: 5, r: 182, angle: 45 },
       { id: 'T15', no: '15', name: '区块链资产代币化与可编程货币', sector: '业务', ring: '3-6年', tier: '观察层', value: 4, r: 204, angle: 59 },
-      { id: 'T32', no: '32', name: '客户数字孪生', sector: '业务', ring: '6-8年', tier: '观察层', value: 2, r: 275, angle: 36 },
+      { id: 'T32', no: '32', name: '客户数字孪生', sector: '业务', ring: '6-8年', tier: '观察层', value: 4, r: 275, angle: 36 },
 
       // 应用 (10)
       { id: 'T03', no: '03', name: '事件驱动架构', sector: '应用', ring: '当前', tier: '论证层', value: 4, r: 50, angle: 108 },

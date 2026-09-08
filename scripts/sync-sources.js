@@ -194,22 +194,66 @@ function sync() {
       }
     }
 
-    // 如果有 docx 但还没有 reportPdf，且在 Windows 环境，尝试自动通过 Word COM 转码
-    if (docx && !reportPdf && process.platform === 'win32') {
+    // 如果有 docx 且 reportPdf 缺失或过期，且在 Windows 环境，尝试自动通过 Word COM 转码
+    const targetReportPdfRel = `assets/technologies/${folderName}/${folderName}_专题研究报告.pdf`;
+    const targetReportPdfAbs = path.join(root, targetReportPdfRel);
+    let needDocxConvert = false;
+    if (docx && process.platform === 'win32') {
+      if (!reportPdf || !fs.existsSync(targetReportPdfAbs)) {
+        needDocxConvert = true;
+      } else {
+        const docxStat = fs.statSync(path.join(root, docx.path));
+        const pdfStat = fs.statSync(targetReportPdfAbs);
+        if (docxStat.mtimeMs > pdfStat.mtimeMs) {
+          needDocxConvert = true;
+        }
+      }
+    }
+    if (needDocxConvert) {
       const docxAbs = path.join(root, docx.path);
-      const targetPdfRel = `assets/technologies/${folderName}/${folderName}_专题研究报告.pdf`;
-      const targetPdfAbs = path.join(root, targetPdfRel);
       const convScript = path.join(root, 'scripts', 'convert-doc.ps1');
       if (fs.existsSync(convScript)) {
         try {
           console.log(`[sync-sources] Auto-converting Word to PDF for ${tech.id}: ${docx.name}...`);
-          execSync(`powershell -ExecutionPolicy Bypass -File "${convScript}" -src "${docxAbs}" -dst "${targetPdfAbs}"`, { stdio: 'pipe' });
-          if (fs.existsSync(targetPdfAbs)) {
-            reportPdf = targetPdfRel;
-            console.log(`[sync-sources] Successfully generated ${targetPdfRel}`);
+          execSync(`powershell -ExecutionPolicy Bypass -File "${convScript}" -src "${docxAbs}" -dst "${targetReportPdfAbs}"`, { stdio: 'pipe' });
+          if (fs.existsSync(targetReportPdfAbs)) {
+            reportPdf = targetReportPdfRel;
+            console.log(`[sync-sources] Successfully generated ${targetReportPdfRel}`);
           }
         } catch (err) {
-          console.warn(`[sync-sources] Auto-convert failed:`, err.message);
+          console.warn(`[sync-sources] Auto-convert Word failed:`, err.message);
+        }
+      }
+    }
+
+    // 如果有 pptx 且 slidesPdf 缺失或过期，且在 Windows 环境，尝试自动通过 PowerPoint COM 转码
+    const targetSlidesPdfRel = `assets/technologies/${folderName}/${folderName}_演示汇报.pdf`;
+    const targetSlidesPdfAbs = path.join(root, targetSlidesPdfRel);
+    let needPptConvert = false;
+    if (pptx && process.platform === 'win32') {
+      if (!slidesPdf || !fs.existsSync(targetSlidesPdfAbs)) {
+        needPptConvert = true;
+      } else {
+        const pptxStat = fs.statSync(path.join(root, pptx.path));
+        const pdfStat = fs.statSync(targetSlidesPdfAbs);
+        if (pptxStat.mtimeMs > pdfStat.mtimeMs) {
+          needPptConvert = true;
+        }
+      }
+    }
+    if (needPptConvert) {
+      const pptxAbs = path.join(root, pptx.path);
+      const convPptScript = path.join(root, 'scripts', 'convert-ppt.ps1');
+      if (fs.existsSync(convPptScript)) {
+        try {
+          console.log(`[sync-sources] Auto-converting PPT to PDF for ${tech.id}: ${pptx.name}...`);
+          execSync(`powershell -ExecutionPolicy Bypass -File "${convPptScript}" -src "${pptxAbs}" -dst "${targetSlidesPdfAbs}"`, { stdio: 'pipe' });
+          if (fs.existsSync(targetSlidesPdfAbs)) {
+            slidesPdf = targetSlidesPdfRel;
+            console.log(`[sync-sources] Successfully generated ${targetSlidesPdfRel}`);
+          }
+        } catch (err) {
+          console.warn(`[sync-sources] Auto-convert PPT failed:`, err.message);
         }
       }
     }

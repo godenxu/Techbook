@@ -1301,15 +1301,15 @@
             '</colgroup>'
           ) : (
             '<colgroup>' +
-              '<col style="width:20px">' +
+              '<col style="width:22px">' +
               '<col>' +
-              '<col style="width:52px">' +
-              '<col style="width:30px">' +
-              '<col style="width:30px">' +
-              '<col style="width:30px">' +
-              '<col style="width:30px">' +
-              '<col style="width:30px">' +
-              '<col style="width:30px">' +
+              '<col style="width:48px">' +
+              '<col style="width:40px">' +
+              '<col style="width:40px">' +
+              '<col style="width:40px">' +
+              '<col style="width:40px">' +
+              '<col style="width:40px">' +
+              '<col style="width:40px">' +
             '</colgroup>'
           )) +
           '<thead><tr>' +
@@ -1334,18 +1334,24 @@
     var pLeftInner = $('pageLeftInner');
     var pRightInner = $('pageRightInner');
     var webContent = $('webContent');
+    var bookRefreshed = false;
     if (pLeftInner && pLeftInner.querySelector('.book-lib-pad')) {
       pLeftInner.innerHTML = libraryPreviewHTML(undefined, false);
       bindPageActions(pLeftInner);
+      bookRefreshed = true;
     }
     if (pRightInner && pRightInner.querySelector('.book-lib-pad')) {
       pRightInner.innerHTML = libraryPreviewHTML(undefined, false);
       bindPageActions(pRightInner);
+      bookRefreshed = true;
     }
     var webLibSec = webContent ? webContent.querySelector('#s-library .sec-body') : null;
     if (webLibSec) {
       webLibSec.innerHTML = libraryPreviewHTML(undefined, true);
       bindPageActions(webLibSec);
+    }
+    if (bookRefreshed && typeof fitSpread === 'function') {
+      fitSpread();
     }
   }
 
@@ -1587,7 +1593,7 @@
       '<div class="hc-page-card">' +
         '<div class="pg-h" style="margin:0 0 4px">生命周期演进分布（严格对应六维成熟度评级）</div>' +
         '<div class="hc-stat-pills">' +
-          '<span class="hc-stat-pill">创新萌芽期: <b>10项</b> (1分1 / 2分4 / 3分5)</span>' +
+          '<span class="hc-stat-pill">创新萌芽期: <b>10项</b> (2分5 / 3分5)</span>' +
           '<span class="hc-stat-pill">期望膨胀期: <b>5项</b> (2分2 / 4分3)</span>' +
           '<span class="hc-stat-pill">泡沫破裂谷底期: <b>9项</b> (2分1 / 3分8)</span>' +
           '<span class="hc-stat-pill">稳步爬升恢复期: <b>9项</b> (3分2 / 4分7)</span>' +
@@ -1595,8 +1601,8 @@
         '</div>' +
         '<div class="hc-stat-pills" style="margin-top:4px">' +
           '<span class="hc-stat-pill" style="border-color:rgba(79, 140, 255, 0.4)">★ 六维技术成熟度评分分布：</span>' +
-          '<span class="hc-stat-pill">1分 (萌芽起步): <b>1项</b></span>' +
-          '<span class="hc-stat-pill">2分 (技术触发): <b>7项</b></span>' +
+          '<span class="hc-stat-pill">1分 (萌芽起步): <b>0项</b></span>' +
+          '<span class="hc-stat-pill">2分 (技术触发): <b>8项</b></span>' +
           '<span class="hc-stat-pill">3分 (早期采用): <b>15项</b></span>' +
           '<span class="hc-stat-pill">4分 (生产应用): <b>12项</b></span>' +
           '<span class="hc-stat-pill">5分 (主流成熟): <b>1项</b></span>' +
@@ -3606,7 +3612,7 @@
       m.ah = m.el.clientHeight;
       if (m.aw > BASE_PAGE_W + 10) {
         // 在 2K/4K 高分屏下，先以基准宽度排版并解除 minHeight 100%，以测量内容真实高度
-        if (!m.pad.classList.contains('book-tech-pad')) {
+        if (!m.pad.classList.contains('book-tech-pad') && !m.pad.classList.contains('book-lib-pad')) {
           m.pad.style.width = BASE_PAGE_W + 'px';
           m.pad.style.height = 'auto';
           m.pad.style.minHeight = '0px';
@@ -3624,7 +3630,7 @@
     // 阶段 3：计算各自的自然缩放系数
     items.forEach(function (m) {
       if (!m) return;
-      if (m.pad.classList && m.pad.classList.contains('book-tech-pad')) {
+      if (m.pad.classList && (m.pad.classList.contains('book-tech-pad') || m.pad.classList.contains('book-lib-pad'))) {
         if (m.aw > BASE_PAGE_W + 10) {
           m.s = Math.min(m.aw / BASE_PAGE_W, m.ah / BASE_PAGE_H);
         } else {
@@ -3638,7 +3644,7 @@
                           m.pad.classList.contains('back-cover-full') ||
                           m.pad.classList.contains('divider-full');
         var sW = m.aw / BASE_PAGE_W;
-        var isFixedH = isFullBleed || (m.pad.classList && m.pad.classList.contains('page-pad-appendix'));
+        var isFixedH = isFullBleed || (m.pad.classList && (m.pad.classList.contains('page-pad-appendix') || m.pad.classList.contains('book-lib-pad')));
         var effectiveH = isFixedH ? BASE_PAGE_H : Math.max(BASE_PAGE_H, m.nh);
         var sH = m.ah / effectiveH;
         m.s = Math.min(sW, sH);
@@ -3646,7 +3652,7 @@
         if (m.nw <= m.aw + 1 && m.nh <= m.ah + 1) {
           m.s = 1;
         } else {
-          var effectiveNh = (m.pad.classList && m.pad.classList.contains('page-pad-appendix')) ? BASE_PAGE_H : m.nh;
+          var effectiveNh = (m.pad.classList && (m.pad.classList.contains('page-pad-appendix') || m.pad.classList.contains('book-lib-pad'))) ? BASE_PAGE_H : m.nh;
           var s = Math.min(m.aw / m.nw, m.ah / effectiveNh);
           m.s = (s >= 1) ? 1 : s;
         }
@@ -4723,8 +4729,10 @@
       '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button>' +
     '</div>';
 
+    var pdfSrc = pdfPath;
+    if (pdfSrc && pdfSrc.indexOf('#') === -1) pdfSrc += '#navpanes=1&pagemode=bookmarks';
     var stage = '<div class="preview-stage" data-stage="1" style="height:calc(100vh - 165px);min-height:600px;border-radius:8px;overflow:hidden;background:#525659">' +
-      '<iframe src="' + esc(pdfPath) + '" style="width:100%;height:100%;border:none" title="前沿科技研究信息来源报告 Word 报告预览"></iframe>' +
+      '<iframe src="' + esc(pdfSrc) + '" style="width:100%;height:100%;border:none" title="前沿科技研究信息来源报告 Word 报告预览"></iframe>' +
     '</div>';
 
     openPanel('前沿科技研究信息来源报告 · Word 报告预览', toolbar + stage, function () {
@@ -4764,8 +4772,10 @@
       '<button class="btn" data-fs="1" title="全屏预览">⛶ 全屏</button>' +
     '</div>';
 
+    var pdfWorkplanSrc = pdfPath;
+    if (pdfWorkplanSrc && pdfWorkplanSrc.indexOf('#') === -1) pdfWorkplanSrc += '#navpanes=1&pagemode=bookmarks';
     var stage = '<div class="preview-stage" data-stage="1" style="height:calc(100vh - 165px);min-height:600px;border-radius:8px;overflow:hidden;background:#525659">' +
-      '<iframe src="' + esc(pdfPath) + '" style="width:100%;height:100%;border:none" title="工作推进方案 Word 预览"></iframe>' +
+      '<iframe src="' + esc(pdfWorkplanSrc) + '" style="width:100%;height:100%;border:none" title="工作推进方案 Word 预览"></iframe>' +
     '</div>';
 
     openPanel('前沿技术趋势扫描与专题研究工作推进方案 · 预览', toolbar + stage, function () {
@@ -5124,7 +5134,11 @@
     if (!pdf) {
       return dl + '<div class="preview-empty">暂无在线预览，请下载指定文件夹中的原件查看。</div>';
     }
-    return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(pdf) + '" title="' + esc(label) + '预览" onerror="window.__handleTechAssetError&&window.__handleTechAssetError(\'' + esc(tech.id) + '\',\'' + (isWord ? 'word' : 'ppt') + '\',this)"></iframe></div>';
+    var iframeSrc = pdf;
+    if (isWord && iframeSrc.indexOf('#') === -1) {
+      iframeSrc += '#navpanes=1&pagemode=bookmarks';
+    }
+    return dl + '<div class="preview-stage" data-stage="1"><iframe data-src="' + esc(iframeSrc) + '" title="' + esc(label) + '预览" onerror="window.__handleTechAssetError&&window.__handleTechAssetError(\'' + esc(tech.id) + '\',\'' + (isWord ? 'word' : 'ppt') + '\',this)"></iframe></div>';
   }
   function techHeadHTML(tech) {
     return '<div class="panel-tech-head">' +
@@ -5254,7 +5268,8 @@
         }
         p.querySelectorAll('iframe[data-src]').forEach(function (f) {
           var src = f.getAttribute('data-src');
-          if (techAssetCache[src] === false) {
+          var cleanSrc = src ? src.split('#')[0] : '';
+          if (techAssetCache[cleanSrc] === false) {
             window.__handleTechAssetError(tech.id, paneName, p);
             return;
           }
