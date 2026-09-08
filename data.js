@@ -196,9 +196,9 @@
     externalSource: '',
     summary: '将广域分布的算力资源通过网络统一编排调度、按需供给的新型基础设施（算网融合）。',
     folder: 'assets/technologies/T010_算力网络',
-    reportDocx: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.docx', reportDocxName: 'T010_算力网络_专题研究报告.docx', reportDocxSize: '506.0 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pptx', slidesPptxName: 'T010_算力网络_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pdf',
-    image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg', imageName: 'T010_算力网络_一张图.svg', imageSize: '4.3 KB',
+    reportDocx: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.docx', reportDocxName: 'T010_算力网络_专题研究报告.docx', reportDocxSize: '506.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T010_算力网络/T010_算力网络_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pptx', slidesPptxName: 'T010_算力网络_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T010_算力网络/T010_算力网络_演示汇报.pdf',
+    image: 'assets/technologies/T010_算力网络/T010_算力网络_一张图.svg', imageName: 'T010_算力网络_一张图.svg', imageSize: '4.2 KB',
     center: '技术服务中心', centerReason: '定位为弹性调度、算力普惠的算力基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T11', no: 11, name: '平台工程／IDP（Platform Engineering / IDP）', short: '平台工程', nameEn: 'Platform Engineering / IDP',
@@ -344,9 +344,9 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '覆盖AI可信、风险与安全管理的框架与工程能力：提示注入防护、数据与输出护栏、模型评估、运行时异常检测与AI治理平台；思想源头为Gartner AI TRiSM框架，核心主张是把AI安全从"上线后补救"前移为"开发即内嵌、运行时强制"。',
     folder: 'assets/technologies/T018_人工智能安全平台',
-    reportDocx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportDocxName: 'T018_人工智能安全平台_专题研究报告.docx', reportDocxSize: '405.3 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPptxName: 'T018_人工智能安全平台_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf',
-    image: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_一张图.svg', imageName: 'T018_人工智能安全平台_一张图.svg', imageSize: '4.3 KB',
+    reportDocx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.docx', reportDocxName: 'T018_人工智能安全平台_专题研究报告.docx', reportDocxSize: '405.3 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pptx', slidesPptxName: 'T018_人工智能安全平台_演示汇报.pptx', slidesPptxSize: '5.8 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_演示汇报.pdf',
+    image: 'assets/technologies/T018_人工智能安全平台/T018_人工智能安全平台_一张图.svg', imageName: 'T018_人工智能安全平台_一张图.svg', imageSize: '4.2 KB',
     center: '技术服务中心', centerReason: '是自主型AI智能体、AI原生应用、智能体互操作协议等落地的前置护栏，与后量子密码学、零信任架构、机密计算同属安全工程基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:5, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:4, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T19', no: 19, name: '小语言模型与端侧AI（SLM·On-device／Edge AI）', short: '小语言模型与端侧AI', nameEn: 'SLM·On-device／Edge AI',
@@ -582,9 +582,9 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '由 Gartner 提出的整合型软件平台类别，在单一平台内汇聚业务流程编排、企业连接、低代码开发与智能体（agentic）自动化等能力，横跨 BPA、LCAP、iPaaS、IDP、RPA、协作式工作流与文档管理等原有市场，以端到端编排业务成果替代碎片化的单点自动化。',
     folder: 'assets/technologies/T031_业务编排与自动化',
-    reportDocx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportDocxName: 'T031_业务编排与自动化_专题研究报告.docx', reportDocxSize: '580.4 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPptxName: 'T031_业务编排与自动化_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf',
-    image: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_一张图.svg', imageName: 'T031_业务编排与自动化_一张图.svg', imageSize: '4.4 KB',
+    reportDocx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.docx', reportDocxName: 'T031_业务编排与自动化_专题研究报告.docx', reportDocxSize: '580.4 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pptx', slidesPptxName: 'T031_业务编排与自动化_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_演示汇报.pdf',
+    image: 'assets/technologies/T031_业务编排与自动化/T031_业务编排与自动化_一张图.svg', imageName: 'T031_业务编排与自动化_一张图.svg', imageSize: '4.3 KB',
     center: '业务处理中心', centerReason: '以统一编排支撑授信审批、账户运营等端到端流程自动化，授信审批正是该中心的核心系统职能', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T32', no: 32, name: '客户数字孪生（Digital Twin of a Customer，DToC）', short: '客户数字孪生', nameEn: 'Digital Twin of a Customer，DToC',
@@ -604,7 +604,7 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: 'DToC是基于第一方数据实时构建的单一客户动态AI模型，通过身份解析、行为建模与情景仿真，模拟、预测并推演客户下一步行为与需求，为精准营销、财富顾问服务与风险预警提供前瞻输入。Gartner将其列为客户体验与销售转型的战略性新兴技术，2025年多份Hype Cycle报告将其定位于"创新萌芽期／新兴阶段"。',
     folder: 'assets/technologies/T032_客户数字孪生',
-    reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxSize: '1.09 MB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
+    reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.32.docx', reportDocxSize: '1.09 MB', reportDocxDate: '2026-09-01', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
     slidesPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_演示汇报.pdf',
     image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png', imageName: 'T032_客户数字孪生_一张图.png', imageSize: '2.07 MB',
     center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:1, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:2, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:1, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
@@ -626,8 +626,8 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     folder: 'assets/technologies/T033_决策智能平台',
-    reportDocx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.docx', reportDocxName: 'T033_决策智能平台_专题研究报告.docx', reportDocxSize: '779.0 KB', reportDocxDate: '2026-09-04', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPptxName: 'T033_决策智能平台_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-09-04', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.docx', reportDocxName: 'T033_决策智能平台_专题研究报告.docx', reportDocxSize: '779.0 KB', reportDocxDate: '2026-08-17', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pptx', slidesPptxName: 'T033_决策智能平台_演示汇报.pptx', slidesPptxSize: '5.7 KB', slidesPptxDate: '2026-08-17', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
     image: 'assets/technologies/T033_决策智能平台/T33-DIP一页纸.png', imageName: 'T33-DIP一页纸.png', imageSize: '1.95 MB',
     center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
@@ -948,7 +948,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609072230',
+    version: '202609081342',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
