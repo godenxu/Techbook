@@ -9,7 +9,12 @@ try {
     $pres = $ppt.Presentations.Open($src, -1, 0, 0)
     $pres.SaveAs($dst, 32)
     $pres.Close()
+    [System.Runtime.InteropServices.Marshal]::ReleaseComObject($pres) | Out-Null
     Write-Host "Converted $src to $dst successfully."
 } finally {
-    $ppt.Quit()
+    try { $ppt.Quit() } catch {}
+    [System.Runtime.InteropServices.Marshal]::ReleaseComObject($ppt) | Out-Null
+    [GC]::Collect()
+    [GC]::WaitForPendingFinalizers()
 }
+

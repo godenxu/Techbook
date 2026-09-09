@@ -594,7 +594,7 @@
       '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;right:20%;top:8%"></span>'
     ].join('');
     var coverTitle = esc(b.title).replace('科技发展部', '科技发展部<br>');
-    return '<div class="cover-full">' + orbs +
+    return '<div class="cover-full"><div class="cover-orb-layer">' + orbs + '</div>' +
       '<div class="cov-kicker">BANK FINTECH RESEARCH</div>' +
       '<div class="cov-title">' + coverTitle + '</div>' +
       '<div class="cov-rule"></div>' +
@@ -657,9 +657,9 @@
     add('1.1', '工作方案', 'workplan', false);
     add('1.2', '信息来源评估', 'sources', false);
     add('1.3', '方法论工具评估', 'methodology_appl', false);
-    add('', '研判方法与分层机制', 'methodology_mechanism', false);
+    add('1.4', '研判方法与分层机制', 'methodology_mechanism', false);
     add('第二章', '整体研究成果', 'part2', true);
-    add('', '整体研究成果概述', 'research_overview', false);
+    add('2.1', '整体研究成果概述', 'research_overview', false);
     add('2.2', '前沿技术储备库（长名单）', 'library', false);
     add('2.3', '技术成熟度曲线（Gartner Hype Cycle）', 'hypeCycle', false);
     add('2.4', '技术影响力雷达图', 'radar', false);
@@ -1196,9 +1196,9 @@
           '<div class="res-kpi-sub" title="交互式成果展示系统，支持开箱即用独立离线运行">交互式成果展示系统，支持开箱即用独立离线运行</div>' +
         '</div>' +
         '<div class="res-kpi-card" style="--kpi-col:#14b8a6">' +
-          '<div class="res-kpi-val">10<span>万+字</span></div>' +
+          '<div class="res-kpi-val">15<span>万+字</span></div>' +
           '<div class="res-kpi-lbl">整体研究成果</div>' +
-          '<div class="res-kpi-sub" title="全书全景架构与专题深度报告累计逾10万字">全书全景架构与专题深度报告累计逾10万字</div>' +
+          '<div class="res-kpi-sub" title="全书全景架构与专题深度报告累计逾15万字">全书全景架构与专题深度报告累计逾15万字</div>' +
         '</div>' +
       '</div>' +
 
@@ -3303,7 +3303,7 @@
       '<span class="cover-orb" style="width:180px;height:180px;background:#22d3ee;left:-40px;bottom:-40px"></span>',
       '<span class="cover-orb" style="width:120px;height:120px;background:#8b5cf6;left:20%;top:8%"></span>'
     ].join('');
-    return '<div class="cover-full back-cover-full">' + orbs +
+    return '<div class="cover-full back-cover-full"><div class="cover-orb-layer">' + orbs + '</div>' +
       '<div class="cov-kicker" style="letter-spacing:6px;margin-bottom:32px;opacity:0.85">VALUATION & STRATEGY</div>' +
       '<div class="back-cover-core">' +
         '<div class="bc-step-chain">' +
@@ -3331,10 +3331,8 @@
       '<div class="h-rule" style="margin-bottom:0"></div>' +
       '<div class="eb-center-stage">' +
         '<div class="eb-list">' +
-          '<div class="eb-line"><span class="eb-role">顾问：</span><span class="eb-names eb-empty"></span></div>' +
-          '<div class="eb-line"><span class="eb-role">主任委员：</span><span class="eb-names eb-empty"></span></div>' +
-          '<div class="eb-line"><span class="eb-role">副主任委员：</span><span class="eb-names eb-empty"></span></div>' +
-          '<div class="eb-line"><span class="eb-role">主编：</span><span class="eb-names">顾鹏</span></div>' +
+          '<div class="eb-line"><span class="eb-role">主编：</span><span class="eb-names">程平</span></div>' +
+          '<div class="eb-line"><span class="eb-role">执行主编：</span><span class="eb-names">顾鹏</span></div>' +
           '<div class="eb-line"><span class="eb-role">编委：</span><span class="eb-names">徐捷、朱轶杰、蒋双樑、罗世雄</span></div>' +
         '</div>' +
       '</div>' +
@@ -3401,9 +3399,9 @@
       { id: 'workplan', no: '1.1', short: '工作方案', name: '1.1 · 工作方案', page: pageKeyMap['workplan'] != null ? pageKeyMap['workplan'] : 7, color: '#6366f1', tier: '第一章' },
       { id: 'sources', no: '1.2', short: '情报来源', name: '1.2 · 信息来源评估', page: pageKeyMap['sources'] != null ? pageKeyMap['sources'] : 8, color: '#6366f1', tier: '第一章' },
       { id: 'methodology_appl', no: '1.3', short: '方法工具', name: '1.3 · 方法论工具评估', page: pageKeyMap['methodology_appl'] != null ? pageKeyMap['methodology_appl'] : 9, color: '#6366f1', tier: '第一章' },
-      { id: 'methodology_mechanism', no: '研判', short: '研判机制', name: '研判方法与分层机制', page: pageKeyMap['methodology_mechanism'] != null ? pageKeyMap['methodology_mechanism'] : 10, color: '#6366f1', tier: '第一章' },
+      { id: 'methodology_mechanism', no: '1.4', short: '研判机制', name: '1.4 · 研判方法与分层机制', page: pageKeyMap['methodology_mechanism'] != null ? pageKeyMap['methodology_mechanism'] : 10, color: '#6366f1', tier: '第一章' },
       { id: 'part2', no: '二章', short: '整体成果', name: '第二章 · 整体研究成果', page: pageKeyMap['part2'] != null ? pageKeyMap['part2'] : 11, color: '#3b82f6', tier: '第二章' },
-      { id: 'research_overview', no: '成果', short: '成果概述', name: '整体研究成果概述', page: pageKeyMap['research_overview'] != null ? pageKeyMap['research_overview'] : 12, color: '#3b82f6', tier: '第二章' },
+      { id: 'research_overview', no: '2.1', short: '成果概述', name: '2.1 · 整体研究成果概述', page: pageKeyMap['research_overview'] != null ? pageKeyMap['research_overview'] : 12, color: '#3b82f6', tier: '第二章' },
       { id: 'library', no: '2.2', short: '技术储备库', name: '2.2 · 前沿技术储备库（长名单）', page: pageKeyMap['library'] != null ? pageKeyMap['library'] : 13, color: '#3b82f6', tier: '第二章' },
       { id: 'hypeCycle', no: '2.3', short: '成熟度曲线', name: '2.3 · 技术成熟度曲线（Gartner Hype Cycle）', page: pageKeyMap['hypeCycle'] != null ? pageKeyMap['hypeCycle'] : 14, color: '#3b82f6', tier: '第二章' },
       { id: 'radar', no: '2.4', short: '影响力雷达', name: '2.4 · 技术影响力雷达图', page: pageKeyMap['radar'] != null ? pageKeyMap['radar'] : 15, color: '#3b82f6', tier: '第二章' },
@@ -3638,13 +3636,25 @@
         }
         return;
       }
-      if (m.aw > BASE_PAGE_W + 10) {
-        var isFullBleed = (m.pad.matches && m.pad.matches('.cover-full, .back-cover-full, .divider-full')) ||
+      var isFullBleed = (m.pad.matches && m.pad.matches('.cover-full, .back-cover-full, .divider-full')) ||
+                        (m.pad.classList && (
                           m.pad.classList.contains('cover-full') ||
                           m.pad.classList.contains('back-cover-full') ||
-                          m.pad.classList.contains('divider-full');
+                          m.pad.classList.contains('divider-full')
+                        ));
+      if (isFullBleed) {
+        if (m.aw > BASE_PAGE_W + 10) {
+          var sW = m.aw / BASE_PAGE_W;
+          var sH = m.ah / BASE_PAGE_H;
+          m.s = Math.min(sW, sH);
+        } else {
+          m.s = 1;
+        }
+        return;
+      }
+      if (m.aw > BASE_PAGE_W + 10) {
         var sW = m.aw / BASE_PAGE_W;
-        var isFixedH = isFullBleed || (m.pad.classList && (m.pad.classList.contains('page-pad-appendix') || m.pad.classList.contains('book-lib-pad')));
+        var isFixedH = (m.pad.classList && (m.pad.classList.contains('page-pad-appendix') || m.pad.classList.contains('book-lib-pad')));
         var effectiveH = isFixedH ? BASE_PAGE_H : Math.max(BASE_PAGE_H, m.nh);
         var sH = m.ah / effectiveH;
         m.s = Math.min(sW, sH);
@@ -3685,6 +3695,29 @@
       if (!m) return;
       m.pad.style.minHeight = '';
       var s = m.s || 1;
+
+      var isFullBleed = (m.pad.matches && m.pad.matches('.cover-full, .back-cover-full, .divider-full')) ||
+                        (m.pad.classList && (
+                          m.pad.classList.contains('cover-full') ||
+                          m.pad.classList.contains('back-cover-full') ||
+                          m.pad.classList.contains('divider-full')
+                        ));
+      if (isFullBleed) {
+        m.pad.style.minHeight = '';
+        m.pad.style.maxHeight = '';
+        if (m.aw > BASE_PAGE_W + 10) {
+          m.pad.style.transformOrigin = 'top left';
+          m.pad.style.width = (m.aw / s) + 'px';
+          m.pad.style.height = (m.ah / s) + 'px';
+          m.pad.style.transform = 'scale(' + s + ')';
+        } else {
+          m.pad.style.transformOrigin = '';
+          m.pad.style.transform = '';
+          m.pad.style.width = '100%';
+          m.pad.style.height = '100%';
+        }
+        return;
+      }
 
       if (m.aw > BASE_PAGE_W + 10) {
         m.pad.style.transformOrigin = 'top left';

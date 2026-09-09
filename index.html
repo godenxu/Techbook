@@ -405,6 +405,15 @@ button { font-family: var(--font); cursor: pointer; }
   border-color: rgba(56, 189, 248, 0.75) !important;
 }
 
+.book.is-cover #pageRight,
+.book.is-back-cover #pageLeft,
+.book-page:has(.cover-full),
+.turn-face:has(.cover-full),
+.book-page:has(.back-cover-full),
+.turn-face:has(.back-cover-full) {
+  background: radial-gradient(130% 100% at 50% 0%, #1d2d52 0%, #0e172b 52%, #090f1c 100%) !important;
+}
+
 /* 亮色封面与封底环境光 */
 [data-theme="light"] .book.is-cover::before {
   left: 50% !important;
@@ -4284,12 +4293,14 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   justify-content: center; text-align: center; padding: 40px; overflow: hidden;
   background: radial-gradient(130% 100% at 50% 0%, #1d2d52 0%, #0e172b 52%, #090f1c 100%);
   color: #eaf1ff;
+  width: 100%; height: 100%; box-sizing: border-box;
 }
 .cover-full .cov-kicker { letter-spacing: 7px; color: #4f8cff; font-size: 13px; margin-bottom: 20px; text-transform: uppercase; }
 .cover-full .cov-title { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; letter-spacing: 5px; line-height: 1.35; }
 .cover-full .cov-sub { margin-top: 16px; color: #b9c9e8; font-size: 15px; letter-spacing: 2px; }
 .cover-full .cov-rule { width: 120px; height: 3px; border-radius: 3px; margin: 26px 0; background: linear-gradient(90deg, #4f8cff, #22d3ee); }
 .cover-full .cov-meta { color: #8fa3c0; font-size: 13px; letter-spacing: 1px; line-height: 2.1; }
+.cover-orb-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
 .cover-orb { position: absolute; border-radius: 50%; filter: blur(3px); opacity: .45; pointer-events: none; }
 
 /* ==================== 封底（终章）：价值凝练与首尾呼应 ==================== */
@@ -5972,7 +5983,7 @@ body.is-double-page .book {
 <div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
 <!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
 <div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609082108">v202609082108</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609091202">v202609091202</div>
 
 <script src="data.js"></script>
 <script src="js/app.js"></script>
