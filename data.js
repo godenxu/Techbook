@@ -629,6 +629,7 @@
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     folder: 'assets/technologies/T033_决策智能平台',
     reportDocx: 'assets/technologies/T033_决策智能平台/DIP_Research_Report_ZT000_v16.docx', reportDocxName: 'DIP_Research_Report_ZT000_v16.docx', reportDocxSize: '1.57 MB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T033_决策智能平台/DIP研究报告_浦发模板_v8.pptx', slidesPptxName: 'DIP研究报告_浦发模板_v8.pptx', slidesPptxSize: '281.6 KB', slidesPptxDate: '2026-09-09', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
     image: 'assets/technologies/T033_决策智能平台/T33-DIP一页纸.png', imageName: 'T33-DIP一页纸.png', imageSize: '1.95 MB',
     center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
@@ -949,7 +950,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609091641',
+    version: '202609091825',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
