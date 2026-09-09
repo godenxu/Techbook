@@ -512,6 +512,8 @@ button { font-family: var(--font); cursor: pointer; }
 .page-inner {
   position: absolute; inset: 0; overflow: hidden;
   font-size: 16px; line-height: 1.7;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 .page-inner.scroll {
   position: absolute;
@@ -587,6 +589,9 @@ body.fx-enabled #fxCanvas {
   cursor: pointer;
   display: block;
   pointer-events: auto;
+  contain: layout style paint;
+  transform: translateZ(0);
+  will-change: transform;
 }
 .corner-peek-r { right: 0; bottom: 0; }
 .corner-peek-l { left: 0; bottom: 0; }
@@ -728,8 +733,7 @@ body.fx-enabled .book-turn.back.turning .turn-back .turn-sheen {
   filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
 }
 body.fx-enabled .book.is-cover .cover-full .cov-title,
-body.fx-enabled .book.is-back-cover .cover-full .cov-title,
-body.fx-enabled .book.is-back-cover .bc-step-verb {
+body.fx-enabled .book.is-back-cover .cover-full .cov-title {
   background: linear-gradient(
     115deg,
     #eaf1ff 0%,
@@ -752,6 +756,28 @@ body.fx-enabled .book.is-back-cover .bc-step-verb {
   animation: fxTitleShine 2.8s linear infinite;
   filter: drop-shadow(0 4px 14px rgba(79,140,255,.35));
 }
+body.fx-enabled .book.is-back-cover .bc-step-verb {
+  background: linear-gradient(
+    115deg,
+    #eaf1ff 0%,
+    #ffffff 8%,
+    #60a5fa 18%,
+    #22d3ee 26%,
+    #c084fc 36%,
+    #ffffff 44%,
+    #eaf1ff 50%,
+    #ffffff 58%,
+    #60a5fa 68%,
+    #22d3ee 76%,
+    #c084fc 86%,
+    #ffffff 94%,
+    #eaf1ff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fxTitleShine 2.8s linear infinite;
+}
 @keyframes fxTitleShine {
   0% { background-position: 0% center; }
   100% { background-position: -200% center; }
@@ -761,14 +787,15 @@ body.fx-enabled .cover-full .cov-rule {
 }
 body.fx-enabled .book.is-back-cover .bc-step-node {
   border-color: rgba(56, 189, 248, 0.45);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 14px rgba(56, 189, 248, 0.15);
 }
 body.fx-enabled .book.is-back-cover .bc-step-node.bc-step-highlight {
   border-color: rgba(56, 189, 248, 0.85);
-  box-shadow: 0 4px 24px rgba(56, 189, 248, 0.45), 0 0 20px rgba(34, 211, 238, 0.35);
+  background: rgba(56, 189, 248, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px rgba(34, 211, 238, 0.3);
 }
 body.fx-enabled .book.is-back-cover .bc-step-arrow {
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
+  color: #38bdf8;
+  opacity: 0.95;
 }
 
 /* 4. 六维雷达多边形轮廓绘制与节点弹簧点亮 (Native SVG Radar Drawing) */
@@ -1032,6 +1059,8 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   opacity: 0;
   contain: layout style paint;
   isolation: isolate;
+  transform: translateZ(0);
+  will-change: opacity;
   transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   scroll-snap-type: y proximity;
 }
@@ -1039,18 +1068,18 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 .book-side-left {
   left: -170px;
   align-items: flex-end;
-  transform: none;
+  transform: translateZ(0);
 }
 .book-side-right {
   right: -170px;
   align-items: flex-start;
-  transform: none;
+  transform: translateZ(0);
 }
 .book-side-col.is-revealed,
 .book-side-col:hover {
   opacity: 1;
   pointer-events: auto;
-  transform: none;
+  transform: translateZ(0);
 }
 .book-side-col:not(.is-revealed) {
   pointer-events: none !important;
@@ -4316,6 +4345,9 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   align-items: center;
   text-align: center;
   box-sizing: border-box;
+  contain: layout style paint;
+  transform: translateZ(0);
+  isolation: isolate;
 }
 .back-cover-core {
   margin: 28px 0;
@@ -4336,11 +4368,10 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   display: inline-flex;
   align-items: baseline;
   padding: 7px 11px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(14, 23, 42, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -5983,7 +6014,7 @@ body.is-double-page .book {
 <div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
 <!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
 <div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609091202">v202609091202</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609091641">v202609091641</div>
 
 <script>
 /* =====================================================================
@@ -6937,7 +6968,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609091202',
+    version: '202609091641',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
