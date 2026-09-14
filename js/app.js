@@ -4946,61 +4946,236 @@
   };
   window.__handleTechImgError = window.__handleTechAssetError;
 
+  /* ==================== 动态资产自适应探测与容错引擎 ==================== */
+  function getTechFolderCandidates(tech) {
+    var rawNo = tech.no != null ? tech.no : parseInt(String(tech.id).replace(/\D/g, ''), 10);
+    var paddedNo = 'T' + String(rawNo).padStart(3, '0');
+    var shortName = (tech.short || tech.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim());
+    var folder = tech.folder;
+    var folderName = '';
+    if (folder) {
+      folderName = folder.split('/').pop();
+    } else {
+      folderName = paddedNo + '_' + shortName;
+      folder = 'assets/technologies/' + folderName;
+    }
+    return { folder: folder, folderName: folderName, paddedNo: paddedNo, shortName: shortName };
+  }
+
+  function probeCandidateList(list, type, cb) {
+    var idx = 0;
+    function next() {
+      if (idx >= list.length) {
+        if (cb) cb(null);
+        return;
+      }
+      var url = list[idx++];
+      if (!url) { next(); return; }
+      probeAssetExistence(url, type, function (exists) {
+        if (exists) {
+          if (cb) cb(url);
+        } else {
+          next();
+        }
+      });
+    }
+    next();
+  }
+
+  function resolveTechDynamicAssets(tech, cb) {
+    if (!tech) { if (cb) cb(); return; }
+    if (tech.__dynamicResolved) {
+      if (cb) cb();
+      return;
+    }
+    if (tech.__dynamicResolving) {
+      tech.__dynamicCallbacks = tech.__dynamicCallbacks || [];
+      if (cb) tech.__dynamicCallbacks.push(cb);
+      return;
+    }
+
+    tech.__dynamicResolving = true;
+    tech.__dynamicCallbacks = tech.__dynamicCallbacks || [];
+    if (cb) tech.__dynamicCallbacks.push(cb);
+
+    function finish() {
+      tech.__dynamicResolved = true;
+      tech.__dynamicResolving = false;
+      var cbs = tech.__dynamicCallbacks || [];
+      tech.__dynamicCallbacks = [];
+      cbs.forEach(function (fn) {
+        try { fn(); } catch (e) { console.error(e); }
+      });
+    }
+
+    var folderInfo = getTechFolderCandidates(tech);
+    var folder = folderInfo.folder;
+    var folderName = folderInfo.folderName;
+    var paddedNo = folderInfo.paddedNo;
+    var shortName = folderInfo.shortName;
+
+    var nameVariants = [
+      folderName,
+      paddedNo + '_' + shortName,
+      paddedNo + '_' + tech.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim(),
+      paddedNo
+    ].filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    // Word 报告候选列表
+    var wordPdfCandidates = [tech.reportPdf];
+    nameVariants.forEach(function (nv) {
+      wordPdfCandidates.push(folder + '/' + nv + '_专题研究报告.pdf');
+      wordPdfCandidates.push(folder + '/' + nv + '_研究报告.pdf');
+      wordPdfCandidates.push(folder + '/' + nv + '.pdf');
+    });
+    wordPdfCandidates.push(folder + '/report.pdf');
+    wordPdfCandidates = wordPdfCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    // PPT 演示文稿候选列表
+    var pptPdfCandidates = [tech.slidesPdf];
+    nameVariants.forEach(function (nv) {
+      pptPdfCandidates.push(folder + '/' + nv + '_演示汇报.pdf');
+      pptPdfCandidates.push(folder + '/' + nv + '_汇报.pdf');
+      pptPdfCandidates.push(folder + '/' + nv + '.pdf');
+    });
+    pptPdfCandidates.push(folder + '/slides.pdf');
+    pptPdfCandidates = pptPdfCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    // 一张图候选列表
+    var imgCandidates = [tech.image];
+    nameVariants.forEach(function (nv) {
+      imgCandidates.push(folder + '/' + nv + '_一张图.png');
+      imgCandidates.push(folder + '/' + nv + '_一张图.jpg');
+      imgCandidates.push(folder + '/' + nv + '_一张图.jpeg');
+      imgCandidates.push(folder + '/' + nv + '_一张图.svg');
+      imgCandidates.push(folder + '/' + nv + '_一页纸.png');
+      imgCandidates.push(folder + '/' + nv + '_一页纸.jpg');
+      imgCandidates.push(folder + '/' + nv + '.png');
+      imgCandidates.push(folder + '/' + nv + '.jpg');
+    });
+    imgCandidates.push(folder + '/image.png');
+    imgCandidates.push(folder + '/image.jpg');
+    imgCandidates = imgCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    // 成熟度曲线候选列表
+    var hcCandidates = [tech.hypeCycle];
+    nameVariants.forEach(function (nv) {
+      hcCandidates.push(folder + '/' + nv + '_技术成熟度曲线.png');
+      hcCandidates.push(folder + '/' + nv + '_技术成熟度曲线.jpg');
+    });
+    hcCandidates.push(folder + '/hypecycle.png');
+    hcCandidates.push(folder + '/hypecycle.jpg');
+    hcCandidates = hcCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    var pending = 4;
+    function checkDone() {
+      pending--;
+      if (pending === 0) finish();
+    }
+
+    // 探测 Word PDF
+    probeCandidateList(wordPdfCandidates, 'pdf', function (foundPdf) {
+      if (foundPdf) {
+        tech.reportPdf = foundPdf;
+        if (!tech.reportDocx) {
+          tech.reportDocx = foundPdf.replace(/\.pdf$/i, '.docx');
+          tech.reportDocxName = tech.reportDocx.split('/').pop();
+        }
+      } else {
+        tech.reportPdf = null;
+        tech.reportDocx = null;
+        tech.reportDocxName = null;
+        tech.reportDocxSize = null;
+        tech.reportDocxDate = null;
+      }
+      checkDone();
+    });
+
+    // 探测 PPT PDF
+    probeCandidateList(pptPdfCandidates, 'pdf', function (foundPdf) {
+      if (foundPdf) {
+        tech.slidesPdf = foundPdf;
+        if (!tech.slidesPptx) {
+          tech.slidesPptx = foundPdf.replace(/\.pdf$/i, '.pptx');
+          tech.slidesPptxName = tech.slidesPptx.split('/').pop();
+        }
+      } else {
+        tech.slidesPdf = null;
+        tech.slidesPptx = null;
+        tech.slidesPptxName = null;
+        tech.slidesPptxSize = null;
+        tech.slidesPptxDate = null;
+      }
+      checkDone();
+    });
+
+    // 探测 一张图
+    if (tech.image && tech.image.indexOf('data:') === 0) {
+      checkDone();
+    } else {
+      probeCandidateList(imgCandidates, 'image', function (foundImg) {
+        if (foundImg) {
+          tech.image = foundImg;
+          if (!tech.imageName) tech.imageName = foundImg.split('/').pop();
+        } else {
+          tech.image = null;
+          tech.imageName = null;
+          tech.imageSize = null;
+        }
+        checkDone();
+      });
+    }
+
+    // 探测 成熟度曲线
+    if (tech.hypeCycle && tech.hypeCycle.indexOf('data:') === 0) {
+      checkDone();
+    } else if (hcCandidates.length > 0) {
+      probeCandidateList(hcCandidates, 'image', function (foundHc) {
+        if (foundHc) tech.hypeCycle = foundHc;
+        else tech.hypeCycle = null;
+        checkDone();
+      });
+    } else {
+      tech.hypeCycle = null;
+      checkDone();
+    }
+  }
+
   function validateTechAssetsExistence() {
     if (typeof DATA === 'undefined' || !DATA.technologies) return;
-    DATA.technologies.forEach(function (tech) {
-      if (tech.image && typeof tech.image === 'string' && tech.image.indexOf('blob:') !== 0 && tech.image.indexOf('data:') !== 0) {
-        probeAssetExistence(tech.image, 'image', function (exists) {
-          if (!exists) {
-            tech.image = null;
-            tech.imageName = null;
-            tech.imageSize = null;
-            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-              window.__handleTechAssetError(tech.id, 'image');
-            }
+    var queue = DATA.technologies.slice();
+    function step() {
+      if (queue.length === 0) return;
+      var tech = queue.shift();
+      if (!tech.__dynamicResolved && !tech.__dynamicResolving) {
+        resolveTechDynamicAssets(tech, function () {
+          if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
+            if (!tech.image) window.__handleTechAssetError(tech.id, 'image');
+            if (!tech.hypeCycle) window.__handleTechAssetError(tech.id, 'hypecycle');
+            if (!tech.slidesPdf && !tech.slidesPptx) window.__handleTechAssetError(tech.id, 'ppt');
+            if (!tech.reportPdf && !tech.reportDocx) window.__handleTechAssetError(tech.id, 'word');
+          }
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(step);
+          } else {
+            setTimeout(step, 80);
           }
         });
+      } else {
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(step);
+        } else {
+          setTimeout(step, 40);
+        }
       }
-      if (tech.hypeCycle && typeof tech.hypeCycle === 'string' && tech.hypeCycle.indexOf('blob:') !== 0 && tech.hypeCycle.indexOf('data:') !== 0) {
-        probeAssetExistence(tech.hypeCycle, 'image', function (exists) {
-          if (!exists) {
-            tech.hypeCycle = null;
-            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-              window.__handleTechAssetError(tech.id, 'hypecycle');
-            }
-          }
-        });
-      }
-      if (tech.slidesPdf && typeof tech.slidesPdf === 'string') {
-        probeAssetExistence(tech.slidesPdf, 'pdf', function (exists) {
-          if (!exists) {
-            tech.slidesPdf = null;
-            tech.slidesPptx = null;
-            tech.slidesPptxName = null;
-            tech.slidesPptxSize = null;
-            tech.slidesPptxDate = null;
-            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-              window.__handleTechAssetError(tech.id, 'ppt');
-            }
-          }
-        });
-      }
-      if (tech.reportPdf && typeof tech.reportPdf === 'string') {
-        probeAssetExistence(tech.reportPdf, 'pdf', function (exists) {
-          if (!exists) {
-            tech.reportPdf = null;
-            tech.reportDocx = null;
-            tech.reportDocxName = null;
-            tech.reportDocxSize = null;
-            tech.reportDocxDate = null;
-            if (currentPanelMeta && currentPanelMeta.type === 'tech' && currentPanelMeta.techId === tech.id) {
-              window.__handleTechAssetError(tech.id, 'word');
-            }
-          }
-        });
-      }
-    });
+    }
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(step);
+    } else {
+      setTimeout(step, 500);
+    }
   }
+
 
   function techTabs(tech) {
     var tabs = [];
@@ -5245,6 +5420,12 @@
   }
   function openTechPanel(tech, tab, isNavBack) {
     if (!tech) return;
+    if (!tech.__dynamicResolved) {
+      resolveTechDynamicAssets(tech, function () {
+        openTechPanel(tech, tab, isNavBack);
+      });
+      return;
+    }
     if (tech.slidesPdf && techAssetCache[tech.slidesPdf] === false) {
       tech.slidesPdf = null;
       tech.slidesPptx = null;
@@ -5261,6 +5442,8 @@
     }
     if (tab === 'ppt' && !tech.slidesPdf && !tech.slidesPptx) tab = 'assess';
     if (tab === 'word' && !tech.reportPdf && !tech.reportDocx) tab = 'assess';
+    if (tab === 'image' && !tech.image) tab = 'assess';
+    if (tab === 'hypecycle' && !tech.hypeCycle) tab = 'assess';
 
     if (!isNavBack) {
       if (!$('panel').classList.contains('hidden') && currentPanelMeta) {
@@ -5937,6 +6120,9 @@
 
   window.jumpToTerm = jumpToTerm;
   window.linkTermsInContainer = linkTermsInContainer;
+  window.getTechFolderCandidates = getTechFolderCandidates;
+  window.probeCandidateList = probeCandidateList;
+  window.resolveTechDynamicAssets = resolveTechDynamicAssets;
   window.__techbook = {
     jumpToTerm: jumpToTerm,
     linkTermsInContainer: linkTermsInContainer,
@@ -5953,7 +6139,10 @@
     openTechPanel: openTechPanel,
     findTech: findTech,
     openPanel: openPanel,
-    closePanel: closePanel
+    closePanel: closePanel,
+    getTechFolderCandidates: getTechFolderCandidates,
+    probeCandidateList: probeCandidateList,
+    resolveTechDynamicAssets: resolveTechDynamicAssets
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

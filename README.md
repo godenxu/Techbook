@@ -127,17 +127,34 @@ npx serve .
 2. 在 `ITEMS` 数组中添加或修改对应技术对象（包含 `name`, `category`, `tier`, `maturity`, `strategicFit`, `value`, `feasibility`, `urgency`, `openness`, `conclusion`, `definition`, `trend`, `bankValue`, `limitation` 等字段）；
 3. 关系网络将在加载时通过 `buildGraph()` 自动联动更新。
 
-### 2. 接入新增技术的专题报告素材
-1. 将编写完成的 Word 报告与 PPT 放置于 `assets/docs/<技术ID>/` 目录下；
-2. 转换为 PDF 后放置于 `assets/preview/<技术ID>/` 供内嵌预览；
-3. 将“一张图概述”SVG 放置于 `assets/images/`；
-4. 在 `data.js` 中补齐对应技术对象的 `reportDocx`, `reportPdf`, `slidesPptx`, `slidesPdf`, `image` 路径。
+### 2. 接入新增技术的专题报告素材（即放即显 · 动态自适应）
 
-### 3. 一键同步生成单文件版
-当修改了 `index.html`、`data.js` 或 `js/app.js` 后，只需在根目录运行打包脚本，即可自动同步更新 `index-standalone.html`：
+本电子书内置了**动态资产自适应探测引擎**，在 `index-standalone.html`（离线自包含版）和 `index.html`（Web版）中均原生生效。**无需修改任何代码，也无需运行任何构建命令**，只要按照规范命名放入文件，系统即可动态感知并渲染：
+
+#### 📁 放置目录
+放置于 `assets/technologies/<技术编号>_<技术简称>/` 目录下（例如 `assets/technologies/T033_决策智能平台/`）。
+
+#### 📝 文件命名前缀规范
+为了便于文件单独拷出或传阅时不混淆，统一采用技术编号与简称前缀：
+- **Word 专题研究报告**：
+  - 在线预览 PDF（核心）：`T033_决策智能平台_专题研究报告.pdf`（或 `_研究报告.pdf`、`report.pdf`）
+  - 本地原件（可选）：`T033_决策智能平台_专题研究报告.docx`（或同名 docx）
+- **PPT 演示汇报**：
+  - 在线预览 PDF（核心）：`T033_决策智能平台_演示汇报.pdf`（或 `_汇报.pdf`、`slides.pdf`）
+  - 本地原件（可选）：`T033_决策智能平台_演示汇报.pptx`（或同名 pptx）
+- **一张图概述**：
+  - 概述图片：`T033_决策智能平台_一张图.png`（支持 `.png` / `.jpg` / `.jpeg` / `.svg`，或 `_一页纸.png`、`image.png`）
+
+#### 🛡️ 离线与缺失智能容错（优雅降级）
+- **未放文件**：若某项技术尚未产出相应报告，系统仅展示“评估表”Tab，绝不出现多余标签。
+- **脱离 assets 拷贝**：若将 `index-standalone.html` 单文件拷给外部人员且未附带 `assets/` 目录，系统会自动探测出缺失，自动隐藏 Word/PPT/一张图 Tab，以原生“评估表”形态呈现，**严禁且绝不出现 404 错误或打不开的画面**。
+
+### 3. 一键同步生成单文件版（可选）
+当需要更新 Base64 内嵌资源或发布全局更新版本号时，可在根目录运行打包脚本：
 ```bash
 node scripts/pack.js
 ```
+
 
 ---
 
