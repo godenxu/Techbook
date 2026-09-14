@@ -580,110 +580,143 @@ body.fx-enabled #fxCanvas {
   opacity: 1;
 }
 
-/* 1. 真实 3D 拟真折角掀起 (Hyper-realistic 3D Page Curl - Hover Only) */
+/* 1. 真实 3D 拟真折角 (Hyper-realistic Geometric Page Fold - 78px) */
 .corner-peek {
   position: absolute;
-  width: 70px;
-  height: 70px;
+  width: 78px;
+  height: 78px;
   z-index: 50;
   cursor: pointer;
   display: block;
   pointer-events: auto;
-  contain: layout style paint;
+  contain: layout style;
   transform: translateZ(0);
   will-change: transform;
 }
 .corner-peek-r { right: 0; bottom: 0; }
 .corner-peek-l { left: 0; bottom: 0; }
 
-/* 默认状态：完全隐藏折叠结构 (0 像素) */
+/* 默认状态：折叠结构归零隐藏 (0 像素) */
 .corner-peek-r .curl-shadow {
   position: absolute; right: 0; bottom: 0; width: 0; height: 0; opacity: 0;
-  background: radial-gradient(circle at 0% 0%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.2) 45%, transparent 68%);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  background: linear-gradient(135deg, rgba(8,12,22,0.95) 0%, rgba(18,26,42,0.95) 100%);
   pointer-events: none;
   transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1), opacity .2s ease;
 }
 .corner-peek-r .curl-fold {
   position: absolute; right: 0; bottom: 0; width: 0; height: 0;
-  border-style: solid;
-  border-width: 0 0 0 0;
-  border-color: transparent transparent var(--panel2) transparent;
-  box-shadow: -5px -5px 9px rgba(0,0,0,.45);
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
+  pointer-events: none;
+  transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1);
+}
+.corner-peek-r .curl-fold::before {
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  background: linear-gradient(135deg, #2f4368 0%, #202e48 60%, #16223a 100%);
+  filter: drop-shadow(-4px -4px 6px rgba(0,0,0,0.55));
 }
 .corner-peek-r .curl-fold::after {
-  content: ""; position: absolute; right: 0; bottom: 0; width: 0; height: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(79,140,255,0.3) 35%, transparent 55%);
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(79,140,255,0.2) 35%, transparent 60%);
   pointer-events: none;
-  transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1), bottom .28s cubic-bezier(.2,.8,.2,1);
 }
 .corner-peek-r .curl-hint {
-  position: absolute; right: 8px; bottom: -64px;
-  font-size: 11px; font-weight: 700; color: var(--accent);
+  position: absolute; left: 8px; top: 22px;
+  font-size: 11px; font-weight: 700; color: #fff;
   white-space: nowrap; opacity: 0;
-  transition: opacity .2s ease;
   pointer-events: none;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  transition: opacity .2s ease;
 }
 
-/* 鼠标悬停时：平滑掀起 3D 折角（默认常驻原生微交互） */
+/* 鼠标悬停时：平滑展开物理折角 (78px) */
 .corner-peek-r:hover .curl-shadow {
   width: 78px; height: 78px; opacity: 1;
 }
 .corner-peek-r:hover .curl-fold {
-  border-width: 0 0 78px 78px;
-  border-color: transparent transparent var(--card) transparent;
-  box-shadow: -8px -8px 16px rgba(0,0,0,.6);
-}
-.corner-peek-r:hover .curl-fold::after {
-  width: 78px; height: 78px; bottom: -78px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(79,140,255,0.45) 35%, transparent 55%);
+  width: 78px; height: 78px;
 }
 .corner-peek-r:hover .curl-hint {
   opacity: 1;
 }
 
-/* 左下折角（默认隐藏，悬停时出现） */
+/* 左下折角（默认归零隐藏，悬停时出现） */
 .corner-peek-l .curl-shadow {
   position: absolute; left: 0; bottom: 0; width: 0; height: 0; opacity: 0;
-  background: radial-gradient(circle at 100% 0%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.2) 45%, transparent 68%);
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+  background: linear-gradient(225deg, rgba(8,12,22,0.95) 0%, rgba(18,26,42,0.95) 100%);
   pointer-events: none;
   transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1), opacity .2s ease;
 }
 .corner-peek-l .curl-fold {
   position: absolute; left: 0; bottom: 0; width: 0; height: 0;
-  border-style: solid;
-  border-width: 0 0 0 0;
-  border-color: transparent var(--panel2) transparent transparent;
-  box-shadow: 5px -5px 9px rgba(0,0,0,.45);
-  transition: border-width .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
+  pointer-events: none;
+  transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1);
+}
+.corner-peek-l .curl-fold::before {
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: linear-gradient(225deg, #2f4368 0%, #202e48 60%, #16223a 100%);
+  filter: drop-shadow(4px -4px 6px rgba(0,0,0,0.55));
 }
 .corner-peek-l .curl-fold::after {
-  content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 0;
-  background: linear-gradient(225deg, rgba(255,255,255,0.5) 0%, rgba(79,140,255,0.3) 35%, transparent 55%);
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: linear-gradient(225deg, rgba(255,255,255,0.45) 0%, rgba(79,140,255,0.2) 35%, transparent 60%);
   pointer-events: none;
-  transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1), bottom .28s cubic-bezier(.2,.8,.2,1);
 }
 .corner-peek-l .curl-hint {
-  position: absolute; left: 8px; bottom: -64px;
-  font-size: 11px; font-weight: 700; color: var(--accent);
+  position: absolute; right: 8px; top: 22px;
+  font-size: 11px; font-weight: 700; color: #fff;
   white-space: nowrap; opacity: 0;
-  transition: opacity .2s ease;
   pointer-events: none;
+  transform: rotate(45deg);
+  transform-origin: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  transition: opacity .2s ease;
 }
 .corner-peek-l:hover .curl-shadow {
   width: 78px; height: 78px; opacity: 1;
 }
 .corner-peek-l:hover .curl-fold {
-  border-width: 0 78px 78px 0;
-  border-color: transparent var(--card) transparent transparent;
-  box-shadow: 8px -8px 16px rgba(0,0,0,.6);
-}
-.corner-peek-l:hover .curl-fold::after {
-  width: 78px; height: 78px; bottom: -78px;
-  background: linear-gradient(225deg, rgba(255,255,255,0.7) 0%, rgba(79,140,255,0.45) 35%, transparent 55%);
+  width: 78px; height: 78px;
 }
 .corner-peek-l:hover .curl-hint {
   opacity: 1;
+}
+
+/* 亮色模式主题适配 */
+[data-theme="light"] .corner-peek-r .curl-shadow {
+  background: linear-gradient(135deg, rgba(140,155,180,0.5) 0%, rgba(200,210,225,0.3) 100%);
+}
+[data-theme="light"] .corner-peek-r .curl-fold::before {
+  background: linear-gradient(135deg, #ffffff 0%, #e6eef8 70%, #d5e2f3 100%);
+  filter: drop-shadow(-3px -3px 5px rgba(30,50,90,0.25));
+}
+[data-theme="light"] .corner-peek-r .curl-fold::after {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(47,107,255,0.15) 40%, transparent 65%);
+}
+[data-theme="light"] .corner-peek-r .curl-hint {
+  color: #2f6bff;
+  text-shadow: none;
+}
+
+[data-theme="light"] .corner-peek-l .curl-shadow {
+  background: linear-gradient(225deg, rgba(140,155,180,0.5) 0%, rgba(200,210,225,0.3) 100%);
+}
+[data-theme="light"] .corner-peek-l .curl-fold::before {
+  background: linear-gradient(225deg, #ffffff 0%, #e6eef8 70%, #d5e2f3 100%);
+  filter: drop-shadow(3px -3px 5px rgba(30,50,90,0.25));
+}
+[data-theme="light"] .corner-peek-l .curl-fold::after {
+  background: linear-gradient(225deg, rgba(255,255,255,0.9) 0%, rgba(47,107,255,0.15) 40%, transparent 65%);
+}
+[data-theme="light"] .corner-peek-l .curl-hint {
+  color: #2f6bff;
+  text-shadow: none;
 }
 
 /* 2. 翻页铜版纸高光流光与圆柱立体阴影 (Cylindrical 3D Page Sheen & Shadow) */
@@ -1290,9 +1323,7 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
 
 /* 卷角悬停时精准淡出对应的页码 */
 .corner-peek-l:hover ~ .corner-page-no-l,
-.corner-peek-r:hover ~ .corner-page-no-r,
-#pageLeft:has(.corner-peek-l:hover) .corner-page-no-l,
-#pageRight:has(.corner-peek-r:hover) .corner-page-no-r {
+.corner-peek-r:hover ~ .corner-page-no-r {
   opacity: 0 !important;
   visibility: hidden !important;
 }
@@ -6014,7 +6045,7 @@ body.is-double-page .book {
 <div id="termTooltip" class="term-tooltip hidden" role="tooltip" aria-hidden="true"></div>
 <!-- 弹窗内专业术语详尽名片 Popover (方案 A) -->
 <div id="termModalPopover" class="term-modal-popover hidden" role="dialog" aria-modal="true"></div>
-<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609141024">v202609141024</div>
+<div class="app-version-badge" id="appVersionBadge" title="发布版本号（UTC+8）：202609141152">v202609141152</div>
 
 <script>
 /* =====================================================================
@@ -6969,7 +7000,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609141024',
+    version: '202609141152',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -14025,7 +14056,7 @@ body.is-double-page .book {
       return;
     }
 
-    // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload
+    // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload（放入严格隔离容器，避免页面重排）
     var obj = document.createElement('object');
     obj.data = url;
     obj.type = 'application/pdf';
@@ -14046,9 +14077,16 @@ body.is-double-page .book {
     obj.onload = function () { done(true); };
     timer = setTimeout(function () {
       done(false);
-    }, 2500);
+    }, 1200);
 
-    (document.body || document.documentElement).appendChild(obj);
+    var sandbox = document.getElementById('__probeSandbox');
+    if (!sandbox) {
+      sandbox = document.createElement('div');
+      sandbox.id = '__probeSandbox';
+      sandbox.style.cssText = 'position:fixed;width:0;height:0;top:-9999px;left:-9999px;overflow:hidden;pointer-events:none;contain:strict;opacity:0;';
+      (document.body || document.documentElement).appendChild(sandbox);
+    }
+    sandbox.appendChild(obj);
   }
 
   window.__handleTechAssetError = function (techId, tabKey, el) {
@@ -15110,7 +15148,7 @@ body.is-double-page .book {
     bindOverlayClose();
     initSearch();
     initBookTouchGestures();
-    validateTechAssetsExistence();
+    // 资产自适应探测改为用户点击技术详情时按需瞬时探测，彻底消除首屏数十项后台探测造成的 DOM 抖动与 hover 闪烁
     var bBtn = $('brandBtn');
     if (bBtn) {
       bBtn.onclick = goToCover;

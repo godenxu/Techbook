@@ -4874,7 +4874,7 @@
       return;
     }
 
-    // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload
+    // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload（放入严格隔离容器，避免页面重排）
     var obj = document.createElement('object');
     obj.data = url;
     obj.type = 'application/pdf';
@@ -4895,9 +4895,16 @@
     obj.onload = function () { done(true); };
     timer = setTimeout(function () {
       done(false);
-    }, 2500);
+    }, 1200);
 
-    (document.body || document.documentElement).appendChild(obj);
+    var sandbox = document.getElementById('__probeSandbox');
+    if (!sandbox) {
+      sandbox = document.createElement('div');
+      sandbox.id = '__probeSandbox';
+      sandbox.style.cssText = 'position:fixed;width:0;height:0;top:-9999px;left:-9999px;overflow:hidden;pointer-events:none;contain:strict;opacity:0;';
+      (document.body || document.documentElement).appendChild(sandbox);
+    }
+    sandbox.appendChild(obj);
   }
 
   window.__handleTechAssetError = function (techId, tabKey, el) {
@@ -5959,7 +5966,7 @@
     bindOverlayClose();
     initSearch();
     initBookTouchGestures();
-    validateTechAssetsExistence();
+    // 资产自适应探测改为用户点击技术详情时按需瞬时探测，彻底消除首屏数十项后台探测造成的 DOM 抖动与 hover 闪烁
     var bBtn = $('brandBtn');
     if (bBtn) {
       bBtn.onclick = goToCover;
