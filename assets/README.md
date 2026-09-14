@@ -17,7 +17,7 @@ assets/
 │   ├── 前沿科技研究信息来源报告.pdf
 │   └── 前沿科技研究信息来源报告_V4.docx
 ├── methodology/
-│   └── figures/                    # 24 张标准方法论高清矢量图（fig_v13_01.png ~ fig_v13_24.png）
+│   └── figures/                    # 26 张标准方法论高清矢量图（fig_v13_01.png ~ fig_v13_26.png）
 └── technologies/                   # 36 项技术的线上发布资产（按技术专属目录）
     ├── T001_自主型AI智能体/ (成熟度曲线.png)
     ├── T002_AI原生应用架构/ (成熟度曲线.png)

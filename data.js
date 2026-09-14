@@ -950,7 +950,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609141152',
+    version: '202609141649',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -1437,6 +1437,11 @@
                   "多活数据中心部署"
                 ]
               ]
+            },
+            {
+              "type": "image",
+              "src": "assets/methodology/figures/fig_v13_04.png",
+              "caption": "图4 JTBD（Jobs-to-be-Done）进展之力模型示意图"
             }
           ]
         },
@@ -1453,8 +1458,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_04.png",
-              "caption": "图4 APQC 标杆对标流程示意图"
+              "src": "assets/methodology/figures/fig_v13_05.png",
+              "caption": "图5 APQC 标杆对标流程示意图"
             }
           ]
         },
@@ -1467,8 +1472,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_05.png",
-              "caption": "图5 Priority Matrix 效益—年限定位示意图（图中标注为示例技术，非本项目实际研判结果）"
+              "src": "assets/methodology/figures/fig_v13_06.png",
+              "caption": "图6 Priority Matrix 效益—年限定位示意图（图中标注为示例技术，非本项目实际研判结果）"
             }
           ]
         },
@@ -1481,8 +1486,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_06.png",
-              "caption": "图6 新兴技术雷达（Gartner风格）示意图"
+              "src": "assets/methodology/figures/fig_v13_07.png",
+              "caption": "图7 新兴技术雷达（Gartner风格）示意图"
             },
             {
               "type": "p",
@@ -1550,8 +1555,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_07.png",
-              "caption": "图7 PESTEL 六维扫描示意图"
+              "src": "assets/methodology/figures/fig_v13_08.png",
+              "caption": "图8 PESTEL 六维扫描示意图"
             }
           ]
         },
@@ -1605,6 +1610,11 @@
                   "150"
                 ]
               ]
+            },
+            {
+              "type": "image",
+              "src": "assets/methodology/figures/fig_v13_09.png",
+              "caption": "图9 FMEA 风险优先数（RPN）评估框架示意图"
             }
           ]
         },
@@ -1617,8 +1627,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_08.png",
-              "caption": "图8 NIST CSF 2.0 六大核心职能示意图"
+              "src": "assets/methodology/figures/fig_v13_10.png",
+              "caption": "图10 NIST CSF 2.0 六大核心职能示意图"
             },
             {
               "type": "p",
@@ -1626,8 +1636,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_09.png",
-              "caption": "图9 FAIR 风险分析本体结构示意图"
+              "src": "assets/methodology/figures/fig_v13_11.png",
+              "caption": "图11 FAIR 风险分析本体结构示意图"
             }
           ]
         }
@@ -1680,8 +1690,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_10.png",
-              "caption": "图10 TAM/SAM/SOM 三层市场结构示意图"
+              "src": "assets/methodology/figures/fig_v13_12.png",
+              "caption": "图12 TAM/SAM/SOM 三层市场结构示意图"
             }
           ]
         },
@@ -1727,8 +1737,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_11.png",
-              "caption": "图11 自上而下与自下而上双向验证示意图"
+              "src": "assets/methodology/figures/fig_v13_13.png",
+              "caption": "图13 自上而下与自下而上双向验证示意图"
             }
           ]
         },
@@ -1745,8 +1755,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_12.png",
-              "caption": "图12 IDC MarketScape 评估矩阵示意图"
+              "src": "assets/methodology/figures/fig_v13_14.png",
+              "caption": "图14 IDC MarketScape 评估矩阵示意图"
             }
           ]
         }
@@ -1811,8 +1821,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_13.png",
-              "caption": "图13 Porter's Five Forces 波特五力分析示意图"
+              "src": "assets/methodology/figures/fig_v13_15.png",
+              "caption": "图15 Porter's Five Forces 波特五力分析示意图"
             }
           ]
         },
@@ -1864,8 +1874,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_14.png",
-              "caption": "图14 Magic Quadrant 厂商定位象限示意图"
+              "src": "assets/methodology/figures/fig_v13_16.png",
+              "caption": "图16 Magic Quadrant 厂商定位象限示意图"
             }
           ]
         },
@@ -1878,8 +1888,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_15.png",
-              "caption": "图15 Critical Capabilities 能力评分示意图"
+              "src": "assets/methodology/figures/fig_v13_17.png",
+              "caption": "图17 Critical Capabilities 能力评分示意图"
             },
             {
               "type": "p",
@@ -1948,8 +1958,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_16.png",
-              "caption": "图16 SWOT 四象限示意图"
+              "src": "assets/methodology/figures/fig_v13_18.png",
+              "caption": "图18 SWOT 四象限示意图"
             }
           ]
         },
@@ -1995,8 +2005,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_17.png",
-              "caption": "图17 Real Options 决策树示意图"
+              "src": "assets/methodology/figures/fig_v13_19.png",
+              "caption": "图19 Real Options 决策树示意图"
             }
           ]
         },
@@ -2062,8 +2072,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_18.png",
-              "caption": "图18 McKinsey 7S 组织一致性关联图"
+              "src": "assets/methodology/figures/fig_v13_20.png",
+              "caption": "图20 McKinsey 7S 组织一致性关联图"
             }
           ]
         }
@@ -2122,8 +2132,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_19.png",
-              "caption": "图19 Delphi 德尔菲法收敛过程示意图"
+              "src": "assets/methodology/figures/fig_v13_21.png",
+              "caption": "图21 Delphi 德尔菲法收敛过程示意图"
             }
           ]
         },
@@ -2170,8 +2180,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_20.png",
-              "caption": "图20 Triangulation 三角验证示意图"
+              "src": "assets/methodology/figures/fig_v13_22.png",
+              "caption": "图22 Triangulation 三角验证示意图"
             }
           ]
         }
@@ -2254,8 +2264,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_21.png",
-              "caption": "图21 Kotter 变革八步法阶梯递进示意图"
+              "src": "assets/methodology/figures/fig_v13_23.png",
+              "caption": "图23 Kotter 变革八步法阶梯递进示意图"
             }
           ]
         },
@@ -2303,8 +2313,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_22.png",
-              "caption": "图22 技术路线图（Roadmap）时间轴三层结构示意图"
+              "src": "assets/methodology/figures/fig_v13_24.png",
+              "caption": "图24 技术路线图（Roadmap）时间轴三层结构示意图"
             }
           ]
         },
@@ -2356,8 +2366,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_23.png",
-              "caption": "图23 PDCA 循环（四阶段闭环）示意图"
+              "src": "assets/methodology/figures/fig_v13_25.png",
+              "caption": "图25 PDCA 循环（四阶段闭环）示意图"
             }
           ]
         },
@@ -2411,8 +2421,8 @@
             },
             {
               "type": "image",
-              "src": "assets/methodology/figures/fig_v13_24.png",
-              "caption": "图24 OKR 目标对齐层级示意图"
+              "src": "assets/methodology/figures/fig_v13_26.png",
+              "caption": "图26 OKR 目标对齐层级示意图"
             }
           ]
         }
