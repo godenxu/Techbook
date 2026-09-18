@@ -65,8 +65,21 @@
     return '#64748b';
   }
   function findTech(id) {
-    for (var i = 0; i < DATA.technologies.length; i++)
-      if (DATA.technologies[i].id === id) return DATA.technologies[i];
+    if (!id) return null;
+    var sId = String(id).trim();
+    for (var i = 0; i < DATA.technologies.length; i++) {
+      var t = DATA.technologies[i];
+      if (t.id === sId || t.id.toLowerCase() === sId.toLowerCase()) return t;
+    }
+    var num = parseInt(sId.replace(/\D/g, ''), 10);
+    if (!isNaN(num)) {
+      for (var j = 0; j < DATA.technologies.length; j++) {
+        var tj = DATA.technologies[j];
+        if (tj.no === num) return tj;
+        var tjNum = parseInt(String(tj.id).replace(/\D/g, ''), 10);
+        if (tjNum === num) return tj;
+      }
+    }
     return null;
   }
   function findLib(id) {
@@ -194,6 +207,10 @@
 
   function openPanel(title, html, onMount, flexBody) {
     var el = $('panel');
+    var oldVids = el.querySelectorAll('video');
+    oldVids.forEach(function (v) {
+      try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) {}
+    });
     el.classList.remove('is-closing');
     $('panelTitle').innerHTML = title;
     $('panelBody').innerHTML = html;
@@ -219,6 +236,10 @@
       popPanelNav();
       return;
     }
+    var vids = el.querySelectorAll('video');
+    vids.forEach(function (v) {
+      try { v.pause(); } catch (e) {}
+    });
     el.classList.add('is-closing');
     setTimeout(function () {
       el.classList.add('hidden');
@@ -228,6 +249,10 @@
       var iframes = el.querySelectorAll('iframe');
       iframes.forEach(function (f) {
         try { f.src = 'about:blank'; } catch (e) {}
+      });
+      var vidsInTimeout = el.querySelectorAll('video');
+      vidsInTimeout.forEach(function (v) {
+        try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) {}
       });
       $('panelBody').innerHTML = '';
       $('panelBody').classList.remove('flex');
@@ -3333,7 +3358,7 @@
         '<div class="eb-list">' +
           '<div class="eb-line"><span class="eb-role">主编：</span><span class="eb-names">程平</span></div>' +
           '<div class="eb-line"><span class="eb-role">执行主编：</span><span class="eb-names">顾鹏</span></div>' +
-          '<div class="eb-line"><span class="eb-role">编委：</span><span class="eb-names">徐捷、朱轶杰、蒋双樑、罗世雄</span></div>' +
+          '<div class="eb-line"><span class="eb-role">编委：</span><span class="eb-names">徐捷、朱轶杰、蒋双樑、罗世雄、孙宇颉</span></div>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -4874,6 +4899,31 @@
       return;
     }
 
+    if (type === 'video') {
+      var vid = document.createElement('video');
+      vid.preload = 'metadata';
+      var vidSettled = false;
+      var vidTimer = null;
+      function vidDone(result) {
+        if (vidSettled) return;
+        vidSettled = true;
+        if (vidTimer) clearTimeout(vidTimer);
+        techAssetCache[url] = result;
+        vid.onloadedmetadata = null;
+        vid.oncanplay = null;
+        vid.onerror = null;
+        vid.removeAttribute('src');
+        vid.load();
+        if (cb) cb(result);
+      }
+      vid.onloadedmetadata = function () { vidDone(true); };
+      vid.oncanplay = function () { vidDone(true); };
+      vid.onerror = function () { vidDone(false); };
+      vidTimer = setTimeout(function () { vidDone(false); }, 1500);
+      vid.src = url;
+      return;
+    }
+
     // PDF 探测：利用轻量 <object> 在 file: 协议下捕获 onerror / onload（放入严格隔离容器，避免页面重排）
     var obj = document.createElement('object');
     obj.data = url;
@@ -4928,6 +4978,11 @@
         tech.reportDocxName = null;
         tech.reportDocxSize = null;
         tech.reportDocxDate = null;
+      } else if (tabKey === 'video') {
+        tech.video = null;
+        tech.videoName = null;
+        tech.videoSize = null;
+        tech.videoDate = null;
       }
     }
     var tabBtn = document.querySelector('#panelBody .tab[data-name="' + tabKey + '"]');
@@ -5074,7 +5129,20 @@
     hcCandidates.push(folder + '/hypecycle.jpg');
     hcCandidates = hcCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
 
-    var pending = 4;
+    // 视频候选列表
+    var videoCandidates = [tech.video];
+    nameVariants.forEach(function (nv) {
+      videoCandidates.push(folder + '/' + nv + '.mp4');
+      videoCandidates.push(folder + '/' + nv + '_视频.mp4');
+      videoCandidates.push(folder + '/' + nv + '_讲解.mp4');
+      videoCandidates.push(folder + '/' + nv + '_演示.mp4');
+      videoCandidates.push(folder + '/' + nv + '.webm');
+    });
+    videoCandidates.push(folder + '/' + shortName + '.mp4');
+    videoCandidates.push(folder + '/video.mp4');
+    videoCandidates = videoCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
+
+    var pending = 5;
     function checkDone() {
       pending--;
       if (pending === 0) finish();
@@ -5146,6 +5214,20 @@
       tech.hypeCycle = null;
       checkDone();
     }
+
+    // 探测 视频
+    probeCandidateList(videoCandidates, 'video', function (foundVideo) {
+      if (foundVideo) {
+        tech.video = foundVideo;
+        if (!tech.videoName) tech.videoName = foundVideo.split('/').pop();
+      } else {
+        tech.video = null;
+        tech.videoName = null;
+        tech.videoSize = null;
+        tech.videoDate = null;
+      }
+      checkDone();
+    });
   }
 
   function validateTechAssetsExistence() {
@@ -5161,6 +5243,7 @@
             if (!tech.hypeCycle) window.__handleTechAssetError(tech.id, 'hypecycle');
             if (!tech.slidesPdf && !tech.slidesPptx) window.__handleTechAssetError(tech.id, 'ppt');
             if (!tech.reportPdf && !tech.reportDocx) window.__handleTechAssetError(tech.id, 'word');
+            if (!tech.video) window.__handleTechAssetError(tech.id, 'video');
           }
           if (window.requestIdleCallback) {
             window.requestIdleCallback(step);
@@ -5191,6 +5274,7 @@
     if (tech.hypeCycle) tabs.push({ key: 'hypecycle', name: '技术成熟度曲线', html: hypeCycleHTML(tech), fill: true });
     if (tech.reportPdf || tech.reportDocx) tabs.push({ key: 'word', name: 'Word 报告', html: wordHTML(tech), fill: true });
     if (tech.slidesPdf || tech.slidesPptx) tabs.push({ key: 'ppt', name: 'PPT 报告', html: pptHTML(tech), fill: true });
+    if (tech.video) tabs.push({ key: 'video', name: '视频', html: videoHTML(tech), fill: true });
     return tabs;
   }
   function onePageHTML(tech) {
@@ -5327,6 +5411,33 @@
     return previewHTML(tech, tech.slidesPptx, tech.slidesPdf, 'PPT 报告', tech.slidesPptxName);
   }
 
+  function videoHTML(tech) {
+    var videoSrc = tech.video;
+    var videoName = tech.videoName || (videoSrc ? videoSrc.split('/').pop() : '');
+    var dl = '<div class="preview-toolbar">';
+    if (videoSrc) {
+      dl += '<span class="preview-source-badge" title="指定文件夹原件：' + esc(videoSrc) + '">' +
+        '<span class="psb-icon">🎬</span> 正在预览视频：<b>' + esc(videoName || '技术解读视频') + '</b></span>';
+      dl += '<a href="' + esc(videoSrc) + '" download="' + esc(videoName) + '">⬇ 下载视频原件</a>';
+      dl += '<a href="' + esc(videoSrc) + '" target="_blank">↗ 新窗口播放</a>';
+      dl += '<button class="btn" data-fs="1" title="全屏播放">⛶ 全屏</button>';
+    }
+    dl += '</div>';
+
+    if (!videoSrc) {
+      return dl + '<div class="preview-empty">暂无视频资源。</div>';
+    }
+
+    return dl + '<div class="preview-stage video-stage" data-stage="1">' +
+      '<div class="video-player-wrap">' +
+        '<video class="tech-video-player" controls preload="metadata" playsinline onerror="window.__handleTechAssetError&&window.__handleTechAssetError(\'' + esc(tech.id) + '\',\'video\',this)">' +
+          '<source src="' + esc(videoSrc) + '" type="video/mp4">' +
+          '您的浏览器不支持直接播放该视频，请点击上方“下载视频原件”或“新窗口播放”。' +
+        '</video>' +
+      '</div>' +
+    '</div>';
+  }
+
   function previewHTML(tech, sourceDoc, pdf, label, origFileName) {
     var fileName = origFileName || (sourceDoc ? sourceDoc.split('/').pop() : '');
     var isWord = label.indexOf('Word') >= 0;
@@ -5447,8 +5558,15 @@
       tech.reportDocxSize = null;
       tech.reportDocxDate = null;
     }
+    if (tech.video && techAssetCache[tech.video] === false) {
+      tech.video = null;
+      tech.videoName = null;
+      tech.videoSize = null;
+      tech.videoDate = null;
+    }
     if (tab === 'ppt' && !tech.slidesPdf && !tech.slidesPptx) tab = 'assess';
     if (tab === 'word' && !tech.reportPdf && !tech.reportDocx) tab = 'assess';
+    if (tab === 'video' && !tech.video) tab = 'assess';
     if (tab === 'image' && !tech.image) tab = 'assess';
     if (tab === 'hypecycle' && !tech.hypeCycle) tab = 'assess';
 
@@ -5488,6 +5606,12 @@
               window.__handleTechAssetError(tech.id, 'word', p);
             }
           });
+        } else if (paneName === 'video' && tech.video) {
+          probeAssetExistence(tech.video, 'video', function (exists) {
+            if (!exists) {
+              window.__handleTechAssetError(tech.id, 'video', p);
+            }
+          });
         }
         p.querySelectorAll('iframe[data-src]').forEach(function (f) {
           var src = f.getAttribute('data-src');
@@ -5509,6 +5633,14 @@
       function activateByName(name) {
         tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-name') === name); });
         panes.forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-name') === name); });
+        // 切换标签时暂停非活动面板内的视频播放
+        panes.forEach(function (p) {
+          if (!p.classList.contains('active')) {
+            p.querySelectorAll('video').forEach(function (v) {
+              try { v.pause(); } catch (e) {}
+            });
+          }
+        });
         panes.forEach(function (p) { if (p.classList.contains('active')) loadPane(p); });
         if (currentPanelMeta && currentPanelMeta.type === 'tech') currentPanelMeta.activeTab = name;
         scrollContentTop();

@@ -83,7 +83,27 @@ function scanFolderForAssets(folderAbs, folderRel) {
     };
   }
 
-  return { docx, pptx, img };
+  // 4. Video (mp4, webm, ogg, mov)（按修改时间倒序，最新优先）
+  let video = null;
+  const videoFiles = files.filter(f => /\.(mp4|webm|ogg|mov)$/i.test(f));
+  if (videoFiles.length > 0) {
+    videoFiles.sort((a, b) => {
+      const sA = fs.statSync(path.join(folderAbs, a));
+      const sB = fs.statSync(path.join(folderAbs, b));
+      return sB.mtimeMs - sA.mtimeMs;
+    });
+    const f = videoFiles[0];
+    const stat = fs.statSync(path.join(folderAbs, f));
+    video = {
+      path: `${folderRel}/${f}`,
+      name: f,
+      size: formatBytes(stat.size),
+      date: formatDate(stat.mtime),
+      mtimeMs: stat.mtimeMs
+    };
+  }
+
+  return { docx, pptx, img, video };
 }
 
 function sync() {
@@ -173,7 +193,10 @@ function sync() {
       img.webPath = img.path;
     }
 
-    // 4. PDF: 检查 assets 中是否存在对应的报告 PDF / 演示 PDF
+    // 4. Video: 优先来自 sources，其次来自 assets
+    const video = (sourceAssets && sourceAssets.video) ? sourceAssets.video : (assetAssets && assetAssets.video ? assetAssets.video : null);
+
+    // 5. PDF: 检查 assets 中是否存在对应的报告 PDF / 演示 PDF
     let reportPdf = null;
     let slidesPdf = null;
 
@@ -264,15 +287,17 @@ function sync() {
       docx: docx,
       pptx: pptx,
       img: img,
+      video: video,
       reportPdf: reportPdf,
       slidesPdf: slidesPdf
     };
 
     console.log(`[sync-sources] Matched ${tech.id} (${tech.short}) -> ${folderName}`);
-    if (docx) console.log(`   Word: ${docx.name} (${docx.size})`);
-    if (pptx) console.log(`   PPT:  ${pptx.name} (${pptx.size})`);
-    if (img)  console.log(`   Img:  ${img.name} (${img.size})`);
-    if (reportPdf) console.log(`   PDF:  ${reportPdf}`);
+    if (docx) console.log(`   Word:  ${docx.name} (${docx.size})`);
+    if (pptx) console.log(`   PPT:   ${pptx.name} (${pptx.size})`);
+    if (img)   console.log(`   Img:   ${img.name} (${img.size})`);
+    if (video) console.log(`   Video: ${video.name} (${video.size})`);
+    if (reportPdf) console.log(`   PDF:   ${reportPdf}`);
   });
 
   // 更新 data.js 内容
@@ -299,6 +324,10 @@ function sync() {
     block = block.replace(/\s*image:\s*['"][^'"]*['"],?/g, '');
     block = block.replace(/\s*imageName:\s*['"][^'"]*['"],?/g, '');
     block = block.replace(/\s*imageSize:\s*['"][^'"]*['"],?/g, '');
+    block = block.replace(/\s*video:\s*['"][^'"]*['"],?/g, '');
+    block = block.replace(/\s*videoName:\s*['"][^'"]*['"],?/g, '');
+    block = block.replace(/\s*videoSize:\s*['"][^'"]*['"],?/g, '');
+    block = block.replace(/\s*videoDate:\s*['"][^'"]*['"],?/g, '');
 
     // 构建新字段
     let newFields = `\n    folder: '${info.folder}',`;
@@ -320,6 +349,9 @@ function sync() {
     }
     if (info.img) {
       newFields += `\n    image: '${info.img.webPath || info.img.path}', imageName: '${info.img.name}', imageSize: '${info.img.size}',`;
+    }
+    if (info.video) {
+      newFields += `\n    video: '${info.video.path}', videoName: '${info.video.name}', videoSize: '${info.video.size}', videoDate: '${info.video.date}',`;
     }
 
     // 插入到 center: 之前

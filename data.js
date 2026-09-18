@@ -385,6 +385,7 @@
     reportDocx: 'assets/technologies/T020_合成数据/前沿技术专题研究报告_合成数据（Synthetic Data）_V4.3.docx', reportDocxName: '前沿技术专题研究报告_合成数据（Synthetic Data）_V4.3.docx', reportDocxSize: '751.9 KB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T020_合成数据/T020_合成数据_专题研究报告.pdf',
     slidesPptx: 'assets/technologies/T020_合成数据/前沿技术专题研究报告_合成数据_汇报版.pptx', slidesPptxName: '前沿技术专题研究报告_合成数据_汇报版.pptx', slidesPptxSize: '1.21 MB', slidesPptxDate: '2026-09-08', slidesPdf: 'assets/technologies/T020_合成数据/T020_合成数据_演示汇报.pdf',
     image: 'assets/technologies/T020_合成数据/T020_合成数据_一张图.png', imageName: 'T020_合成数据_一张图.png', imageSize: '1.74 MB',
+    video: 'assets/technologies/T020_合成数据/合成数据.mp4', videoName: '合成数据.mp4', videoSize: '5.66 MB', videoDate: '2026-09-17',
     center: '数智能力中心', centerReason: '定位为企业级数据要素供给与AI训练底座，横跨AI模型训练、风控长尾样本增强、跨域合规流通及研发仿真测试，属全行通用数智基础设施', assessment: { dimensions: [{ label:'技术成熟度', score:3, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:3, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:4, weight:10, max:5 }] }
   },
   { id: 'T21', no: 21, name: '因果AI（Causal AI）', short: '因果AI', nameEn: 'Causal AI',
@@ -608,7 +609,8 @@
     folder: 'assets/technologies/T032_客户数字孪生',
     reportDocx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究报告_客户数字孪生DToC_V2.36.docx', reportDocxName: '前沿技术专题研究报告_客户数字孪生DToC_V2.36.docx', reportDocxSize: '1.13 MB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_专题研究报告.pdf',
     slidesPptx: 'assets/technologies/T032_客户数字孪生/前沿技术专题研究_客户数字孪生DToC_V2.33_浦发模板版.pptx', slidesPptxName: '前沿技术专题研究_客户数字孪生DToC_V2.33_浦发模板版.pptx', slidesPptxSize: '795.9 KB', slidesPptxDate: '2026-09-07', slidesPdf: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_演示汇报.pdf',
-    image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png', imageName: 'T032_客户数字孪生_一张图.png', imageSize: '2.07 MB',
+    image: 'assets/technologies/T032_客户数字孪生/T032_客户数字孪生_一张图.png', imageName: 'T032_客户数字孪生_一张图.png', imageSize: '1.86 MB',
+    video: 'assets/technologies/T032_客户数字孪生/客户数字孪生.mp4', videoName: '客户数字孪生.mp4', videoSize: '6.26 MB', videoDate: '2026-09-17',
     center: '客户经营中心', centerReason: '核心价值在于支撑精准营销触达、财富顾问服务，直接对应统一商机平台/对公驾驶舱的客户经营职能', assessment: { dimensions: [{ label:'技术成熟度', score:2, weight:20, max:5 }, { label:'战略匹配度', score:3, weight:20, max:5 }, { label:'价值贡献度', score:4, weight:20, max:5 }, { label:'引入可行度', score:2, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T33', no: 33, name: '决策智能平台（Decision Intelligence Platform，DIP）', short: '决策智能平台', nameEn: 'Decision Intelligence Platform，DIP',
@@ -628,9 +630,10 @@
     externalSource: 'Gartner分析师20260612推荐',
     summary: '融合显式决策建模、AI、分析等能力以支持、增强或自动化决策的平台，将决策作为可设计、可复用、可追溯、可优化的对象，驱动业务成果并支持决策留痕以供复盘。',
     folder: 'assets/technologies/T033_决策智能平台',
-    reportDocx: 'assets/technologies/T033_决策智能平台/DIP_Research_Report_ZT000_v16.docx', reportDocxName: 'DIP_Research_Report_ZT000_v16.docx', reportDocxSize: '1.57 MB', reportDocxDate: '2026-09-08', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
-    slidesPptx: 'assets/technologies/T033_决策智能平台/DIP研究报告_浦发模板_v8.pptx', slidesPptxName: 'DIP研究报告_浦发模板_v8.pptx', slidesPptxSize: '281.6 KB', slidesPptxDate: '2026-09-09', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
+    reportDocx: 'assets/technologies/T033_决策智能平台/DIP_报告_修订V19.docx', reportDocxName: 'DIP_报告_修订V19.docx', reportDocxSize: '1.58 MB', reportDocxDate: '2026-09-17', reportPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_专题研究报告.pdf',
+    slidesPptx: 'assets/technologies/T033_决策智能平台/DIP研究报告V21.pptx', slidesPptxName: 'DIP研究报告V21.pptx', slidesPptxSize: '1.08 MB', slidesPptxDate: '2026-09-17', slidesPdf: 'assets/technologies/T033_决策智能平台/T033_决策智能平台_演示汇报.pdf',
     image: 'assets/technologies/T033_决策智能平台/T33-DIP一页纸.png', imageName: 'T33-DIP一页纸.png', imageSize: '1.95 MB',
+    video: 'assets/technologies/T033_决策智能平台/决策智能平台.mp4', videoName: '决策智能平台.mp4', videoSize: '5.97 MB', videoDate: '2026-09-17',
     center: '风险管理中心', centerReason: '核心价值聚焦授信审批、风控反欺诈等核心决策的建模、增强与自动化，与信用风险智能决策系统直接对应', assessment: { dimensions: [{ label:'技术成熟度', score:4, weight:20, max:5 }, { label:'战略匹配度', score:4, weight:20, max:5 }, { label:'价值贡献度', score:5, weight:20, max:5 }, { label:'引入可行度', score:3, weight:15, max:5 }, { label:'战略紧迫度', score:3, weight:15, max:5 }, { label:'生态开放度', score:3, weight:10, max:5 }] }
   },
   { id: 'T34', no: 34, name: '多智能体系统（Multi-Agent Systems，MAS）', short: '多智能体系统', nameEn: 'Multi-Agent Systems，MAS',
@@ -950,7 +953,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609141649',
+    version: '202609181448',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [

@@ -33,7 +33,8 @@ const fieldsToRemove = [
   'reportDocx', 'reportDocxName', 'reportDocxSize', 'reportDocxDate', 'reportPdf',
   'slidesPptx', 'slidesPptxName', 'slidesPptxSize', 'slidesPptxDate', 'slidesPdf',
   'image', 'imageName', 'imageSize',
-  'hypeCycle'
+  'hypeCycle',
+  'video', 'videoName', 'videoSize', 'videoDate'
 ];
 
 fieldsToRemove.forEach(f => {
@@ -61,7 +62,7 @@ try {
   const fn = new Function('window', cleanDataJs + '; return window.DATA;');
   const DATA = fn({});
   const remainingAssets = DATA.technologies.filter(t => (
-    t.reportDocx || t.reportPdf || t.slidesPptx || t.slidesPdf || t.image || t.hypeCycle || t.folder
+    t.reportDocx || t.reportPdf || t.slidesPptx || t.slidesPdf || t.image || t.hypeCycle || t.video || t.folder
   ));
   if (remainingAssets.length > 0) {
     throw new Error(`Sanitization check failed: ${remainingAssets.length} technologies still have asset properties.`);
