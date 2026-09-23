@@ -4110,6 +4110,12 @@
       '<div class="sec-body">' + bodyHtml + '</div>' +
     '</div>';
   }
+  function webFooterAuthorHTML() {
+    return '<div class="web-simple-footer">' +
+      '<span class="web-footer-author">©️徐捷</span>' +
+    '</div>';
+  }
+
   function renderWeb() {
     var b = DATA.book;
     var sections = [];
@@ -4134,6 +4140,7 @@
     sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
     sections.push(webSection('s-appendix', '附录二', '术语表', appendixTermsHTML()));
     sections.push('<div class="sec" id="s-closing"><div class="sec-body">' + closingHTML() + '</div></div>');
+    sections.push(webFooterAuthorHTML());
     $('webContent').innerHTML = sections.join('');
     if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('webContent'));
     initHypeCycleInteractive($('webHypeCycleWrap'));
@@ -6244,7 +6251,9 @@
   window.getTechFolderCandidates = getTechFolderCandidates;
   window.probeCandidateList = probeCandidateList;
   window.resolveTechDynamicAssets = resolveTechDynamicAssets;
+  window.setMode = setMode;
   window.__techbook = {
+    setMode: setMode,
     jumpToTerm: jumpToTerm,
     linkTermsInContainer: linkTermsInContainer,
     getPages: function () { return pages; },

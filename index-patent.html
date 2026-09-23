@@ -4314,6 +4314,27 @@ body.fx-enabled .bar-svg-chart .bar-fill-rect {
   }
 }
 
+/* ==================== 网页模式底部低调版权署名 ==================== */
+.web-simple-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 4px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.web-footer-author {
+  font-size: 13px;
+  color: var(--dim);
+  opacity: 0.65;
+  letter-spacing: 0.8px;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+.web-footer-author:hover {
+  opacity: 0.95;
+}
+
 .pill-disposal { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: rgba(79,140,255,.14); color: var(--accent); border: 1px solid rgba(79,140,255,.35); font-weight: 700; }
 .pill-dim { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--panel2); color: var(--dim); border: 1px solid var(--border); }
 .pill-attr { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--panel2); color: var(--accent2); border: 1px solid var(--border); }
@@ -7003,7 +7024,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609231252',
+    version: '202609231317',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -13308,6 +13329,12 @@ body.is-double-page .book {
       '<div class="sec-body">' + bodyHtml + '</div>' +
     '</div>';
   }
+  function webFooterAuthorHTML() {
+    return '<div class="web-simple-footer">' +
+      '<span class="web-footer-author">©️徐捷</span>' +
+    '</div>';
+  }
+
   function renderWeb() {
     var b = DATA.book;
     var sections = [];
@@ -13332,6 +13359,7 @@ body.is-double-page .book {
     sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
     sections.push(webSection('s-appendix', '附录二', '术语表', appendixTermsHTML()));
     sections.push('<div class="sec" id="s-closing"><div class="sec-body">' + closingHTML() + '</div></div>');
+    sections.push(webFooterAuthorHTML());
     $('webContent').innerHTML = sections.join('');
     if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('webContent'));
     initHypeCycleInteractive($('webHypeCycleWrap'));
@@ -15442,7 +15470,9 @@ body.is-double-page .book {
   window.getTechFolderCandidates = getTechFolderCandidates;
   window.probeCandidateList = probeCandidateList;
   window.resolveTechDynamicAssets = resolveTechDynamicAssets;
+  window.setMode = setMode;
   window.__techbook = {
+    setMode: setMode,
     jumpToTerm: jumpToTerm,
     linkTermsInContainer: linkTermsInContainer,
     getPages: function () { return pages; },
