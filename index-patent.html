@@ -5879,6 +5879,36 @@ body.is-double-page .book {
 }
 
 /* ==================== 编委会页面样式 ==================== */
+.page-pad-closing {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 34px 34px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+.sec-body .page-pad-closing {
+  height: auto !important;
+  padding: 50px 0 !important;
+}
+.closing-center-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.closing-quote-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
 .page-pad-editorial {
   height: 100%;
   display: flex;
@@ -6973,7 +7003,7 @@ body.is-double-page .book {
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609141649',
+    version: '202609231252',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -9230,8 +9260,21 @@ body.is-double-page .book {
     return '#64748b';
   }
   function findTech(id) {
-    for (var i = 0; i < DATA.technologies.length; i++)
-      if (DATA.technologies[i].id === id) return DATA.technologies[i];
+    if (!id) return null;
+    var sId = String(id).trim();
+    for (var i = 0; i < DATA.technologies.length; i++) {
+      var t = DATA.technologies[i];
+      if (t.id === sId || t.id.toLowerCase() === sId.toLowerCase()) return t;
+    }
+    var num = parseInt(sId.replace(/\D/g, ''), 10);
+    if (!isNaN(num)) {
+      for (var j = 0; j < DATA.technologies.length; j++) {
+        var tj = DATA.technologies[j];
+        if (tj.no === num) return tj;
+        var tjNum = parseInt(String(tj.id).replace(/\D/g, ''), 10);
+        if (tjNum === num) return tj;
+      }
+    }
     return null;
   }
   function findLib(id) {
@@ -9801,14 +9844,6 @@ body.is-double-page .book {
           '<div class="fl-q-text">我们能否在未来到来之前，赢得主动？</div>' +
         '</div>' +
       '</div>' +
-
-      '<div class="flyleaf-footer">' +
-        '<div class="fl-f-quote">' +
-          '<p>前沿技术研究，不是预测每一个未来，</p>' +
-          '<p>而是更早发现变化，更深理解趋势，更准确判断影响，</p>' +
-          '<p>并将不确定的技术变化，转化为可认知、可研判、可行动的研究成果。</p>' +
-        '</div>' +
-      '</div>' +
     '</div>';
   }
 
@@ -9848,7 +9883,6 @@ body.is-double-page .book {
     add('附录', '方法论工具与术语表', 'partAppendix', true);
     add('附录一', '前沿技术研究方法论工具体系', 'appendix_methodology', false);
     add('附录二', '术语表', 'appendix', false);
-    add('编委会', '', 'closing', true);
     return items;
   }
 
@@ -12498,15 +12532,14 @@ body.is-double-page .book {
       '</div>';
   }
   function closingHTML() {
-    return '<div class="page-pad page-pad-editorial">' +
-      '<div class="page-head-row">' +
-        '<div class="page-head-main">' +
-          '<div class="page-title">编委会</div>' +
-          '<div class="page-subtitle">科技发展部前沿技术研究成果集</div>' +
+    return '<div class="page-pad page-pad-closing">' +
+      '<div class="closing-center-stage">' +
+        '<div class="closing-quote-list">' +
+          '<div class="fl-q-item"><div class="fl-q-text">前沿技术研究，不是预测每一个未来，</div></div>' +
+          '<div class="fl-q-item"><div class="fl-q-text">而是更早发现变化，更深理解趋势，更准确判断影响，</div></div>' +
+          '<div class="fl-q-item"><div class="fl-q-text">并将不确定的技术变化，转化为可认知、可研判、可行动的研究成果。</div></div>' +
         '</div>' +
       '</div>' +
-      '<div class="h-rule" style="margin-bottom:0"></div>' +
-      '<div class="eb-center-stage"></div>' +
       '<div class="eb-copyright" style="margin-top:auto;display:flex;justify-content:flex-end;align-items:center;gap:4px;font-size:16px;font-weight:600;color:var(--text);letter-spacing:1.5px;padding-bottom:14px;padding-right:8px;">' +
         '<span style="font-size:18px;line-height:1;">&reg;</span>徐捷' +
       '</div>' +
@@ -12554,7 +12587,7 @@ body.is-double-page .book {
   addPage('partAppendix', '附录', dividerHTML('附录', '方法论工具与术语表', '前沿技术研究方法论工具体系 · 术语表', '附'));
   addPage('appendix_methodology', '附录一 · 方法论体系', appendixMethodologyHTML());
   addPage('appendix', '附录二 · 术语表', appendixTermsHTML);
-  addPage('closing', '编委会', closingHTML());
+  addPage('closing', '', closingHTML());
   // 确保封底位于闭合跨页（总页数为偶数，若为奇数则在封底前插入一空白衬页）
   if (pages.length % 2 !== 0) {
     addPage('blankPreBack', '', '<div class="page-pad"></div>');
@@ -12599,9 +12632,8 @@ body.is-double-page .book {
     });
 
     bms.push({ id: 'partAppendix', no: '附录', short: '附录导读', name: '附录 · 方法论工具与术语表', page: pageKeyMap['partAppendix'], color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'appendix_methodology', no: '附一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 4), color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'appendix', no: '附二', short: '术语表', name: '附录二 · 术语表', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
-    bms.push({ id: 'closing', no: '编委', short: '编委会', name: '编委会 · 科技发展部前沿技术研究成果集', page: pageKeyMap['closing'] != null ? pageKeyMap['closing'] : (pages.length - 2), color: '#94a3b8', tier: '编委会' });
+    bms.push({ id: 'appendix_methodology', no: '附一', short: '方法论体系', name: '附录一 · 前沿技术研究方法论工具体系', page: pageKeyMap['appendix_methodology'] != null ? pageKeyMap['appendix_methodology'] : (pages.length - 3), color: '#94a3b8', tier: '附录' });
+    bms.push({ id: 'appendix', no: '附二', short: '术语表', name: '附录二 · 术语表', page: pageKeyMap['appendix'] != null ? pageKeyMap['appendix'] : (pages.length - 2), color: '#94a3b8', tier: '附录' });
     if (pageKeyMap['back'] != null) {
       bms.push({ id: 'back', no: '封底', short: '全书封底', name: '封底 · 看见变化 → 判断趋势 → 洞察影响 → 赢得主动', page: pageKeyMap['back'], color: '#818cf8', tier: '封底' });
     }
@@ -13299,7 +13331,7 @@ body.is-double-page .book {
     sections.push(webSection('s-part-appendix', '附录', '方法论工具与术语表', '<div class="pg-p">收录前沿技术研究方法论工具体系、术语定义与数据来源依据。</div>'));
     sections.push(webSection('s-appendix-methodology', '附录一', '前沿技术研究方法论工具体系', appendixMethodologyHTML(), '<button class="btn btn-sm active sec-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>'));
     sections.push(webSection('s-appendix', '附录二', '术语表', appendixTermsHTML()));
-    sections.push(webSection('s-closing', '编委会', '编委会 · 科技发展部前沿技术研究成果集', closingHTML()));
+    sections.push('<div class="sec" id="s-closing"><div class="sec-body">' + closingHTML() + '</div></div>');
     $('webContent').innerHTML = sections.join('');
     if (typeof linkTermsInContainer === 'function') linkTermsInContainer($('webContent'));
     initHypeCycleInteractive($('webHypeCycleWrap'));
@@ -13327,7 +13359,6 @@ body.is-double-page .book {
     toc.push('<div class="web-toc-item part" data-target="s-part-appendix">附录 · 方法论工具与术语表</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix-methodology"><span class="wt-no">附录一</span>方法论工具体系</div>');
     toc.push('<div class="web-toc-item sub" data-target="s-appendix"><span class="wt-no">附录二</span>术语表</div>');
-    toc.push('<div class="web-toc-item part" data-target="s-closing">编委会</div>');
     $('webToc').innerHTML = toc.join('');
 
     // 目录点击定位

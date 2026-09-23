@@ -108,19 +108,18 @@ imagePaths.forEach(relPath => {
   }
 });
 
-// 5.1 处理 JS 中的编委会页面：清空中间职务与姓名，右下角标注版权信息：®徐捷
+// 5.1 处理 JS 中的结语页面：居中展示三行宗旨文字，并在右下角标注版权信息：®徐捷
 let cleanAppJs = rawAppJs;
 const oldClosingPattern = /function closingHTML\(\) \{[\s\S]*?'<\/div>';\s*\}/;
 const patentClosing = `function closingHTML() {
-    return '<div class="page-pad page-pad-editorial">' +
-      '<div class="page-head-row">' +
-        '<div class="page-head-main">' +
-          '<div class="page-title">编委会</div>' +
-          '<div class="page-subtitle">科技发展部前沿技术研究成果集</div>' +
+    return '<div class="page-pad page-pad-closing">' +
+      '<div class="closing-center-stage">' +
+        '<div class="closing-quote-list">' +
+          '<div class="fl-q-item"><div class="fl-q-text">前沿技术研究，不是预测每一个未来，</div></div>' +
+          '<div class="fl-q-item"><div class="fl-q-text">而是更早发现变化，更深理解趋势，更准确判断影响，</div></div>' +
+          '<div class="fl-q-item"><div class="fl-q-text">并将不确定的技术变化，转化为可认知、可研判、可行动的研究成果。</div></div>' +
         '</div>' +
       '</div>' +
-      '<div class="h-rule" style="margin-bottom:0"></div>' +
-      '<div class="eb-center-stage"></div>' +
       '<div class="eb-copyright" style="margin-top:auto;display:flex;justify-content:flex-end;align-items:center;gap:4px;font-size:16px;font-weight:600;color:var(--text);letter-spacing:1.5px;padding-bottom:14px;padding-right:8px;">' +
         '<span style="font-size:18px;line-height:1;">&reg;</span>徐捷' +
       '</div>' +
