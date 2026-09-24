@@ -945,8 +945,7 @@
     '三角数据验证',
     'Kotter 变革八步法',
     '技术路线图 Roadmap',
-    'PDCA 迭代闭环',
-    'OKR 目标对齐'
+    'PDCA 迭代闭环'
   ];
 
   function getMethodologyFlatList() {
@@ -978,7 +977,7 @@
         // Section 9: Supplementary explanation (merged)
         list.push({
           id: 'supp-sec9',
-          globalIdx: count, // 25
+          globalIdx: count, // 24
           num: null,
           numStr: null,
           isTool: false,
@@ -1008,7 +1007,7 @@
       [13, 14, 15],              // 5. 行业格局: 14, 15, 16 (3项)
       [16, 17, 18],              // 6. 战略定位: 17, 18, 19 (3项)
       [19, 20],                  // 7. 结论收敛: 20, 21 (2项)
-      [21, 22, 23, 24]           // 8. 实施建议: 22, 23, 24, 25 (4项)
+      [21, 22, 23]               // 8. 实施建议: 22, 23, 24 (3项)
     ];
 
     var cards = stages.map(function (s, idx) {
@@ -1034,14 +1033,14 @@
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
           '<div class="page-title">' + esc(ma.title || '方法论工具评估') + '</div>' +
-          '<div class="page-subtitle">覆盖技术研判全流程 8 大环节 · 25 项方法论工具矩阵支撑</div>' +
+          '<div class="page-subtitle">覆盖技术研判全流程 8 大环节 · 24 项方法论工具矩阵支撑</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>' +
       '</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-p" style="margin-bottom:6px">' + esc(ma.intro || '') + '</div>' +
       '<div class="pg-section" style="margin-bottom:4px">' +
-        '<div class="pg-h" style="margin-bottom:5px">研判全流程方法论工具矩阵（全量 25 项工具 · 点击直达详述）</div>' +
+        '<div class="pg-h" style="margin-bottom:5px">研判全流程方法论工具矩阵（全量 24 项工具 · 点击直达详述）</div>' +
         '<div class="method-stage-grid">' + cards + '</div>' +
       '</div>' +
       '<div class="method-footer-callout">' +
@@ -1182,9 +1181,9 @@
           '<div class="res-kpi-sub" title="21个信息渠道评估">21个信息渠道评估</div>' +
         '</div>' +
         '<div class="res-kpi-card" style="--kpi-col:#10b981">' +
-          '<div class="res-kpi-val">25<span>项</span></div>' +
+          '<div class="res-kpi-val">24<span>项</span></div>' +
           '<div class="res-kpi-lbl">方法论工具评估</div>' +
-          '<div class="res-kpi-sub" title="25项方法论工具评估">25项方法论工具评估</div>' +
+          '<div class="res-kpi-sub" title="24项方法论工具评估">24项方法论工具评估</div>' +
         '</div>' +
         '<div class="res-kpi-card" style="--kpi-col:#f59e0b">' +
           '<div class="res-kpi-val">100<span>+份</span></div>' +
@@ -2863,19 +2862,19 @@
 
     var layer1Chips = renderToolChips([0, 1, 2, 7, 10, 11, 12, 13]); // 8 tools: 01, 02, 03, 08, 11, 12, 13, 14
     var layer2Chips = renderToolChips([3, 4, 5, 6, 8, 9, 14, 15, 16, 17, 18]); // 11 tools: 04, 05, 06, 07, 09, 10, 15, 16, 17, 18, 19
-    var layer3Chips = renderToolChips([19, 20, 21, 22, 23, 24]); // 6 tools: 20, 21, 22, 23, 24, 25
+    var layer3Chips = renderToolChips([19, 20, 21, 22, 23]); // 5 tools: 20, 21, 22, 23, 24
 
     return '<div class="page-pad">' +
       '<div class="page-head-row">' +
         '<div class="page-head-main">' +
           '<div class="page-title">前沿技术研究方法论工具体系</div>' +
-          '<div class="page-subtitle">附录一 · 覆盖研判全生命周期 8 大维度 25 项方法论工具全景导航</div>' +
+          '<div class="page-subtitle">附录一 · 覆盖研判全生命周期 8 大维度 24 项方法论工具全景导航</div>' +
         '</div>' +
         '<button class="btn btn-sm active page-head-btn" data-action="open-methodology">📖 打开方法论详析面板</button>' +
       '</div>' +
       '<div class="h-rule"></div>' +
       '<div class="pg-section" style="margin-bottom:6px">' +
-        '<div class="pg-h" style="margin-bottom:5px">方法论整合框架（三层推进逻辑 · 全量 25 项工具导航 · 点击直达）</div>' +
+        '<div class="pg-h" style="margin-bottom:5px">方法论整合框架（三层推进逻辑 · 全量 24 项工具导航 · 点击直达）</div>' +
         '<div class="method-bento-row">' +
           '<div class="method-bento-card">' +
             '<div class="method-bento-title">1. 认知建立层（定位与宏观扫描 · 8项）</div>' +
@@ -2888,8 +2887,8 @@
             '<div class="method-tool-chips">' + layer2Chips + '</div>' +
           '</div>' +
           '<div class="method-bento-card">' +
-            '<div class="method-bento-title">3. 方案输出层（收敛与执行闭环 · 6项）</div>' +
-            '<div class="method-bento-desc">专家共识收敛、多源数据校准、变革路径设计、路线图规划、持续迭代与目标对齐闭环。</div>' +
+            '<div class="method-bento-title">3. 方案输出层（收敛与执行闭环 · 5项）</div>' +
+            '<div class="method-bento-desc">专家共识收敛、多源数据校准、变革路径设计、路线图规划、持续迭代闭环。</div>' +
             '<div class="method-tool-chips">' + layer3Chips + '</div>' +
           '</div>' +
         '</div>' +
@@ -2897,15 +2896,15 @@
       '<div class="pg-section" style="margin-bottom:4px">' +
         '<div class="pg-h" style="margin-bottom:5px">方法论选择的三大内在张力与平衡（框架指引 · 点击查看详析）</div>' +
         '<div class="method-tensions-list">' +
-          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="24" title="点击查看方法论内在张力详述">' +
             '<div class="method-tension-title">⚖️ 定性判断 vs. 量化计算</div>' +
             '<div class="method-tension-body">经验洞察与严谨工程打分互补，定性定框架、定量定刻度。</div>' +
           '</div>' +
-          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="24" title="点击查看方法论内在张力详述">' +
             '<div class="method-tension-title">⏱️ 权威性 vs. 时效性</div>' +
             '<div class="method-tension-body">国际权威年度报告与行内敏捷动态情报源双轨融合。</div>' +
           '</div>' +
-          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="25" title="点击查看方法论内在张力详述">' +
+          '<div class="method-tension-item" data-action="open-tool" data-tool-idx="24" title="点击查看方法论内在张力详述">' +
             '<div class="method-tension-title">🏦 通用模型 vs. 金融特殊性</div>' +
             '<div class="method-tension-body">通用科技分析框架与强监管合规、高可用风控强约束结合。</div>' +
           '</div>' +
@@ -4642,7 +4641,7 @@
         '</div>';
       } else {
         var suppItem = toolListGlobal.find(function (t) { return t.id === 'supp-sec9'; });
-        var idx = suppItem ? suppItem.globalIdx : 25;
+        var idx = suppItem ? suppItem.globalIdx : 24;
         return '<div class="method-sec-group" data-sec-id="' + s.id + '">' +
           '<div class="method-group-header">' + esc(s.title) + '</div>' +
           '<div class="method-tool-nav-item" data-idx="' + idx + '" data-sec-id="' + s.id + '">' +
@@ -5710,7 +5709,7 @@
         hits.push({ id: '_sources', name: '1.2 信息来源评估', cat: '第一章 · 工作方案与方法', tier: '信息来源', sum: '系统盘点 5 大类别 21 个权威渠道与量化评估' });
       }
       if ('方法论 方法论工具评估 研究方法论工具运用 1.3 methodology'.toLowerCase().indexOf(ql) >= 0) {
-        hits.push({ id: '_methodology_appl', name: '1.3 方法论工具评估', cat: '第一章 · 工作方案与方法', tier: '方法论', sum: '覆盖技术研判全流程 8 大环节 · 25 项方法论工具矩阵支撑' });
+        hits.push({ id: '_methodology_appl', name: '1.3 方法论工具评估', cat: '第一章 · 工作方案与方法', tier: '方法论', sum: '覆盖技术研判全流程 8 大环节 · 24 项方法论工具矩阵支撑' });
       }
       if ('前沿技术储备库 长名单 2.1'.toLowerCase().indexOf(ql) >= 0) {
         hits.push({ id: '_library', name: '2.1 前沿技术储备库（长名单）', cat: '第二章 · 整体成果', tier: '储备库', sum: '36项长名单前沿技术全景台账' });

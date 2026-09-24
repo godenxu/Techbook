@@ -953,7 +953,7 @@
   var SOURCES_REPORT = {
     title: '信息来源评估',
     subtitle: '系统盘点 5 大类别 21 个权威渠道 · 覆盖五大战略领域 · 综合能力量化评估',
-    version: '202609231317',
+    version: '202609241106',
     pdfReport: 'assets/reports/前沿科技研究信息来源报告.pdf',
     docxReport: 'assets/reports/前沿科技研究信息来源报告_V4.docx',
     categories: [
@@ -1126,7 +1126,7 @@
   // ==================== 1.3 方法论工具评估 ====================
   var METHODOLOGY_APPLICATION = {
   "title": "方法论工具评估",
-  "subtitle": "覆盖技术研判全流程 8 大环节 · 25 项方法论工具矩阵支撑",
+  "subtitle": "覆盖技术研判全流程 8 大环节 · 24 项方法论工具矩阵支撑",
   "intro": "研究工作在各环节综合运用了以下方法论工具，为技术成熟度判断、应用场景验证、风险与挑战评估、市场规模测算、行业竞争格局分析、战略匹配度判断、评估结论收敛、实施建议设计提供方法支撑，避免研判结论仅凭经验或者主观判断得出。各研究环节运用的主要方法论工具如下：",
   "stages": [
     {
@@ -1188,7 +1188,7 @@
     {
       "id": "s8",
       "stage": "实施建议设计",
-      "tools": "22. Kotter八步法、23. 技术路线图、24. PDCA、25. OKR",
+      "tools": "22. Kotter八步法、23. 技术路线图、24. PDCA",
       "focus": "路径规划与执行闭环",
       "secId": "sec8",
       "tagColor": "#f472b6"
@@ -2373,61 +2373,6 @@
               "caption": "图25 PDCA 循环（四阶段闭环）示意图"
             }
           ]
-        },
-        {
-          "title": "4、OKR：目标对齐与执行牵引",
-          "items": [
-            {
-              "type": "p",
-              "text": "OKR（Objectives and Key Results，目标与关键结果）由Intel首席执行官Andy Grove在20世纪70年代创立，后经John Doerr引入Google并广泛传播。OKR的核心结构是：设定挑战性目标（Objective，通常为定性描述），并为每个目标设定3—5个可量化的关键结果（Key Results）。OKR通常按季度周期设定，强调目标是拉伸性的，需要努力才能达到，但并非不可能。"
-            },
-            {
-              "type": "table",
-              "headers": [
-                "层级",
-                "Objective",
-                "Key Results",
-                "评估周期"
-              ],
-              "rows": [
-                [
-                  "组织级",
-                  "建立安全左移的DevSecOps文化",
-                  "开发团队安全培训覆盖率100%",
-                  "Q1"
-                ],
-                [
-                  "组织级",
-                  "同上",
-                  "自动化安全扫描集成到CI/CD",
-                  "Q2"
-                ],
-                [
-                  "组织级",
-                  "同上",
-                  "生产环境漏洞发现数降低50%",
-                  "Q3"
-                ],
-                [
-                  "团队级",
-                  "完成隐私计算技术选型",
-                  "完成3家厂商PoC评估",
-                  "Q1"
-                ],
-                [
-                  "团队级",
-                  "同上",
-                  "提交技术选型决策报告",
-                  "Q1"
-                ]
-              ]
-            },
-            {
-              "type": "image",
-              "src": "assets/methodology/figures/fig_v13_26.png",
-              "caption": "图26 OKR 目标对齐层级示意图"
-            }
-          ]
         }
       ]
     },
@@ -2458,7 +2403,7 @@
           "items": [
             {
               "type": "p",
-              "text": "从方法论整合的角度看，这类工具大致可以按认知建立、深入分析、方案输出三个层次组合使用：先运用Hype Cycle定位技术成熟度、PESTEL扫描宏观风险、波特五力分析行业格局、TAM/SAM/SOM估算市场边界，建立起对技术所处坐标系的整体认知；再运用FMEA评估风险优先级、Delphi收集专家共识、Triangulation交叉验证关键假设、Magic Quadrant定位厂商格局，从整体认知中筛选关键变量深入分析；最后运用SWOT汇总诊断、Real Options构建投资决策框架、Roadmap规划实施时间线、Kotter八步法设计变革路径、PDCA和OKR设定执行度量，将分析转化为可操作的行动计划。"
+              "text": "从方法论整合的角度看，这类工具大致可以按认知建立、深入分析、方案输出三个层次组合使用：先运用Hype Cycle定位技术成熟度、PESTEL扫描宏观风险、波特五力分析行业格局、TAM/SAM/SOM估算市场边界，建立起对技术所处坐标系的整体认知；再运用FMEA评估风险优先级、Delphi收集专家共识、Triangulation交叉验证关键假设、Magic Quadrant定位厂商格局，从整体认知中筛选关键变量深入分析；最后运用SWOT汇总诊断、Real Options构建投资决策框架、Roadmap规划实施时间线、Kotter八步法设计变革路径、PDCA循环驱动持续迭代，将分析转化为可操作的行动计划。"
             },
             {
               "type": "p",
