@@ -5000,6 +5000,7 @@
   function getTechFolderCandidates(tech) {
     var rawNo = tech.no != null ? tech.no : parseInt(String(tech.id).replace(/\D/g, ''), 10);
     var paddedNo = 'T' + String(rawNo).padStart(3, '0');
+    var shortNo = 'T' + rawNo;
     var shortName = (tech.short || tech.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim());
     var folder = tech.folder;
     var folderName = '';
@@ -5009,7 +5010,7 @@
       folderName = paddedNo + '_' + shortName;
       folder = 'assets/technologies/' + folderName;
     }
-    return { folder: folder, folderName: folderName, paddedNo: paddedNo, shortName: shortName };
+    return { folder: folder, folderName: folderName, paddedNo: paddedNo, shortName: shortName, rawNo: rawNo, shortNo: shortNo };
   }
 
   function probeCandidateList(list, type, cb) {
@@ -5063,12 +5064,16 @@
     var folderName = folderInfo.folderName;
     var paddedNo = folderInfo.paddedNo;
     var shortName = folderInfo.shortName;
-
+    var rawNo = folderInfo.rawNo != null ? folderInfo.rawNo : parseInt(String(tech.id).replace(/\D/g, ''), 10);
+    var shortNo = folderInfo.shortNo || ('T' + rawNo);
     var nameVariants = [
       folderName,
       paddedNo + '_' + shortName,
+      shortNo + '_' + shortName,
       paddedNo + '_' + tech.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim(),
-      paddedNo
+      shortName,
+      paddedNo,
+      shortNo
     ].filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
 
     // Word 报告候选列表
@@ -5091,18 +5096,29 @@
     pptPdfCandidates.push(folder + '/slides.pdf');
     pptPdfCandidates = pptPdfCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
 
-    // 一张图候选列表
+    // 一张图 / 一页纸 候选列表
     var imgCandidates = [tech.image];
+    if (folder && tech.imageName) {
+      imgCandidates.push(folder + '/' + tech.imageName);
+    }
     nameVariants.forEach(function (nv) {
       imgCandidates.push(folder + '/' + nv + '_一张图.png');
       imgCandidates.push(folder + '/' + nv + '_一张图.jpg');
       imgCandidates.push(folder + '/' + nv + '_一张图.jpeg');
       imgCandidates.push(folder + '/' + nv + '_一张图.svg');
+      imgCandidates.push(folder + '/' + nv + '_一张图.webp');
       imgCandidates.push(folder + '/' + nv + '_一页纸.png');
       imgCandidates.push(folder + '/' + nv + '_一页纸.jpg');
+      imgCandidates.push(folder + '/' + nv + '_一页纸.jpeg');
+      imgCandidates.push(folder + '/' + nv + '_一页纸.svg');
+      imgCandidates.push(folder + '/' + nv + '_一页纸.webp');
       imgCandidates.push(folder + '/' + nv + '.png');
       imgCandidates.push(folder + '/' + nv + '.jpg');
     });
+    imgCandidates.push(folder + '/一张图.png');
+    imgCandidates.push(folder + '/一张图.jpg');
+    imgCandidates.push(folder + '/一页纸.png');
+    imgCandidates.push(folder + '/一页纸.jpg');
     imgCandidates.push(folder + '/image.png');
     imgCandidates.push(folder + '/image.jpg');
     imgCandidates = imgCandidates.filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; });
@@ -5172,22 +5188,18 @@
       checkDone();
     });
 
-    // 探测 一张图
-    if (tech.image && tech.image.indexOf('data:') === 0) {
+    // 探测 一张图 / 一页纸（纯动态感知：有文件才显示标签，无文件不显示）
+    probeCandidateList(imgCandidates, 'image', function (foundImg) {
+      if (foundImg) {
+        tech.image = foundImg;
+        if (!tech.imageName) tech.imageName = foundImg.split('/').pop();
+      } else {
+        tech.image = null;
+        tech.imageName = null;
+        tech.imageSize = null;
+      }
       checkDone();
-    } else {
-      probeCandidateList(imgCandidates, 'image', function (foundImg) {
-        if (foundImg) {
-          tech.image = foundImg;
-          if (!tech.imageName) tech.imageName = foundImg.split('/').pop();
-        } else {
-          tech.image = null;
-          tech.imageName = null;
-          tech.imageSize = null;
-        }
-        checkDone();
-      });
-    }
+    });
 
     // 探测 成熟度曲线
     if (tech.hypeCycle && tech.hypeCycle.indexOf('data:') === 0) {
@@ -5271,7 +5283,6 @@
     if (tech.image) {
       dl += '<span class="preview-source-badge" title="指定文件夹母版：' + esc(tech.image) + '">' +
         '<span class="psb-icon">📁</span> 正在预览指定文件夹母版：<b>' + esc(imgName) + '</b></span>';
-      dl += '<a href="' + esc(tech.image) + '" download="' + esc(imgName) + '">⬇ 下载 一张图 原件</a>';
     }
     dl += '<a href="' + esc(tech.image) + '" target="_blank">↗ 新窗口打开</a>' +
       '<button class="btn" data-fs="1" title="全屏查看">⛶ 全屏</button>' +
@@ -5435,7 +5446,6 @@
     if (sourceDoc) {
       dl += '<span class="preview-source-badge" title="指定文件夹母版：' + esc(sourceDoc) + '">' +
         '<span class="psb-icon">📁</span> 正在预览指定文件夹母版：<b>' + esc(fileName || (label + ext)) + '</b></span>';
-      dl += '<a href="' + esc(sourceDoc) + '" download="' + esc(fileName) + '">⬇ 下载 ' + esc(label) + ' 原件</a>';
     }
     if (pdf) {
       var pdfDlName = (tech.short || tech.name) + (isWord ? '_专题研究报告.pdf' : '_演示汇报.pdf');
@@ -5446,7 +5456,7 @@
     dl += '</div>';
 
     if (!pdf) {
-      return dl + '<div class="preview-empty">暂无在线预览，请下载指定文件夹中的原件查看。</div>';
+      return dl + '<div class="preview-empty">暂无在线预览。</div>';
     }
     var iframeSrc = pdf;
     if (isWord && iframeSrc.indexOf('#') === -1) {
@@ -5551,6 +5561,11 @@
       tech.videoName = null;
       tech.videoSize = null;
       tech.videoDate = null;
+    }
+    if (tech.image && techAssetCache[tech.image] === false) {
+      tech.image = null;
+      tech.imageName = null;
+      tech.imageSize = null;
     }
     if (tab === 'ppt' && !tech.slidesPdf && !tech.slidesPptx) tab = 'assess';
     if (tab === 'word' && !tech.reportPdf && !tech.reportDocx) tab = 'assess';

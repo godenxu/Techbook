@@ -49,6 +49,10 @@ let replacedIndexHtml = indexHtml;
 let inlinedCount = 0;
 
 imagePaths.forEach(relPath => {
+  // 不在 standalone 中内联技术专属一页纸/一张图（保持与 Word/PPT 一样采用纯动态感知方式）
+  if (relPath.includes('technologies/') && !relPath.includes('成熟度') && !relPath.includes('HypeCycle')) {
+    return;
+  }
   const diskPath = path.join(root, relPath.replace(/\//g, '\\'));
   if (fs.existsSync(diskPath)) {
     const ext = path.extname(diskPath).toLowerCase().replace('.', '');
