@@ -14,8 +14,8 @@ os.makedirs(out_dir, exist_ok=True)
 with open("scripts/techbook_data.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Configure Matplotlib fonts for Chinese
-plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial']
+# Configure Matplotlib fonts for Chinese (macOS & Windows cross-platform)
+plt.rcParams['font.sans-serif'] = ['PingFang SC', 'Heiti TC', 'STHeiti', 'Microsoft YaHei', 'SimHei', 'Arial Unicode MS', 'Arial']
 plt.rcParams['axes.unicode_minus'] = False
 
 # 1. Generate 36 Radar Charts
@@ -69,10 +69,23 @@ for tech in data['technologies']:
 
 print("All 36 radar charts generated successfully!")
 
-# 2. Render the 3 Chapter 2 SVGs using Headless Chrome with explicit Light Mode variables
-chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-if not os.path.exists(chrome_path):
-    chrome_path = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+# 2. Render the 3 Chapter 2 SVGs using Headless Chrome/Edge (macOS & Windows cross-platform)
+def find_browser_path():
+    candidates = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+        "/Applications/Chromium.app/Contents/MacOS/Chromium"
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return candidates[0]
+
+chrome_path = find_browser_path()
 
 svg_tasks = [
     {"page_idx": 14, "name": "hype_cycle.png", "width": 1400, "height": 770},

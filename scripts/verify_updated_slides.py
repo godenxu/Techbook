@@ -5,7 +5,8 @@ import sys
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-pptx_path = r"C:\Users\Administrator\Documents\Antigravity\Techbook\前沿技术研究成果集-浦发银行可编辑演示文稿(已更新).pptx"
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+pptx_path = os.path.join(root_dir, "前沿技术研究成果集-浦发银行可编辑演示文稿(已更新).pptx")
 prs = pptx.Presentation(pptx_path)
 
 print(f"Total slides in updated presentation: {len(prs.slides)}")

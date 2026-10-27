@@ -1,2 +1,31 @@
-# Auto detect text files and perform LF normalization
+# Cross-platform line-ending rules for macOS & Windows collaboration
 * text=auto
+
+# Keep LF for macOS / POSIX shell scripts (prevents /bin/bash^M bad interpreter on Mac)
+*.command text eol=lf
+*.sh text eol=lf
+
+# Keep CRLF for Windows batch & PowerShell scripts
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Web & source files unified as LF
+*.html text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.svg text eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.mp4 binary
+*.zip binary

@@ -20,9 +20,57 @@ function formatDate(d) {
   return `${YYYY}-${MM}-${DD}`;
 }
 
+function normNFC(s) {
+  return String(s || '').normalize ? String(s || '').normalize('NFC') : String(s || '');
+}
+
+function findMacSoffice() {
+  const candidates = [
+    '/Applications/LibreOffice.app/Contents/MacOS/soffice',
+    '/opt/homebrew/bin/soffice',
+    '/usr/local/bin/soffice'
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
+
+function convertOfficeToPdfCrossPlatform(srcAbs, dstAbs, typeLabel, scriptName) {
+  const dstDir = path.dirname(dstAbs);
+  if (!fs.existsSync(dstDir)) {
+    fs.mkdirSync(dstDir, { recursive: true });
+  }
+  if (process.platform === 'win32') {
+    const convScript = path.join(root, 'scripts', scriptName);
+    if (fs.existsSync(convScript)) {
+      execSync(`powershell -ExecutionPolicy Bypass -File "${convScript}" -src "${srcAbs}" -dst "${dstAbs}"`, { stdio: 'pipe' });
+      return fs.existsSync(dstAbs);
+    }
+  } else if (process.platform === 'darwin') {
+    const soffice = findMacSoffice();
+    if (soffice) {
+      const tmpDir = path.join(dstDir, '.tmp_pdf_conv');
+      if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+      try {
+        execSync(`"${soffice}" --headless --convert-to pdf --outdir "${tmpDir}" "${srcAbs}"`, { stdio: 'pipe' });
+        const basePdf = path.basename(srcAbs, path.extname(srcAbs)) + '.pdf';
+        const genPdf = path.join(tmpDir, basePdf);
+        if (fs.existsSync(genPdf)) {
+          fs.renameSync(genPdf, dstAbs);
+        }
+      } finally {
+        try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (e) {}
+      }
+      return fs.existsSync(dstAbs);
+    }
+  }
+  return false;
+}
+
 function scanFolderForAssets(folderAbs, folderRel) {
   if (!fs.existsSync(folderAbs)) return null;
-  const files = fs.readdirSync(folderAbs).filter(f => !f.startsWith('~$') && f !== '_archive');
+  const files = fs.readdirSync(folderAbs).filter(f => !f.startsWith('~$') && !f.startsWith('.') && f !== '_archive');
 
   let docx = null, pptx = null, img = null, pdf = null;
 
@@ -114,14 +162,14 @@ function sync() {
   let sourceFolders = [];
   if (fs.existsSync(sourcesTechDir)) {
     sourceFolders = fs.readdirSync(sourcesTechDir).filter(name => {
-      return fs.statSync(path.join(sourcesTechDir, name)).isDirectory() && name !== '_archive';
+      return !name.startsWith('.') && name !== '_archive' && fs.statSync(path.join(sourcesTechDir, name)).isDirectory();
     });
   }
 
   let assetFolders = [];
   if (fs.existsSync(assetsTechDir)) {
     assetFolders = fs.readdirSync(assetsTechDir).filter(name => {
-      return fs.statSync(path.join(assetsTechDir, name)).isDirectory() && name !== '_archive';
+      return !name.startsWith('.') && name !== '_archive' && fs.statSync(path.join(assetsTechDir, name)).isDirectory();
     });
   }
 
@@ -135,13 +183,13 @@ function sync() {
 
   DATA.technologies.forEach(tech => {
     const no = tech.no;
-    const shortName = tech.short || '';
+    const shortName = normNFC(tech.short || '');
     const prefixRegex = new RegExp('^T0*' + no + '(_|$)', 'i');
 
-    // 优先匹配 sources/technologies
-    let matchedSourceFolder = sourceFolders.find(f => prefixRegex.test(f) || (shortName && f.includes(shortName)));
+    // 优先匹配 sources/technologies（兼顾 macOS NFD 与 Windows NFC 编码归一化）
+    let matchedSourceFolder = sourceFolders.find(f => prefixRegex.test(normNFC(f)) || (shortName && normNFC(f).includes(shortName)));
     // 同时也匹配 assets/technologies
-    let matchedAssetFolder = assetFolders.find(f => prefixRegex.test(f) || (shortName && f.includes(shortName)));
+    let matchedAssetFolder = assetFolders.find(f => prefixRegex.test(normNFC(f)) || (shortName && normNFC(f).includes(shortName)));
 
     const folderName = matchedSourceFolder || matchedAssetFolder;
     if (!folderName) return;
@@ -202,82 +250,74 @@ function sync() {
 
     const assetsFolderAbs = path.join(assetsTechDir, folderName);
     if (fs.existsSync(assetsFolderAbs)) {
-      const pdfFiles = fs.readdirSync(assetsFolderAbs).filter(f => /\.pdf$/i.test(f));
+      const pdfFiles = fs.readdirSync(assetsFolderAbs).filter(f => !f.startsWith('.') && /\.pdf$/i.test(f));
       
-      let rPdf = pdfFiles.find(f => f === `${folderName}_专题研究报告.pdf`) ||
-                 pdfFiles.find(f => f.includes('专题研究报告') || f.includes('报告'));
+      let rPdf = pdfFiles.find(f => normNFC(f) === normNFC(`${folderName}_专题研究报告.pdf`)) ||
+                 pdfFiles.find(f => normNFC(f).includes('专题研究报告') || normNFC(f).includes('报告'));
       if (rPdf) {
         reportPdf = `assets/technologies/${folderName}/${rPdf}`;
       }
 
-      let sPdf = pdfFiles.find(f => f === `${folderName}_演示汇报.pdf`) ||
-                 pdfFiles.find(f => f.includes('演示汇报') || f.includes('汇报') || f.includes('演示'));
+      let sPdf = pdfFiles.find(f => normNFC(f) === normNFC(`${folderName}_演示汇报.pdf`)) ||
+                 pdfFiles.find(f => normNFC(f).includes('演示汇报') || normNFC(f).includes('汇报') || normNFC(f).includes('演示'));
       if (sPdf) {
         slidesPdf = `assets/technologies/${folderName}/${sPdf}`;
       }
     }
 
-    // 如果有 docx 且 reportPdf 缺失或过期，且在 Windows 环境，尝试自动通过 Word COM 转码
+    // 如果有 docx 且 reportPdf 缺失或过期，尝试自动转码（Windows 使用 Word COM，macOS 支持 LibreOffice）
     const targetReportPdfRel = `assets/technologies/${folderName}/${folderName}_专题研究报告.pdf`;
-    const targetReportPdfAbs = path.join(root, targetReportPdfRel);
+    const targetReportPdfAbs = path.join(root, ...targetReportPdfRel.split('/'));
     let needDocxConvert = false;
-    if (docx && process.platform === 'win32') {
+    if (docx && (process.platform === 'win32' || process.platform === 'darwin')) {
       if (!reportPdf || !fs.existsSync(targetReportPdfAbs)) {
         needDocxConvert = true;
       } else {
-        const docxStat = fs.statSync(path.join(root, docx.path));
+        const docxStat = fs.statSync(path.join(root, ...docx.path.split('/')));
         const pdfStat = fs.statSync(targetReportPdfAbs);
-        if (docxStat.mtimeMs > pdfStat.mtimeMs) {
+        if (docxStat.mtimeMs > pdfStat.mtimeMs + 2000) {
           needDocxConvert = true;
         }
       }
     }
     if (needDocxConvert) {
-      const docxAbs = path.join(root, docx.path);
-      const convScript = path.join(root, 'scripts', 'convert-doc.ps1');
-      if (fs.existsSync(convScript)) {
-        try {
-          console.log(`[sync-sources] Auto-converting Word to PDF for ${tech.id}: ${docx.name}...`);
-          execSync(`powershell -ExecutionPolicy Bypass -File "${convScript}" -src "${docxAbs}" -dst "${targetReportPdfAbs}"`, { stdio: 'pipe' });
-          if (fs.existsSync(targetReportPdfAbs)) {
-            reportPdf = targetReportPdfRel;
-            console.log(`[sync-sources] Successfully generated ${targetReportPdfRel}`);
-          }
-        } catch (err) {
-          console.warn(`[sync-sources] Auto-convert Word failed:`, err.message);
+      const docxAbs = path.join(root, ...docx.path.split('/'));
+      try {
+        console.log(`[sync-sources] Auto-converting Word to PDF for ${tech.id}: ${docx.name}...`);
+        if (convertOfficeToPdfCrossPlatform(docxAbs, targetReportPdfAbs, 'Word', 'convert-doc.ps1')) {
+          reportPdf = targetReportPdfRel;
+          console.log(`[sync-sources] Successfully generated ${targetReportPdfRel}`);
         }
+      } catch (err) {
+        console.warn(`[sync-sources] Auto-convert Word failed:`, err.message);
       }
     }
 
-    // 如果有 pptx 且 slidesPdf 缺失或过期，且在 Windows 环境，尝试自动通过 PowerPoint COM 转码
+    // 如果有 pptx 且 slidesPdf 缺失或过期，尝试自动转码（Windows 使用 PowerPoint COM，macOS 支持 LibreOffice）
     const targetSlidesPdfRel = `assets/technologies/${folderName}/${folderName}_演示汇报.pdf`;
-    const targetSlidesPdfAbs = path.join(root, targetSlidesPdfRel);
+    const targetSlidesPdfAbs = path.join(root, ...targetSlidesPdfRel.split('/'));
     let needPptConvert = false;
-    if (pptx && process.platform === 'win32') {
+    if (pptx && (process.platform === 'win32' || process.platform === 'darwin')) {
       if (!slidesPdf || !fs.existsSync(targetSlidesPdfAbs)) {
         needPptConvert = true;
       } else {
-        const pptxStat = fs.statSync(path.join(root, pptx.path));
+        const pptxStat = fs.statSync(path.join(root, ...pptx.path.split('/')));
         const pdfStat = fs.statSync(targetSlidesPdfAbs);
-        if (pptxStat.mtimeMs > pdfStat.mtimeMs) {
+        if (pptxStat.mtimeMs > pdfStat.mtimeMs + 2000) {
           needPptConvert = true;
         }
       }
     }
     if (needPptConvert) {
-      const pptxAbs = path.join(root, pptx.path);
-      const convPptScript = path.join(root, 'scripts', 'convert-ppt.ps1');
-      if (fs.existsSync(convPptScript)) {
-        try {
-          console.log(`[sync-sources] Auto-converting PPT to PDF for ${tech.id}: ${pptx.name}...`);
-          execSync(`powershell -ExecutionPolicy Bypass -File "${convPptScript}" -src "${pptxAbs}" -dst "${targetSlidesPdfAbs}"`, { stdio: 'pipe' });
-          if (fs.existsSync(targetSlidesPdfAbs)) {
-            slidesPdf = targetSlidesPdfRel;
-            console.log(`[sync-sources] Successfully generated ${targetSlidesPdfRel}`);
-          }
-        } catch (err) {
-          console.warn(`[sync-sources] Auto-convert PPT failed:`, err.message);
+      const pptxAbs = path.join(root, ...pptx.path.split('/'));
+      try {
+        console.log(`[sync-sources] Auto-converting PPT to PDF for ${tech.id}: ${pptx.name}...`);
+        if (convertOfficeToPdfCrossPlatform(pptxAbs, targetSlidesPdfAbs, 'PPT', 'convert-ppt.ps1')) {
+          slidesPdf = targetSlidesPdfRel;
+          console.log(`[sync-sources] Successfully generated ${targetSlidesPdfRel}`);
         }
+      } catch (err) {
+        console.warn(`[sync-sources] Auto-convert PPT failed:`, err.message);
       }
     }
 

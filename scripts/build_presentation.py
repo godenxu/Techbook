@@ -1550,9 +1550,10 @@ def build_p60_end_blank(prs):
 # Main Assembly Orchestrator
 # -------------------------------------------------------------
 def main():
-    template_path = r"C:\Users\Administrator\Documents\Antigravity\Techbook\浦发银行PPT模板.pptx"
-    out_pptx_path = r"C:\Users\Administrator\Documents\Antigravity\Techbook\前沿技术研究成果集-浦发银行可编辑演示文稿.pptx"
-    data_path = os.path.abspath("scripts/techbook_data.json")
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_path = os.path.join(root_dir, "浦发银行PPT模板.pptx")
+    out_pptx_path = os.path.join(root_dir, "前沿技术研究成果集-浦发银行可编辑演示文稿.pptx")
+    data_path = os.path.join(root_dir, "scripts", "techbook_data.json")
 
     print("Loading data from:", data_path)
     with open(data_path, "r", encoding="utf-8") as f:

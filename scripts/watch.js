@@ -30,7 +30,7 @@ console.log('======================================================\n');
 
 if (fs.existsSync(sourcesDir)) {
   fs.watch(sourcesDir, { recursive: true }, (eventType, filename) => {
-    if (filename && !filename.startsWith('~$') && !filename.includes('.git')) {
+    if (filename && !path.basename(filename).startsWith('~$') && !path.basename(filename).startsWith('.') && !filename.includes('.git')) {
       triggerSync(eventType, filename);
     }
   });
@@ -38,7 +38,7 @@ if (fs.existsSync(sourcesDir)) {
 
 if (fs.existsSync(assetsDir)) {
   fs.watch(assetsDir, { recursive: true }, (eventType, filename) => {
-    if (filename && !filename.startsWith('~$') && !filename.includes('.git')) {
+    if (filename && !path.basename(filename).startsWith('~$') && !path.basename(filename).startsWith('.') && !filename.includes('.git')) {
       triggerSync(eventType, filename);
     }
   });

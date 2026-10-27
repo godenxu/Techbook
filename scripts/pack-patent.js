@@ -93,7 +93,7 @@ imagePaths.forEach(relPath => {
     console.warn(`[pack-patent] Skipping unexpected tech image: ${relPath}`);
     return;
   }
-  const diskPath = path.join(root, relPath.replace(/\//g, '\\'));
+  const diskPath = path.join(root, ...relPath.split('/'));
   if (fs.existsSync(diskPath)) {
     const ext = path.extname(diskPath).toLowerCase().replace('.', '');
     const mime = (ext === 'svg') ? 'image/svg+xml' : ((ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png');

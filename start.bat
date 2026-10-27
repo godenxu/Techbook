@@ -8,7 +8,12 @@ where node >nul 2>nul
 if %errorlevel% equ 0 (
     node "%~dp0scripts\pack.js"
 ) else (
-    echo [提示] 未检测到 Node.js 环境，跳过自动编译同步...
+    where python >nul 2>nul
+    if %errorlevel% equ 0 (
+        python "%~dp0scripts\pack.py"
+    ) else (
+        echo [提示] 未检测到 Node.js 或 Python 环境，跳过自动编译同步...
+    )
 )
 echo.
 echo 同步完成，正在打开电子研究书...

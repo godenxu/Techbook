@@ -8,9 +8,22 @@ with open("scripts/techbook_data.json", "r", encoding="utf-8") as f:
     import json
     data = json.load(f)
 
-chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-if not os.path.exists(chrome_path):
-    chrome_path = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+def find_browser_path():
+    candidates = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+        "/Applications/Chromium.app/Contents/MacOS/Chromium"
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return candidates[0]
+
+chrome_path = find_browser_path()
 
 light_theme_css = """
 :root, html, body, svg {

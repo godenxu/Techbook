@@ -1186,9 +1186,9 @@
           '<div class="res-kpi-sub" title="24项方法论工具评估">24项方法论工具评估</div>' +
         '</div>' +
         '<div class="res-kpi-card" style="--kpi-col:#f59e0b">' +
-          '<div class="res-kpi-val">100<span>+份</span></div>' +
+          '<div class="res-kpi-val">200<span>+份</span></div>' +
           '<div class="res-kpi-lbl">知识库报告归集</div>' +
-          '<div class="res-kpi-sub" title="100+份知识库报告归集">100+份知识库报告归集</div>' +
+          '<div class="res-kpi-sub" title="200+份知识库报告归集">200+份知识库报告归集</div>' +
         '</div>' +
         '<div class="res-kpi-card" style="--kpi-col:#3b82f6">' +
           '<div class="res-kpi-val">36<span>项</span></div>' +
@@ -5364,10 +5364,11 @@
     if (!relPath) return '';
     if (location.protocol === 'file:') {
       var pathname = decodeURIComponent(location.pathname);
+      var isWin = /^\/[a-zA-Z]:/.test(pathname);
       pathname = pathname.replace(/^\/([a-zA-Z]:)/, '$1');
       var baseDir = pathname.substring(0, pathname.lastIndexOf('/'));
       var full = baseDir + '/' + relPath;
-      return full.replace(/\//g, '\\');
+      return isWin ? full.replace(/\//g, '\\') : full;
     }
     return relPath;
   }
